@@ -21,7 +21,7 @@
           <div class="column">
               <img src="../../../public/images/tallah.jpeg" alt="Tallah" width="200" height="200">
               <h1>Tallah</h1>
-              <p>Representative of modern nu-metal..</p>
+              <p>Representative of modern nu-metal.</p>
               <button class="button">Listen</button>
           </div>
       </div>
