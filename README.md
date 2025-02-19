@@ -2,7 +2,7 @@
 ## Projekta ideja
 **"Know Your Music"** ir mūzikai un mūziķiem veltīta tīmekļa vietne, kas apvieno mūzikas enciklopēdijas un rekomendāciju servisa funkcijas.
 
-![galvenas lapas skrinšots](website-screensht.png)
+![galvenas lapas skrinšots](website-screensht.png "Galvenā mājaslap")
 
 ## Funkcijas
 Tīmekļa vietne piedavās tādu funkcionalitāti:
