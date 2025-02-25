@@ -32,5 +32,9 @@ Route::get('/login', function () {
     return Inertia::render('LoginView');
 })->name('login');
 
+Route::get('/faq', function () {
+    return Inertia::render('FaqView');
+})->name('faq');
+
 
 require __DIR__.'/auth.php';

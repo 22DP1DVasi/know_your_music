@@ -1,8 +1,6 @@
 <template>
 
   <div class="recommendations">
-          <p>Last recommendations:</p>
-
       <div class="flex-container">
           <div class="column">
               <img src="../../../public/images/linkinpark.jpg" alt="Linkin Park" width="200" height="200">

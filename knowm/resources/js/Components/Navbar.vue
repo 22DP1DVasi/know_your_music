@@ -124,6 +124,11 @@ nav ul li a:hover {
     font-size: 16px; /* Ensure text is readable */
 }
 
+.searchTerm:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 .searchButton {
     position: relative; /* Ensure a positioned ancestor for the ::after pseudo-element */
     width: 40px;
