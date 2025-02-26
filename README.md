@@ -26,4 +26,6 @@ Galvenie konkurenti ir *Last.fm*, *Genius.com* un *Lyrics.com*. *Spotify* nav uz
 - Footer ✓
 - Responsivitāte ✓
 - Laravel framework uzstādīts ✓
-- Log In lapa (procesā ⟳)
+- Log In lapa ✓
+- Sign Up lapa ✓
+- 

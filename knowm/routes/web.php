@@ -37,7 +37,7 @@ Route::get('/signup', function () {
 })->name('signup');
 
 Route::get('/faq', function () {
-    return Inertia::render('FaqView');
+    return Inertia::render('FAQ');
 })->name('faq');
 
 

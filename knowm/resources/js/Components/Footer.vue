@@ -2,12 +2,12 @@
   <footer class="footer">
     <div class="footer-sections">
       <ul class="footer-links">
-        <li><a href="#">FAQ</a></li>
+        <li><a href="/faq">FAQ</a></li>
         <li><a href="#">User Agreement</a></li>
         <li><a href="#">Rules</a></li>
       </ul>
       <ul class="footer-links">
-        <li><a href="#">Copyright</a></li>
+        <li><a href="#">Help</a></li>
         <li><a href="#">Privacy Policy</a></li>
         <li><a href="#">Terms of Service</a></li>
       </ul>
