@@ -1,6 +1,9 @@
 <template>
     <nav>
-        <p style="font-family: Arial, Helvetica, sans-serif;">Know Your Music</p>
+        <div class="logo-container">
+            <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
+            <p>Know Your Music</p>
+        </div>
         <ul>
             <li>
                 <div class="wrap">
@@ -92,7 +95,26 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    background-color: #91e3f8ed;
+    background-color: #0ab0e9;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 100px;
+    height: 56px;
+    object-fit: contain; /* ensures the image fits well */
+    margin-right: 10px;
+    margin-bottom: 4px;
+}
+
+.logo-container p {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
 .wrap {

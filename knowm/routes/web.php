@@ -29,8 +29,12 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/login', function () {
-    return Inertia::render('LoginView');
+    return Inertia::render('Login');
 })->name('login');
+
+Route::get('/signup', function () {
+    return Inertia::render('Auth/Signup');
+})->name('signup');
 
 Route::get('/faq', function () {
     return Inertia::render('FaqView');

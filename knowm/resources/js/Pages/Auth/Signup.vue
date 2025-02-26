@@ -25,14 +25,14 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Log in" />
+    <Head title="Sign up" />
     <div class="login-container">
         <div class="login-box">
             <div class="logo-container">
                 <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
             </div>
 
-            <h2 class="login-title">Enter the Wall</h2>
+            <h2 class="login-title">Sign Up</h2>
             <!-- Registration with social media, WIP -->
             <!--                <div class="social-buttons">-->
             <!--                    <button class="social-button">-->
@@ -55,7 +55,7 @@ const submit = () => {
             <!-- login form -->
             <form @submit.prevent="submit">
                 <div>
-                    <InputLabel for="email" value="Email or Username" class="label" />
+                    <InputLabel for="email" value="Email" class="label" />
                     <TextInput
                         id="email"
                         type="email"
@@ -82,34 +82,20 @@ const submit = () => {
                     <InputError class="error-text" :message="form.errors.password" />
                 </div>
 
-                <div class="form-footer">
-                    <label class="remember-me">
-                        <Checkbox name="remember" v-model:checked="form.remember" />
-                        <span>Remember me</span>
-                    </label>
-                    <Link
-                        v-if="canResetPassword"
-                        :href="route('password.request')"
-                        class="forgot-password"
-                    >
-                        Forgot your password?
-                    </Link>
-                </div>
-
                 <div class="submit-button">
                     <PrimaryButton
                         class="login-button"
                         :class="{ 'disabled': form.processing }"
                         :disabled="form.processing"
                     >
-                        Log in
+                        Sign up
                     </PrimaryButton>
                 </div>
             </form>
 
             <div class="signup-text">
-                Don't have an account?
-                <Link href="/signup" class="signup-link">Sign up</Link>
+                Already have an account?
+                <Link href="/login" class="signup-link"> Log in here.</Link>
             </div>
         </div>
     </div>

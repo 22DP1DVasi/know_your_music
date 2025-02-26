@@ -21,17 +21,17 @@
 <style scoped>
 /* General Footer Styles */
 .footer {
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: rgb(185, 225, 255);
-  text-align: center;
-  padding: 20px;
-  width: 100%;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px; /* Add spacing between sections */
-  justify-content: center; /* Center align all footer content */
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(185, 225, 255);
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* add spacing between sections */
+    justify-content: center; /* center align all footer content */
 }
 
 /* Section container */
@@ -73,8 +73,6 @@
   font-size: 0.9rem;
   color: #555;
   margin-top: 20px; /* Add spacing to ensure it's visually separated */
-
-  
 }
 
 /* Responsive Design */
