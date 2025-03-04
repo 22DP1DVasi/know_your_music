@@ -6,9 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Footer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/FaqView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/FAQ.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Signup.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/FAQ.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/FAQ.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -197,7 +199,9 @@
       <workItem from="1739955460257" duration="1474000" />
       <workItem from="1739959646125" duration="3761000" />
       <workItem from="1740483959064" duration="5513000" />
-      <workItem from="1740557774577" duration="11605000" />
+      <workItem from="1740557774577" duration="11631000" />
+      <workItem from="1740823251703" duration="211000" />
+      <workItem from="1741088481466" duration="5500000" />
     </task>
     <servers />
   </component>

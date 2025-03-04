@@ -21,93 +21,222 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Register" />
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
-
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
-
-                <InputError class="mt-2" :message="form.errors.name" />
+    <Head title="Register Signup" />
+    <div class="register-container">
+        <div class="register-box">
+            <div class="logo-container">
+                <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+            <h2 class="register-title">Press Play on Your Journey</h2>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+            <!-- Registration form -->
+            <form @submit.prevent="submit">
+                <div>
+                    <InputLabel for="name" value="Name" class="label" />
+                    <TextInput
+                        id="name"
+                        type="text"
+                        class="input"
+                        v-model="form.name"
+                        required
+                        autofocus
+                        autocomplete="name"
+                    />
+                    <InputError class="error-text" :message="form.errors.name" />
+                </div>
+                <br>
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                <div>
+                    <InputLabel for="email" value="Email" class="label" />
+                    <TextInput
+                        id="email"
+                        type="email"
+                        class="input"
+                        v-model="form.email"
+                        required
+                        autocomplete="username"
+                    />
+                    <InputError class="error-text" :message="form.errors.email" />
+                </div>
+                <br>
+
+                <div>
+                    <InputLabel for="password" value="Password" class="label" />
+                    <TextInput
+                        id="password"
+                        type="password"
+                        class="input"
+                        v-model="form.password"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <InputError class="error-text" :message="form.errors.password" />
+                </div>
+                <br>
+
+                <div>
+                    <InputLabel for="password_confirmation" value="Confirm Password" class="label" />
+                    <TextInput
+                        id="password_confirmation"
+                        type="password"
+                        class="input"
+                        v-model="form.password_confirmation"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <InputError class="error-text" :message="form.errors.password_confirmation" />
+                </div>
+                <br>
+
+                <div class="form-footer">
+                    <Link
+                        :href="route('login')"
+                        class="forgot-password"
+                    >
+                        Already registered?
+                    </Link>
+                </div>
+
+                <div class="submit-button">
+                    <PrimaryButton
+                        class="register-button"
+                        :class="{ 'disabled': form.processing }"
+                        :disabled="form.processing"
+                    >
+                        Register
+                    </PrimaryButton>
+                </div>
+            </form>
+
+            <div class="signup-text">
+                Already have an account?
+                <Link href="/login" class="signup-link">Log in</Link>
             </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel
-                    for="password_confirmation"
-                    value="Confirm Password"
-                />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    :href="route('login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                >
-                    Already registered?
-                </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Register
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+        </div>
+    </div>
 </template>
+
+<style>
+/* Reuse the same CSS styles from the login page */
+.register-container {
+    display: flex;
+    min-height: 90vh;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(to right, #ffffff, #b3eaff);
+}
+
+.register-box {
+    width: 100%;
+    max-width: 400px;
+    background-color: rgb(185, 225, 255);
+    padding: 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    margin-right: 10px;
+}
+
+.logo {
+    height: 48px;
+}
+
+.register-title {
+    text-align: center;
+    color: #000000;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.label {
+    display: block;
+    color: #000000;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 5px solid #b0ddff !important;
+    border-radius: 6px;
+    color: #000000;
+}
+
+.input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.error-text {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 16px;
+    margin-bottom: 10px;
+}
+
+.forgot-password {
+    font-size: 14px;
+    color: #0c4baa;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.submit-button {
+    margin-top: 24px;
+}
+
+.register-button {
+    width: 100%;
+    background-color: #0c4baa;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+.register-button:hover {
+    background-color: #06419a;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.signup-text {
+    margin-top: 16px;
+    text-align: center;
+    color: black;
+    font-size: 14px;
+}
+
+.signup-link {
+    color: #0c4baa;
+    text-decoration: none;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}
+</style>

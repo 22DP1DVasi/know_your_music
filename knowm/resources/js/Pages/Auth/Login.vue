@@ -32,7 +32,7 @@ const submit = () => {
                 <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
             </div>
 
-            <h2 class="login-title">Enter the Wall</h2>
+            <h2 class="login-title">Find Your Groove Again</h2>
             <!-- Registration with social media, WIP -->
             <!--                <div class="social-buttons">-->
             <!--                    <button class="social-button">-->

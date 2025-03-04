@@ -33,7 +33,7 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::get('/signup', function () {
-    return Inertia::render('Auth/Signup');
+    return Inertia::render('Auth/Register');
 })->name('signup');
 
 Route::get('/faq', function () {
