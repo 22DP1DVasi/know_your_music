@@ -22,11 +22,24 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+// go back to the previous page
+const goBack = () => {
+    window.history.back();
+};
 </script>
 
 <template>
     <Head title="Log in" />
     <div class="login-container">
+        <!-- go-back arrow -->
+        <div class="go-back-arrow" @click="goBack">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="arrow-icon">
+                <path d="M10.828 12l4.95 4.95-1.414 1.414L8 12l6.364-6.364 1.414 1.414z"/>
+            </svg>
+        </div>
+
+        <!-- box for logo and fields -->
         <div class="login-box">
             <div class="logo-container">
                 <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
@@ -122,6 +135,31 @@ const submit = () => {
     align-items: center;
     justify-content: center;
     background-image: linear-gradient(to right, #ffffff, #b3eaff);
+}
+
+/* go-back arrow */
+.go-back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.go-back-arrow:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.arrow-icon {
+    width: 24px;
+    height: 24px;
+    color: #0c4baa; /* Match the color scheme */
 }
 
 .login-box {

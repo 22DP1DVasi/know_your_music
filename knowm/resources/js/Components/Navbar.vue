@@ -1,9 +1,9 @@
 <template>
     <nav>
-        <div class="logo-container">
+        <a href="/" class="logo-container">
             <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
             <p>Know Your Music</p>
-        </div>
+        </a>
         <ul>
             <li>
                 <div class="wrap">
@@ -86,21 +86,26 @@ nav ul li {
 
 nav ul li a {
     text-decoration: none;
-    background-color: rgb(185, 225, 255);
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 400;
-    padding: 4px 8px;
+    padding: 12px 16px;
     border-radius: 5px;
+    display: block; /* ensure the anchor takes up the full width of the li */
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
 nav ul li a:hover {
-    background-color: #0ab0e9;
+    background-color: #20c1f7;
 }
 
 .logo-container {
     display: flex;
     align-items: center;
+    text-decoration: none; /* remove underline from the link */
+
+    cursor: pointer;
 }
 
 .logo {
