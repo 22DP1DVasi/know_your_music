@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-z
+    <Footer/>
 </template>
 
 <script>
