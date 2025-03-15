@@ -12,15 +12,13 @@
                 </div>
             </div>
         </div>
-    <Footer/>
+z
 </template>
 
 <script>
 import {Head} from "@inertiajs/vue3";
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
-import HomeTitle from "@/Components/HomeTitle.vue";
-import HomeRecomCards from "@/Components/HomeRecomCards.vue";
 
 export default {
     components: {Footer, Head, Navbar},

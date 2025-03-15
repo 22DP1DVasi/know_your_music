@@ -17,10 +17,10 @@ import {Head} from "@inertiajs/vue3";
 export default {
   components: {
       Head,
-    Navbar,
-    HomeTitle,
-    HomeRecomCards,
-    Footer
+      Navbar,
+      HomeTitle,
+      HomeRecomCards,
+      Footer
   }
 }
 </script>
