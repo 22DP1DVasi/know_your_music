@@ -28,4 +28,4 @@ Galvenie konkurenti ir *Last.fm*, *Genius.com* un *Lyrics.com*. *Spotify* nav uz
 - Laravel framework uzstādīts ✓
 - Log In lapa ✓
 - Sign Up lapa ✓
-- 
+- FAQ lapa ✓
