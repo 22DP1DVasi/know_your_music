@@ -11,25 +11,30 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('release_genres', function (Blueprint $table) {
-            // foreign keys
-            $table->unsignedBigInteger('release_id');
+        Schema::create('artists_genres', function (Blueprint $table) {
+            // foreign key
+            $table->unsignedBigInteger('artist_id');
             $table->unsignedBigInteger('genre_id');
-            $table->timestamps();
+
+            // Explicitly add indexes
+            $table->index('artist_id');
+            $table->index('genre_id');
 
             // composite primary key
-            $table->primary(['release_id', 'genre_id']);
+            $table->primary(['artist_id', 'genre_id']);
 
             // foreign key constraints
-            $table->foreign('release_id')
+            $table->foreign('artist_id')
                 ->references('id')
-                ->on('releases')
-                ->onDelete('cascade'); // cascade deletes if the release is deleted
+                ->on('artists')
+                ->onDelete('cascade');
 
             $table->foreign('genre_id')
                 ->references('id')
                 ->on('genres')
-                ->onDelete('cascade'); // cascade deletes if the genre is deleted
+                ->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 
@@ -38,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('release_genres');
+        Schema::dropIfExists('artists_genres');
     }
 };
