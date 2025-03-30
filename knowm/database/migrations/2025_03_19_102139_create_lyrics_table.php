@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('last_updated_by_user')->nullable(); // nullable because of set null restriction
             $table->timestamps();
 
-            // Define foreign keys
             $table->foreign('track_id')
                 ->references('id')
                 ->on('tracks')

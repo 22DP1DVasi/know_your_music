@@ -11,25 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('releases_genres', function (Blueprint $table) {
+        Schema::create('artists_releases', function (Blueprint $table) {
+            $table->unsignedBigInteger('artist_id');
             $table->unsignedBigInteger('release_id');
-            $table->unsignedBigInteger('genre_id');
+            // role field with enum options
+            $table->enum('role', ['primary', 'featured', 'producer'])->default('primary');
 
             // explicitly add indexes
+            $table->index('artist_id');
             $table->index('release_id');
-            $table->index('genre_id');
 
             // composite primary key
-            $table->primary(['release_id', 'genre_id']);
+            $table->primary(['artist_id', 'release_id']);
+
+            $table->foreign('artist_id')
+                ->references('id')
+                ->on('artists')
+                ->onDelete('cascade');
 
             $table->foreign('release_id')
                 ->references('id')
                 ->on('releases')
-                ->onDelete('cascade');
-
-            $table->foreign('genre_id')
-                ->references('id')
-                ->on('genres')
                 ->onDelete('cascade');
 
             $table->timestamps();
@@ -41,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('releases_genres');
+        Schema::dropIfExists('artists_releases');
     }
 };

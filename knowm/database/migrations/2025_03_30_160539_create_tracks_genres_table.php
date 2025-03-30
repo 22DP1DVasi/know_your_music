@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('releases_genres', function (Blueprint $table) {
-            $table->unsignedBigInteger('release_id');
+        Schema::create('tracks_genres', function (Blueprint $table) {
+            $table->unsignedBigInteger('track_id');
             $table->unsignedBigInteger('genre_id');
 
             // explicitly add indexes
-            $table->index('release_id');
+            $table->index('track_id');
             $table->index('genre_id');
 
             // composite primary key
-            $table->primary(['release_id', 'genre_id']);
+            $table->primary(['track_id', 'genre_id']);
 
-            $table->foreign('release_id')
+            $table->foreign('track_id')
                 ->references('id')
-                ->on('releases')
+                ->on('tracks')
                 ->onDelete('cascade');
 
             $table->foreign('genre_id')
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('releases_genres');
+        Schema::dropIfExists('tracks_genres');
     }
 };
