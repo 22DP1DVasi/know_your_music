@@ -6,16 +6,15 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class Admin extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     *
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
@@ -46,20 +45,18 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the favorite artists for the user.
-     */
-    public function favoriteArtists()
-    {
-        return $this->belongsToMany(Artist::class, 'user_favorite_artists')
-            ->withPivot(['sort_order', 'added_at'])
-            ->orderBy('sort_order');
-    }
-
-    /**
-     * Scope to filter active users.
+     * Scope for active admins
      */
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope for banned admins
+     */
+    public function scopeBanned($query)
+    {
+        return $query->where('status', 'banned');
     }
 }

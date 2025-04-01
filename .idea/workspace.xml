@@ -7,6 +7,7 @@
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/config/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/config/auth.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,7 +205,7 @@
       <workItem from="1742298190453" duration="1702000" />
       <workItem from="1742372148680" duration="11030000" />
       <workItem from="1743344940298" duration="12452000" />
-      <workItem from="1743530340695" duration="3567000" />
+      <workItem from="1743530340695" duration="4730000" />
     </task>
     <servers />
   </component>
