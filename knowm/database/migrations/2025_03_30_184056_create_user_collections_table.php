@@ -19,9 +19,10 @@ return new class extends Migration
             $table->boolean('is_private')->default(true);
             $table->timestamps();
 
-            // Indexes
+            // indexes
             $table->index('user_id');
 
+            // foreign keys
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')

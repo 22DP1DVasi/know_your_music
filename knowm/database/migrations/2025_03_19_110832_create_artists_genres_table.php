@@ -14,13 +14,16 @@ return new class extends Migration
         Schema::create('artists_genres', function (Blueprint $table) {
             $table->unsignedBigInteger('artist_id');
             $table->unsignedBigInteger('genre_id');
+            $table->timestamps();
 
             // explicitly add indexes
             $table->index('artist_id');
             $table->index('genre_id');
 
+            // composite primary key
             $table->primary(['artist_id', 'genre_id']);
 
+            // foreign keys
             $table->foreign('artist_id')
                 ->references('id')
                 ->on('artists')
@@ -30,8 +33,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('genres')
                 ->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
 

@@ -21,6 +21,7 @@ return new class extends Migration
             // ensure uniqueness of genres in each recommendation
             $table->unique(['recommendation_id', 'genre_id']);
 
+            // foreign keys
             $table->foreign('recommendation_id')
                 ->references('id')
                 ->on('recommendations')

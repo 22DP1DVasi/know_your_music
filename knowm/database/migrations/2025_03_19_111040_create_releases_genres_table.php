@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('releases_genres', function (Blueprint $table) {
             $table->unsignedBigInteger('release_id');
             $table->unsignedBigInteger('genre_id');
+            $table->timestamps();
 
             // explicitly add indexes
             $table->index('release_id');
@@ -22,6 +23,7 @@ return new class extends Migration
             // composite primary key
             $table->primary(['release_id', 'genre_id']);
 
+            // foreign keys
             $table->foreign('release_id')
                 ->references('id')
                 ->on('releases')
@@ -31,8 +33,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('genres')
                 ->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
 

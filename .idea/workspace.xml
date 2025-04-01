@@ -6,6 +6,21 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_102139_create_lyrics_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_102139_create_lyrics_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_110832_create_artists_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_110832_create_artists_genres_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_111040_create_releases_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_111040_create_releases_genres_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_160539_create_tracks_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_160539_create_tracks_genres_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_160841_create_artists_releases_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_160841_create_artists_releases_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_161945_create_artists_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_161945_create_artists_tracks_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_165959_create_comments_releases_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_165959_create_comments_releases_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_171840_create_comments_artists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_171840_create_comments_artists_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_172446_create_comments_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_172446_create_comments_tracks_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_184056_create_user_collections_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_184056_create_user_collections_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_185746_create_user_collections_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_185746_create_user_collections_tracks_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_191037_create_recommendations_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_191037_create_recommendations_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_191216_create_recommendations_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_191216_create_recommendations_genres_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_191509_create_recommendations_artists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_191509_create_recommendations_artists_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Register.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,6 +217,8 @@
       <workItem from="1742028486766" duration="2156000" />
       <workItem from="1742298190453" duration="1702000" />
       <workItem from="1742372148680" duration="11030000" />
+      <workItem from="1743344940298" duration="12452000" />
+      <workItem from="1743530340695" duration="1269000" />
     </task>
     <servers />
   </component>

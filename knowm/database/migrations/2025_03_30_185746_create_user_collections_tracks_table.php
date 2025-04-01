@@ -22,6 +22,7 @@ return new class extends Migration
             // position index for sorting
             $table->index(['collection_id', 'track_position']);
 
+            // foreign keys
             $table->foreign('collection_id')
                 ->references('id')
                 ->on('user_collections')

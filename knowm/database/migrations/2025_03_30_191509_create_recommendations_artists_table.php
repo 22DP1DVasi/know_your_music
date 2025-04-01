@@ -20,6 +20,7 @@ return new class extends Migration
             // ensure uniqueness for each artist in the genre group
             $table->unique(['recommendation_genre_id', 'artist_id']);
 
+            // foreign keys
             $table->foreign('recommendation_genre_id')
                 ->references('id')
                 ->on('recommendations_genres')

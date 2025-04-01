@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('artists_tracks', function (Blueprint $table) {
             $table->unsignedBigInteger('artist_id');
             $table->unsignedBigInteger('track_id');
-
             // role field with enum options
             $table->enum('role', ['primary', 'featured', 'producer'])->default('primary');
+            $table->timestamps();
 
             // explicitly add indexes
             $table->index('artist_id');
@@ -25,6 +25,7 @@ return new class extends Migration
             // composite primary key
             $table->primary(['artist_id', 'track_id']);
 
+            // foreign keys
             $table->foreign('artist_id')
                 ->references('id')
                 ->on('artists')
@@ -34,8 +35,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('tracks')
                 ->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
 

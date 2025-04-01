@@ -46,7 +46,7 @@ const goBack = () => {
             <!-- Registration form -->
             <form @submit.prevent="submit">
                 <div>
-                    <InputLabel for="name" value="Name" class="label" />
+                    <InputLabel for="name" value="Userame" class="label" />
                     <TextInput
                         id="name"
                         type="text"
@@ -221,7 +221,6 @@ const goBack = () => {
 
 .form-footer {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
     margin-top: 16px;
     margin-bottom: 10px;

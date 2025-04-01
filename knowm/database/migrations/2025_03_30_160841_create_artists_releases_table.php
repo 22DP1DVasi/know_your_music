@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('release_id');
             // role field with enum options
             $table->enum('role', ['primary', 'featured', 'producer'])->default('primary');
+            $table->timestamps();
 
             // explicitly add indexes
             $table->index('artist_id');
@@ -24,6 +25,7 @@ return new class extends Migration
             // composite primary key
             $table->primary(['artist_id', 'release_id']);
 
+            // foreign kets
             $table->foreign('artist_id')
                 ->references('id')
                 ->on('artists')
@@ -33,8 +35,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('releases')
                 ->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
 

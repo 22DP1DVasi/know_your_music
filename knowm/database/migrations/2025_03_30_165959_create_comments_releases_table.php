@@ -20,11 +20,12 @@ return new class extends Migration
             $table->string('deleted_username', 100)->nullable(); // store username before user deletion as metadata
             $table->timestamps();
 
-            // Indexes
+            // indexes
             $table->index('user_id');
             $table->index('release_id');
             $table->index('status'); // for better performance
 
+            // foreign kets
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
