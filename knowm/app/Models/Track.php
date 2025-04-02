@@ -34,6 +34,15 @@ class Track extends Model
     ];
 
     /**
+     * Get all genres associated with this track.
+     */
+    public function genres()
+    {
+        return $this->belongsToMany(Genre::class, 'tracks_genres')
+            ->withTimestamps();  // tracks when relationships were created
+    }
+
+    /**
      * Get the formatted duration (mm:ss).
      */
     public function getFormattedDurationAttribute(): string

@@ -53,10 +53,10 @@ class Release extends Model
     /**
      * Get all genres associated with this release.
      */
-    public function genres(): BelongsToMany
+    public function genres()
     {
-        return $this->belongsToMany(Genre::class, 'release_genres')
-            ->withTimestamps();
+        return $this->belongsToMany(Genre::class, 'releases_genres')
+            ->withTimestamps(); // tracks when relationships were created
     }
 
     /**
