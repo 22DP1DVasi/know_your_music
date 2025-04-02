@@ -38,10 +38,10 @@ class Artist extends Model
     /**
      * Get all genres associated with this artist.
      */
-    public function genres(): BelongsToMany
+    public function genres()
     {
-        return $this->belongsToMany(Genre::class, 'artist_genre')
-            ->withTimestamps();
+        return $this->belongsToMany(Genre::class, 'artists_genres')
+            ->withTimestamps(); // tracks when relationships were created
     }
 
     /**
