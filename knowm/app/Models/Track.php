@@ -43,6 +43,23 @@ class Track extends Model
     }
 
     /**
+     * Get all comments associated with this track.
+     */
+    public function comments()
+    {
+        return $this->hasMany(TrackComment::class)
+            ->visible()
+            ->latest();
+    }
+
+    public function allComments()
+    {
+        return $this->hasMany(TrackComment::class)
+            ->with('user')
+            ->latest();
+    }
+
+    /**
      * Get the formatted duration (mm:ss).
      */
     public function getFormattedDurationAttribute(): string

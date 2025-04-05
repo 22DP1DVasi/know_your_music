@@ -62,6 +62,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Relationship with TrackComment model
+     */
+    public function trackComments()
+    {
+        return $this->hasMany(TrackComment::class);
+    }
+
+    /**
      * Remember comment's author's username when they get deleted
      */
     protected static function booted()
