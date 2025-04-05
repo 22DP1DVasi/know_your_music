@@ -125,6 +125,8 @@
       <excludeFolder url="file://$MODULE_DIR$/knowm/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/knowm/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/knowm/vendor/barryvdh/laravel-ide-helper" />
+      <excludeFolder url="file://$MODULE_DIR$/knowm/vendor/barryvdh/reflection-docblock" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

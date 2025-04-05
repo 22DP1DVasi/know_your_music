@@ -133,6 +133,8 @@
       <path value="$PROJECT_DIR$/knowm/vendor/laravel/sanctum" />
       <path value="$PROJECT_DIR$/knowm/vendor/composer" />
       <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/laravel-ide-helper" />
+      <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/reflection-docblock" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">

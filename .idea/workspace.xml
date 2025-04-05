@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/know_your_music.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/know_your_music.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/UserFavoriteArtist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/UserFavoriteArtist.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/composer.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,6 +148,8 @@
       <path value="$PROJECT_DIR$/knowm/vendor/laravel/sanctum" />
       <path value="$PROJECT_DIR$/knowm/vendor/composer" />
       <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/laravel-ide-helper" />
+      <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/reflection-docblock" />
     </include_path>
   </component>
   <component name="ProjectColorInfo">{
@@ -206,7 +212,7 @@
       <workItem from="1743344940298" duration="12452000" />
       <workItem from="1743530340695" duration="5071000" />
       <workItem from="1743620178422" duration="3411000" />
-      <workItem from="1743841374164" duration="11918000" />
+      <workItem from="1743841374164" duration="14534000" />
     </task>
     <servers />
   </component>
