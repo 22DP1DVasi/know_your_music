@@ -92,15 +92,18 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::deleting(function ($user) {
-            // Store usernames in artist comments
-            $user->artistComments()->update([
-                'deleted_username' => $user->name
-            ]);
+            // update all comments where this user is the commenter
+            ArtistComment::where('commenter_type', self::class)
+                ->where('commenter_id', $user->id)
+                ->update(['deleted_username' => $user->name]);
 
-            // Store usernames in release comments
-            $user->releaseComments()->update([
-                'deleted_username' => $user->name
-            ]);
+            ReleaseComment::where('commenter_type', self::class)
+                ->where('commenter_id', $user->id)
+                ->update(['deleted_username' => $user->name]);
+
+            TrackComment::where('commenter_type', self::class)
+                ->where('commenter_id', $user->id)
+                ->update(['deleted_username' => $user->name]);
         });
     }
 

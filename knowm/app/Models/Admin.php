@@ -83,4 +83,25 @@ class Admin extends Authenticatable
     {
         return $query->where('status', 'banned');
     }
+
+    /**
+     * Remember admin's username when they get deleted from comments
+     */
+    protected static function booted()
+    {
+        static::deleting(function ($admin) {
+            // update all comments where this user is the commenter
+            ArtistComment::where('commenter_type', self::class)
+                ->where('commenter_id', $admin->id)
+                ->update(['deleted_username' => $admin->name]);
+
+            ReleaseComment::where('commenter_type', self::class)
+                ->where('commenter_id', $admin->id)
+                ->update(['deleted_username' => $admin->name]);
+
+            TrackComment::where('commenter_type', self::class)
+                ->where('commenter_id', $admin->id)
+                ->update(['deleted_username' => $admin->name]);
+        });
+    }
 }
