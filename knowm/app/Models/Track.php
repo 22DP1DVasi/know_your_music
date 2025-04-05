@@ -52,11 +52,13 @@ class Track extends Model
             ->latest();
     }
 
-    public function allComments()
+    /**
+     * Collections this track belongs to
+     */
+    public function userCollections(): BelongsToMany
     {
-        return $this->hasMany(TrackComment::class)
-            ->with('user')
-            ->latest();
+        return $this->belongsToMany(UserCollection::class, 'user_collections_tracks')
+            ->withPivot('track_position');
     }
 
     /**

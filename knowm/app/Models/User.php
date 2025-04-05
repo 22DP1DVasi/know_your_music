@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -67,6 +68,22 @@ class User extends Authenticatable
     public function trackComments()
     {
         return $this->morphMany(TrackComment::class, 'commenter');
+    }
+
+    /**
+     * Collections owned by this user
+     */
+    public function collections(): HasMany
+    {
+        return $this->hasMany(UserCollection::class);
+    }
+
+    /**
+     * Create a new collection for this user
+     */
+    public function createCollection(array $data): UserCollection
+    {
+        return $this->collections()->create($data);
     }
 
     /**
