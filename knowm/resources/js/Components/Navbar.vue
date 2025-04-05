@@ -1,3 +1,114 @@
+<script>
+import { ref, onMounted, onUnmounted } from "vue";
+import { usePage, router } from '@inertiajs/vue3';
+
+export default {
+    setup() {
+        const page = usePage();
+
+        // Dark mode state
+        const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
+
+        // Menu state
+        const isMenuActive = ref(false);
+
+        // Mobile state
+        const isMobile = ref(false);
+        const isMobileSearchActive = ref(false);
+
+        // User dropdown state
+        const showUserDropdown = ref(false);
+
+        // Authentication state
+        const isLoggedIn = ref(page.props.auth.user !== null);
+        const user = ref(page.props.auth.user || { name: 'User' });
+
+        // Toggle dark mode function
+        const toggleDarkMode = () => {
+            isDarkMode.value = !isDarkMode.value;
+            document.documentElement.classList.toggle("dark-mode", isDarkMode.value);
+            localStorage.setItem("darkMode", isDarkMode.value);
+        };
+
+        // Toggle navigation menu function
+        const toggleNav = () => {
+            isMenuActive.value = !isMenuActive.value;
+            // Close user dropdown when opening mobile menu
+            if (isMenuActive.value) {
+                showUserDropdown.value = false;
+            }
+        };
+
+        // Toggle user dropdown
+        const toggleUserDropdown = () => {
+            showUserDropdown.value = !showUserDropdown.value;
+        };
+
+        // Close dropdown when clicking outside
+        const closeDropdownOnClickOutside = (event) => {
+            if (!event.target.closest('.user-menu')) {
+                showUserDropdown.value = false;
+            }
+        };
+
+        // Logout function - corrected version
+        const logout = () => {
+            router.post('/logout', {}, {
+                onFinish: () => {
+                    // Reset user state after logout
+                    isLoggedIn.value = false;
+                    user.value = { name: 'User' };
+                    showUserDropdown.value = false;
+                }
+            });
+        };
+
+        // Toggle mobile search bar visibility
+        const toggleMobileSearch = () => {
+            isMobileSearchActive.value = !isMobileSearchActive.value;
+        };
+
+        // Handle screen size changes to detect mobile view
+        const handleResize = () => {
+            isMobile.value = window.innerWidth <= 910;
+        };
+
+        // Apply dark mode on mount if it's active
+        if (isDarkMode.value) {
+            document.documentElement.classList.add("dark-mode");
+        }
+
+        // Add event listeners on mount
+        onMounted(() => {
+            window.addEventListener("resize", handleResize);
+            window.addEventListener('click', closeDropdownOnClickOutside);
+            handleResize(); // Check screen size on initial load
+        });
+
+        // Cleanup event listeners
+        onUnmounted(() => {
+            window.removeEventListener("resize", handleResize);
+            window.removeEventListener('click', closeDropdownOnClickOutside);
+        });
+
+        return {
+            isDarkMode,
+            toggleDarkMode,
+            isMenuActive,
+            toggleNav,
+            isMobile,
+            isMobileSearchActive,
+            toggleMobileSearch,
+            isLoggedIn,
+            user,
+            showUserDropdown,
+            toggleUserDropdown,
+            logout
+        };
+    },
+};
+</script>
+
 <template>
     <nav>
         <a href="/" class="logo-container">
@@ -18,8 +129,20 @@
             <li><a href="/">Home</a></li>
             <li><a href="/explore">Explore</a></li>
             <li><a href="/about">About</a></li>
-            <li><a href="/login">Log In</a></li>
-            <li><a href="/signup">Sign Up</a></li>
+            <!-- Conditional rendering based on auth state -->
+            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
+            <li v-if="isLoggedIn" class="user-menu">
+                <div class="user-avatar" @click="toggleUserDropdown">
+                    <i class="fa fa-user-circle"></i>
+                    <span class="username">{{ user.name }}</span>
+                    <div v-show="showUserDropdown" class="user-dropdown">
+                        <a href="/profile">Profile</a>
+                        <a href="/settings">Settings</a>
+                        <a href="#" @click.prevent="logout">Log Out</a>
+                    </div>
+                </div>
+            </li>
         </ul>
         <!-- search button for mobile -->
         <button class="mobile-search-button" @click="toggleMobileSearch" v-show="isMobile">
@@ -46,8 +169,12 @@
             <li><a href="/">Home</a></li>
             <li><a href="/explore">Explore</a></li>
             <li><a href="/about">About</a></li>
-            <li><a href="/login">Log In</a></li>
-            <li><a href="/signup">Sign Up</a></li>
+            <!-- Conditional rendering for mobile menu -->
+            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
+            <li v-if="isLoggedIn"><a href="/profile">Profile</a></li>
+            <li v-if="isLoggedIn"><a href="/settings">Settings</a></li>
+            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">Log Out</a></li>
         </ul>
     </div>
     <!-- search bar for mobile -->
@@ -81,7 +208,8 @@ nav ul {
 }
 
 nav ul li {
-    margin-left: 2rem;
+    margin-left: 1rem;
+    position: relative;
 }
 
 nav ul li a {
@@ -205,6 +333,60 @@ nav ul li a:hover {
     transform: translate(-50%, -50%) scale(0.5); /* Start small */
 }
 
+.user-avatar {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.user-avatar:hover {
+    background-color: #20c1f7;
+}
+
+.user-avatar i {
+    font-size: 24px;
+    margin-right: 8px;
+}
+
+.username {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.user-dropdown a {
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: background-color 0.2s;
+}
+
+.user-dropdown a:hover {
+    background-color: #f5f5f5;
+}
+
+.user-menu {
+    margin-left: 1.5rem;
+}
+
 /* Mobile search container */
 .mobile-search-container {
     background-color: rgb(185, 225, 255);
@@ -255,7 +437,7 @@ nav ul li a:hover {
 }
 
 .menubar ul li {
-    margin-bottom: 32px;
+    margin-bottom: 20px;
     font-size: 1.3em;
 }
 
@@ -378,64 +560,3 @@ nav ul li a:hover {
 }
 
 </style>
-
-<script>
-import { ref, onMounted } from "vue";
-
-export default {
-    setup() {
-        // Dark mode state
-        const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
-
-        // Menu state
-        const isMenuActive = ref(false);
-
-        // Mobile state
-        const isMobile = ref(false);
-        const isMobileSearchActive = ref(false);
-
-        // Toggle dark mode function
-        const toggleDarkMode = () => {
-            isDarkMode.value = !isDarkMode.value;
-            document.documentElement.classList.toggle("dark-mode", isDarkMode.value);
-            localStorage.setItem("darkMode", isDarkMode.value);
-        };
-
-        // Toggle navigation menu function
-        const toggleNav = () => {
-            isMenuActive.value = !isMenuActive.value;
-        };
-
-        // Toggle mobile search bar visibility
-        const toggleMobileSearch = () => {
-            isMobileSearchActive.value = !isMobileSearchActive.value;
-        };
-
-        // Handle screen size changes to detect mobile view
-        const handleResize = () => {
-            isMobile.value = window.innerWidth <= 910;
-        };
-
-        // Apply dark mode on mount if it's active
-        if (isDarkMode.value) {
-            document.documentElement.classList.add("dark-mode");
-        }
-
-        // Add resize event listener on mount
-        onMounted(() => {
-            window.addEventListener("resize", handleResize);
-            handleResize(); // Check screen size on initial load
-        });
-
-        return {
-            isDarkMode,
-            toggleDarkMode,
-            isMenuActive,
-            toggleNav,
-            isMobile,
-            isMobileSearchActive,
-            toggleMobileSearch,
-        };
-    },
-};
-</script>

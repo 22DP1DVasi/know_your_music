@@ -33,7 +33,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+//        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended();
     }
 
     /**
@@ -49,4 +50,10 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    // fixed [dashboard] route not find error
+//    protected function authenticated(Request $request, $user)
+//    {
+//        return redirect()->intended(route('dashboard'));
+//    }
 }

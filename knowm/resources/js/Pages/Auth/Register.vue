@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { debounce } from 'lodash';
 
 const form = useForm({
     name: '',
@@ -23,6 +24,34 @@ const submit = () => {
 const goBack = () => {
     window.history.back();
 };
+
+const checkEmail = debounce(async (email) => {
+    if (!email || !email.includes('@')) {
+        emailExists.value = false;
+        return;
+    }
+
+    try {
+        checkingEmail.value = true;
+        const response = await axios.get('/api/check-email', {
+            params: { email },
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        emailExists.value = response.data.exists;
+    } catch (error) {
+        if (error.response && error.response.status === 422) {
+            // Validation error (invalid email format)
+            emailExists.value = false;
+        } else {
+            console.error('Email check failed:', error);
+            // Optional: show user-friendly error
+        }
+    } finally {
+        checkingEmail.value = false;
+    }
+}, 500);
 </script>
 
 <template>
