@@ -46,27 +46,27 @@ class User extends Authenticatable
     ];
 
     /**
-     * Relationship with ArtistComment model
+     * Polymorphic relationship with ArtistComment model
      */
     public function artistComments()
     {
-        return $this->hasMany(ArtistComment::class);
+        return $this->morphMany(ArtistComment::class, 'commenter');
     }
 
     /**
-     * Relationship with ReleaseComment model
+     * Polymorphic relationship with ReleaseComment model
      */
     public function releaseComments()
     {
-        return $this->hasMany(ReleaseComment::class);
+        return $this->morphMany(ReleaseComment::class, 'commenter');
     }
 
     /**
-     * Relationship with TrackComment model
+     * Polymorphic relationship with TrackComment model
      */
     public function trackComments()
     {
-        return $this->hasMany(TrackComment::class);
+        return $this->morphMany(TrackComment::class, 'commenter');
     }
 
     /**

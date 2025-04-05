@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class ReleaseComment extends Model
 {
@@ -20,7 +21,8 @@ class ReleaseComment extends Model
         'text',
         'status',
         'deleted_username',
-        'user_id',
+        'commenter_id',
+        'commenter_type',
         'artist_id'
     ];
 
@@ -35,11 +37,11 @@ class ReleaseComment extends Model
     ];
 
     /**
-     * Get the user who made the comment.
+     * Get the commenter (user or admin) who made the comment.
      */
-    public function user(): BelongsTo
+    public function commenter(): MorphTo
     {
-        return $this->belongsTo(User::class)
+        return $this->morphTo()
             ->withGlobalScope('notDeleted', function ($builder) {
                 $builder->where('status', '!=', 'deleted');
             });
@@ -62,9 +64,7 @@ class ReleaseComment extends Model
             return $this->deleted_username;
         }
 
-        return $this->user?->status !== 'deleted'
-            ? $this->user?->name
-            : '[Deleted User]';
+        return $this->commenter?->name;
     }
 
     /**
@@ -74,7 +74,6 @@ class ReleaseComment extends Model
     {
         return $this->update([
             'status' => 'deleted',
-            'deleted_username' => $this->deleted_username ?? $this->user?->name
         ]);
     }
 

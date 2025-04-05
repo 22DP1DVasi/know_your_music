@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('comments_tracks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            // polymorphic relationship
+            $table->unsignedBigInteger('commenter_id')->nullable();
+            $table->string('commenter_type')->nullable();    // will store 'App\Models\User' or 'App\Models\Admin'
             $table->unsignedBigInteger('track_id');
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
@@ -21,16 +23,11 @@ return new class extends Migration
             $table->timestamps();
 
             // indexes
-            $table->index('user_id');
+            $table->index(['commenter_id', 'commenter_type']); // Composite index for polymorphic relation
             $table->index('track_id');
             $table->index('status'); // for better performance
 
-            // foreign keys
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null');  // preserve comments when users are deleted
-
+            // foreign keyy
             $table->foreign('track_id')
                 ->references('id')
                 ->on('tracks')

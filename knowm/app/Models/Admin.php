@@ -45,6 +45,30 @@ class Admin extends Authenticatable
     ];
 
     /**
+     * Polymorphic relationship with ArtistComment model
+     */
+    public function artistComments()
+    {
+        return $this->morphMany(ArtistComment::class, 'commenter');
+    }
+
+    /**
+     * Polymorphic relationship with ReleaseComment model
+     */
+    public function releaseComments()
+    {
+        return $this->morphMany(ReleaseComment::class, 'commenter');
+    }
+
+    /**
+     * Polymorphic relationship with TrackComment model
+     */
+    public function trackComments()
+    {
+        return $this->morphMany(TrackComment::class, 'commenter');
+    }
+
+    /**
      * Scope for active admins
      */
     public function scopeActive($query)

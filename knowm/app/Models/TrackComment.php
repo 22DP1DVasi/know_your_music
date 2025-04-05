@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class TrackComment extends Model
 {
@@ -20,7 +21,8 @@ class TrackComment extends Model
         'text',
         'status',
         'deleted_username',
-        'user_id',
+        'commenter_id',
+        'commenter_type',
         'track_id'
     ];
 
@@ -35,11 +37,11 @@ class TrackComment extends Model
     ];
 
     /**
-     * Get the comment author (if not deleted)
+     * Get the commenter (user or admin) who made the comment.
      */
-    public function user(): BelongsTo
+    public function commenter(): MorphTo
     {
-        return $this->belongsTo(User::class)
+        return $this->morphTo()
             ->withGlobalScope('notDeleted', function ($builder) {
                 $builder->where('status', '!=', 'deleted');
             });
@@ -58,10 +60,11 @@ class TrackComment extends Model
      */
     public function getAuthorNameAttribute(): string
     {
-        return $this->deleted_username ??
-            ($this->user && $this->user->status !== 'deleted'
-                ? $this->user->name
-                : '[Deleted User]');
+        if ($this->deleted_username) {
+            return $this->deleted_username;
+        }
+
+        return $this->commenter?->name;
     }
 
     /**
@@ -79,7 +82,6 @@ class TrackComment extends Model
     {
         return $this->update([
             'status' => 'deleted',
-            'deleted_username' => $this->deleted_username ?? $this->user?->name
         ]);
     }
 }
