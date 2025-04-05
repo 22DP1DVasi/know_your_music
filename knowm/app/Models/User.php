@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -87,6 +88,17 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the favorite artists for the user.
+     */
+    public function favoriteArtists(): BelongsToMany
+    {
+        return $this->belongsToMany(Artist::class, 'user_favorite_artists')
+            ->using(UserFavoriteArtist::class)
+            ->withPivot('sort_order')
+            ->orderBy('user_favorite_artists.sort_order');
+    }
+
+    /**
      * Remember comment's author's username when they get deleted
      */
     protected static function booted()
@@ -105,16 +117,6 @@ class User extends Authenticatable
                 ->where('commenter_id', $user->id)
                 ->update(['deleted_username' => $user->name]);
         });
-    }
-
-    /**
-     * Get the favorite artists for the user.
-     */
-    public function favoriteArtists()
-    {
-        return $this->belongsToMany(Artist::class, 'user_favorite_artists')
-            ->withPivot(['sort_order', 'added_at'])
-            ->orderBy('sort_order');
     }
 
     /**
