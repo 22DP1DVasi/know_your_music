@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\DB;
-use App\Models\CommentArtist;
 
 class User extends Authenticatable
 {
@@ -48,21 +46,19 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the favorite artists for the user.
-     */
-    public function favoriteArtists()
-    {
-        return $this->belongsToMany(Artist::class, 'user_favorite_artists')
-            ->withPivot(['sort_order', 'added_at'])
-            ->orderBy('sort_order');
-    }
-
-    /**
      * Relationship with ArtistComment model
      */
     public function artistComments()
     {
         return $this->hasMany(ArtistComment::class);
+    }
+
+    /**
+     * Relationship with ReleaseComment model
+     */
+    public function releaseComments()
+    {
+        return $this->hasMany(ReleaseComment::class);
     }
 
     /**
@@ -84,11 +80,25 @@ class User extends Authenticatable
     }
 
     /**
-     * Relationship with ReleaseComment model
+     * Get the favorite artists for the user.
      */
-    public function releaseComments()
+    public function favoriteArtists()
     {
-        return $this->hasMany(ReleaseComment::class);
+        return $this->belongsToMany(Artist::class, 'user_favorite_artists')
+            ->withPivot(['sort_order', 'added_at'])
+            ->orderBy('sort_order');
+    }
+
+    /**
+     * Mark user as deleted.
+     */
+    public function markAsDeleted(): bool
+    {
+        return $this->update([
+            'status' => 'deleted',
+            'email' => 'deleted_' . $this->id . '_' . $this->email, // prevent email reuse
+            'name' => 'Deleted User'
+        ]);
     }
 
     /**

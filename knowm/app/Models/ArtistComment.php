@@ -39,7 +39,10 @@ class ArtistComment extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class)->withTrashed();
+        return $this->belongsTo(User::class)
+            ->withGlobalScope('notDeleted', function ($builder) {
+                $builder->where('status', '!=', 'deleted');
+            });
     }
 
     /**
@@ -51,19 +54,17 @@ class ArtistComment extends Model
     }
 
     /**
-     * Scope for visible comments.
-     */
-    public function scopeVisible($query)
-    {
-        return $query->where('status', 'visible');
-    }
-
-    /**
      * Get the display name for the comment author.
      */
     public function getAuthorNameAttribute(): string
     {
-        return $this->deleted_username ?? $this->user?->name ?? '[Deleted User]';
+        if ($this->deleted_username) {
+            return $this->deleted_username;
+        }
+
+        return $this->user?->status !== 'deleted'
+            ? $this->user?->name
+            : '[Deleted User]';
     }
 
     /**
@@ -75,5 +76,13 @@ class ArtistComment extends Model
             'status' => 'deleted',
             'deleted_username' => $this->deleted_username ?? $this->user?->name
         ]);
+    }
+
+    /**
+     * Scope for visible comments.
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('status', 'visible');
     }
 }

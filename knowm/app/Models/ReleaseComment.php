@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ReleaseComment extends Model
 {
     use HasFactory;
-    protected $table = 'comments_releases';
+    protected $table = 'releases_comments';
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +21,7 @@ class ReleaseComment extends Model
         'status',
         'deleted_username',
         'user_id',
-        'release_id',
+        'artist_id'
     ];
 
     /**
@@ -39,11 +39,14 @@ class ReleaseComment extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class)->withTrashed();
+        return $this->belongsTo(User::class)
+            ->withGlobalScope('notDeleted', function ($builder) {
+                $builder->where('status', '!=', 'deleted');
+            });
     }
 
     /**
-     * Get the release this comment belongs to.
+     * Get the artist this comment belongs to.
      */
     public function release(): BelongsTo
     {
@@ -51,19 +54,17 @@ class ReleaseComment extends Model
     }
 
     /**
-     * Scope for visible comments.
-     */
-    public function scopeVisible($query)
-    {
-        return $query->where('status', 'visible');
-    }
-
-    /**
      * Get the display name for the comment author.
      */
     public function getAuthorNameAttribute(): string
     {
-        return $this->deleted_username ?? $this->user?->name ?? '[Deleted User]';
+        if ($this->deleted_username) {
+            return $this->deleted_username;
+        }
+
+        return $this->user?->status !== 'deleted'
+            ? $this->user?->name
+            : '[Deleted User]';
     }
 
     /**
@@ -75,5 +76,13 @@ class ReleaseComment extends Model
             'status' => 'deleted',
             'deleted_username' => $this->deleted_username ?? $this->user?->name
         ]);
+    }
+
+    /**
+     * Scope for visible comments.
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('status', 'visible');
     }
 }

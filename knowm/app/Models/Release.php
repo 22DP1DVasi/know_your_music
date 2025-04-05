@@ -50,6 +50,15 @@ class Release extends Model
         return $this->hasMany(ReleaseComment::class);
     }
 
+    /**
+     * Get all comments for release
+     */
+    public function allComments()
+    {
+        return $this->hasMany(ReleaseComment::class)
+            ->with('user')
+            ->latest();
+    }
 
     /**
      * Get all tracks in this release.
