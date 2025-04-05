@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Genre extends Model
@@ -57,6 +58,14 @@ class Genre extends Model
     {
         return $this->belongsToMany(Track::class, 'tracks_genres')
             ->withTimestamps();     // tracks when relationships were created
+    }
+
+    /**
+     * Get all recommendations packages this genre is in
+     */
+    public function recommendedIn(): HasMany
+    {
+        return $this->hasMany(RecommendationGenre::class);
     }
 
     /**

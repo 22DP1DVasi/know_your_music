@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="" />
+    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/User.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -203,7 +206,7 @@
       <workItem from="1743344940298" duration="12452000" />
       <workItem from="1743530340695" duration="5071000" />
       <workItem from="1743620178422" duration="3411000" />
-      <workItem from="1743841374164" duration="9476000" />
+      <workItem from="1743841374164" duration="11918000" />
     </task>
     <servers />
   </component>

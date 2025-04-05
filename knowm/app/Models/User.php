@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -96,6 +97,22 @@ class User extends Authenticatable
             ->using(UserFavoriteArtist::class)
             ->withPivot('sort_order')
             ->orderBy('user_favorite_artists.sort_order');
+    }
+
+    /**
+     * Get recommendations packages for the user
+     */
+    public function recommendations(): HasMany
+    {
+        return $this->hasMany(Recommendation::class);
+    }
+
+    /**
+     * Get the latest recommendations package for the user
+     */
+    public function latestRecommendations(): HasOne
+    {
+        return $this->hasOne(Recommendation::class)->latest();
     }
 
     /**

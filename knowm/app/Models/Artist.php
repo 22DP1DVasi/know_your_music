@@ -81,6 +81,14 @@ class Artist extends Model
     }
 
     /**
+     * Get all recommendations packages this artist is in
+     */
+    public function recommendedIn(): HasMany
+    {
+        return $this->hasMany(RecommendationArtist::class);
+    }
+
+    /**
      * Scope for active artists (not disbanded).
      */
     public function scopeActive($query)
