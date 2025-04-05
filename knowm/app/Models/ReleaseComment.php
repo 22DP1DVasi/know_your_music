@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ArtistComment extends Model
+class ReleaseComment extends Model
 {
     use HasFactory;
-    protected $table = 'comments_artists';
+    protected $table = 'comments_releases';
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +21,7 @@ class ArtistComment extends Model
         'status',
         'deleted_username',
         'user_id',
-        'artist_id'
+        'release_id',
     ];
 
     /**
@@ -43,11 +43,11 @@ class ArtistComment extends Model
     }
 
     /**
-     * Get the artist this comment belongs to.
+     * Get the release this comment belongs to.
      */
-    public function artist(): BelongsTo
+    public function release(): BelongsTo
     {
-        return $this->belongsTo(Artist::class);
+        return $this->belongsTo(Release::class);
     }
 
     /**

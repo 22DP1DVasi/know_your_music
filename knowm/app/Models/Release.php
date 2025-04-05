@@ -43,6 +43,15 @@ class Release extends Model
     }
 
     /**
+     * Relationship with ReleaseComment model
+     */
+    public function comments()
+    {
+        return $this->hasMany(ReleaseComment::class);
+    }
+
+
+    /**
      * Get all tracks in this release.
      */
     public function tracks(): HasMany

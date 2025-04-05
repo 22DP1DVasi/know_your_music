@@ -68,12 +68,27 @@ class User extends Authenticatable
     /**
      * Remember comment's author's username when they get deleted
      */
-    protected static function saveDeletedUsername()
+    protected static function booted()
     {
         static::deleting(function ($user) {
-            ArtistComment::where('user_id', $user->id)
-                ->update(['deleted_username' => $user->name]);
+            // Store usernames in artist comments
+            $user->artistComments()->update([
+                'deleted_username' => $user->name
+            ]);
+
+            // Store usernames in release comments
+            $user->releaseComments()->update([
+                'deleted_username' => $user->name
+            ]);
         });
+    }
+
+    /**
+     * Relationship with ReleaseComment model
+     */
+    public function releaseComments()
+    {
+        return $this->hasMany(ReleaseComment::class);
     }
 
     /**
