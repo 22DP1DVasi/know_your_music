@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\DB;
+use App\Models\CommentArtist;
 
 class User extends Authenticatable
 {
@@ -53,6 +55,25 @@ class User extends Authenticatable
         return $this->belongsToMany(Artist::class, 'user_favorite_artists')
             ->withPivot(['sort_order', 'added_at'])
             ->orderBy('sort_order');
+    }
+
+    /**
+     * Relationship with ArtistComment model
+     */
+    public function artistComments()
+    {
+        return $this->hasMany(ArtistComment::class);
+    }
+
+    /**
+     * Remember comment's author's username when they get deleted
+     */
+    protected static function saveDeletedUsername()
+    {
+        static::deleting(function ($user) {
+            ArtistComment::where('user_id', $user->id)
+                ->update(['deleted_username' => $user->name]);
+        });
     }
 
     /**

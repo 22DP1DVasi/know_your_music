@@ -61,6 +61,26 @@ class Artist extends Model
     }
 
     /**
+     * Relationship with ArtistComment model
+     */
+    public function comments()
+    {
+        return $this->hasMany(ArtistComment::class)
+            ->visible() // default to only visible comments
+            ->latest();
+    }
+
+    /**
+     * Get all comments for the artist
+     */
+    public function allComments()
+    {
+        return $this->hasMany(ArtistComment::class)
+            ->with('user') // eager load user
+            ->latest();
+    }
+
+    /**
      * Scope for active artists (not disbanded).
      */
     public function scopeActive($query)
