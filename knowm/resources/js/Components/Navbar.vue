@@ -209,7 +209,10 @@ nav ul {
 
 nav ul li {
     margin-left: 1rem;
-    position: relative;
+    display: flex;
+    align-items: center; /* This ensures all items in the li are vertically centered */
+    height: 100%; /* Take full height of the nav */
+    min-height: 55px;
 }
 
 nav ul li a {
@@ -338,8 +341,8 @@ nav ul li a:hover {
     align-items: center;
     cursor: pointer;
     position: relative;
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 12px 16px; /* Match the padding of nav links */
+    border-radius: 5px; /* Match the border-radius of nav links */
     transition: background-color 0.3s ease;
 }
 
