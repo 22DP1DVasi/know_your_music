@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Auth/AuthenticatedSessionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Auth/AuthenticatedSessionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Auth/RegisteredUserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Auth/RegisteredUserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/bootstrap/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/bootstrap/app.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Register.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,7 +208,8 @@
       <workItem from="1743344940298" duration="12452000" />
       <workItem from="1743530340695" duration="5071000" />
       <workItem from="1743620178422" duration="3411000" />
-      <workItem from="1743841374164" duration="21671000" />
+      <workItem from="1743841374164" duration="21856000" />
+      <workItem from="1743936722429" duration="1825000" />
     </task>
     <servers />
   </component>
