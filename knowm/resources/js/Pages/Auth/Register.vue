@@ -59,9 +59,7 @@ const checkEmail = debounce(async (email) => {
     <div class="register-container">
         <!-- go-back arrow -->
         <div class="go-back-arrow" @click="goBack">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="arrow-icon">
-                <path d="M10.828 12l4.95 4.95-1.414 1.414L8 12l6.364-6.364 1.414 1.414z"/>
-            </svg>
+            <span class="arrow-icon text-3xl">←</span>
         </div>
 
         <!-- box for logo and fields -->
@@ -276,8 +274,8 @@ const checkEmail = debounce(async (email) => {
     font-weight: bold;
     padding: 12px;
     border-radius: 6px;
-    text-align: center;
     transition: background 0.2s;
+    justify-content: center;
 }
 
 .register-button:hover {

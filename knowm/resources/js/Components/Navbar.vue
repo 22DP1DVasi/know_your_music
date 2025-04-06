@@ -199,6 +199,7 @@ nav {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     z-index: 1;
     height: 55px;
+    min-height: 55px;
     position: relative; /* ensure the navbar acts as the containing block for absolute positioning */
 }
 
@@ -232,11 +233,13 @@ nav ul li a:hover {
 }
 
 .logo-container {
+    height: 55px;
     display: flex;
     align-items: center;
     text-decoration: none; /* remove underline from the link */
-
     cursor: pointer;
+    margin: 0;  /* remove default margins and padding */
+    padding: 0;
 }
 
 .logo {
