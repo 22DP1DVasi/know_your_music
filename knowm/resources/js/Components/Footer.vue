@@ -1,7 +1,7 @@
 <template>
     <footer class="footer">
         <div class="footer-content">
-            <!-- footer Links -->
+            <!-- footer links -->
             <div class="footer-section">
                 <h4 class="footer-heading">Quick Links</h4>
                 <ul class="footer-links">
@@ -23,6 +23,7 @@
 </template>
 
 <script setup>
+
 const currentYear = new Date().getFullYear();
 
 </script>

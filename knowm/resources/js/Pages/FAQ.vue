@@ -1,17 +1,20 @@
 <template>
     <Head title="FAQ" />
         <Navbar/>
-        <div class="faq-container">
-            <h2>Frequently Asked Questions</h2>
-            <div v-for="(faq, index) in faqs" :key="index" class="faq-item"> <!-- v-for is list rendering (for loop)-->
-                <div class="faq-question" @click="toggleAnswer(index)">
-                    {{ faq.question }}
-                </div>
-                <div v-if="faq.show" class="faq-answer">    <!-- show only if faq.show is true -->
-                    {{ faq.answer }}
+            <div class="faq-page-wrapper">
+                <div class="faq-container">
+                    <h2>Frequently Asked Questions</h2>
+                    <div v-for="(faq, index) in faqs" :key="index" class="faq-item"> <!-- v-for is list rendering (for loop)-->
+                        <div class="faq-question" @click="toggleAnswer(index)">
+                            {{ faq.question }}
+                        </div>
+                        <div v-if="faq.show" class="faq-answer">    <!-- show only if faq.show is true -->
+                            {{ faq.answer }}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        <br><br><br><br>
     <Footer/>
 </template>
 
@@ -42,10 +45,14 @@ export default {
 </script>
 
 <style scoped>
+.faq-page-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
 .faq-container {
-    margin-top: 20px !important;
-    max-width: 800px;
-    margin: auto;
+    width: 60%;
     background: white;
     padding: 20px;
     border-radius: 8px;
@@ -55,13 +62,26 @@ export default {
     border-bottom: 1px solid #ddd;
     padding: 10px 0;
 }
+
 .faq-question {
     font-size: 18px;
     font-weight: bold;
+    transition: color 0.3s ease;
+    /* remove text select when clicking multiple times */
+    user-select: none;   /* standard property */
+    -webkit-user-select: none;   /* Safari */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;      /* IE/Edge */
     cursor: pointer;
 }
+
+.faq-question:hover {
+    color: #06419a; /* Darker shade on hover */
+}
+
 .faq-answer {
     padding: 10px 0;
     font-size: 16px;
 }
+
 </style>

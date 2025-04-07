@@ -4,10 +4,8 @@
 
 
 html, body {
-    /*margin: 0;*/
-    /*padding: 0;*/
+    margin: 0;
     height: 100%; /* Full viewport height */
-    /*width: 100%;*/
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
@@ -15,4 +13,40 @@ html, body {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+/* managing footer */
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #b0ddff;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #0c4baa, #20c1f7, #0c4baa);
+    background-size: 200% 200%;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #06419a;
+}
+
+::-webkit-scrollbar-corner {
+    background: #b0ddff;
 }
