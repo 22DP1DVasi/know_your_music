@@ -66,7 +66,7 @@ const goBack = () => {
             <!-- login form -->
             <form @submit.prevent="submit">
                 <div>
-                    <InputLabel for="email" value="Email or Username" class="label" />
+                    <InputLabel for="email" value="Email" class="label" />
                     <TextInput
                         id="email"
                         type="email"

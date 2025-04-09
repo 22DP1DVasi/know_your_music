@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/css/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Footer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/FAQ.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/FAQ.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Requests/Auth/RegisterUserRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Requests/Auth/RegisterUserRequest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Login.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,7 +211,8 @@
       <workItem from="1743620178422" duration="3411000" />
       <workItem from="1743841374164" duration="21856000" />
       <workItem from="1743936722429" duration="1825000" />
-      <workItem from="1744049194120" duration="3236000" />
+      <workItem from="1744049194120" duration="3888000" />
+      <workItem from="1744218741796" duration="2664000" />
     </task>
     <servers />
   </component>
