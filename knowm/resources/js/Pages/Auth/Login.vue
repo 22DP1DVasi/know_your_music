@@ -12,7 +12,7 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
+    login: '', // Changed from 'email' to 'login'
     password: '',
     remember: false,
 });
@@ -66,17 +66,17 @@ const goBack = () => {
             <!-- login form -->
             <form @submit.prevent="submit">
                 <div>
-                    <InputLabel for="email" value="Email" class="label" />
+                    <InputLabel for="login" value="Username or Email" class="label" />
                     <TextInput
-                        id="email"
-                        type="email"
+                        id="login"
+                        type="text"
                         class="input"
-                        v-model="form.email"
+                        v-model="form.login"
                         required
                         autofocus
                         autocomplete="username"
                     />
-                    <InputError class="error-text" :message="form.errors.email" />
+                    <InputError class="error-text" :message="form.errors.login" />
                 </div>
                 <br>
 
