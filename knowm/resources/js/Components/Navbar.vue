@@ -329,7 +329,6 @@ nav ul li a:hover {
     transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth appearance */
 }
 
-/* Initially, the music icon is hidden */
 .searchButton::after {
     content: "";
     opacity: 0;
@@ -344,9 +343,12 @@ nav ul li a:hover {
     align-items: center;
     cursor: pointer;
     position: relative;
-    padding: 12px 16px; /* Match the padding of nav links */
-    border-radius: 5px; /* Match the border-radius of nav links */
+    padding: 12px 16px;
+    border-radius: 5px;
     transition: background-color 0.3s ease;
+    height: 100%;
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 .user-avatar:hover {
@@ -356,11 +358,20 @@ nav ul li a:hover {
 .user-avatar i {
     font-size: 24px;
     margin-right: 8px;
+    flex-shrink: 0;
 }
 
 .username {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 150px; /* Adjust based on your layout */
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .user-dropdown {
@@ -390,7 +401,10 @@ nav ul li a:hover {
 }
 
 .user-menu {
+    position: relative;
     margin-left: 1.5rem;
+    max-width: 200px;
+    min-width: fit-content;
 }
 
 /* Mobile search container */
@@ -535,6 +549,12 @@ nav ul li a:hover {
         transform: translate(-70%, -50%); /* adjust for true center */
     }
 
+}
+
+@media screen and (max-width: 768px) {
+    .username {
+        max-width: 100px;
+    }
 }
 
 @media screen and (max-width: 910px) {
