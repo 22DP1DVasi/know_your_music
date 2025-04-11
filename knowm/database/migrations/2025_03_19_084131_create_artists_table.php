@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text('biography')->nullable();
             $table->unsignedSmallInteger('formed_year')->nullable();
             $table->unsignedSmallInteger('disbanded_year')->nullable();
-            $table->string('image')->nullable();
             $table->enum('solo_or_band', ['solo', 'band'])->nullable();
             $table->timestamps();
         });

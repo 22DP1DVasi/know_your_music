@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedSmallInteger('origin_year')->nullable();
             $table->string('origin_country', 100)->nullable();
-            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

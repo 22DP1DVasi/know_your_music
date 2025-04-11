@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->date('release_date');
-            $table->string('cover_image')->nullable();
             $table->text('description')->nullable();
             $table->enum('release_type', ['album', 'ep', 'single', 'compilation']);
             $table->timestamps();
