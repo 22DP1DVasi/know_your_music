@@ -42,6 +42,20 @@ class Track extends Model
             ->withTimestamps();  // tracks when relationships were created
     }
 
+    public function releases(): BelongsToMany
+    {
+        return $this->belongsToMany(Release::class, 'tracks_releases')
+            ->withPivot('track_position')
+            ->withTimestamps();
+    }
+
+    public function artists(): BelongsToMany
+    {
+        return $this->belongsToMany(Artist::class, 'artists_tracks')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
     /**
      * Get all comments associated with this track.
      */

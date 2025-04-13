@@ -11,34 +11,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('artists_tracks', function (Blueprint $table) {
-            $table->unsignedBigInteger('artist_id');
+        Schema::create('tracks_releases', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('track_id');
-            // role field with enum options
-            $table->enum('role', ['primary', 'featured', 'producer'])->default('primary');
+            $table->unsignedBigInteger('release_id');
+            $table->unsignedInteger('track_position');
             $table->timestamps();
 
             // explicitly add indexes
-            $table->index('artist_id');
+            $table->index('release_id');
             $table->index('track_id');
 
-            // indexes for better performance
-            $table->index(['artist_id', 'role']);
-            $table->index(['track_id', 'role']);
-
-            // composite primary key
-            $table->primary(['artist_id', 'track_id']);
+            // composite unique indexes
+            $table->unique(['release_id', 'track_position'], 'release_track_order_unique');
+            $table->unique(['track_id', 'release_id'], 'track_release_unique');
 
             // foreign keys
-            $table->foreign('artist_id')
+            $table->foreign('release_id')
                 ->references('id')
-                ->on('artists')
+                ->on('releases')
                 ->onDelete('cascade');
 
             $table->foreign('track_id')
                 ->references('id')
                 ->on('tracks')
-                ->onDelete('cascade');
+                ->onDelete('restrict');
         });
     }
 
@@ -47,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('artists_tracks');
+        Schema::dropIfExists('tracks_releases');
     }
 };

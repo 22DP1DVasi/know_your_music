@@ -37,9 +37,11 @@ class Release extends Model
     /**
      * Get the artist that owns this release.
      */
-    public function artist(): BelongsTo
+    public function artists(): BelongsToMany
     {
-        return $this->belongsTo(Artist::class);
+        return $this->belongsToMany(Artist::class, 'artists_releases')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
     /**
@@ -63,9 +65,11 @@ class Release extends Model
     /**
      * Get all tracks in this release.
      */
-    public function tracks(): HasMany
+    public function tracks(): BelongsToMany
     {
-        return $this->hasMany(Track::class)->orderBy('track_position');
+        return $this->belongsToMany(Track::class, 'tracks_releases')
+            ->withPivot('track_position')
+            ->withTimestamps();
     }
 
     /**

@@ -5,10 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/app/Services/SpotifyService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/config/spotify.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/know_your_music.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/know_your_music.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_082740_create_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_082740_create_genres_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_084131_create_artists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_084131_create_artists_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_085251_create_releases_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_085251_create_releases_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Artist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Artist.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Release.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Release.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Track.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Track.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_161945_create_artists_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_161945_create_artists_tracks_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/composer/installed.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/composer/installed.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,6 +158,7 @@
       <path value="$PROJECT_DIR$/vendor/composer" />
       <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/laravel-ide-helper" />
       <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/reflection-docblock" />
+      <path value="$PROJECT_DIR$/knowm/vendor/jwilsson/spotify-web-api-php" />
     </include_path>
   </component>
   <component name="ProjectColorInfo">{
@@ -216,7 +227,11 @@
       <workItem from="1744218741796" duration="3516000" />
       <workItem from="1744307947672" duration="1741000" />
       <workItem from="1744311129360" duration="1509000" />
-      <workItem from="1744394587363" duration="2560000" />
+      <workItem from="1744394587363" duration="3456000" />
+      <workItem from="1744459400860" duration="6908000" />
+      <workItem from="1744532255492" duration="3890000" />
+      <workItem from="1744566392962" duration="804000" />
+      <workItem from="1744569630146" duration="4107000" />
     </task>
     <servers />
   </component>

@@ -47,17 +47,21 @@ class Artist extends Model
     /**
      * Get all releases by this artist.
      */
-    public function releases(): HasMany
+    public function releases(): BelongsToMany
     {
-        return $this->hasMany(Release::class);
+        return $this->belongsToMany(Release::class, 'artists_releases')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
     /**
      * Get all tracks by this artist.
      */
-    public function tracks(): HasMany
+    public function tracks(): BelongsToMany
     {
-        return $this->hasMany(Track::class);
+        return $this->belongsToMany(Track::class, 'artists_tracks')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
     /**

@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Services\SpotifyService;
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -60,6 +61,27 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+});
+
+Route::get('/test-spotify', function () {
+    $spotify = new SpotifyService();
+
+    // Test token
+    $token = $spotify->getAccessToken();
+    echo "Token: $token<br><br>";
+
+    // Test artist search
+    $results = $spotify->searchArtists('Radiohead');
+    echo "<pre>";
+    print_r($results);
+    echo "</pre>";
+
+    // If you want to see a specific artist's albums:
+    if (!empty($results->artists->items)) {
+        $artistId = $results->artists->items[0]->id;
+        $albums = $spotify->getArtistAlbums($artistId);
+        print_r($albums);
+    }
 });
 
 require __DIR__.'/auth.php';
