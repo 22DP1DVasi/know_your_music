@@ -101,14 +101,6 @@ class ImportSpotifyArtists extends Command
         foreach ($tracks->items as $position => $track) {
             $this->processTrack($track, $release, $position + 1);
         }
-        // Process tracks in batches if needed
-        $chunks = array_chunk($tracks->items, 20);
-        foreach ($chunks as $chunk) {
-            foreach ($chunk as $position => $track) {
-                $this->processTrack($track, $release, $position + 1);
-            }
-            sleep(1); // Brief pause between chunks
-        }
     }
 
     protected function processTrack($spotifyTrack, $release, $position)
