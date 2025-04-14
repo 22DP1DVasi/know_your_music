@@ -8,6 +8,7 @@ use App\Models\Artist;
 use App\Models\Release;
 use App\Models\Track;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ImportSpotifyArtists extends Command
 {
@@ -18,10 +19,10 @@ class ImportSpotifyArtists extends Command
     {
         $artistsToImport = [
             'Bring Me The Horizon',
-            'Architects',
             'Porter Robinson',
             'Brand of Sacrifice',
-            'KAMAARA'
+            'KAMAARA',
+            'Korn'
         ];
 
         $spotify = new SpotifyService();
@@ -52,19 +53,17 @@ class ImportSpotifyArtists extends Command
             ['name' => $spotifyArtist->name],
             [
                 'solo_or_band' => $this->determineArtistType($spotifyArtist->name),
-                // Note: Spotify doesn't provide formed/disbanded years or biography
-                // We'll get these from Last.fm later
             ]
         );
 
         $this->info("Processing discography for: {$artist->name}");
 
-        // Get artist's albums
+        // Get all release types (remove album-only filter)
         $albums = $spotifyService->getArtistAlbums($spotifyArtist->id, 50);
 
         foreach ($albums->items as $album) {
-            // Skip compilations and appearances for now
-            if ($album->album_group !== 'album') continue;
+            // Only skip "appears_on" albums but process all others
+            if ($album->album_group === 'appears_on') continue;
 
             $this->processRelease($album, $artist, $spotifyService);
         }
@@ -72,7 +71,7 @@ class ImportSpotifyArtists extends Command
 
     protected function processRelease($spotifyAlbum, $artist, $spotifyService)
     {
-        // Get tracks first to count them
+        // Get tracks first for count and type determination
         $tracks = $spotifyService->getApi()->getAlbumTracks($spotifyAlbum->id);
         $trackCount = count($tracks->items);
 
@@ -80,11 +79,11 @@ class ImportSpotifyArtists extends Command
             ['title' => $spotifyAlbum->name],
             [
                 'release_date' => Carbon::parse($spotifyAlbum->release_date),
-                'release_type' => $this->mapReleaseType($spotifyAlbum->album_type, $trackCount),
+                'release_type' => $this->determineReleaseType($spotifyAlbum, $trackCount),
             ]
         );
 
-        // Process release artists (existing code)
+        // Process release artists
         $artistIds = [];
         $artistIds[$artist->id] = ['role' => 'primary'];
         foreach ($spotifyAlbum->artists as $albumArtist) {
@@ -98,16 +97,24 @@ class ImportSpotifyArtists extends Command
         }
         $release->artists()->sync($artistIds);
 
-        // Process tracks - CHANGE THIS LINE:
-        $tracks = $spotifyService->getApi()->getAlbumTracks($spotifyAlbum->id);
+        // Process tracks
         foreach ($tracks->items as $position => $track) {
-            $this->processTrack($track, $release, $position + 1); // Removed $primaryArtist parameter
+            $this->processTrack($track, $release, $position + 1);
+        }
+        // Process tracks in batches if needed
+        $chunks = array_chunk($tracks->items, 20);
+        foreach ($chunks as $chunk) {
+            foreach ($chunk as $position => $track) {
+                $this->processTrack($track, $release, $position + 1);
+            }
+            sleep(1); // Brief pause between chunks
         }
     }
 
     protected function processTrack($spotifyTrack, $release, $position)
     {
         try {
+            // First create/update the track
             $track = Track::updateOrCreate(
                 ['title' => $spotifyTrack->name],
                 [
@@ -116,16 +123,29 @@ class ImportSpotifyArtists extends Command
                 ]
             );
 
-            // Link track to release
-            $release->tracks()->syncWithoutDetaching([
-                $track->id => ['track_position' => $position]
+            // Remove any existing relationship to avoid unique constraint violations
+            DB::table('tracks_releases')
+                ->where('release_id', $release->id)
+                ->where('track_id', $track->id)
+                ->delete();
+
+            // Also remove any existing track at this position
+            DB::table('tracks_releases')
+                ->where('release_id', $release->id)
+                ->where('track_position', $position)
+                ->delete();
+
+            // Create new relationship with correct position
+            $release->tracks()->attach($track->id, [
+                'track_position' => $position,
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
 
-            // Get all release artist IDs
+            // Process artist relationships (existing code)
             $releaseArtistIds = $release->artists->pluck('id')->toArray();
-
-            // Process all track artists
             $artistRoles = [];
+
             foreach ($spotifyTrack->artists as $trackArtist) {
                 $artist = Artist::updateOrCreate(
                     ['name' => $trackArtist->name],
@@ -142,7 +162,9 @@ class ImportSpotifyArtists extends Command
             $this->error("Failed processing track {$spotifyTrack->name}: ".$e->getMessage());
             \Log::error("Track import failed", [
                 'track' => $spotifyTrack->name,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'release' => $release->title,
+                'position' => $position
             ]);
         }
     }
@@ -209,23 +231,27 @@ class ImportSpotifyArtists extends Command
         return 'solo';
     }
 
-    protected function mapReleaseType($spotifyType, $trackCount = null)
+    protected function determineReleaseType($spotifyAlbum, $trackCount)
     {
-        // If we have track count information and it's a single
-        if ($trackCount !== null && $spotifyType === 'single') {
-            // Classify as EP if it has 3-6 tracks
-            if ($trackCount >= 3 && $trackCount <= 6) {
-                return 'ep';
-            }
-            return 'single';
+        // Handle Spotify's album_group and album_type
+        $spotifyType = $spotifyAlbum->album_type;
+        $spotifyGroup = $spotifyAlbum->album_group;
+
+        // Compilations take priority
+        if ($spotifyType === 'compilation' || $spotifyGroup === 'compilation') {
+            return 'compilation';
         }
 
-        // Default mapping for other types
+        // Singles with 4-6 tracks become EPs
+        if ($spotifyType === 'single' && $trackCount >= 4 && $trackCount <= 6) {
+            return 'ep';
+        }
+
+        // Standard mapping
         return match($spotifyType) {
             'album' => 'album',
             'single' => 'single',
-            'compilation' => 'compilation',
-            default => 'ep', // Fallback for any other types
+            default => $spotifyGroup === 'single' ? 'single' : 'album', // fallback
         };
     }
 }
