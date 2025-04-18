@@ -95,7 +95,7 @@ class ImportLastFmData extends Command
 
         $response = Http::get('http://ws.audioscrobbler.com/2.0/', [
             'method' => 'artist.gettopalbums',
-            'artist' => $artist->name, // Use the corrected name
+            'artist' => $artist->name,
             'api_key' => env('LASTFM_API_KEY'),
             'format' => 'json',
             'limit' => $limit,
@@ -112,7 +112,7 @@ class ImportLastFmData extends Command
 
         foreach ($data['topalbums']['album'] as $album) {
             $this->processAlbum($album, $artist);
-            sleep(1); // Rate limiting
+            sleep(1);
         }
     }
 
