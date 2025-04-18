@@ -1,6 +1,6 @@
 <template>
     <div class="greeting">
-        <p>Improve your music experience.</p>
+        <p>Enhance your music experience.</p>
         <p>Make new discoveries, learn the background of your favorite music and share your tastes.</p>
     </div>
 </template>

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->time('duration');
+            $table->text('description')->nullable();
             $table->string('audio_source')->nullable();
             $table->date('release_date');
             $table->timestamps();

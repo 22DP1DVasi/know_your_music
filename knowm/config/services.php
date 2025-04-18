@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'last_fm' => [
+        'api_key' => env('LASTFM_API_KEY'),
+    ],
+
 ];

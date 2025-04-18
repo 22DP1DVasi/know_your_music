@@ -5,7 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/app/Services/LastFmService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/know_your_music.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/know_your_music.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/config/services.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/config/services.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_090516_create_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_090516_create_tracks_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/HomeTitle.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/HomeTitle.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,6 +157,8 @@
       <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/laravel-ide-helper" />
       <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/reflection-docblock" />
       <path value="$PROJECT_DIR$/knowm/vendor/jwilsson/spotify-web-api-php" />
+      <path value="$PROJECT_DIR$/knowm/vendor/fig/http-message-util" />
+      <path value="$PROJECT_DIR$/knowm/vendor/barryvanveen/lastfm" />
     </include_path>
   </component>
   <component name="ProjectColorInfo">{
@@ -219,7 +232,11 @@
       <workItem from="1744532255492" duration="3890000" />
       <workItem from="1744566392962" duration="804000" />
       <workItem from="1744569630146" duration="4579000" />
-      <workItem from="1744645852997" duration="2701000" />
+      <workItem from="1744645852997" duration="4910000" />
+      <workItem from="1744739380506" duration="6829000" />
+      <workItem from="1744826689947" duration="5660000" />
+      <workItem from="1744968820109" duration="9147000" />
+      <workItem from="1744989942289" duration="3649000" />
     </task>
     <servers />
   </component>

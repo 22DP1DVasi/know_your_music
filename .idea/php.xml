@@ -136,6 +136,8 @@
       <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/laravel-ide-helper" />
       <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/reflection-docblock" />
       <path value="$PROJECT_DIR$/knowm/vendor/jwilsson/spotify-web-api-php" />
+      <path value="$PROJECT_DIR$/knowm/vendor/fig/http-message-util" />
+      <path value="$PROJECT_DIR$/knowm/vendor/barryvanveen/lastfm" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
