@@ -205,7 +205,6 @@ export default {
         // search query state
         const searchQuery = ref('');
 
-        // search function
         const performSearch = () => {
             if (searchQuery.value.trim()) {
                 router.get('/search', {

@@ -6,6 +6,11 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Services\SpotifyService;
+use App\Models\Artist;
+use App\Models\Release;
+use App\Models\Track;
+use App\Models\Lyrics;
+use Illuminate\Http\Request;
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -45,21 +50,54 @@ Route::get('/faq', function () {
 
 // search logic and routes
 Route::get('/search', function (Request $request) {
-    $query = $request->input('q');
+    $query = $request->input('q', '');
+    $limit = 5; // Number of results per category
 
+    // Artist search
     $artists = Artist::where('name', 'like', "%{$query}%")
-        ->limit(5)
+        ->withCount('tracks')
+        ->limit($limit)
         ->get();
 
-    $tracks = Track::with('artist')
-        ->where('title', 'like', "%{$query}%")
-        ->limit(10)
+    // Release search
+    $releases = Release::where('title', 'like', "%{$query}%")
+        ->with(['artists' => function($q) {
+            $q->where('role', 'primary');
+        }])
+        ->withCount('tracks')
+        ->limit($limit)
         ->get();
+
+    // Track search (by title)
+    $tracksByTitle = Track::where('title', 'like', "%{$query}%")
+        ->with(['artists' => function($q) {
+            $q->where('role', 'primary');
+        }])
+        ->limit($limit)
+        ->get();
+
+    // Track search (by lyrics)
+    $tracksByLyrics = Track::whereHas('lyrics', function($q) use ($query) {
+        $q->where('lyrics', 'like', "%{$query}%");
+    })
+        ->with(['artists' => function($q) {
+            $q->where('role', 'primary');
+        }])
+        ->limit($limit)
+        ->get();
+
+    // Combine track results (remove duplicates)
+    $tracks = $tracksByTitle->merge($tracksByLyrics)->unique('id')->take($limit);
 
     return Inertia::render('Search', [
         'artists' => $artists,
+        'releases' => $releases,
         'tracks' => $tracks,
-        'searchQuery' => $query
+        'searchQuery' => $query,
+        'hasMoreArtists' => Artist::where('name', 'like', "%{$query}%")->count() > $limit,
+        'hasMoreReleases' => Release::where('title', 'like', "%{$query}%")->count() > $limit,
+        'hasMoreTracks' => (Track::where('title', 'like', "%{$query}%")->count() +
+                Track::whereHas('lyrics', fn($q) => $q->where('lyrics', 'like', "%{$query}%"))->count()) > $limit
     ]);
 })->name('search');
 
