@@ -1,3 +1,106 @@
+<template>
+    <Head title="Register Signup" />
+    <div class="register-container">
+        <!-- go-back arrow -->
+        <div class="go-back-arrow" @click="goBack">
+            <span class="arrow-icon text-3xl">←</span>
+        </div>
+
+        <!-- box for logo and fields -->
+        <div class="register-box">
+            <div class="logo-container">
+                <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
+            </div>
+
+            <h2 class="register-title">Press Play on Your Journey</h2>
+
+            <!-- Registration form -->
+            <form @submit.prevent="submit">
+                <div>
+                    <InputLabel for="name" value="Userame" class="label" />
+                    <TextInput
+                        id="name"
+                        type="text"
+                        class="input"
+                        v-model="form.name"
+                        required
+                        autofocus
+                        autocomplete="name"
+                    />
+                    <InputError class="error-text" :message="form.errors.name" />
+                </div>
+<!--                <br>-->
+
+                <div>
+                    <InputLabel for="email" value="Email" class="label" />
+                    <TextInput
+                        id="email"
+                        type="email"
+                        class="input"
+                        v-model="form.email"
+                        required
+                        autocomplete="username"
+                    />
+                    <InputError class="error-text" :message="form.errors.email" />
+                </div>
+<!--                <br>-->
+
+                <div>
+                    <InputLabel for="password" value="Password" class="label" />
+                    <TextInput
+                        id="password"
+                        type="password"
+                        class="input"
+                        v-model="form.password"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <InputError class="error-text" :message="form.errors.password" />
+                </div>
+<!--                <br>-->
+
+                <div>
+                    <InputLabel for="password_confirmation" value="Confirm Password" class="label" />
+                    <TextInput
+                        id="password_confirmation"
+                        type="password"
+                        class="input"
+                        v-model="form.password_confirmation"
+                        required
+                        autocomplete="new-password"
+                    />
+                    <InputError class="error-text" :message="form.errors.password_confirmation" />
+                </div>
+
+
+                <div class="form-footer">
+                    <Link
+                        :href="route('login')"
+                        class="forgot-password"
+                    >
+                        Already registered?
+                    </Link>
+                </div>
+
+                <div class="submit-button">
+                    <PrimaryButton
+                        class="register-button"
+                        :class="{ 'disabled': form.processing }"
+                        :disabled="form.processing"
+                    >
+                        Register
+                    </PrimaryButton>
+                </div>
+            </form>
+
+            <div class="signup-text">
+                Already have an account?
+                <Link href="/login" class="signup-link">Log in</Link>
+            </div>
+        </div>
+    </div>
+</template>
+
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -54,116 +157,13 @@ const checkEmail = debounce(async (email) => {
 }, 500);
 </script>
 
-<template>
-    <Head title="Register Signup" />
-    <div class="register-container">
-        <!-- go-back arrow -->
-        <div class="go-back-arrow" @click="goBack">
-            <span class="arrow-icon text-3xl">←</span>
-        </div>
-
-        <!-- box for logo and fields -->
-        <div class="register-box">
-            <div class="logo-container">
-                <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
-            </div>
-
-            <h2 class="register-title">Press Play on Your Journey</h2>
-
-            <!-- Registration form -->
-            <form @submit.prevent="submit">
-                <div>
-                    <InputLabel for="name" value="Userame" class="label" />
-                    <TextInput
-                        id="name"
-                        type="text"
-                        class="input"
-                        v-model="form.name"
-                        required
-                        autofocus
-                        autocomplete="name"
-                    />
-                    <InputError class="error-text" :message="form.errors.name" />
-                </div>
-                <br>
-
-                <div>
-                    <InputLabel for="email" value="Email" class="label" />
-                    <TextInput
-                        id="email"
-                        type="email"
-                        class="input"
-                        v-model="form.email"
-                        required
-                        autocomplete="username"
-                    />
-                    <InputError class="error-text" :message="form.errors.email" />
-                </div>
-                <br>
-
-                <div>
-                    <InputLabel for="password" value="Password" class="label" />
-                    <TextInput
-                        id="password"
-                        type="password"
-                        class="input"
-                        v-model="form.password"
-                        required
-                        autocomplete="new-password"
-                    />
-                    <InputError class="error-text" :message="form.errors.password" />
-                </div>
-                <br>
-
-                <div>
-                    <InputLabel for="password_confirmation" value="Confirm Password" class="label" />
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        class="input"
-                        v-model="form.password_confirmation"
-                        required
-                        autocomplete="new-password"
-                    />
-                    <InputError class="error-text" :message="form.errors.password_confirmation" />
-                </div>
-
-
-                <div class="form-footer">
-                    <Link
-                        :href="route('login')"
-                        class="forgot-password"
-                    >
-                        Already registered?
-                    </Link>
-                </div>
-
-                <div class="submit-button">
-                    <PrimaryButton
-                        class="register-button"
-                        :class="{ 'disabled': form.processing }"
-                        :disabled="form.processing"
-                    >
-                        Register
-                    </PrimaryButton>
-                </div>
-            </form>
-
-            <div class="signup-text">
-                Already have an account?
-                <Link href="/login" class="signup-link">Log in</Link>
-            </div>
-        </div>
-    </div>
-</template>
-
-<style>
+<style scoped>
 .register-container {
     display: flex;
-    min-height: 90vh;
     align-items: center;
     justify-content: center;
     background-image: linear-gradient(to right, #ffffff, #b3eaff);
+    padding: 40px 0 80px;
 }
 
 /* go-back arrow */
@@ -233,6 +233,7 @@ const checkEmail = debounce(async (email) => {
     border: 5px solid #b0ddff !important;
     border-radius: 6px;
     color: #000000;
+    margin-bottom: 8px;
 }
 
 .input:focus {
@@ -302,4 +303,12 @@ const checkEmail = debounce(async (email) => {
 .signup-link:hover {
     text-decoration: underline;
 }
+
+@media (max-height: 700px) {
+    .register-container {
+        padding: 20px 0;
+        align-items: flex-start;
+    }
+}
+
 </style>

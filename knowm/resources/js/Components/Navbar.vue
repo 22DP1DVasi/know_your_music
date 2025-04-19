@@ -1,5 +1,116 @@
+<template>
+    <nav>
+        <a href="/" class="logo-container">
+            <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
+            <p>Know Your Music</p>
+        </a>
+        <ul>
+            <li>
+                <div class="wrap">
+<!--                    <div class="search">-->
+<!--                        <input type="text" class="searchTerm" placeholder="Search...">-->
+<!--                        <button type="submit" class="searchButton">-->
+<!--                            <i class="fa fa-search"></i>-->
+<!--                        </button>-->
+<!--                    </div>-->
+                    <div class="search">
+                        <input
+                            type="text"
+                            class="searchTerm"
+                            placeholder="Search..."
+                            v-model="searchQuery"
+                            @keyup.enter="performSearch"
+                        >
+                        <button
+                            type="submit"
+                            class="searchButton"
+                            @click="performSearch"
+                        >
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/explore">Explore</a></li>
+            <li><a href="/about">About</a></li>
+            <!-- Conditional rendering based on auth state -->
+            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
+            <li v-if="isLoggedIn" class="user-menu">
+                <div class="user-avatar" @click="toggleUserDropdown">
+                    <i class="fa fa-user-circle"></i>
+                    <span class="username">{{ user.name }}</span>
+                    <div v-show="showUserDropdown" class="user-dropdown">
+                        <a href="/profile">Profile</a>
+                        <a href="/settings">Settings</a>
+                        <a href="#" @click.prevent="logout">Log Out</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <!-- search button for mobile -->
+        <button class="mobile-search-button" @click="toggleMobileSearch" v-show="isMobile">
+            <i class="fa fa-search"></i>
+        </button>
+        <!-- hamburger menu -->
+        <div class="hamburger" @click="toggleNav">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+        </div>
+    </nav>
+    <!-- menubar for mobiles -->
+    <div
+        class="overlay"
+        :class="{ active: isMenuActive }"
+        @click="toggleNav"
+    ></div>
+    <div class="menubar" :class="{ active: isMenuActive }">
+        <div class="menubar-header">
+            <span>MENU</span>
+        </div>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/explore">Explore</a></li>
+            <li><a href="/about">About</a></li>
+            <!-- Conditional rendering for mobile menu -->
+            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
+            <li v-if="isLoggedIn"><a href="/profile">Profile</a></li>
+            <li v-if="isLoggedIn"><a href="/settings">Settings</a></li>
+            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">Log Out</a></li>
+        </ul>
+    </div>
+    <!-- search bar for mobile -->
+    <div v-show="isMobileSearchActive" class="mobile-search-container">
+<!--        <div class="search">-->
+<!--            <input type="text" class="searchTerm" placeholder="Search..." />-->
+<!--            <button type="submit" class="searchButton">-->
+<!--                <i class="fa fa-search"></i>-->
+<!--            </button>-->
+<!--        </div>-->
+        <div class="search">
+            <input
+                type="text"
+                class="searchTerm"
+                placeholder="Search..."
+                v-model="searchQuery"
+                @keyup.enter="performSearch"
+            />
+            <button
+                type="submit"
+                class="searchButton"
+                @click="performSearch"
+            >
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+</template>
+
 <script>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { usePage, router } from '@inertiajs/vue3';
 
 export default {
@@ -91,6 +202,18 @@ export default {
             window.removeEventListener('click', closeDropdownOnClickOutside);
         });
 
+        // search query state
+        const searchQuery = ref('');
+
+        // search function
+        const performSearch = () => {
+            if (searchQuery.value.trim()) {
+                router.get('/search', {
+                    q: searchQuery.value.trim()
+                });
+            }
+        };
+
         return {
             isDarkMode,
             toggleDarkMode,
@@ -103,90 +226,13 @@ export default {
             user,
             showUserDropdown,
             toggleUserDropdown,
-            logout
+            logout,
+            searchQuery,
+            performSearch
         };
     },
 };
 </script>
-
-<template>
-    <nav>
-        <a href="/" class="logo-container">
-            <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
-            <p>Know Your Music</p>
-        </a>
-        <ul>
-            <li>
-                <div class="wrap">
-                    <div class="search">
-                        <input type="text" class="searchTerm" placeholder="Search...">
-                        <button type="submit" class="searchButton">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </li>
-            <li><a href="/">Home</a></li>
-            <li><a href="/explore">Explore</a></li>
-            <li><a href="/about">About</a></li>
-            <!-- Conditional rendering based on auth state -->
-            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
-            <li v-if="isLoggedIn" class="user-menu">
-                <div class="user-avatar" @click="toggleUserDropdown">
-                    <i class="fa fa-user-circle"></i>
-                    <span class="username">{{ user.name }}</span>
-                    <div v-show="showUserDropdown" class="user-dropdown">
-                        <a href="/profile">Profile</a>
-                        <a href="/settings">Settings</a>
-                        <a href="#" @click.prevent="logout">Log Out</a>
-                    </div>
-                </div>
-            </li>
-        </ul>
-        <!-- search button for mobile -->
-        <button class="mobile-search-button" @click="toggleMobileSearch" v-show="isMobile">
-            <i class="fa fa-search"></i>
-        </button>
-        <!-- hamburger menu -->
-        <div class="hamburger" @click="toggleNav">
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-        </div>
-    </nav>
-    <!-- menubar for mobiles -->
-    <div
-        class="overlay"
-        :class="{ active: isMenuActive }"
-        @click="toggleNav"
-    ></div>
-    <div class="menubar" :class="{ active: isMenuActive }">
-        <div class="menubar-header">
-            <span>MENU</span>
-        </div>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/explore">Explore</a></li>
-            <li><a href="/about">About</a></li>
-            <!-- Conditional rendering for mobile menu -->
-            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
-            <li v-if="isLoggedIn"><a href="/profile">Profile</a></li>
-            <li v-if="isLoggedIn"><a href="/settings">Settings</a></li>
-            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">Log Out</a></li>
-        </ul>
-    </div>
-    <!-- search bar for mobile -->
-    <div v-show="isMobileSearchActive" class="mobile-search-container">
-        <div class="search">
-            <input type="text" class="searchTerm" placeholder="Search..." />
-            <button type="submit" class="searchButton">
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
-    </div>
-</template>
 
 <style scoped>
 

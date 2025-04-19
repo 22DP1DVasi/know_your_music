@@ -42,10 +42,29 @@ Route::get('/signup', function () {
 Route::get('/faq', function () {
     return Inertia::render('FAQ');
 })->name('faq');
-// pages routes
 
+// search logic and routes
+Route::get('/search', function (Request $request) {
+    $query = $request->input('q');
+
+    $artists = Artist::where('name', 'like', "%{$query}%")
+        ->limit(5)
+        ->get();
+
+    $tracks = Track::with('artist')
+        ->where('title', 'like', "%{$query}%")
+        ->limit(10)
+        ->get();
+
+    return Inertia::render('Search', [
+        'artists' => $artists,
+        'tracks' => $tracks,
+        'searchQuery' => $query
+    ]);
+})->name('search');
+
+// user account settings
 Route::middleware('auth')->group(function () {
-    // define authenticated routes here
     Route::get('/dashboard', function () {
         return inertia('Dashboard');
     })->name('dashboard');
@@ -63,6 +82,7 @@ Route::middleware('guest')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
+// testing Spotify API
 Route::get('/test-spotify', function () {
     $spotify = new SpotifyService();
 
