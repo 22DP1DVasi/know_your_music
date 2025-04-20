@@ -30,6 +30,8 @@ const currentYear = new Date().getFullYear();
 
 <style scoped>
 .footer {
+    clear: both;
+    position: relative;
     font-family: Arial, Helvetica, sans-serif;
     background-color: rgb(185, 225, 255);
     color: #000000;

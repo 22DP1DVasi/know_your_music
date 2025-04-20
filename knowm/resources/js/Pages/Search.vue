@@ -68,12 +68,14 @@
             No results found for "{{ searchQuery }}"
         </div>
     </div>
+    <Footer/>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import {Head} from "@inertiajs/vue3";
 import Navbar from "@/Components/Navbar.vue";
+import Footer from "@/Components/Footer.vue";
 
 const props = defineProps({
     artists: Array,
