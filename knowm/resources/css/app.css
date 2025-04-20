@@ -3,13 +3,25 @@
 @tailwind utilities;
 
 
-body {
+html, body {
     margin: 0;
+    height: 100%;
     min-height: 100vh;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(to right, #ffffff, #b3eaff);
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
 }
 
 /* scrollbar */
