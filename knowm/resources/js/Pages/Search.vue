@@ -1,6 +1,8 @@
 <template>
     <Head title="Know Your Music Search" />
     <Navbar/>
+    <!-- main element contains the primary content and also positions Footer properly -->
+    <main class="flex-1">
     <div class="search-results">
         <h1>Search Results for "{{ searchQuery }}"</h1>
 
@@ -68,6 +70,7 @@
             No results found for "{{ searchQuery }}"
         </div>
     </div>
+    </main>
     <Footer/>
 </template>
 

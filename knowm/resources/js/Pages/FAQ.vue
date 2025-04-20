@@ -1,6 +1,8 @@
 <template>
     <Head title="FAQ" />
         <Navbar/>
+        <!-- main element contains the primary content and also positions Footer properly -->
+        <main class="flex-1">
             <div class="faq-page-wrapper">
                 <div class="faq-container">
                     <h2>Frequently Asked Questions</h2>
@@ -14,6 +16,7 @@
                     </div>
                 </div>
             </div>
+        </main>
     <Footer/>
 </template>
 
@@ -54,6 +57,8 @@ export default {
     width: 60%;
     background: white;
     padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }

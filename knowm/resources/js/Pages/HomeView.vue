@@ -1,8 +1,11 @@
 <template>
     <Head title="Know Your Music" />
     <Navbar/>
-    <HomeTitle/>
-    <HomeRecomCards/>
+    <!-- main element contains the primary content and also positions Footer properly -->
+    <main class="flex-1">
+        <HomeTitle/>
+        <HomeRecomCards/>
+    </main>
     <Footer/>
 
 </template>

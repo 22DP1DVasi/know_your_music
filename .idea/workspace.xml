@@ -7,8 +7,9 @@
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/css/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Footer.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/FAQ.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/FAQ.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -232,7 +233,7 @@
       <workItem from="1745048911145" duration="3390000" />
       <workItem from="1745056696453" duration="665000" />
       <workItem from="1745143906688" duration="325000" />
-      <workItem from="1745145019004" duration="5478000" />
+      <workItem from="1745145019004" duration="7054000" />
     </task>
     <servers />
   </component>
