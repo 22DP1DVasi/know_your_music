@@ -1,6 +1,8 @@
 <template>
     <Head title="About Us" />
     <Navbar />
+    <!-- main element contains the primary content and also positions Footer properly -->
+    <main class="flex-1">
     <div class="about-container">
         <div class="about-header">
             <h1>About Us</h1>
@@ -62,6 +64,7 @@
             </section>
         </div>
     </div>
+    </main>
     <Footer />
 </template>
 

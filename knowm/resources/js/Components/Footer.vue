@@ -5,8 +5,8 @@
             <div class="footer-section">
                 <h4 class="footer-heading">Quick Links</h4>
                 <ul class="footer-links">
-                    <li><a href="/about-us">About Us</a></li>
-                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
                     <li><a href="#">Privacy Policy</a></li>
                     <li><a href="#">Terms of Service</a></li>
                     <li><a href="/faq">FAQ</a></li>
