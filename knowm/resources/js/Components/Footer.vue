@@ -5,12 +5,12 @@
             <div class="footer-section">
                 <h4 class="footer-heading">Quick Links</h4>
                 <ul class="footer-links">
-                    <li><a href="/faq">FAQ</a></li>
-                    <li><a href="#">User Agreement</a></li>
-                    <li><a href="#">Rules</a></li>
-                    <li><a href="#">Help</a></li>
+                    <li><a href="/about-us">About Us</a></li>
+                    <li><a href="#">Contact Us</a></li>
                     <li><a href="#">Privacy Policy</a></li>
                     <li><a href="#">Terms of Service</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                    <li><a href="#">Community Guidelines</a></li>
                 </ul>
             </div>
         </div>

@@ -1,4 +1,5 @@
 <template>
+    <!-- Navbar element provided by https://github.com/daniilsonufrijuks -->
     <nav>
         <a href="/" class="logo-container">
             <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">

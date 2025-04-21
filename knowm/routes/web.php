@@ -44,6 +44,10 @@ Route::get('/signup', function () {
     return Inertia::render('Auth/Register');
 })->name('signup');
 
+Route::get('/about-us', function () {
+    return Inertia::render('AboutUs');
+})->name('about-us');
+
 Route::get('/faq', function () {
     return Inertia::render('FAQ');
 })->name('faq');
