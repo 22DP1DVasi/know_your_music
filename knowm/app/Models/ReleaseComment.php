@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReleaseComment extends Model
 {
     use HasFactory;
-    protected $table = 'releases_comments';
+
+    protected $table = 'comments_releases';
 
     /**
      * The attributes that are mass assignable.
@@ -21,9 +22,8 @@ class ReleaseComment extends Model
         'text',
         'status',
         'deleted_username',
-        'commenter_id',
-        'commenter_type',
-        'artist_id'
+        'user_id',
+        'release_id'
     ];
 
     /**
@@ -37,18 +37,25 @@ class ReleaseComment extends Model
     ];
 
     /**
-     * Get the commenter (user or admin) who made the comment.
+     * The accessors to append to the model's array form.
+     *
+     * @var array
      */
-    public function commenter(): MorphTo
+    protected $appends = ['author_name'];
+
+    /**
+     * Get the user who made the comment.
+     */
+    public function user(): BelongsTo
     {
-        return $this->morphTo()
-            ->withGlobalScope('notDeleted', function ($builder) {
-                $builder->where('status', '!=', 'deleted');
-            });
+        return $this->belongsTo(User::class);
+//            ->withGlobalScope('notDeleted', function (Builder $builder) {
+//                $builder->where('status', '!=', 'deleted');
+//            });
     }
 
     /**
-     * Get the artist this comment belongs to.
+     * Get the release this comment belongs to.
      */
     public function release(): BelongsTo
     {
@@ -64,7 +71,7 @@ class ReleaseComment extends Model
             return $this->deleted_username;
         }
 
-        return $this->commenter?->name;
+        return $this->user?->name ?? '[Deleted User]';
     }
 
     /**
@@ -73,15 +80,43 @@ class ReleaseComment extends Model
     public function softDelete(): bool
     {
         return $this->update([
-            'status' => 'deleted',
+            'deleted_username' => $this->user?->name    // preserve username before deletion
         ]);
     }
 
     /**
      * Scope for visible comments.
      */
-    public function scopeVisible($query)
+    public function scopeVisible(Builder $query): Builder
     {
         return $query->where('status', 'visible');
+    }
+
+    /**
+     * Scope for hidden comments.
+     */
+    public function scopeHidden(Builder $query): Builder
+    {
+        return $query->where('status', 'hidden');
+    }
+
+    /**
+     * Scope for comments by admin users.
+     */
+    public function scopeByAdmins(Builder $query): Builder
+    {
+        return $query->whereHas('user', function(Builder $q) {
+            $q->whereHas('roles', function(Builder $roleQuery) {
+                $roleQuery->where('name', 'admin');
+            });
+        });
+    }
+
+    /**
+     * Scope for comments on a specific release.
+     */
+    public function scopeForRelease(Builder $query, int $releaseId): Builder
+    {
+        return $query->where('release_id', $releaseId);
     }
 }

@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class TrackComment extends Model
 {
     use HasFactory;
+
     protected $table = 'tracks_comments';
 
     /**
@@ -21,8 +22,7 @@ class TrackComment extends Model
         'text',
         'status',
         'deleted_username',
-        'commenter_id',
-        'commenter_type',
+        'user_id',
         'track_id'
     ];
 
@@ -37,18 +37,25 @@ class TrackComment extends Model
     ];
 
     /**
-     * Get the commenter (user or admin) who made the comment.
+     * The accessors to append to the model's array form.
+     *
+     * @var array
      */
-    public function commenter(): MorphTo
+    protected $appends = ['author_name'];
+
+    /**
+     * Get the user who made the comment.
+     */
+    public function user(): BelongsTo
     {
-        return $this->morphTo()
-            ->withGlobalScope('notDeleted', function ($builder) {
-                $builder->where('status', '!=', 'deleted');
-            });
+        return $this->belongsTo(User::class);
+//            ->withGlobalScope('notDeleted', function (Builder $builder) {
+//                $builder->where('status', '!=', 'deleted');
+//            });
     }
 
     /**
-     * Get the associated track
+     * Get the track this comment belongs to.
      */
     public function track(): BelongsTo
     {
@@ -56,7 +63,7 @@ class TrackComment extends Model
     }
 
     /**
-     * Get the display name for comment author
+     * Get the display name for the comment author.
      */
     public function getAuthorNameAttribute(): string
     {
@@ -64,24 +71,52 @@ class TrackComment extends Model
             return $this->deleted_username;
         }
 
-        return $this->commenter?->name;
+        return $this->user?->name ?? '[Deleted User]';
     }
 
     /**
-     * Scope for visible comments
+     * Mark comment as deleted while preserving metadata.
      */
-    public function scopeVisible($query)
+    public function softDelete(): bool
+    {
+        return $this->update([
+            'deleted_username' => $this->user?->name    // preserve username before deletion
+        ]);
+    }
+
+    /**
+     * Scope for visible comments.
+     */
+    public function scopeVisible(Builder $query): Builder
     {
         return $query->where('status', 'visible');
     }
 
     /**
-     * Mark comment as deleted while preserving metadata
+     * Scope for hidden comments.
      */
-    public function softDelete(): bool
+    public function scopeHidden(Builder $query): Builder
     {
-        return $this->update([
-            'status' => 'deleted',
-        ]);
+        return $query->where('status', 'hidden');
+    }
+
+    /**
+     * Scope for comments by admin users.
+     */
+    public function scopeByAdmins(Builder $query): Builder
+    {
+        return $query->whereHas('user', function(Builder $q) {
+            $q->whereHas('roles', function(Builder $roleQuery) {
+                $roleQuery->where('name', 'admin');
+            });
+        });
+    }
+
+    /**
+     * Scope for comments on a specific track.
+     */
+    public function scopeForTrack(Builder $query, int $trackId): Builder
+    {
+        return $query->where('track_id', $trackId);
     }
 }

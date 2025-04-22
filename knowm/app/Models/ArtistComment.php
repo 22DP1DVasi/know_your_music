@@ -103,4 +103,12 @@ class ArtistComment extends Model
             });
         });
     }
+
+    /**
+     * Scope for comments on a specific artist.
+     */
+    public function scopeForTrack(Builder $query, int $artistId): Builder
+    {
+        return $query->where('artist_id', $artistId);
+    }
 }
