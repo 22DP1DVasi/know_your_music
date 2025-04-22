@@ -45,31 +45,39 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'status' => 'string'
     ];
 
     /**
-     * Polymorphic relationship with ArtistComment model
+     * Relationship with ArtistComment model
      */
-    public function artistComments()
+    public function artistComments(): HasMany
     {
-        return $this->morphMany(ArtistComment::class, 'commenter');
+        return $this->hasMany(ArtistComment::class);
     }
 
     /**
-     * Polymorphic relationship with ReleaseComment model
+     * Relationship with ReleaseComment model
      */
-    public function releaseComments()
+    public function releaseComments(): HasMany
     {
-        return $this->morphMany(ReleaseComment::class, 'commenter');
+        return $this->hasMany(ReleaseComment::class);
     }
 
     /**
-     * Polymorphic relationship with TrackComment model
+     * Relationship with TrackComment model
      */
-    public function trackComments()
+    public function trackComments(): HasMany
     {
-        return $this->morphMany(TrackComment::class, 'commenter');
+        return $this->hasMany(TrackComment::class);
+    }
+
+    /**
+     * Roles assigned to this user
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class)
+            ->withTimestamps();
     }
 
     /**
@@ -78,6 +86,44 @@ class User extends Authenticatable
     public function collections(): HasMany
     {
         return $this->hasMany(UserCollection::class);
+    }
+
+    /**
+     * Assign role to this user
+     */
+    public function assignRole($role): void
+    {
+        if (is_string($role)) {
+            $role = Role::whereName($role)->firstOrFail();
+        }
+        $this->roles()->syncWithoutDetaching($role);
+    }
+
+    /**
+     * Check if this user has a certain role
+     */
+    public function hasRole($role): bool
+    {
+        if (is_string($role)) {
+            return $this->roles->contains('name', $role);
+        }
+        return (bool) $role->intersect($this->roles)->count();
+    }
+
+    /**
+     * Check if this user has any of the given roles
+     */
+    public function hasAnyRole(array $roles): bool
+    {
+        return $this->roles->whereIn('name', $roles)->isNotEmpty();
+    }
+
+    /**
+     * Check if this user is admin (has admin role)
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
     }
 
     /**
@@ -121,17 +167,14 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::deleting(function ($user) {
-            // update all comments where this user is the commenter
-            ArtistComment::where('commenter_type', self::class)
-                ->where('commenter_id', $user->id)
+            // update all comments where this user is the author
+            ArtistComment::where('user_id', $user->id)
                 ->update(['deleted_username' => $user->name]);
 
-            ReleaseComment::where('commenter_type', self::class)
-                ->where('commenter_id', $user->id)
+            ReleaseComment::where('user_id', $user->id)
                 ->update(['deleted_username' => $user->name]);
 
-            TrackComment::where('commenter_type', self::class)
-                ->where('commenter_id', $user->id)
+            TrackComment::where('user_id', $user->id)
                 ->update(['deleted_username' => $user->name]);
         });
     }
@@ -143,7 +186,7 @@ class User extends Authenticatable
     {
         return $this->update([
             'status' => 'deleted',
-            'email' => 'deleted_' . $this->id . '_' . $this->email, // prevent email reuse
+            'email' => 'deleted_' . $this->id . '_' . $this->email,  // prevent email reuse
             'name' => 'Deleted User'
         ]);
     }
@@ -154,5 +197,15 @@ class User extends Authenticatable
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope to filter users by role.
+     */
+    public function scopeWithRole($query, $role)
+    {
+        return $query->whereHas('roles', function ($q) use ($role) {
+            $q->where('name', $role);
+        });
     }
 }

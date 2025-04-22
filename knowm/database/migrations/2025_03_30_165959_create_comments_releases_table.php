@@ -14,20 +14,24 @@ return new class extends Migration
         Schema::create('comments_releases', function (Blueprint $table) {
             $table->id();
             // polymorphic relationship
-            $table->unsignedBigInteger('commenter_id')->nullable();
-            $table->string('commenter_type')->nullable();    // will store 'App\Models\User' or 'App\Models\Admin'
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('release_id');
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
             $table->string('deleted_username', 100)->nullable(); // store username before user deletion as metadata
             $table->timestamps();
 
-            // indexes
-            $table->index(['commenter_id', 'commenter_type']); // Composite index for polymorphic relation
+            // explicit indexes
+            $table->index('user_id');
             $table->index('release_id');
             $table->index('status'); // for better performance
 
-            // foreign kets
+            // foreign keys
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
             $table->foreign('release_id')
                 ->references('id')
                 ->on('releases')

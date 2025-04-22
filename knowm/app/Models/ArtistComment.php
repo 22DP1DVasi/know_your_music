@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class ArtistComment extends Model
 {
     use HasFactory;
+
     protected $table = 'comments_artists';
 
     /**
@@ -21,8 +22,7 @@ class ArtistComment extends Model
         'text',
         'status',
         'deleted_username',
-        'commenter_id',
-        'commenter_type',
+        'user_id',
         'artist_id'
     ];
 
@@ -37,14 +37,21 @@ class ArtistComment extends Model
     ];
 
     /**
-     * Get the commenter (user or admin) who made the comment.
+     * The accessors to append to the model's array form.
+     *
+     * @var array
      */
-    public function commenter(): MorphTo
+    protected $appends = ['author_name'];
+
+    /**
+     * Get the user who made the comment.
+     */
+    public function user(): BelongsTo
     {
-        return $this->morphTo()
-            ->withGlobalScope('notDeleted', function ($builder) {
-                $builder->where('status', '!=', 'deleted');
-            });
+        return $this->belongsTo(User::class);
+//            ->withGlobalScope('notDeleted', function (Builder $builder) {
+//                $builder->where('status', '!=', 'deleted');
+//            });
     }
 
     /**
@@ -64,7 +71,7 @@ class ArtistComment extends Model
             return $this->deleted_username;
         }
 
-        return $this->commenter?->name;
+        return $this->user?->name ?? '[Deleted User]';
     }
 
     /**
@@ -73,15 +80,27 @@ class ArtistComment extends Model
     public function softDelete(): bool
     {
         return $this->update([
-            'status' => 'deleted',
+            'deleted_username' => $this->user?->name    // preserve username before deletion
         ]);
     }
 
     /**
      * Scope for visible comments.
      */
-    public function scopeVisible($query)
+    public function scopeVisible(Builder $query): Builder
     {
         return $query->where('status', 'visible');
+    }
+
+    /**
+     * Scope for comments by admin users.
+     */
+    public function scopeByAdmins(Builder $query): Builder
+    {
+        return $query->whereHas('user', function(Builder $q) {
+            $q->whereHas('roles', function(Builder $roleQuery) {
+                $roleQuery->where('name', 'admin');
+            });
+        });
     }
 }
