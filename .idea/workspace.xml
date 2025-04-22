@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ContactUs.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/css/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Footer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/AboutUs.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/AboutUs.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -236,7 +233,8 @@
       <workItem from="1745143906688" duration="325000" />
       <workItem from="1745145019004" duration="7894000" />
       <workItem from="1745220212290" duration="6652000" />
-      <workItem from="1745238699514" duration="1012000" />
+      <workItem from="1745238699514" duration="1320000" />
+      <workItem from="1745342835940" duration="1514000" />
     </task>
     <servers />
   </component>
