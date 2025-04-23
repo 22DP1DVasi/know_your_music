@@ -27,7 +27,15 @@ class SearchService
         return Artist::where('name', 'like', "%{$query}%")
             ->withCount('tracks')
             ->limit($limit)
-            ->get();
+            ->get()
+            ->map(function ($artist) {
+                return [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'tracks_count' => $artist->tracks_count,
+                    'banner_url' => $artist->banner_url,
+                ];
+            });
     }
 
     protected function searchReleases(string $query, int $limit)

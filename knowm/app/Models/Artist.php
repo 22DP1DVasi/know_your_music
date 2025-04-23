@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Artist extends Model
 {
@@ -34,6 +35,23 @@ class Artist extends Model
         'formed_year' => 'integer',
         'disbanded_year' => 'integer',
     ];
+
+    //
+    protected $appends = ['banner_url'];
+
+    protected static function booted()
+    {
+        // create folders for images when this artist is created
+        static::created(function ($artist) {
+            Storage::makeDirectory("public/artists/{$artist->id}/profile");
+            Storage::makeDirectory("public/artists/{$artist->id}/banner");
+        });
+
+        // delete folders for images when this artist is deleted
+        static::deleted(function ($artist) {
+            Storage::deleteDirectory("public/artists/{$artist->id}");
+        });
+    }
 
     /**
      * Get all genres associated with this artist.
@@ -93,6 +111,40 @@ class Artist extends Model
     }
 
     /**
+     * Get the artist's active years.
+     */
+    public function getActiveYearsAttribute(): ?string
+    {
+        if (!$this->formed_year) return null;
+
+        return $this->disbanded_year
+            ? "{$this->formed_year} - {$this->disbanded_year}"
+            : "{$this->formed_year} - Present";
+    }
+
+    /**
+     * Get profile image attribute for this artst
+     */
+    public function getBannerUrlAttribute()
+    {
+        $path = "artists/{$this->id}/banner/banner.webp";
+        return Storage::exists($path)
+            ? Storage::url($path)
+            : asset('images/default-artist.webp');
+    }
+
+    /**
+     * Get banner image attribute for this artst
+     */
+    public function getProfileUrlAttribute()
+    {
+        $path = "artists/{$this->id}/profile/profile.jpg";
+        return Storage::disk('public')->exists($path)
+            ? Storage::url($path)
+            : asset('images/default-artist.jpg');
+    }
+
+    /**
      * Scope for active artists (not disbanded).
      */
     public function scopeActive($query)
@@ -106,25 +158,5 @@ class Artist extends Model
     public function scopeBands($query)
     {
         return $query->where('solo_or_band', 'band');
-    }
-
-    /**
-     * Get the artist's active years.
-     */
-    public function getActiveYearsAttribute(): ?string
-    {
-        if (!$this->formed_year) return null;
-
-        return $this->disbanded_year
-            ? "{$this->formed_year} - {$this->disbanded_year}"
-            : "{$this->formed_year} - Present";
-    }
-
-    /**
-     * Get the image URL (accessor).
-     */
-    public function getImageUrlAttribute(): ?string
-    {
-        return $this->image ? asset('storage/artists/'.$this->image) : null;
     }
 }

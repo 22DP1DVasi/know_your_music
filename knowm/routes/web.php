@@ -12,6 +12,7 @@ use App\Models\Track;
 use App\Models\Lyrics;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ArtistImageController;
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -79,6 +80,13 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
+
+// artist images routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/artists/{artist}/profile-image', [ArtistImageController::class, 'uploadProfileImage']);
+    Route::post('/artists/{artist}/banner-image', [ArtistImageController::class, 'uploadBannerImage']);
+});
+
 
 // testing Spotify API
 Route::get('/test-spotify', function () {

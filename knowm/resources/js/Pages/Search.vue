@@ -1,82 +1,81 @@
 <template>
     <Head title="Know Your Music Search" />
     <Navbar/>
-    <!-- main element contains the primary content and also positions Footer properly -->
     <main class="flex-1">
-    <div class="search-results">
-        <h1>Search Results for "{{ searchQuery }}"</h1>
+        <div class="search-results">
+            <h1>Search Results for "{{ searchQuery }}"</h1>
 
-        <!-- Artists Results -->
-        <section v-if="artists.length > 0" class="results-section">
-            <div class="section-header">
-                <h2>Artists</h2>
-                <a v-if="hasMoreArtists" :href="`/search/artists?q=${searchQuery}`" class="see-all">
-                    See all {{ artistsCount }} artists →
-                </a>
-            </div>
-            <div class="artist-grid">
-                <div v-for="artist in artists" :key="artist.id" class="artist-card">
-                    <img :src="artist.image_url || '/images/default-artist.jpg'" :alt="artist.name">
-                    <div class="artist-info">
-                        <h3>{{ artist.name }}</h3>
-                        <p>{{ artist.tracks_count }} tracks</p>
+            <!-- artists results -->
+            <section v-if="artists.length > 0" class="results-section">
+                <div class="section-header">
+                    <h2>Artists</h2>
+                    <a v-if="hasMoreArtists" :href="`/search/artists?q=${searchQuery}`" class="see-all">
+                        See all {{ artistsCount }} artists →
+                    </a>
+                </div>
+                <div class="artist-grid">
+                    <div v-for="artist in artists" :key="artist.id" class="artist-card">
+                        <img :src="getArtistImage(artist)" :alt="artist.name" @error="handleImageError">
+                        <div class="artist-info">
+                            <h3>{{ artist.name }}</h3>
+                            <p>{{ artist.tracks_count }} tracks</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Releases Results -->
-        <section v-if="releases.length > 0" class="results-section">
-            <div class="section-header">
-                <h2>Releases</h2>
-                <a v-if="hasMoreReleases" :href="`/search/releases?q=${searchQuery}`" class="see-all">
-                    See all {{ releasesCount }} releases →
-                </a>
-            </div>
-            <div class="release-grid">
-                <div v-for="release in releases" :key="release.id" class="release-card">
-                    <img :src="release.cover_url || '/images/default-release.jpg'" :alt="release.title">
-                    <div class="release-info">
-                        <h3>{{ release.title }}</h3>
-                        <p>{{ release.artists[0]?.name }}</p>
-                        <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
+            <!-- releases results -->
+            <section v-if="releases.length > 0" class="results-section">
+                <div class="section-header">
+                    <h2>Releases</h2>
+                    <a v-if="hasMoreReleases" :href="`/search/releases?q=${searchQuery}`" class="see-all">
+                        See all {{ releasesCount }} releases →
+                    </a>
+                </div>
+                <div class="release-grid">
+                    <div v-for="release in releases" :key="release.id" class="release-card">
+                        <img :src="getReleaseImage(release.id)" :alt="release.title">
+                        <div class="release-info">
+                            <h3>{{ release.title }}</h3>
+                            <p>{{ release.artists[0]?.name }}</p>
+                            <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Tracks Results -->
-        <section v-if="tracks.length > 0" class="results-section">
-            <div class="section-header">
-                <h2>Tracks</h2>
-                <a v-if="hasMoreTracks" :href="`/search/tracks?q=${searchQuery}`" class="see-all">
-                    See all {{ tracksCount }} tracks →
-                </a>
-            </div>
-            <div class="track-list">
-                <div v-for="track in tracks" :key="track.id" class="track-item">
-                    <div class="track-number">{{ track.pivot?.track_position || '' }}</div>
-                    <div class="track-info">
-                        <h3>{{ track.title }}</h3>
-                        <p>{{ track.artists[0]?.name }}</p>
-                    </div>
-                    <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+            <!-- tracks results -->
+            <section v-if="tracks.length > 0" class="results-section">
+                <div class="section-header">
+                    <h2>Tracks</h2>
+                    <a v-if="hasMoreTracks" :href="`/search/tracks?q=${searchQuery}`" class="see-all">
+                        See all {{ tracksCount }} tracks →
+                    </a>
                 </div>
-            </div>
-        </section>
+                <div class="track-list">
+                    <div v-for="track in tracks" :key="track.id" class="track-item">
+                        <div class="track-number">{{ track.pivot?.track_position || '' }}</div>
+                        <div class="track-info">
+                            <h3>{{ track.title }}</h3>
+                            <p>{{ track.artists[0]?.name }}</p>
+                        </div>
+                        <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                    </div>
+                </div>
+            </section>
 
-        <!-- No Results -->
-        <div v-if="artists.length === 0 && releases.length === 0 && tracks.length === 0" class="no-results">
-            No results found for "{{ searchQuery }}"
+            <!-- no results -->
+            <div v-if="artists.length === 0 && releases.length === 0 && tracks.length === 0" class="no-results">
+                No results found for "{{ searchQuery }}"
+            </div>
         </div>
-    </div>
     </main>
     <Footer/>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import {Head} from "@inertiajs/vue3";
+import { Head } from "@inertiajs/vue3";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 
@@ -89,6 +88,27 @@ const props = defineProps({
     hasMoreReleases: Boolean,
     hasMoreTracks: Boolean
 });
+
+// count computed properties
+const artistsCount = computed(() => props.artists.length);
+const releasesCount = computed(() => props.releases.length);
+const tracksCount = computed(() => props.tracks.length);
+
+// image handling
+const getArtistImage = (artist, type = 'banner') => {
+    if (artist.banner_url) return artist.banner_url;
+
+    const imagePath = `/storage/artists/${artist.id}/${type}/${type}.webp`;
+    return imagePath;
+};
+
+// const handleImageError = (event) => {
+//     event.target.src = '/images/default-artist.webp';
+// };
+
+const getReleaseImage = (releaseId) => {
+    return `/storage/releases/${releaseId}/cover.webp`;
+};
 
 const formatDuration = (timeString) => {
     if (!timeString) return '--:--';
