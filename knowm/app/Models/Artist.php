@@ -128,9 +128,14 @@ class Artist extends Model
     public function getBannerUrlAttribute()
     {
         $path = "artists/{$this->id}/banner/banner.webp";
-        return Storage::exists($path)
-            ? Storage::url($path)
-            : asset('images/default-artist.webp');
+
+        // Check for WebP first, fallback to JPG if needed
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::url($path);
+        }
+
+        // Fallback to default image
+        return asset('images/default-artist.webp');
     }
 
     /**
