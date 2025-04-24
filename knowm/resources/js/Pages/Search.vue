@@ -17,7 +17,8 @@
                     <div v-for="artist in artists" :key="artist.id" class="artist-card">
                         <img :src="getArtistImage(artist)" :alt="artist.name">
                         <div class="artist-info">
-                            <h3 :data-long="isLongName(artist.id, 'artist')" :data-text="artist.name">{{ artist.name }}</h3>
+<!--                            <h3 :data-long="isLongName(artist.id, 'artist')" :data-text="artist.name">{{ artist.name }}</h3>-->
+                            <h3>{{ artist.name }}</h3>
                             <p>{{ artist.tracks_count }} tracks</p>
                         </div>
                     </div>
@@ -36,7 +37,8 @@
                     <div v-for="release in releases" :key="release.id" class="release-card">
                         <img :src="getReleaseImage(release.id)" :alt="release.title">
                         <div class="release-info">
-                            <h3 :data-long="isLongName(release.id, 'release')" :data-text="release.title">{{ release.title }}</h3>
+<!--                            <h3 :data-long="isLongName(release.id, 'release')" :data-text="release.title">{{ release.title }}</h3>-->
+                            <h3>{{ release.title }}</h3>
                             <p>{{ release.artists[0]?.name }}</p>
                             <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
                         </div>
@@ -56,7 +58,8 @@
                     <div v-for="track in tracks" :key="track.id" class="track-item">
                         <div class="track-number">{{ track.pivot?.track_position || '' }}</div>
                         <div class="track-info">
-                            <h3 :data-long="isLongName(track.id, 'track')" :data-text="track.title">{{ track.title }}</h3>
+<!--                            <h3 :data-long="isLongName(track.id, 'track')" :data-text="track.title">{{ track.title }}</h3>-->
+                            <h3>{{ track.title }}</h3>
                             <p>{{ track.artists[0]?.name }}</p>
                         </div>
                         <div class="track-duration">{{ formatDuration(track.duration) }}</div>
@@ -92,40 +95,40 @@ const props = defineProps({
     tracksCount: Number
 });
 
-const longNameArtists = ref([]);
-const longNameReleases = ref([]);
-const longNameTracks = ref([]);
-
-onMounted(() => {
-    // check for long names
-    props.artists.forEach(artist => {
-        if (artist.name.length > 35) {
-            longNameArtists.value.push(artist.id);
-        }
-    });
-
-    props.releases.forEach(release => {
-        if (release.title.length > 35) {
-            longNameReleases.value.push(release.id);
-        }
-    });
-
-    props.tracks.forEach(track => {
-        if (track.title.length > 35) {
-            longNameTracks.value.push(track.id);
-        }
-    });
-});
+// const longNameArtists = ref([]);
+// const longNameReleases = ref([]);
+// const longNameTracks = ref([]);
+//
+// onMounted(() => {
+//     // check for long names
+//     props.artists.forEach(artist => {
+//         if (artist.name.length > 35) {
+//             longNameArtists.value.push(artist.id);
+//         }
+//     });
+//
+//     props.releases.forEach(release => {
+//         if (release.title.length > 35) {
+//             longNameReleases.value.push(release.id);
+//         }
+//     });
+//
+//     props.tracks.forEach(track => {
+//         if (track.title.length > 35) {
+//             longNameTracks.value.push(track.id);
+//         }
+//     });
+// });
 
 // check if name is long
-const isLongName = (id, type) => {
-    switch(type) {
-        case 'artist': return longNameArtists.value.includes(id);
-        case 'release': return longNameReleases.value.includes(id);
-        case 'track': return longNameTracks.value.includes(id);
-        default: return false;
-    }
-};
+// const isLongName = (id, type) => {
+//     switch(type) {
+//         case 'artist': return longNameArtists.value.includes(id);
+//         case 'release': return longNameReleases.value.includes(id);
+//         case 'track': return longNameTracks.value.includes(id);
+//         default: return false;
+//     }
+// };
 
 // image handling
 const getArtistImage = (artist, type = 'banner') => {
@@ -217,9 +220,10 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
     white-space: normal;
     word-break: break-word;
-    max-height: 2.4em;
     line-height: 1.2;
+    max-height: 2.4em;
 }
+
 
 .artist-info p {
     margin: 0;
@@ -266,8 +270,8 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
     white-space: normal;
     word-break: break-word;
-    max-height: 2.4em;
     line-height: 1.2;
+    max-height: 2.4em;
 }
 
 .release-info p {
@@ -340,31 +344,7 @@ const formatDuration = (timeString) => {
     color: #666;
 }
 
-/* character limit handling */
-/* max two rows for name/title, if exceeds 35 letters - ellipsis */
-.artist-info h3:not([data-long]):after,
-.release-info h3:not([data-long]):after,
-.track-info h3:not([data-long]):after {
-    content: attr(data-text);
-}
 
-.artist-info h3[data-long],
-.release-info h3[data-long],
-.track-info h3[data-long] {
-    position: relative;
-}
-
-.artist-info h3[data-long]:after,
-.release-info h3[data-long]:after,
-.track-info h3[data-long]:after {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    right: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 
 @media (max-width: 1200px) {
     .artist-card,
