@@ -17,7 +17,6 @@
                     <div v-for="artist in artists" :key="artist.id" class="artist-card">
                         <img :src="getArtistImage(artist)" :alt="artist.name">
                         <div class="artist-info">
-<!--                            <h3 :data-long="isLongName(artist.id, 'artist')" :data-text="artist.name">{{ artist.name }}</h3>-->
                             <h3>{{ artist.name }}</h3>
                             <p>{{ artist.tracks_count }} tracks</p>
                         </div>
@@ -37,7 +36,6 @@
                     <div v-for="release in releases" :key="release.id" class="release-card">
                         <img :src="getReleaseImage(release.id)" :alt="release.title">
                         <div class="release-info">
-<!--                            <h3 :data-long="isLongName(release.id, 'release')" :data-text="release.title">{{ release.title }}</h3>-->
                             <h3>{{ release.title }}</h3>
                             <p>{{ release.artists[0]?.name }}</p>
                             <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
@@ -58,7 +56,6 @@
                     <div v-for="track in tracks" :key="track.id" class="track-item">
                         <div class="track-number">{{ track.pivot?.track_position || '' }}</div>
                         <div class="track-info">
-<!--                            <h3 :data-long="isLongName(track.id, 'track')" :data-text="track.title">{{ track.title }}</h3>-->
                             <h3>{{ track.title }}</h3>
                             <p>{{ track.artists[0]?.name }}</p>
                         </div>
@@ -77,7 +74,6 @@
 </template>
 
 <script setup>
-import {  onMounted, ref } from 'vue';
 import { Head } from "@inertiajs/vue3";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
@@ -94,41 +90,6 @@ const props = defineProps({
     releasesCount: Number,
     tracksCount: Number
 });
-
-// const longNameArtists = ref([]);
-// const longNameReleases = ref([]);
-// const longNameTracks = ref([]);
-//
-// onMounted(() => {
-//     // check for long names
-//     props.artists.forEach(artist => {
-//         if (artist.name.length > 35) {
-//             longNameArtists.value.push(artist.id);
-//         }
-//     });
-//
-//     props.releases.forEach(release => {
-//         if (release.title.length > 35) {
-//             longNameReleases.value.push(release.id);
-//         }
-//     });
-//
-//     props.tracks.forEach(track => {
-//         if (track.title.length > 35) {
-//             longNameTracks.value.push(track.id);
-//         }
-//     });
-// });
-
-// check if name is long
-// const isLongName = (id, type) => {
-//     switch(type) {
-//         case 'artist': return longNameArtists.value.includes(id);
-//         case 'release': return longNameReleases.value.includes(id);
-//         case 'track': return longNameTracks.value.includes(id);
-//         default: return false;
-//     }
-// };
 
 // image handling
 const getArtistImage = (artist, type = 'banner') => {
@@ -209,7 +170,7 @@ const formatDuration = (timeString) => {
     min-width: 0;
 }
 
-/* max two rows for name/title, if exceeds 35 letters - ellipsis */
+/* max two rows for name/title, if overflows - ellipsis */
 .artist-info h3 {
     margin: 0 0 0.25rem 0;
     font-size: 1rem;
@@ -259,7 +220,7 @@ const formatDuration = (timeString) => {
     min-width: 0;
 }
 
-/* max two rows for name/title, if exceeds 35 letters - ellipsis */
+/* max two rows for name/title, if overflows - ellipsis */
 .release-info h3 {
     margin: 0 0 0.25rem 0;
     font-size: 1rem;
@@ -309,7 +270,7 @@ const formatDuration = (timeString) => {
     padding: 0 1rem;
 }
 
-/* max two rows for name/title, if exceeds 35 letters - ellipsis */
+/* max two rows for name/title, if overflows - ellipsis */
 .track-info h3 {
     margin: 0 0 0.25rem 0;
     font-size: 0.95rem;
