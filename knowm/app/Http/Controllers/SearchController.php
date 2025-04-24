@@ -13,10 +13,22 @@ class SearchController extends Controller
 {
     public function index(Request $request, SearchService $searchService)
     {
-        $results = $searchService->searchAll($request->input('q', ''));
-
-        return Inertia::render('Search', array_merge($results, [
-            'searchQuery' => $request->input('q', '')
-        ]));
+        $query = $request->input('q', '');
+        $results = $searchService->searchAll($query);
+        return Inertia::render('Search', [
+            'artists' => $results['artists'],
+            'releases' => $results['releases'],
+            'tracks' => $results['tracks'],
+            'searchQuery' => $query,
+            'hasMoreArtists' => $results['hasMore']['artists'],
+            'hasMoreReleases' => $results['hasMore']['releases'],
+            'hasMoreTracks' => $results['hasMore']['tracks'],
+//            'artistsCount' => Artist::where('name', 'like', "%{$query}%")->count(),
+            'artistsCount' => $results['counts']['artists'],
+//            'releasesCount' => Release::where('title', 'like', "%{$query}%")->count(),
+            'releasesCount' => $results['counts']['releases'],
+//            'tracksCount' => $searchService->getTotalTracksCount($query)
+            'tracksCount' => $results['counts']['tracks']
+        ]);
     }
 }

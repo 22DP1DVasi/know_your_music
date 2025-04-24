@@ -13,11 +13,11 @@
                         See all {{ artistsCount }} artists →
                     </a>
                 </div>
-                <div class="artist-grid">
+                <div class="artist-results">
                     <div v-for="artist in artists" :key="artist.id" class="artist-card">
-                        <img :src="getArtistImage(artist)" :alt="artist.name" @error="handleImageError">
+                        <img :src="getArtistImage(artist)" :alt="artist.name">
                         <div class="artist-info">
-                            <h3>{{ artist.name }}</h3>
+                            <h3 :data-long="isLongName(artist.id, 'artist')" :data-text="artist.name">{{ artist.name }}</h3>
                             <p>{{ artist.tracks_count }} tracks</p>
                         </div>
                     </div>
@@ -32,11 +32,11 @@
                         See all {{ releasesCount }} releases →
                     </a>
                 </div>
-                <div class="release-grid">
+                <div class="release-results">
                     <div v-for="release in releases" :key="release.id" class="release-card">
                         <img :src="getReleaseImage(release.id)" :alt="release.title">
                         <div class="release-info">
-                            <h3>{{ release.title }}</h3>
+                            <h3 :data-long="isLongName(release.id, 'release')" :data-text="release.title">{{ release.title }}</h3>
                             <p>{{ release.artists[0]?.name }}</p>
                             <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
                         </div>
@@ -56,7 +56,7 @@
                     <div v-for="track in tracks" :key="track.id" class="track-item">
                         <div class="track-number">{{ track.pivot?.track_position || '' }}</div>
                         <div class="track-info">
-                            <h3>{{ track.title }}</h3>
+                            <h3 :data-long="isLongName(track.id, 'track')" :data-text="track.title">{{ track.title }}</h3>
                             <p>{{ track.artists[0]?.name }}</p>
                         </div>
                         <div class="track-duration">{{ formatDuration(track.duration) }}</div>
@@ -74,7 +74,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import {  onMounted, ref } from 'vue';
 import { Head } from "@inertiajs/vue3";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
@@ -86,25 +86,53 @@ const props = defineProps({
     searchQuery: String,
     hasMoreArtists: Boolean,
     hasMoreReleases: Boolean,
-    hasMoreTracks: Boolean
+    hasMoreTracks: Boolean,
+    artistsCount: Number,
+    releasesCount: Number,
+    tracksCount: Number
 });
 
-// count computed properties
-const artistsCount = computed(() => props.artists.length);
-const releasesCount = computed(() => props.releases.length);
-const tracksCount = computed(() => props.tracks.length);
+const longNameArtists = ref([]);
+const longNameReleases = ref([]);
+const longNameTracks = ref([]);
+
+onMounted(() => {
+    // check for long names
+    props.artists.forEach(artist => {
+        if (artist.name.length > 35) {
+            longNameArtists.value.push(artist.id);
+        }
+    });
+
+    props.releases.forEach(release => {
+        if (release.title.length > 35) {
+            longNameReleases.value.push(release.id);
+        }
+    });
+
+    props.tracks.forEach(track => {
+        if (track.title.length > 35) {
+            longNameTracks.value.push(track.id);
+        }
+    });
+});
+
+// check if name is long
+const isLongName = (id, type) => {
+    switch(type) {
+        case 'artist': return longNameArtists.value.includes(id);
+        case 'release': return longNameReleases.value.includes(id);
+        case 'track': return longNameTracks.value.includes(id);
+        default: return false;
+    }
+};
 
 // image handling
 const getArtistImage = (artist, type = 'banner') => {
     if (artist.banner_url) return artist.banner_url;
-
     const imagePath = `/storage/artists/${artist.id}/${type}/${type}.webp`;
     return imagePath;
 };
-
-// const handleImageError = (event) => {
-//     event.target.src = '/images/default-artist.webp';
-// };
 
 const getReleaseImage = (releaseId) => {
     return `/storage/releases/${releaseId}/cover.webp`;
@@ -145,19 +173,22 @@ const formatDuration = (timeString) => {
     text-decoration: underline;
 }
 
-/* Artists Grid */
-.artist-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+.artist-results {
+    display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
+    justify-content: flex-start;
 }
 
 .artist-card {
+    flex: 0 0 calc(20% - 1.5rem);
     background: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s;
+    min-width: 0;
+    min-height: 280px;
 }
 
 .artist-card:hover {
@@ -172,11 +203,22 @@ const formatDuration = (timeString) => {
 
 .artist-info {
     padding: 1rem;
+    min-width: 0;
 }
 
+/* max two rows for name/title, if exceeds 35 letters - ellipsis */
 .artist-info h3 {
     margin: 0 0 0.25rem 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    max-height: 2.4em;
+    line-height: 1.2;
 }
 
 .artist-info p {
@@ -185,18 +227,21 @@ const formatDuration = (timeString) => {
     font-size: 0.9rem;
 }
 
-/* Releases Grid */
-.release-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+.release-results {
+    display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
+    justify-content: flex-start;
 }
 
 .release-card {
+    flex: 0 0 calc(20% - 1.5rem);
     background: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    min-width: 0;
+    min-height: 300px;
 }
 
 .release-card img {
@@ -207,20 +252,33 @@ const formatDuration = (timeString) => {
 
 .release-info {
     padding: 1rem;
+    min-width: 0;
 }
 
+/* max two rows for name/title, if exceeds 35 letters - ellipsis */
 .release-info h3 {
     margin: 0 0 0.25rem 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    max-height: 2.4em;
+    line-height: 1.2;
 }
 
 .release-info p {
     margin: 0 0 0.25rem 0;
     color: #666;
     font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Tracks List */
 .track-list {
     background: white;
     border-radius: 8px;
@@ -229,36 +287,50 @@ const formatDuration = (timeString) => {
 }
 
 .track-item {
-    display: grid;
-    grid-template-columns: 50px 1fr 80px;
+    display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #eee;
 }
 
-.track-item:hover {
-    background: #f9f9f9;
-}
-
 .track-number {
     color: #666;
     text-align: center;
+    flex: 0 0 50px;
 }
 
+.track-info {
+    flex: 1;
+    min-width: 0;
+    padding: 0 1rem;
+}
+
+/* max two rows for name/title, if exceeds 35 letters - ellipsis */
 .track-info h3 {
     margin: 0 0 0.25rem 0;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .track-info p {
     margin: 0;
     color: #666;
     font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .track-duration {
     text-align: right;
     color: #666;
+    flex: 0 0 80px;
 }
 
 .no-results {
@@ -266,5 +338,59 @@ const formatDuration = (timeString) => {
     text-align: center;
     font-size: 1.2rem;
     color: #666;
+}
+
+/* character limit handling */
+/* max two rows for name/title, if exceeds 35 letters - ellipsis */
+.artist-info h3:not([data-long]):after,
+.release-info h3:not([data-long]):after,
+.track-info h3:not([data-long]):after {
+    content: attr(data-text);
+}
+
+.artist-info h3[data-long],
+.release-info h3[data-long],
+.track-info h3[data-long] {
+    position: relative;
+}
+
+.artist-info h3[data-long]:after,
+.release-info h3[data-long]:after,
+.track-info h3[data-long]:after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    right: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 1200px) {
+    .artist-card,
+    .release-card {
+        flex: 0 0 calc(25% - 1.5rem);
+    }
+}
+
+@media (max-width: 1024px) {
+    .artist-card,
+    .release-card {
+        flex: 0 0 calc(33.333% - 1.5rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .artist-card,
+    .release-card {
+        flex: 0 0 calc(50% - 1.5rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .artist-card,
+    .release-card {
+        flex: 0 0 100%;
+    }
 }
 </style>

@@ -10,14 +10,23 @@ class SearchService
 {
     public function searchAll(string $query, int $limit = 5)
     {
+        $artistsCount = Artist::where('name', 'like', "%{$query}%")->count();
+        $releasesCount = Release::where('title', 'like', "%{$query}%")->count();
+        $tracksCount = $this->getTotalTracksCount($query);
+
         return [
             'artists' => $this->searchArtists($query, $limit),
             'releases' => $this->searchReleases($query, $limit),
             'tracks' => $this->searchTracks($query, $limit),
             'hasMore' => [
-                'artists' => Artist::where('name', 'like', "%{$query}%")->count() > $limit,
-                'releases' => Release::where('title', 'like', "%{$query}%")->count() > $limit,
-                'tracks' => $this->getTotalTracksCount($query) > $limit
+                'artists' => $artistsCount > $limit,
+                'releases' => $releasesCount > $limit,
+                'tracks' => $tracksCount > $limit
+            ],
+            'counts' => [
+                'artists' => $artistsCount,
+                'releases' => $releasesCount,
+                'tracks' => $tracksCount
             ]
         ];
     }
