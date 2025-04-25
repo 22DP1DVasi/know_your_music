@@ -11,7 +11,7 @@ class SearchService
     public function searchAll(string $query, int $limit = 5)
     {
         $artistsCount = Artist::where('name', 'like', "%{$query}%")->count();
-        $releasesCount = Release::where('title', 'like', "%{$query}%")->count();
+        $releasesCount = $this->getReleasesCount($query);
         $tracksCount = $this->getTotalTracksCount($query);
 
         return [
@@ -49,11 +49,13 @@ class SearchService
 
     protected function searchReleases(string $query, int $limit)
     {
-        return Release::where('title', 'like', "%{$query}%")
-            ->with(['artists' => function($q) {
-                $q->where('role', 'primary');
-            }])
-//            ->with(['artists'])   show all artists
+        return Release::where(function($q) use ($query) {
+            $q->where('title', 'like', "%{$query}%")
+                ->orWhereHas('artists', function($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%");
+                });
+        })
+            ->with(['artists'])
             ->withCount('tracks')
             ->limit($limit)
             ->get();
@@ -61,28 +63,47 @@ class SearchService
 
     protected function searchTracks(string $query, int $limit)
     {
-        $tracksByTitle = Track::where('title', 'like', "%{$query}%")
-            ->with(['artists' => function($q) {
-                $q->where('role', 'primary');
-            }])
+        $tracksByTitleOrArtist = Track::where(function($q) use ($query) {
+            $q->where('title', 'like', "%{$query}%")
+                ->orWhereHas('artists', function($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%");
+                });
+        })
+            ->with(['artists'])
             ->limit($limit)
             ->get();
 
         $tracksByLyrics = Track::whereHas('lyrics', function($q) use ($query) {
             $q->where('lyrics', 'like', "%{$query}%");
         })
-            ->with(['artists' => function($q) {
-                $q->where('role', 'primary');
-            }])
+            ->with(['artists'])
             ->limit($limit)
             ->get();
 
-        return $tracksByTitle->merge($tracksByLyrics)->unique('id')->take($limit);
+        return $tracksByTitleOrArtist->merge($tracksByLyrics)
+            ->unique('id')
+            ->take($limit);
+    }
+
+    protected function getReleasesCount(string $query)
+    {
+        return Release::where(function($q) use ($query) {
+            $q->where('title', 'like', "%{$query}%")
+                ->orWhereHas('artists', function($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%");
+                });
+        })
+            ->count();
     }
 
     protected function getTotalTracksCount(string $query)
     {
-        return Track::where('title', 'like', "%{$query}%")->count() +
+        return Track::where(function($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                    ->orWhereHas('artists', function($q) use ($query) {
+                        $q->where('name', 'like', "%{$query}%");
+                    });
+            })->count() +
             Track::whereHas('lyrics', fn($q) => $q->where('lyrics', 'like', "%{$query}%"))->count();
     }
 }

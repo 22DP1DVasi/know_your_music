@@ -54,10 +54,14 @@
                 </div>
                 <div class="track-list">
                     <div v-for="track in tracks" :key="track.id" class="track-item">
-                        <div class="track-number">{{ track.pivot?.track_position || '' }}</div>
+<!--                        <div class="track-number">{{ track.pivot?.track_position || '' }}</div>-->
                         <div class="track-info">
                             <h3>{{ track.title }}</h3>
-                            <p>{{ track.artists[0]?.name }}</p>
+                            <p class="artists-names">
+                                <span v-for="(artist, index) in track.artists" :key="artist.id">
+                                    {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
+                            </span>
+                            </p>
                         </div>
                         <div class="track-duration">{{ formatDuration(track.duration) }}</div>
                     </div>
@@ -244,6 +248,18 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
 }
 
+.release-info .artists-names {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0 0 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
 .track-list {
     background: white;
     border-radius: 8px;
@@ -268,6 +284,7 @@ const formatDuration = (timeString) => {
     flex: 1;
     min-width: 0;
     padding: 0 1rem;
+    overflow: hidden;
 }
 
 /* max two rows for name/title, if overflows - ellipsis */
@@ -290,6 +307,19 @@ const formatDuration = (timeString) => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.track-info .artists-names {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+    width: 100%;
 }
 
 .track-duration {
