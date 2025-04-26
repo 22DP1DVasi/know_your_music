@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Track extends Model
@@ -29,11 +28,11 @@ class Track extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'duration' => 'datetime:H:i:s', // Cast to time format
+        'duration' => 'datetime:H:i:s',
         'release_date' => 'date:Y-m-d',
     ];
 
-    // explicit attributes for covers URL
+    // explicit attribute for covers URL
     protected $appends = ['cover_url'];
 
     /**
@@ -42,7 +41,7 @@ class Track extends Model
     public function genres()
     {
         return $this->belongsToMany(Genre::class, 'tracks_genres')
-            ->withTimestamps();  // tracks when relationships were created
+            ->withTimestamps();
     }
 
     /**

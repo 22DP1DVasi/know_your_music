@@ -59,9 +59,15 @@ Route::get('/faq', function () {
     return Inertia::render('FAQ');
 })->name('faq');
 
-// search route
+// searches route
 Route::get('/search', [SearchController::class, 'index'])
     ->name('search');
+
+Route::get('/search/artists', [SearchController::class, 'artists'])
+    ->name('search.artists');
+
+Route::get('/search/releases', [SearchController::class, 'releases'])
+    ->name('search.releases');
 
 // user account settings
 Route::middleware('auth')->group(function () {

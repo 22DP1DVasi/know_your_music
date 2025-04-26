@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Recommendation extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'user_id',
         'is_checked_by_user',

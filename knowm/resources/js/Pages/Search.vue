@@ -3,7 +3,7 @@
     <Navbar/>
     <main class="flex-1">
         <div class="search-results">
-            <h1>Search Results for "{{ searchQuery }}"</h1>
+            <h1 class="results-title">Search Results for "{{ searchQuery }}"</h1>
 
             <!-- artists results -->
             <section v-if="artists.length > 0" class="results-section">
@@ -160,6 +160,15 @@ const cleanSnippet = (snippet) => {
 </script>
 
 <style scoped>
+.results-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    color: #0c4baa;
+    font-weight: 600;
+    padding-top: 1rem;
+}
+
 .search-results {
     padding: 2rem;
     max-width: 1200px;
@@ -239,7 +248,6 @@ const cleanSnippet = (snippet) => {
     line-height: 1.2;
     max-height: 2.4em;
 }
-
 
 .artist-info p {
     margin: 0;
@@ -418,6 +426,11 @@ const cleanSnippet = (snippet) => {
 }
 
 @media (max-width: 768px) {
+    .results-title {
+        font-size: 1.8rem;
+        padding-top: 0.5rem;
+    }
+
     .artist-card,
     .release-card {
         flex: 0 0 calc(50% - 1rem);  /* 2 cards per row */
@@ -457,6 +470,11 @@ const cleanSnippet = (snippet) => {
 }
 
 @media (max-width: 480px) {
+    .results-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
     .artist-card,
     .release-card {
         flex: 0 0 calc(50% - 0.75rem);  /* 2 cards per row*/

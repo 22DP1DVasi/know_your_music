@@ -18,25 +18,20 @@ class SetupArtistFolders extends Command
     {
         $limit = $this->option('limit');
         $artists = Artist::when($limit, fn($q) => $q->limit($limit))->get();
-
         if (!$this->option('force') && !$this->confirm(
                 "This will create folders for {$artists->count()} artists. Continue?", true
             )) {
             return;
         }
-
         $bar = $this->output->createProgressBar($artists->count());
         $bar->start();
-
         $created = 0;
         $skipped = 0;
-
         foreach ($artists as $artist) {
             $paths = [
                 "artists/{$artist->id}/profile",
                 "artists/{$artist->id}/banner"
             ];
-
             foreach ($paths as $path) {
                 if (!Storage::disk('public')->exists($path)) {
                     Storage::disk('public')->makeDirectory($path);
@@ -45,12 +40,9 @@ class SetupArtistFolders extends Command
                     $skipped++;
                 }
             }
-
             $bar->advance();
         }
-
         $bar->finish();
-
         $this->newLine(2);
         $this->info("Operation complete!");
         $this->line("Created folders: {$created}");

@@ -13,13 +13,11 @@ class ArtistImageController extends Controller
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
-
         $path = $request->file('image')->storeAs(
             "artists/{$artist->id}/profile",
             'profile.jpg',
             'public'
         );
-
         return response()->json([
             'path' => $path,
             'url' => Storage::url($path)
@@ -31,13 +29,11 @@ class ArtistImageController extends Controller
         $request->validate([
             'image' => 'required|image|mimes:webp|max:5120'
         ]);
-
         $path = $request->file('image')->storeAs(
             "artists/{$artist->id}/banner",
             'banner.webp',
             'public'
         );
-
         return response()->json([
             'path' => $path,
             'url' => Storage::url($path)

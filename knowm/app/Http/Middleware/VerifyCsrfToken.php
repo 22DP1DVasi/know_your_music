@@ -17,7 +17,6 @@ class VerifyCsrfToken
     {
         return $next($request);
     }
-
     protected $except = [
         'api/check-email'
     ];

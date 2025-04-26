@@ -5,9 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Pagination.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ArtistsSearchResults.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Lyric.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Lyric.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/SetupArtistFolders.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/SetupArtistFolders.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistImageController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistImageController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ProfileController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseImageController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseImageController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Middleware/VerifyCsrfToken.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Middleware/VerifyCsrfToken.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Artist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Artist.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Genre.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Genre.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Recommendation.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Recommendation.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/RecommendationArtist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/RecommendationArtist.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Track.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Track.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +39,13 @@
   <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Composition API Component" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -173,6 +197,11 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\PhpStorm 2024.3.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
+    ]
   }
 }</component>
   <component name="RunManager">
@@ -240,7 +269,9 @@
       <workItem from="1745607778521" duration="8348000" />
       <workItem from="1745652277429" duration="61000" />
       <workItem from="1745652374569" duration="10496000" />
-      <workItem from="1745668626188" duration="837000" />
+      <workItem from="1745668626188" duration="8422000" />
+      <workItem from="1745680559982" duration="152000" />
+      <workItem from="1745680760375" duration="2011000" />
     </task>
     <servers />
   </component>

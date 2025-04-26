@@ -48,7 +48,7 @@ class Genre extends Model
     public function releases()
     {
         return $this->belongsToMany(Release::class, 'releases_genres')
-            ->withTimestamps();     // tracks when relationships were created
+            ->withTimestamps();
     }
 
     /**
@@ -57,7 +57,7 @@ class Genre extends Model
     public function tracks()
     {
         return $this->belongsToMany(Track::class, 'tracks_genres')
-            ->withTimestamps();     // tracks when relationships were created
+            ->withTimestamps();
     }
 
     /**

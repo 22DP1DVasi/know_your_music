@@ -46,7 +46,6 @@ class Artist extends Model
             Storage::makeDirectory("public/artists/{$artist->id}/profile");
             Storage::makeDirectory("public/artists/{$artist->id}/banner");
         });
-
         // delete folder when this artist is deleted
         static::deleted(function ($artist) {
             Storage::deleteDirectory("public/artists/{$artist->id}");

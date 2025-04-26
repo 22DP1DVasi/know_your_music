@@ -9,9 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class RecommendationArtist extends Model
 {
     use HasFactory;
-
     protected $table = 'recommendations_artists';
-
     protected $fillable = [
         'recommendation_genre_id',
         'artist_id',

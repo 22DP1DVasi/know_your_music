@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 class ArtistComment extends Model
 {
     use HasFactory;
-
     protected $table = 'comments_artists';
 
     /**
@@ -70,7 +69,6 @@ class ArtistComment extends Model
         if ($this->deleted_username) {
             return $this->deleted_username;
         }
-
         return $this->user?->name ?? '[Deleted User]';
     }
 
