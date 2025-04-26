@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SearchService
 {
-    public function searchAll(string $query, int $limit = 5)
+    public function searchAll(string $query, int $limit = 8)
     {
         $artistsCount = Artist::where('name', 'like', "%{$query}%")->count();
         $releasesCount = $this->getReleasesCount($query);

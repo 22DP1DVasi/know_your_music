@@ -5,18 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseImageController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistImageController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistImageController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Artist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Artist.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Lyric.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Lyric.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Release.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Release.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Track.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Track.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/UserCollection/.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -248,7 +239,7 @@
       <workItem from="1745518787604" duration="6417000" />
       <workItem from="1745607778521" duration="8348000" />
       <workItem from="1745652277429" duration="61000" />
-      <workItem from="1745652374569" duration="7601000" />
+      <workItem from="1745652374569" duration="9866000" />
     </task>
     <servers />
   </component>

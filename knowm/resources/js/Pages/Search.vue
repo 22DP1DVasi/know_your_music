@@ -200,7 +200,7 @@ const cleanSnippet = (snippet) => {
 }
 
 .artist-card {
-    flex: 0 0 calc(20% - 1.5rem);
+    flex: 0 0 calc(25% - 1.5rem);  /* 4 cards per row*/
     background: white;
     border-radius: 8px;
     overflow: hidden;
@@ -255,7 +255,7 @@ const cleanSnippet = (snippet) => {
 }
 
 .release-card {
-    flex: 0 0 calc(20% - 1.5rem);
+    flex: 0 0 calc(25% - 1.5rem);  /* 4 cards per row*/
     background: white;
     border-radius: 8px;
     overflow: hidden;
@@ -417,37 +417,33 @@ const cleanSnippet = (snippet) => {
     color: #666;
 }
 
-@media (max-width: 1200px) {
-    .artist-card,
-    .release-card {
-        flex: 0 0 calc(25% - 1.5rem);
-    }
-}
-
-@media (max-width: 1024px) {
-    .artist-card,
-    .release-card {
-        flex: 0 0 calc(33.333% - 1.5rem);
-    }
-}
-
 @media (max-width: 768px) {
-    .artist-results,
-    .release-results {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
     .artist-card,
     .release-card {
-        flex: 0 0 auto;
-        width: 100%;
-        min-height: 150px;
+        flex: 0 0 calc(50% - 1rem);  /* 2 cards per row */
+        min-height: 360px;
+        height: 360px ;
+        aspect-ratio: 3/4;
     }
 
     .artist-card img,
     .release-card img {
-        height: 300px;
+        height: 240px;
+    }
+
+    .artist-info,
+    .release-info {
+        padding: 1.25rem;
+    }
+
+    .artist-info h3,
+    .release-info h3 {
+        font-size: 1.05rem;
+    }
+
+    .artist-info p,
+    .release-info p {
+        font-size: 0.95rem;
     }
 
     .track-info h3 {
@@ -463,15 +459,14 @@ const cleanSnippet = (snippet) => {
 @media (max-width: 480px) {
     .artist-card,
     .release-card {
-        min-height: 130px;
+        flex: 0 0 calc(50% - 0.75rem);  /* 2 cards per row*/
+        min-height: 300px;
+        height: 300px;
     }
 
-    .artist-card img {
-        height: 220px;
-    }
-
+    .artist-card img,
     .release-card img {
-        height: 220px;
+        height: 180px;
     }
 }
 </style>
