@@ -115,7 +115,6 @@ import Footer from "@/Components/Footer.vue";
 const props = defineProps({
     artists: Array,
     releases: Array,
-    // tracks: Array,
     metadataMatches: Array,
     lyricsMatches: Array,
     searchQuery: String,
@@ -152,6 +151,7 @@ const formatDuration = (timeString) => {
 const cleanSnippet = (snippet) => {
     if (!snippet) return '';
     return snippet
+        .replace(/\\/g, '')
         .replace(/[\x00-\x1F\x7F]/g, ' ')  // Remove control chars
         .replace(/\s+/g, ' ')              // Collapse spaces
         .trim();

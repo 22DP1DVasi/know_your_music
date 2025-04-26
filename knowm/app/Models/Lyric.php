@@ -71,11 +71,9 @@ class Lyric extends Model
     public function cleanLyrics(string $lyrics = null): string
     {
         $lyrics = $lyrics ?? $this->lyrics;
-        // remove control characters except normal whitespace
         $cleaned = preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/u', '', $lyrics);
-        // normalize line endings to spaces
+        $cleaned = str_replace(['\r\n', '\r', '\n'], ' ', $cleaned);
         $cleaned = preg_replace('/\R+/u', ' ', $cleaned);
-        // collapse multiple spaces
         $cleaned = preg_replace('/\s+/', ' ', $cleaned);
         return trim($cleaned);
     }
