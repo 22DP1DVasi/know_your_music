@@ -13,6 +13,7 @@ use App\Models\Lyrics;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ArtistImageController;
+use App\Http\Controllers\ReleaseImageController;
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -81,10 +82,11 @@ Route::middleware('guest')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
-// artist images routes
+// artist and release cover images routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/artists/{artist}/profile-image', [ArtistImageController::class, 'uploadProfileImage']);
     Route::post('/artists/{artist}/banner-image', [ArtistImageController::class, 'uploadBannerImage']);
+    Route::post('/releases/{release}/cover-image', [ReleaseImageController::class, 'uploadCoverImage']);
 });
 
 

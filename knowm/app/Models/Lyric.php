@@ -31,6 +31,8 @@ class Lyric extends Model
         'status' => 'string',
     ];
 
+    protected $appends = ['clean_lyrics', 'original_lyrics'];
+
     /**
      * Get the track associated with these lyrics.
      */
@@ -45,6 +47,37 @@ class Lyric extends Model
     public function lastUpdatedBy(): BelongsTo
     {
         return $this->belongsTo(Admin::class, 'last_updated_by_user');
+    }
+
+    /**
+     * Get cleaned lyrics
+     */
+    public function getCleanLyricsAttribute(): string
+    {
+        return $this->cleanLyrics();
+    }
+
+    /**
+     * Get original lyrics
+     */
+    public function getOriginalLyricsAttribute(): string
+    {
+        return $this->lyrics;
+    }
+
+    /**
+     * Clean lyrics from control characters and normalize whitespace
+     */
+    public function cleanLyrics(string $lyrics = null): string
+    {
+        $lyrics = $lyrics ?? $this->lyrics;
+        // remove control characters except normal whitespace
+        $cleaned = preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/u', '', $lyrics);
+        // normalize line endings to spaces
+        $cleaned = preg_replace('/\R+/u', ' ', $cleaned);
+        // collapse multiple spaces
+        $cleaned = preg_replace('/\s+/', ' ', $cleaned);
+        return trim($cleaned);
     }
 
     /**

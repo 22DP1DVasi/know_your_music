@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ class Release extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are mass assignable
      *
      * @var array<int, string>
      */
@@ -26,7 +27,7 @@ class Release extends Model
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast
      *
      * @var array<string, string>
      */
@@ -34,8 +35,24 @@ class Release extends Model
         'release_date' => 'date:Y-m-d',
     ];
 
+    // explicit attributes for covers URL
+    protected $appends = ['cover_url'];
+
+    protected static function booted()
+    {
+        // create folder for cover image when this release is created
+        static::created(function ($release) {
+            Storage::makeDirectory("public/releases/{$release->id}/{$release->release_type}");
+        });
+
+        // delete folder when this release is deleted
+        static::deleted(function ($release) {
+            Storage::deleteDirectory("public/releases/{$release->id}");
+        });
+    }
+
     /**
-     * Get the artist that owns this release.
+     * Get the artist that owns this release
      */
     public function artists(): BelongsToMany
     {
@@ -45,7 +62,7 @@ class Release extends Model
     }
 
     /**
-     * Get all tracks in this release.
+     * Get all tracks in this release
      */
     public function tracks(): BelongsToMany
     {
@@ -55,7 +72,7 @@ class Release extends Model
     }
 
     /**
-     * Get all genres associated with this release.
+     * Get all genres associated with this release
      */
     public function genres()
     {
@@ -82,7 +99,7 @@ class Release extends Model
     }
 
     /**
-     * Scope for albums only.
+     * Scope for albums only
      */
     public function scopeAlbums($query)
     {
@@ -90,7 +107,7 @@ class Release extends Model
     }
 
     /**
-     * Scope for releases in a given year.
+     * Scope for releases in a given year
      */
     public function scopeYear($query, int $year)
     {
@@ -98,17 +115,19 @@ class Release extends Model
     }
 
     /**
-     * Get the cover image URL (accessor).
+     * Get cover image attribute for this release
      */
-    public function getCoverUrlAttribute(): ?string
+    public function getCoverUrlAttribute()
     {
-        return $this->cover_image
-            ? asset('storage/releases/'.$this->cover_image)
-            : asset('images/default-release-cover.jpg');
+        $path = "releases/{$this->release_type}/{$this->id}/cover.webp";
+
+        return Storage::disk('public')->exists($path)
+            ? Storage::url($path)
+            : asset('images/default-release.webp');
     }
 
     /**
-     * Get the release duration in minutes.
+     * Get the release duration in minutes
      */
     public function getDurationAttribute(): int
     {

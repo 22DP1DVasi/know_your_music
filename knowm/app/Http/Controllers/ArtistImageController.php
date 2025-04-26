@@ -34,8 +34,13 @@ class ArtistImageController extends Controller
 
         $path = $request->file('image')->storeAs(
             "artists/{$artist->id}/banner",
-            'banner.webp', // Fixed WebP filename
+            'banner.webp',
             'public'
         );
+
+        return response()->json([
+            'path' => $path,
+            'url' => Storage::url($path)
+        ]);
     }
 }

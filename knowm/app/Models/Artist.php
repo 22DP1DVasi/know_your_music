@@ -13,7 +13,7 @@ class Artist extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are mass assignable
      *
      * @var array<int, string>
      */
@@ -27,7 +27,7 @@ class Artist extends Model
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast
      *
      * @var array<string, string>
      */
@@ -36,25 +36,25 @@ class Artist extends Model
         'disbanded_year' => 'integer',
     ];
 
-    //
+    // explicit attributes for images URL
     protected $appends = ['banner_url'];
 
     protected static function booted()
     {
-        // create folders for images when this artist is created
+        // create folder for images when this artist is created
         static::created(function ($artist) {
             Storage::makeDirectory("public/artists/{$artist->id}/profile");
             Storage::makeDirectory("public/artists/{$artist->id}/banner");
         });
 
-        // delete folders for images when this artist is deleted
+        // delete folder when this artist is deleted
         static::deleted(function ($artist) {
             Storage::deleteDirectory("public/artists/{$artist->id}");
         });
     }
 
     /**
-     * Get all genres associated with this artist.
+     * Get all genres associated with this artist
      */
     public function genres()
     {
@@ -63,7 +63,7 @@ class Artist extends Model
     }
 
     /**
-     * Get all releases by this artist.
+     * Get all releases by this artist
      */
     public function releases(): BelongsToMany
     {
@@ -73,7 +73,7 @@ class Artist extends Model
     }
 
     /**
-     * Get all tracks by this artist.
+     * Get all tracks by this artist
      */
     public function tracks(): BelongsToMany
     {
@@ -111,7 +111,7 @@ class Artist extends Model
     }
 
     /**
-     * Get the artist's active years.
+     * Get the artist's active years
      */
     public function getActiveYearsAttribute(): ?string
     {
@@ -123,23 +123,19 @@ class Artist extends Model
     }
 
     /**
-     * Get profile image attribute for this artst
+     * Get banner image attribute for this artst
      */
     public function getBannerUrlAttribute()
     {
         $path = "artists/{$this->id}/banner/banner.webp";
-
-        // Check for WebP first, fallback to JPG if needed
         if (Storage::disk('public')->exists($path)) {
             return Storage::url($path);
         }
-
-        // Fallback to default image
         return asset('images/default-artist.webp');
     }
 
     /**
-     * Get banner image attribute for this artst
+     * Get profile image attribute for this artst
      */
     public function getProfileUrlAttribute()
     {
@@ -150,7 +146,7 @@ class Artist extends Model
     }
 
     /**
-     * Scope for active artists (not disbanded).
+     * Scope for active artists (not disbanded)
      */
     public function scopeActive($query)
     {
@@ -158,7 +154,7 @@ class Artist extends Model
     }
 
     /**
-     * Scope for bands only.
+     * Scope for bands only
      */
     public function scopeBands($query)
     {

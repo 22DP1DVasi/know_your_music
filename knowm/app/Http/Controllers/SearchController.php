@@ -18,7 +18,9 @@ class SearchController extends Controller
         return Inertia::render('Search', [
             'artists' => $results['artists'],
             'releases' => $results['releases'],
-            'tracks' => $results['tracks'],
+//            'tracks' => $results['tracks'],
+            'metadataMatches' => $results['tracks']['metadata_tracks'],
+            'lyricsMatches' => $results['tracks']['lyrics_tracks'],
             'searchQuery' => $query,
             'hasMoreArtists' => $results['hasMore']['artists'],
             'hasMoreReleases' => $results['hasMore']['releases'],
@@ -28,7 +30,9 @@ class SearchController extends Controller
 //            'releasesCount' => Release::where('title', 'like', "%{$query}%")->count(),
             'releasesCount' => $results['counts']['releases'],
 //            'tracksCount' => $searchService->getTotalTracksCount($query)
-            'tracksCount' => $results['counts']['tracks']
+            'tracksCount' => $results['counts']['tracks'],
+            'metadataMatchesCount' => $results['counts']['metadata_tracks_count'],
+            'lyricsMatchesCount' => $results['counts']['lyrics_tracks_count']
         ]);
     }
 }

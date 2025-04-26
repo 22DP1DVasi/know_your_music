@@ -12,7 +12,7 @@ class Track extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are mass assignable
      *
      * @var array<int, string>
      */
@@ -24,7 +24,7 @@ class Track extends Model
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast
      *
      * @var array<string, string>
      */
@@ -33,8 +33,11 @@ class Track extends Model
         'release_date' => 'date:Y-m-d',
     ];
 
+    // explicit attributes for covers URL
+    protected $appends = ['cover_url'];
+
     /**
-     * Get all genres associated with this track.
+     * Get all genres associated with this track
      */
     public function genres()
     {
@@ -43,7 +46,7 @@ class Track extends Model
     }
 
     /**
-     * Get all releases associated with this track.
+     * Get all releases associated with this track
      */
     public function releases(): BelongsToMany
     {
@@ -53,7 +56,7 @@ class Track extends Model
     }
 
     /**
-     * Get all artists associated with this track.
+     * Get all artists associated with this track
      */
     public function artists(): BelongsToMany
     {
@@ -71,7 +74,7 @@ class Track extends Model
     }
 
     /**
-     * Get all comments associated with this track.
+     * Get all comments associated with this track
      */
     public function comments()
     {
@@ -90,7 +93,7 @@ class Track extends Model
     }
 
     /**
-     * Get the formatted duration (mm:ss).
+     * Get the formatted duration (mm:ss)
      */
     public function getFormattedDurationAttribute(): string
     {
@@ -98,7 +101,7 @@ class Track extends Model
     }
 
     /**
-     * Get the audio file URL (accessor).
+     * Get the audio file URL
      */
     public function getAudioUrlAttribute(): ?string
     {
@@ -108,7 +111,18 @@ class Track extends Model
     }
 
     /**
-     * Scope for searching tracks by title.
+     * Get the cover image from associated release
+     */
+    public function getCoverUrlAttribute()
+    {
+        // Get the first release that has a cover image
+        $release = $this->releases()->first();
+
+        return $release?->cover_url ?? asset('images/default-release.webp');
+    }
+
+    /**
+     * Scope for searching tracks by title
      */
     public function scopeSearch($query, string $term)
     {
@@ -116,7 +130,7 @@ class Track extends Model
     }
 
     /**
-     * Scope for recent tracks.
+     * Scope for recent tracks
      */
     public function scopeRecent($query, int $days = 30)
     {

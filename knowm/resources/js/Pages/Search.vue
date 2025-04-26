@@ -34,7 +34,7 @@
                 </div>
                 <div class="release-results">
                     <div v-for="release in releases" :key="release.id" class="release-card">
-                        <img :src="getReleaseImage(release.id)" :alt="release.title">
+                        <img :src="getReleaseImage(release)" :alt="release.title">
                         <div class="release-info">
                             <h3>{{ release.title }}</h3>
                             <p>{{ release.artists[0]?.name }}</p>
@@ -44,23 +44,25 @@
                 </div>
             </section>
 
-            <!-- tracks results -->
-            <section v-if="tracks.length > 0" class="results-section">
+            <!-- tracks results by title or authors -->
+            <section v-if="metadataMatches.length > 0" class="results-section">
                 <div class="section-header">
                     <h2>Tracks</h2>
-                    <a v-if="hasMoreTracks" :href="`/search/tracks?q=${searchQuery}`" class="see-all">
-                        See all {{ tracksCount }} tracks →
+                    <a v-if="metadataMatchesCount > metadataMatches.length"
+                       :href="`/search/tracks?q=${searchQuery}`"
+                       class="see-all">
+                        See all {{ metadataMatchesCount }} tracks →
                     </a>
                 </div>
-                <div class="track-list">
-                    <div v-for="track in tracks" :key="track.id" class="track-item">
-<!--                        <div class="track-number">{{ track.pivot?.track_position || '' }}</div>-->
+                <div class="track-list metadata-track-list">
+                    <div v-for="track in metadataMatches" :key="track.id" class="track-item">
+                        <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
                         <div class="track-info">
                             <h3>{{ track.title }}</h3>
                             <p class="artists-names">
-                                <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                    {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
-                            </span>
+                    <span v-for="(artist, index) in track.artists" :key="artist.id">
+                        {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
+                    </span>
                             </p>
                         </div>
                         <div class="track-duration">{{ formatDuration(track.duration) }}</div>
@@ -68,8 +70,36 @@
                 </div>
             </section>
 
+            <!-- tracks results by lyrics -->
+            <section v-if="lyricsMatches.length > 0" class="results-section">
+                <div class="section-header">
+                    <h2>Lyrics Matches</h2>
+                    <a v-if="lyricsMatchesCount > lyricsMatches.length"
+                       :href="`/search/tracks?q=${searchQuery}&type=lyrics`"
+                       class="see-all">
+                        See all {{ lyricsMatchesCount }} lyrics matches →
+                    </a>
+                </div>
+                <div class="track-list lyric-matches">
+                    <div v-for="track in lyricsMatches" :key="track.id" class="track-item">
+                        <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
+                        <div class="track-info">
+                            <h3>{{ track.title }}</h3>
+                            <p class="artists-names">
+                    <span v-for="(artist, index) in track.artists" :key="artist.id">
+                        {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
+                    </span>
+                            </p>
+                            <p class="lyric-snippet" v-html="cleanSnippet(track.lyric_snippet)"></p>
+                        </div>
+                        <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                    </div>
+                </div>
+            </section>
+
             <!-- no results -->
-            <div v-if="artists.length === 0 && releases.length === 0 && tracks.length === 0" class="no-results">
+            <div v-if="artists.length === 0 && releases.length === 0 && metadataMatches.length === 0
+            && lyricsMatches.length === 0" class="no-results">
                 No results found for "{{ searchQuery }}"
             </div>
         </div>
@@ -85,25 +115,32 @@ import Footer from "@/Components/Footer.vue";
 const props = defineProps({
     artists: Array,
     releases: Array,
-    tracks: Array,
+    // tracks: Array,
+    metadataMatches: Array,
+    lyricsMatches: Array,
     searchQuery: String,
     hasMoreArtists: Boolean,
     hasMoreReleases: Boolean,
     hasMoreTracks: Boolean,
     artistsCount: Number,
     releasesCount: Number,
-    tracksCount: Number
+    tracksCount: Number,
+    metadataMatchesCount: Number,
+    lyricsMatchesCount: Number
 });
 
 // image handling
 const getArtistImage = (artist, type = 'banner') => {
     if (artist.banner_url) return artist.banner_url;
-    const imagePath = `/storage/artists/${artist.id}/${type}/${type}.webp`;
-    return imagePath;
+    return `/storage/artists/${artist.id}/${type}/${type}.webp`;
 };
 
-const getReleaseImage = (releaseId) => {
-    return `/storage/releases/${releaseId}/cover.webp`;
+const getReleaseImage = (release) => {
+    return release.cover_url;
+};
+
+const getTrackImage = (track) => {
+    return track.cover_url;
 };
 
 const formatDuration = (timeString) => {
@@ -111,6 +148,15 @@ const formatDuration = (timeString) => {
     const [hours, minutes, seconds] = timeString.split(':');
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
 };
+
+const cleanSnippet = (snippet) => {
+    if (!snippet) return '';
+    return snippet
+        .replace(/[\x00-\x1F\x7F]/g, ' ')  // Remove control chars
+        .replace(/\s+/g, ' ')              // Collapse spaces
+        .trim();
+};
+
 </script>
 
 <style scoped>
@@ -121,7 +167,7 @@ const formatDuration = (timeString) => {
 }
 
 .results-section {
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
 }
 
 .section-header {
@@ -129,6 +175,11 @@ const formatDuration = (timeString) => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
 }
 
 .see-all {
@@ -272,12 +323,20 @@ const formatDuration = (timeString) => {
     align-items: center;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #eee;
+    gap: 1rem;
 }
 
-.track-number {
-    color: #666;
-    text-align: center;
-    flex: 0 0 50px;
+.metadata-track-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.track-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
 }
 
 .track-info {
@@ -291,13 +350,11 @@ const formatDuration = (timeString) => {
 .track-info h3 {
     margin: 0 0 0.25rem 0;
     font-size: 0.95rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
-    word-break: break-word;
+    max-width: 100%;
+    display: block;
 }
 
 .track-info p {
@@ -328,14 +385,37 @@ const formatDuration = (timeString) => {
     flex: 0 0 80px;
 }
 
+.lyric-matches{
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.lyric-matches .track-item {
+    background: white;
+    padding-left: 0.5rem;
+}
+
+.lyric-snippet {
+    margin: 0.5rem 0 0 0;
+    color: #555;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.lyric-snippet mark {
+    background-color: rgba(255, 235, 59, 0.4);
+    color: inherit;
+    padding: 0 2px;
+    border-radius: 3px;
+}
+
 .no-results {
     padding: 2rem;
     text-align: center;
     font-size: 1.2rem;
     color: #666;
 }
-
-
 
 @media (max-width: 1200px) {
     .artist-card,
@@ -352,16 +432,46 @@ const formatDuration = (timeString) => {
 }
 
 @media (max-width: 768px) {
+    .artist-results,
+    .release-results {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
     .artist-card,
     .release-card {
-        flex: 0 0 calc(50% - 1.5rem);
+        flex: 0 0 auto;
+        width: 100%;
+        min-height: 150px;
+    }
+
+    .artist-card img,
+    .release-card img {
+        height: 300px;
+    }
+
+    .track-info h3 {
+        font-size: 0.9rem;
+        max-width: 180px;
+    }
+
+    .lyric-matches .track-info h3 {
+        max-width: 150px;
     }
 }
 
 @media (max-width: 480px) {
     .artist-card,
     .release-card {
-        flex: 0 0 100%;
+        min-height: 130px;
+    }
+
+    .artist-card img {
+        height: 220px;
+    }
+
+    .release-card img {
+        height: 220px;
     }
 }
 </style>
