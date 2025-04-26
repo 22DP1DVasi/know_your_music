@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/TracksSearchResults.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/LyricsSearchResults.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Pagination.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Pagination.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ArtistsSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ArtistsSearchResults.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -259,7 +256,7 @@
       <workItem from="1745652374569" duration="10496000" />
       <workItem from="1745668626188" duration="8422000" />
       <workItem from="1745680559982" duration="152000" />
-      <workItem from="1745680760375" duration="7109000" />
+      <workItem from="1745680760375" duration="7858000" />
     </task>
     <servers />
   </component>

@@ -34,7 +34,7 @@ class SearchController extends Controller
     }
 
     /**
-     * TODO: use similar method in SearchService instead of making new query
+     * TODO: try to use similar method in SearchService instead of making new query
      */
     public function artists(Request $request, SearchService $searchService)
     {
@@ -56,7 +56,7 @@ class SearchController extends Controller
     }
 
     /**
-     * TODO: use similar method in SearchService instead of making new query
+     * TODO: try to use similar method in SearchService instead of making new query
      */
     public function releases(Request $request)
     {
@@ -84,7 +84,10 @@ class SearchController extends Controller
         ]);
     }
 
-    public function tracksByMetadata(Request $request)
+    /**
+     * TODO: try to use similar method in SearchService instead of making new query
+     */
+    public function tracks(Request $request)
     {
         $query = $request->input('q', '');
         $perPage = 20;
@@ -99,6 +102,40 @@ class SearchController extends Controller
             ->appends(['q' => $query]);
 
         return Inertia::render('TracksSearchResults', [
+            'tracks' => $tracks->items(),
+            'searchQuery' => $query,
+            'paginationLinks' => $tracks->toArray()['links'],
+            'currentPage' => $tracks->currentPage(),
+            'totalPages' => $tracks->lastPage()
+        ]);
+    }
+
+    /**
+     * TODO: try to use similar method in SearchService instead of making new query
+     */
+    public function lyrics(Request $request, SearchService $searchService)
+    {
+        $query = $request->input('q', '');
+        $perPage = 20;
+        $tracks = Track::whereHas('lyrics', function($q) use ($query) {
+            $q->where('lyrics', 'like', "%{$query}%");
+        })
+            ->with(['artists', 'lyrics'])
+            ->orderBy('title')
+            ->paginate($perPage)
+            ->appends(['q' => $query, 'type' => 'lyrics']);
+
+        $tracks->getCollection()->transform(function($track) use ($query, $searchService) {
+            $lyricsText = $track->lyrics->pluck('lyrics')->implode("\n");
+            $track->lyric_snippet = $searchService->extractLyricSnippet(
+                $lyricsText,
+                $query,
+                50
+            );
+            return $track;
+        });
+
+        return Inertia::render('LyricsSearchResults', [
             'tracks' => $tracks->items(),
             'searchQuery' => $query,
             'paginationLinks' => $tracks->toArray()['links'],

@@ -59,7 +59,7 @@ Route::get('/faq', function () {
     return Inertia::render('FAQ');
 })->name('faq');
 
-// searches route
+// searches routes
 Route::get('/search', [SearchController::class, 'index'])
     ->name('search');
 
@@ -69,8 +69,11 @@ Route::get('/search/artists', [SearchController::class, 'artists'])
 Route::get('/search/releases', [SearchController::class, 'releases'])
     ->name('search.releases');
 
-Route::get('/search/tracks', [SearchController::class, 'tracksByMetadata'])
+Route::get('/search/tracks', [SearchController::class, 'tracks'])
     ->name('search.tracks');
+
+Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
+    ->name('search.lyrics');
 
 // user account settings
 Route::middleware('auth')->group(function () {

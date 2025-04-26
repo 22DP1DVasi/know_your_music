@@ -131,9 +131,8 @@ class SearchService
         )->count();
     }
 
-    protected function extractLyricSnippet(string $lyrics, string $query, int $context = 50)
+    public function extractLyricSnippet(string $lyrics, string $query, int $context = 50)
     {
-        // Use the model's cleaning method
         $cleanedLyrics = (new Lyric())->cleanLyrics($lyrics);
 
         $position = stripos($cleanedLyrics, $query);
