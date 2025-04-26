@@ -156,7 +156,6 @@ const cleanSnippet = (snippet) => {
         .replace(/\s+/g, ' ')              // Collapse spaces
         .trim();
 };
-
 </script>
 
 <style scoped>

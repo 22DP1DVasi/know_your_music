@@ -34,6 +34,7 @@
                 :links="paginationLinks"
                 :current-page="currentPage"
                 :total-pages="totalPages"
+                :search-query="searchQuery"
                 class="pagination"
             />
         </div>
@@ -42,7 +43,7 @@
 </template>
 
 <script setup>
-import { Head } from "@inertiajs/vue3";
+import { Head, router } from "@inertiajs/vue3";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -60,7 +61,7 @@ const getReleaseImage = (release) => {
 };
 
 const goBack = () => {
-    window.history.back();
+    router.visit(`/search?q=${props.searchQuery}`);
 };
 </script>
 

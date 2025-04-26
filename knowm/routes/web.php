@@ -69,6 +69,9 @@ Route::get('/search/artists', [SearchController::class, 'artists'])
 Route::get('/search/releases', [SearchController::class, 'releases'])
     ->name('search.releases');
 
+Route::get('/search/tracks', [SearchController::class, 'tracksByMetadata'])
+    ->name('search.tracks');
+
 // user account settings
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {

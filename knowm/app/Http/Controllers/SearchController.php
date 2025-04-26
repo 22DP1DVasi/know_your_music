@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Artist;
 use App\Models\Release;
+use App\Models\Track;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Services\SearchService;
@@ -31,6 +33,9 @@ class SearchController extends Controller
         ]);
     }
 
+    /**
+     * TODO: use similar method in SearchService instead of making new query
+     */
     public function artists(Request $request, SearchService $searchService)
     {
         $query = $request->input('q', '');
@@ -38,7 +43,8 @@ class SearchController extends Controller
         $artists = Artist::where('name', 'like', "%{$query}%")
             ->withCount('tracks')
             ->orderBy('name')
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->appends(['q' => $query]);
 
         return Inertia::render('ArtistsSearchResults', [
             'artists' => $artists->items(),
@@ -49,23 +55,55 @@ class SearchController extends Controller
         ]);
     }
 
+    /**
+     * TODO: use similar method in SearchService instead of making new query
+     */
     public function releases(Request $request)
     {
         $query = $request->input('q', '');
         $perPage = 24;
 
-        $releases = Release::where('title', 'like', "%{$query}%")
+        $releases = Release::where(function($q) use ($query) {
+            $q->where('title', 'like', "%{$query}%")
+                ->orWhereHas('artists', function($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%");
+                });
+        })
             ->with(['artists'])
             ->withCount('tracks')
             ->orderBy('release_date', 'desc')
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->appends(['q' => $query]);
 
         return Inertia::render('ReleasesSearchResults', [
             'releases' => $releases->items(),
             'searchQuery' => $query,
-            'paginationLinks' => $releases->links()->elements[0],
+            'paginationLinks' => $releases->toArray()['links'],
             'currentPage' => $releases->currentPage(),
             'totalPages' => $releases->lastPage()
+        ]);
+    }
+
+    public function tracksByMetadata(Request $request)
+    {
+        $query = $request->input('q', '');
+        $perPage = 20;
+
+        $tracks = Track::where('title', 'like', "%{$query}%")
+            ->orWhereHas('artists', function($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->with(['artists'])
+            ->orderBy('title')
+            ->paginate($perPage)
+            ->appends(['q' => $query]);
+
+        return Inertia::render('TracksSearchResults', [
+            'tracks' => $tracks->items(),
+            'searchQuery' => $query,
+            'paginationLinks' => $tracks->toArray()['links'],
+            'currentPage' => $tracks->currentPage(),
+            'totalPages' => $tracks->lastPage()
         ]);
     }
 }
