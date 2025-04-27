@@ -6,14 +6,11 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Services\SpotifyService;
-use App\Models\Artist;
-use App\Models\Release;
-use App\Models\Track;
-use App\Models\Lyrics;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ArtistImageController;
 use App\Http\Controllers\ReleaseImageController;
+use App\Http\Controllers\ArtistController;
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -75,6 +72,10 @@ Route::get('/search/tracks', [SearchController::class, 'tracks'])
 Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
     ->name('search.lyrics');
 
+// show pages (profiles)
+Route::get('/artists/{artist}', [ArtistController::class, 'show'])
+    ->name('artists.show');
+
 // user account settings
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
@@ -96,8 +97,8 @@ Route::middleware('guest')->group(function () {
 
 // artist and release cover images routes
 Route::middleware(['auth'])->group(function () {
-    Route::post('/artists/{artist}/profile-image', [ArtistImageController::class, 'uploadProfileImage']);
-    Route::post('/artists/{artist}/banner-image', [ArtistImageController::class, 'uploadBannerImage']);
+    Route::post('/artists/{artist}/profile-image', [ArtistController::class, 'uploadProfileImage']);
+    Route::post('/artists/{artist}/banner-image', [ArtistController::class, 'uploadBannerImage']);
     Route::post('/releases/{release}/cover-image', [ReleaseImageController::class, 'uploadCoverImage']);
 });
 

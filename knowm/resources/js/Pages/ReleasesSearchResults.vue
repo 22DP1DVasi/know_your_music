@@ -219,7 +219,7 @@ const goBack = () => {
 .filter-and-back {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* move both to the right side */
+    justify-content: flex-end;
     gap: calc(12px + 48vw);
     max-width: 1000px;
     width: 100%;
@@ -375,7 +375,6 @@ const goBack = () => {
     }
 }
 
-/* 1050px */
 @media (max-width: 1050px) {
     .filter-and-back {
         gap: 24rem;
@@ -383,7 +382,6 @@ const goBack = () => {
     }
 }
 
-/* 950px */
 @media (max-width: 950px) {
     .filter-and-back {
         gap: 18rem;
@@ -391,7 +389,6 @@ const goBack = () => {
     }
 }
 
-/* 890px - Critical breakpoint */
 @media (max-width: 890px) {
     .filter-and-back {
         gap: 1rem;
@@ -447,29 +444,29 @@ const goBack = () => {
     }
 
     .filter-and-back {
-        flex-direction: row; /* Keep horizontal layout */
-        justify-content: flex-end; /* Push content to right */
+        flex-direction: row;
+        justify-content: flex-end;
         gap: calc(16px + 27vw);
-        margin: 5px 0 0 41px; /* Remove right margin */
+        margin: 5px 0 0 41px;
     }
 
     .filter-options {
-        flex-direction: column; /* Stack options vertically */
+        flex-direction: column;
         gap: 0.5rem;
         padding: 0.75rem;
         width: fit-content;
-        margin: 0; /* Remove auto margin */
-        align-self: flex-end; /* Align to right */
+        margin: 0;
+        align-self: flex-end;
     }
 
     .filter-options label {
-        font-size: 0.9rem; /* Slightly smaller text */
-        white-space: nowrap; /* Prevent line breaks */
+        font-size: 0.9rem;
+        white-space: nowrap;
     }
 
     .go-back-arrow {
-        align-self: flex-start; /* align back arrow to left */
-        margin-top: 0; /* Remove top margin */
+        align-self: flex-start;
+        margin-top: 0;
     }
 }
 

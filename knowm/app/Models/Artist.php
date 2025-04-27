@@ -19,11 +19,12 @@ class Artist extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
         'biography',
         'formed_year',
         'disbanded_year',
         'image',
-        'solo_or_band'
+        'solo_or_band',
     ];
 
     /**
@@ -41,11 +42,16 @@ class Artist extends Model
 
     protected static function booted()
     {
+        static::creating(function ($artist) {
+            $artist->slug = $artist->generateUniqueSlug();
+        });
+
         // create folder for images when this artist is created
         static::created(function ($artist) {
             Storage::makeDirectory("public/artists/{$artist->id}/profile");
             Storage::makeDirectory("public/artists/{$artist->id}/banner");
         });
+
         // delete folder when this artist is deleted
         static::deleted(function ($artist) {
             Storage::deleteDirectory("public/artists/{$artist->id}");
@@ -107,6 +113,42 @@ class Artist extends Model
     public function recommendedIn(): HasMany
     {
         return $this->hasMany(RecommendationArtist::class);
+    }
+
+    /**
+     * Get a slug value (used as route key)
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
+     * Generate unique slugs
+    */
+    public function generateUniqueSlug()
+    {
+        $slug = $this->customSlugify($this->name);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Generate a slug
+    */
+    private function customSlugify(string $name): string
+    {
+        $slug = mb_strtolower($name);
+        $slug = preg_replace('/\s+/u', '-', $slug);
+        $slug = preg_replace('/[^\p{L}\p{N}_-]/u', '', $slug);
+        return trim($slug, '-');
     }
 
     /**

@@ -46,7 +46,7 @@ class SearchController extends Controller
             ->paginate($perPage)
             ->appends(['q' => $query]);
 
-        return Inertia::render('ArtistsSearchResults', [
+        return Inertia::render('Artists/ArtistsSearchResults', [
             'artists' => $artists->items(),
             'searchQuery' => $query,
             'paginationLinks' => $artists->links()->elements[0], // pagination links

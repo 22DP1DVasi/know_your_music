@@ -5,9 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/app/Services/ArtistService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistImageController.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/TracksSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/TracksSearchResults.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Artist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Artist.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ArtistsSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistsSearchResults.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,6 +194,11 @@
     ]
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\Pages\Artists" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="knowm" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <TestRunner configuration_file="$PROJECT_DIR$/knowm/phpunit.xml" scope="XML" use_alternative_configuration_file="true" />
@@ -256,7 +268,7 @@
       <workItem from="1745680559982" duration="152000" />
       <workItem from="1745680760375" duration="8289000" />
       <workItem from="1745737761629" duration="13870000" />
-      <workItem from="1745761576955" duration="12115000" />
+      <workItem from="1745761576955" duration="17994000" />
     </task>
     <servers />
   </component>
