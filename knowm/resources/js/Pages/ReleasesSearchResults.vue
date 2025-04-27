@@ -22,32 +22,39 @@
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
-                    <div class="filter-options">
-                        <label>
-                            <input
-                                type="radio"
-                                v-model="searchType"
-                                value="title"
-                            />
-                            By Title
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                v-model="searchType"
-                                value="artist"
-                            />
-                            By Artist
-                        </label>
+                    <div class="filter-and-back">
+                        <div class="go-back-arrow" @click="goBack">
+                            <span class="arrow-icon">←</span>
+                        </div>
+                        <div class="filter-options">
+                            <label>
+                                <input
+                                    type="radio"
+                                    v-model="searchType"
+                                    value="title"
+                                />
+                                By Title
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    v-model="searchType"
+                                    value="artist"
+                                />
+                                By Artist
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="go-back-arrow" @click="goBack">
-                <span class="arrow-icon">←</span>
-            </div>
+<!--            <div class="back-container">-->
+<!--                <div class="go-back-arrow" @click="goBack">-->
+<!--                    <span class="arrow-icon">←</span>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <section v-if="releases.length > 0" class="results-section release-section">
+            <section v-if="releases.length > 0" class="results-section">
                 <div class="release-results">
                     <div v-for="release in releases" :key="release.id" class="release-card">
                         <img :src="getReleaseImage(release)" :alt="release.title">
@@ -135,10 +142,15 @@ const goBack = () => {
 
 .search-container {
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 2rem;
-    margin-top: 1rem;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.search-container .search {
+    margin-right: 6.6rem;
 }
 
 .search {
@@ -210,6 +222,17 @@ const goBack = () => {
     transform: translate(-50%, -50%) scale(0.5);
 }
 
+.filter-and-back {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* move both to the right side */
+    gap: 42rem; /* control distance between go-back arrow and filter box */
+    max-width: 1000px;
+    width: 100%;
+    margin: 5px 5.7rem 0 auto;
+    padding: 0 1rem;
+}
+
 .filter-options {
     display: flex;
     gap: 1.5rem;
@@ -241,12 +264,13 @@ const goBack = () => {
     background-color: #3f80e4;
     border-radius: 50%;
     padding: 8px;
-    display: inline-flex; /* changed from flex to inline-flex */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px; /* new: set a fixed width */
-    height: 40px; /* new: set a fixed height */
+    width: 40px;
+    height: 40px;
     transition: background-color 0.2s ease;
+    flex-shrink: 0;
 }
 
 .go-back-arrow:hover {
@@ -376,6 +400,45 @@ const goBack = () => {
     .release-info p {
         font-size: 0.95rem;
     }
+
+    .search-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .search-container .search {
+        margin-right: 0;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .filter-and-back {
+        flex-direction: row; /* Keep horizontal layout */
+        justify-content: flex-end; /* Push content to right */
+        gap: 1rem; /* Adjust gap */
+        margin: 5px 0 0 0; /* Remove right margin */
+    }
+
+    .filter-options {
+        flex-direction: column; /* Stack options vertically */
+        gap: 0.5rem;
+        padding: 0.75rem;
+        width: fit-content;
+        margin: 0; /* Remove auto margin */
+        align-self: flex-end; /* Align to right */
+    }
+
+    .filter-options label {
+        font-size: 0.9rem; /* Slightly smaller text */
+        white-space: nowrap; /* Prevent line breaks */
+    }
+
+    .go-back-arrow {
+        align-self: flex-start; /* align back arrow to left */
+        margin-top: 0; /* Remove top margin */
+    }
 }
 
 @media (max-width: 480px) {
@@ -391,6 +454,22 @@ const goBack = () => {
 
     .release-card img {
         height: 180px;
+    }
+
+    .results-header {
+        padding: 0 1rem;
+    }
+
+    .searchTerm {
+        font-size: 14px;
+    }
+
+    .filter-options {
+        padding: 0.5rem;
+    }
+
+    .filter-options label {
+        font-size: 0.85rem; /* Even smaller text for tiny screens */
     }
 }
 </style>
