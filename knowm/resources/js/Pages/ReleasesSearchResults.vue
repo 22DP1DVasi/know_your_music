@@ -3,12 +3,48 @@
     <Navbar />
     <main class="flex-1">
         <div class="search-results">
-            <h1 class="results-title">All Releases Matching "{{ searchQuery }}"</h1>
-
             <div class="results-header">
-                <div class="go-back-arrow" @click="goBack">
-                    <span class="arrow-icon">←</span>
+                <h1 class="results-title">All Releases Matching "{{ searchQuery }}"</h1>
+                <div class="search-container">
+                    <div class="search">
+                        <input
+                            type="text"
+                            class="searchTerm"
+                            placeholder="Search releases..."
+                            v-model="localSearchQuery"
+                            @keyup.enter="performSearch"
+                        >
+                        <button
+                            type="submit"
+                            class="searchButton"
+                            @click="performSearch"
+                        >
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="filter-options">
+                        <label>
+                            <input
+                                type="radio"
+                                v-model="searchType"
+                                value="title"
+                            />
+                            By Title
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                v-model="searchType"
+                                value="artist"
+                            />
+                            By Artist
+                        </label>
+                    </div>
                 </div>
+            </div>
+
+            <div class="go-back-arrow" @click="goBack">
+                <span class="arrow-icon">←</span>
             </div>
 
             <section v-if="releases.length > 0" class="results-section release-section">
@@ -37,6 +73,7 @@
                 :current-page="currentPage"
                 :total-pages="totalPages"
                 :search-query="searchQuery"
+                :search-type="searchType"
                 class="pagination"
             />
         </div>
@@ -46,6 +83,7 @@
 
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
+import { ref, watch } from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -53,10 +91,24 @@ import Pagination from "@/Components/Pagination.vue";
 const props = defineProps({
     releases: Array,
     searchQuery: String,
+    searchType: {
+        type: String,
+        default: 'title'
+    },
     paginationLinks: Array,
     currentPage: Number,
     totalPages: Number
 });
+
+const localSearchQuery = ref(props.searchQuery);
+const searchType = ref(props.searchType || 'title');
+
+const performSearch = () => {
+    router.visit(`/search/releases?q=${localSearchQuery.value}&type=${searchType.value}`, {
+        preserveState: true,
+        replace: true
+    });
+};
 
 const getReleaseImage = (release) => {
     return release.cover_url || '/images/default-release-cover.webp';
@@ -68,18 +120,6 @@ const goBack = () => {
 </script>
 
 <style scoped>
-.results-title {
-    max-width: 800px;
-    text-align: center;
-    font-size: 2.2rem;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 2rem;
-    color: #0c4baa;
-    font-weight: 600;
-    padding: 1rem 2rem;
-}
-
 .search-results {
     padding: 1rem 0 2rem;
     max-width: 1200px;
@@ -88,8 +128,112 @@ const goBack = () => {
 
 .results-header {
     display: flex;
+    flex-direction: column;
     margin-bottom: 2rem;
     padding: 0 2rem;
+}
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.search {
+    width: 300px;
+    position: relative;
+    display: flex;
+    z-index: 1;
+}
+
+.searchTerm {
+    width: 100%;
+    border: 3px solid #54b3ebed;
+    border-right: none;
+    padding: 10px;
+    height: 40px;
+    border-radius: 7px 0 0 7px;
+    outline: none;
+    color: #000000;
+    font-size: 16px;
+}
+
+.searchTerm:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.searchButton {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #54b3ebed;
+    background: #54b3ebed;
+    text-align: center;
+    color: #fff;
+    border-radius: 0 7px 7px 0;
+    cursor: pointer;
+    font-size: 20px;
+    overflow: hidden;
+}
+
+.searchButton i {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.searchButton:hover i {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.searchButton:hover::after {
+    content: "\f001";
+    font-family: "FontAwesome";
+    font-size: 20px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.searchButton::after {
+    content: "";
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+}
+
+.filter-options {
+    display: flex;
+    gap: 1.5rem;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.filter-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.results-title {
+    max-width: 800px;
+    text-align: center;
+    font-size: 2.2rem;
+    margin: 0 auto;
+    color: #0c4baa;
+    font-weight: 600;
+    padding: 1rem 2rem;
 }
 
 .go-back-arrow {
@@ -97,9 +241,11 @@ const goBack = () => {
     background-color: #3f80e4;
     border-radius: 50%;
     padding: 8px;
-    display: flex;
+    display: inline-flex; /* changed from flex to inline-flex */
     align-items: center;
     justify-content: center;
+    width: 40px; /* new: set a fixed width */
+    height: 40px; /* new: set a fixed height */
     transition: background-color 0.2s ease;
 }
 
@@ -116,9 +262,6 @@ const goBack = () => {
     margin: 0 auto;
     padding: 0 2rem;
     margin-bottom: 2.5rem;
-}
-
-.release-section {
     max-width: 1000px;
     margin: 0 auto;
 }

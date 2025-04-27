@@ -1,5 +1,5 @@
 <template>
-    <!-- Navbar element provided by https://github.com/daniilsonufrijuks -->
+    <!-- Navbar element provided by https://github.com/daniilsonufrijuks and modified to fit into website purpose -->
     <nav>
         <a href="/" class="logo-container">
             <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
@@ -8,12 +8,6 @@
         <ul>
             <li>
                 <div class="wrap">
-<!--                    <div class="search">-->
-<!--                        <input type="text" class="searchTerm" placeholder="Search...">-->
-<!--                        <button type="submit" class="searchButton">-->
-<!--                            <i class="fa fa-search"></i>-->
-<!--                        </button>-->
-<!--                    </div>-->
                     <div class="search">
                         <input
                             type="text"
@@ -35,7 +29,6 @@
             <li><a href="/">Home</a></li>
             <li><a href="/explore">Explore</a></li>
             <li><a href="/about">About</a></li>
-            <!-- Conditional rendering based on auth state -->
             <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
             <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
             <li v-if="isLoggedIn" class="user-menu">

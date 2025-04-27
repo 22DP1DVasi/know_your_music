@@ -61,23 +61,27 @@ class SearchController extends Controller
     public function releases(Request $request)
     {
         $query = $request->input('q', '');
+        $type = $request->input('type', 'title');
         $perPage = 24;
 
-        $releases = Release::where(function($q) use ($query) {
-            $q->where('title', 'like', "%{$query}%")
-                ->orWhereHas('artists', function($q) use ($query) {
+        $releases = Release::when($type === 'title', function($q) use ($query) {
+            $q->where('title', 'like', "%{$query}%");
+        })
+            ->when($type === 'artist', function($q) use ($query) {
+                $q->whereHas('artists', function($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%");
                 });
-        })
+            })
             ->with(['artists'])
             ->withCount('tracks')
             ->orderBy('release_date', 'desc')
             ->paginate($perPage)
-            ->appends(['q' => $query]);
+            ->appends(['q' => $query, 'type' => $type]);
 
         return Inertia::render('ReleasesSearchResults', [
             'releases' => $releases->items(),
             'searchQuery' => $query,
+            'searchType' => $type,
             'paginationLinks' => $releases->toArray()['links'],
             'currentPage' => $releases->currentPage(),
             'totalPages' => $releases->lastPage()
