@@ -11,22 +11,24 @@
                 </div>
             </div>
 
-            <div class="release-results">
-                <div v-for="release in releases" :key="release.id" class="release-card">
-                    <img :src="getReleaseImage(release)" :alt="release.title">
-                    <div class="release-info">
-                        <h3>{{ release.title }}</h3>
-                        <p class="artists-names">
-                            <span v-for="(artist, index) in release.artists" :key="artist.id">
-                                {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
-                            </span>
-                        </p>
-                        <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
+            <section v-if="releases.length > 0" class="results-section release-section">
+                <div class="release-results">
+                    <div v-for="release in releases" :key="release.id" class="release-card">
+                        <img :src="getReleaseImage(release)" :alt="release.title">
+                        <div class="release-info">
+                            <h3>{{ release.title }}</h3>
+                            <p class="artists-names">
+                                <span v-for="(artist, index) in release.artists" :key="artist.id">
+                                    {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
+                                </span>
+                            </p>
+                            <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div v-if="releases.length === 0" class="no-results">
+            <div v-else class="no-results">
                 No releases found for "{{ searchQuery }}"
             </div>
 
@@ -67,23 +69,27 @@ const goBack = () => {
 
 <style scoped>
 .results-title {
+    max-width: 800px;
     text-align: center;
     font-size: 2.2rem;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 2rem;
     color: #0c4baa;
     font-weight: 600;
-    padding-top: 1rem;
+    padding: 1rem 2rem;
+}
+
+.search-results {
+    padding: 1rem 0 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .results-header {
     display: flex;
     margin-bottom: 2rem;
-}
-
-.search-results {
-    padding: 1rem 2rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 0 2rem;
 }
 
 .go-back-arrow {
@@ -106,6 +112,17 @@ const goBack = () => {
     color: white;
 }
 
+.results-section {
+    margin: 0 auto;
+    padding: 0 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.release-section {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
 .release-results {
     display: flex;
     flex-wrap: wrap;
@@ -114,39 +131,37 @@ const goBack = () => {
 }
 
 .release-card {
-    flex: 0 0 calc(25% - 1.5rem);  /* 4 cards per row*/
+    flex: 0 0 calc(25% - 1.2rem);  /* 4 cards per row */
     background: white;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     min-width: 0;
     min-height: 340px;
-    display: flex;
-    flex-direction: column;
+    aspect-ratio: 3/4;
 }
 
 .release-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
+    0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
 .release-card img {
     width: 100%;
-    height: 200px;
+    height: 220px;
     object-fit: cover;
 }
 
 .release-info {
     padding: 1rem;
     min-width: 0;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
 }
 
-/* max two rows for name/title, if overflows - ellipsis */
 .release-info h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.25rem 0;
     font-size: 1rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -160,38 +175,24 @@ const goBack = () => {
 }
 
 .release-info p {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.25rem 0;
     color: #666;
     font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.artists-names {
+.release-info .artists-names {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.25rem 0;
     color: #666;
     font-size: 0.9rem;
-}
-
-.view-button {
-    margin-top: auto;
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background-color: #0c4baa;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    text-align: center;
-    transition: background-color 0.2s;
-}
-
-.view-button:hover {
-    background-color: #06419a;
 }
 
 .no-results {
