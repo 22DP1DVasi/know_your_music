@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/LyricsSearchResults.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Services/LastFmService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/LastFmService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -256,7 +258,8 @@
       <workItem from="1745652374569" duration="10496000" />
       <workItem from="1745668626188" duration="8422000" />
       <workItem from="1745680559982" duration="152000" />
-      <workItem from="1745680760375" duration="7858000" />
+      <workItem from="1745680760375" duration="8289000" />
+      <workItem from="1745737761629" duration="10881000" />
     </task>
     <servers />
   </component>

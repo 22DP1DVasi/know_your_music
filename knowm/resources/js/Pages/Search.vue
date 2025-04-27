@@ -6,7 +6,7 @@
             <h1 class="results-title">Search Results for "{{ searchQuery }}"</h1>
 
             <!-- artists results -->
-            <section v-if="artists.length > 0" class="results-section">
+            <section v-if="artists.length > 0" class="results-section artist-section">
                 <div class="section-header">
                     <h2>Artists</h2>
                     <a v-if="hasMoreArtists" :href="`/search/artists?q=${searchQuery}`" class="see-all">
@@ -25,7 +25,7 @@
             </section>
 
             <!-- releases results -->
-            <section v-if="releases.length > 0" class="results-section">
+            <section v-if="releases.length > 0" class="results-section release-section">
                 <div class="section-header">
                     <h2>Releases</h2>
                     <a v-if="hasMoreReleases" :href="`/search/releases?q=${searchQuery}`" class="see-all">
@@ -45,7 +45,7 @@
             </section>
 
             <!-- tracks results by title or authors -->
-            <section v-if="metadataMatches.length > 0" class="results-section">
+            <section v-if="metadataMatches.length > 0" class="results-section track-section">
                 <div class="section-header">
                     <h2>Tracks</h2>
                     <a v-if="metadataMatchesCount > metadataMatches.length"
@@ -71,7 +71,7 @@
             </section>
 
             <!-- tracks results by lyrics -->
-            <section v-if="lyricsMatches.length > 0" class="results-section">
+            <section v-if="lyricsMatches.length > 0" class="results-section track-section">
                 <div class="section-header">
                     <h2>Lyrics Matches</h2>
                     <a v-if="lyricsMatchesCount > lyricsMatches.length"
@@ -160,21 +160,33 @@ const cleanSnippet = (snippet) => {
 
 <style scoped>
 .results-title {
+    max-width: 800px;
     text-align: center;
     font-size: 2.2rem;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 2rem;
     color: #0c4baa;
     font-weight: 600;
-    padding-top: 1rem;
+    padding: 1rem 2rem;
 }
 
 .search-results {
-    padding: 2rem;
+    padding: 1rem 0 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .results-section {
+    margin: 0 auto;
+    /*max-width: 1000px;*/
+    padding: 0 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.artist-section {
+    max-width: 1000px;
+    margin: 0 auto;
     margin-bottom: 2.5rem;
 }
 
@@ -203,28 +215,32 @@ const cleanSnippet = (snippet) => {
 .artist-results {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1.2rem;
     justify-content: flex-start;
 }
 
 .artist-card {
-    flex: 0 0 calc(25% - 1.5rem);  /* 4 cards per row*/
+    flex: 0 0 calc(25% - 1.2rem);  /* 4 cards per row*/
     background: white;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
+                0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     min-width: 0;
-    min-height: 280px;
+    min-height: 320px;
+    aspect-ratio: 3/4;
 }
 
 .artist-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
+    0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
 .artist-card img {
     width: 100%;
-    height: 180px;
+    height: 220px;
     object-fit: cover;
 }
 
@@ -254,6 +270,16 @@ const cleanSnippet = (snippet) => {
     font-size: 0.9rem;
 }
 
+.release-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    margin-bottom: 2.5rem;
+}
+
+.release-results {
+    gap: 1.2rem;
+}
+
 .release-results {
     display: flex;
     flex-wrap: wrap;
@@ -262,18 +288,27 @@ const cleanSnippet = (snippet) => {
 }
 
 .release-card {
-    flex: 0 0 calc(25% - 1.5rem);  /* 4 cards per row*/
+    flex: 0 0 calc(25% - 1.2rem);  /* 4 cards per row*/
     background: white;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
+                0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     min-width: 0;
-    min-height: 300px;
+    min-height: 340px;
+    aspect-ratio: 3/4;
+}
+
+.release-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
+    0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
 .release-card img {
     width: 100%;
-    height: 200px;
+    height: 220px;
     object-fit: cover;
 }
 
@@ -316,6 +351,12 @@ const cleanSnippet = (snippet) => {
     margin: 0 0 0.25rem 0;
     color: #666;
     font-size: 0.9rem;
+}
+
+.track-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    margin-bottom: 2.5rem;
 }
 
 .track-list {

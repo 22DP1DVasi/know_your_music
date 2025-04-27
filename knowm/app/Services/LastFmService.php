@@ -16,6 +16,10 @@ class LastFmService
     {
         $this->client = new Client();
         $this->apiKey = config('services.last_fm.api_key');
+
+        if (empty($this->apiKey)) {
+            throw new \RuntimeException('Last.fm API key not configured');
+        }
     }
 
     public function getArtistInfo(string $artistName)

@@ -18,10 +18,11 @@ class ImportSpotifyArtists extends Command
     public function handle()
     {
         $artistsToImport = [
-            'Bring Me The Horizon',
+//            'Bring Me The Horizon',
 //            'Porter Robinson',
-//            'Brand of Sacrifice',
-//            'KAMAARA',
+            'Brand of Sacrifice',
+            'KAMAARA',
+            'Oxxxymiron'
 //            'Korn'
         ];
 

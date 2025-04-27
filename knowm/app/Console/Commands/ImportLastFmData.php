@@ -39,20 +39,23 @@ class ImportLastFmData extends Command
     protected function importArtist(string $artistName): ?Artist
     {
         $this->info("Trying with artist name: {$artistName}");
-        $response = Http::get('http://ws.audioscrobbler.com/2.0/', [
-            'method' => 'artist.getinfo',
-            'artist' => $artistName,
-            'api_key' => env('LASTFM_API_KEY'),
-            'format' => 'json',
-            'autocorrect' => 1,
-        ]);
-        $data = $response->json();
-        if ($response->failed() || isset($data['error'])) {
-            $this->warn("Failed with name '{$artistName}': " . ($data['message'] ?? 'Unknown error'));
+
+        // Use the service method instead of direct HTTP call
+        $artistData = $this->lastFmService->getArtistInfo($artistName);
+
+        if (isset($artistData['error'])) {
+            $this->warn("Failed with name '{$artistName}': " . $artistData['error']);
             return null;
         }
-        $artistData = $data['artist'];
-        $correctName = $artistData['name'];
+
+        if (empty($artistData['artist'])) {
+            $this->warn("No artist data found for: {$artistName}");
+            return null;
+        }
+
+        $artistInfo = $artistData['artist'];
+        $correctName = $artistInfo['name'];
+
         if (strtolower($correctName) !== strtolower($artistName)) {
             $this->info("Artist name autocorrected from '{$artistName}' to '{$correctName}'");
         }
@@ -60,7 +63,7 @@ class ImportLastFmData extends Command
         $artist = Artist::updateOrCreate(
             ['name' => $correctName],
             [
-                'biography' => $this->cleanBio($artistData['bio']['content'] ?? null),
+                'biography' => $this->cleanBio($artistInfo['bio']['content'] ?? null),
             ]
         );
 
@@ -68,29 +71,33 @@ class ImportLastFmData extends Command
         if ($artistTags) {
             $this->importGenres($artistTags, $artist);
         }
-        elseif (isset($artistData['tags']['tag'])) {
-            $this->importGenres($artistData['tags']['tag'], $artist);
+        elseif (isset($artistInfo['tags']['tag'])) {
+            $this->importGenres($artistInfo['tags']['tag'], $artist);
         }
+
         return $artist;
     }
 
     protected function importTopAlbums(Artist $artist, int $limit)
     {
         $this->info("Fetching top {$limit} albums for {$artist->name}");
-        $response = Http::get('http://ws.audioscrobbler.com/2.0/', [
-            'method' => 'artist.gettopalbums',
-            'artist' => $artist->name,
-            'api_key' => env('LASTFM_API_KEY'),
-            'format' => 'json',
-            'limit' => $limit,
-        ]);
-        $data = $response->json();
-        if ($response->failed() || empty($data['topalbums']['album'])) {
-            $this->error("No top albums found: " . ($data['message'] ?? 'Unknown error'));
+
+        // Use the service method instead of direct HTTP call
+        $topAlbums = $this->lastFmService->getArtistTopAlbums($artist->name, $limit);
+
+        if (isset($topAlbums['error'])) {
+            $this->error("Failed to fetch top albums: " . $topAlbums['error']);
             return;
         }
-        $this->info("Found " . count($data['topalbums']['album']) . " albums");
-        foreach ($data['topalbums']['album'] as $album) {
+
+        if (empty($topAlbums['topalbums']['album'])) {
+            $this->error("No albums found");
+            return;
+        }
+
+        $this->info("Found " . count($topAlbums['topalbums']['album']) . " albums");
+
+        foreach ($topAlbums['topalbums']['album'] as $album) {
             $this->processAlbum($album, $artist);
             sleep(1);
         }
