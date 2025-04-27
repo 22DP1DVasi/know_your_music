@@ -94,20 +94,26 @@ class SearchController extends Controller
     public function tracks(Request $request)
     {
         $query = $request->input('q', '');
+        $type = $request->input('type', 'title');
         $perPage = 20;
 
-        $tracks = Track::where('title', 'like', "%{$query}%")
-            ->orWhereHas('artists', function($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%");
+        $tracks = Track::when($type === 'title', function($q) use ($query) {
+            $q->where('title', 'like', "%{$query}%");
+        })
+            ->when($type === 'artist', function($q) use ($query) {
+                $q->whereHas('artists', function($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%");
+                });
             })
             ->with(['artists'])
             ->orderBy('title')
             ->paginate($perPage)
-            ->appends(['q' => $query]);
+            ->appends(['q' => $query, 'type' => $type]);
 
         return Inertia::render('TracksSearchResults', [
             'tracks' => $tracks->items(),
             'searchQuery' => $query,
+            'searchType' => $type,
             'paginationLinks' => $tracks->toArray()['links'],
             'currentPage' => $tracks->currentPage(),
             'totalPages' => $tracks->lastPage()

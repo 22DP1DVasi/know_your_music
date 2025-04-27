@@ -48,12 +48,6 @@
                 </div>
             </div>
 
-<!--            <div class="back-container">-->
-<!--                <div class="go-back-arrow" @click="goBack">-->
-<!--                    <span class="arrow-icon">←</span>-->
-<!--                </div>-->
-<!--            </div>-->
-
             <section v-if="releases.length > 0" class="results-section">
                 <div class="release-results">
                     <div v-for="release in releases" :key="release.id" class="release-card">

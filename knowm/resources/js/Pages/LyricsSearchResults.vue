@@ -94,6 +94,7 @@ const goBack = () => {
 .results-header {
     display: flex;
     margin-bottom: 2rem;
+    padding: 0 2rem;
 }
 
 .search-results {
@@ -107,10 +108,13 @@ const goBack = () => {
     background-color: #3f80e4;
     border-radius: 50%;
     padding: 8px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    width: 40px;
+    height: 40px;
     transition: background-color 0.2s ease;
+    flex-shrink: 0;
 }
 
 .go-back-arrow:hover {
