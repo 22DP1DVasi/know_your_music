@@ -226,7 +226,7 @@ const goBack = () => {
     display: flex;
     align-items: center;
     justify-content: flex-end; /* move both to the right side */
-    gap: 42rem; /* control distance between go-back arrow and filter box */
+    gap: calc(12px + 48vw);
     max-width: 1000px;
     width: 100%;
     margin: 5px 5.7rem 0 auto;
@@ -374,6 +374,44 @@ const goBack = () => {
     justify-content: center;
 }
 
+@media (max-width: 1200px) {
+    .filter-and-back {
+        gap: 32rem;
+        margin-right: 4rem;
+    }
+}
+
+/* 1050px */
+@media (max-width: 1050px) {
+    .filter-and-back {
+        gap: 24rem;
+        margin-right: 3rem;
+    }
+}
+
+/* 950px */
+@media (max-width: 950px) {
+    .filter-and-back {
+        gap: 18rem;
+        margin-right: 2rem;
+    }
+}
+
+/* 890px - Critical breakpoint */
+@media (max-width: 890px) {
+    .filter-and-back {
+        gap: 1rem;
+        justify-content: space-between;
+        margin: 5px 1rem 0;
+        padding: 0 1rem;
+        width: calc(100% - 2rem);
+    }
+
+    .search-container .search {
+        margin-right: 0;
+    }
+}
+
 @media (max-width: 768px) {
     .results-title {
         font-size: 1.8rem;
@@ -417,8 +455,8 @@ const goBack = () => {
     .filter-and-back {
         flex-direction: row; /* Keep horizontal layout */
         justify-content: flex-end; /* Push content to right */
-        gap: 1rem; /* Adjust gap */
-        margin: 5px 0 0 0; /* Remove right margin */
+        gap: calc(16px + 27vw);
+        margin: 5px 0 0 41px; /* Remove right margin */
     }
 
     .filter-options {
@@ -464,12 +502,16 @@ const goBack = () => {
         font-size: 14px;
     }
 
+    .filter-and-back {
+        gap: 17rem;
+    }
+
     .filter-options {
         padding: 0.5rem;
     }
 
     .filter-options label {
-        font-size: 0.85rem; /* Even smaller text for tiny screens */
+        font-size: 0.85rem;
     }
 }
 </style>
