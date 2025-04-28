@@ -6,44 +6,44 @@
             <div class="results-header">
                 <h1 class="results-title">All Releases Matching "{{ searchQuery }}"</h1>
                 <div class="search-container">
-                    <div class="search">
-                        <input
-                            type="text"
-                            class="searchTerm"
-                            placeholder="Search releases..."
-                            v-model="localSearchQuery"
-                            @keyup.enter="performSearch"
-                        >
-                        <button
-                            type="submit"
-                            class="searchButton"
-                            @click="performSearch"
-                        >
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                    <div class="filter-and-back">
+                    <div class="search-group">
                         <div class="go-back-arrow" @click="goBack">
                             <span class="arrow-icon">←</span>
                         </div>
-                        <div class="filter-options">
-                            <label>
-                                <input
-                                    type="radio"
-                                    v-model="searchType"
-                                    value="title"
-                                />
-                                By Title
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    v-model="searchType"
-                                    value="artist"
-                                />
-                                By Artist
-                            </label>
+                        <div class="search">
+                            <input
+                                type="text"
+                                class="searchTerm"
+                                placeholder="Search releases..."
+                                v-model="localSearchQuery"
+                                @keyup.enter="performSearch"
+                            >
+                            <button
+                                type="submit"
+                                class="searchButton"
+                                @click="performSearch"
+                            >
+                                <i class="fa fa-search"></i>
+                            </button>
                         </div>
+                    </div>
+                    <div class="filter-options">
+                        <label>
+                            <input
+                                type="radio"
+                                v-model="searchType"
+                                value="title"
+                            />
+                            By Title
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                v-model="searchType"
+                                value="artist"
+                            />
+                            By Artist
+                        </label>
                     </div>
                 </div>
             </div>
@@ -137,21 +137,25 @@ const goBack = () => {
 .search-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 0;
-    margin: 0;
-    padding: 0;
+    align-items: center;
+    gap: 1rem !important;
+    max-width: 600px;
+    padding: 0 1rem;
+    margin-top: 30px;
 }
 
-.search-container .search {
-    margin-right: 6.6rem;
+.search-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
 }
 
 .search {
-    width: 300px;
+    flex-grow: 1;
     position: relative;
     display: flex;
-    z-index: 1;
+    height: 46px;
 }
 
 .searchTerm {
@@ -159,7 +163,7 @@ const goBack = () => {
     border: 3px solid #54b3ebed;
     border-right: none;
     padding: 10px;
-    height: 40px;
+    height: 100%;
     border-radius: 7px 0 0 7px;
     outline: none;
     color: #000000;
@@ -174,7 +178,7 @@ const goBack = () => {
 .searchButton {
     position: relative;
     width: 40px;
-    height: 40px;
+    height: 100%;
     border: 1px solid #54b3ebed;
     background: #54b3ebed;
     text-align: center;
@@ -207,33 +211,15 @@ const goBack = () => {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.searchButton::after {
-    content: "";
-    opacity: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.5);
-}
-
-.filter-and-back {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: calc(12px + 48vw);
-    max-width: 1000px;
-    width: 100%;
-    margin: 5px 5.7rem 0 auto;
-    padding: 0 1rem;
-}
-
 .filter-options {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.5rem !important;
+    max-width: 250px !important;
     background: white;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.3rem !important;
     border-radius: 7px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    justify-content: center;
 }
 
 .filter-options label {
@@ -244,7 +230,6 @@ const goBack = () => {
 }
 
 .results-title {
-    max-width: 800px;
     text-align: center;
     font-size: 2.2rem;
     margin: 0 auto;
@@ -281,7 +266,6 @@ const goBack = () => {
     padding: 0 2rem;
     margin-bottom: 2.5rem;
     max-width: 1000px;
-    margin: 0 auto;
 }
 
 .release-results {
@@ -292,14 +276,13 @@ const goBack = () => {
 }
 
 .release-card {
-    flex: 0 0 calc(25% - 1.2rem);  /* 4 cards per row */
+    flex: 0 0 calc(25% - 1.2rem);
     background: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
     0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-width: 0;
     min-height: 340px;
     aspect-ratio: 3/4;
 }
@@ -318,7 +301,6 @@ const goBack = () => {
 
 .release-info {
     padding: 1rem;
-    min-width: 0;
 }
 
 .release-info h3 {
@@ -329,10 +311,6 @@ const goBack = () => {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
-    word-break: break-word;
-    line-height: 1.2;
-    max-height: 2.4em;
 }
 
 .release-info p {
@@ -344,16 +322,12 @@ const goBack = () => {
     text-overflow: ellipsis;
 }
 
-.release-info .artists-names {
+.artists-names {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
 }
 
 .no-results {
@@ -368,141 +342,287 @@ const goBack = () => {
     justify-content: center;
 }
 
-@media (max-width: 1200px) {
-    .filter-and-back {
-        gap: 32rem;
-        margin-right: 4rem;
-    }
-}
-
-@media (max-width: 1050px) {
-    .filter-and-back {
-        gap: 24rem;
-        margin-right: 3rem;
-    }
-}
-
-@media (max-width: 950px) {
-    .filter-and-back {
-        gap: 18rem;
-        margin-right: 2rem;
-    }
-}
-
-@media (max-width: 890px) {
-    .filter-and-back {
-        gap: 1rem;
-        justify-content: space-between;
-        margin: 5px 1rem 0;
-        padding: 0 1rem;
-        width: calc(100% - 2rem);
-    }
-
-    .search-container .search {
-        margin-right: 0;
-    }
-}
-
 @media (max-width: 768px) {
     .results-title {
         font-size: 1.8rem;
-        padding-top: 0.5rem;
-    }
-
-    .release-card {
-        flex: 0 0 calc(50% - 1rem);  /* 2 cards per row */
-        min-height: 380px;
-    }
-
-    .release-card img {
-        height: 220px;
-    }
-
-    .release-info {
-        padding: 1.25rem;
-    }
-
-    .release-info h3 {
-        font-size: 1.05rem;
-    }
-
-    .release-info p {
-        font-size: 0.95rem;
+        padding: 0.5rem 1rem 1rem;
     }
 
     .search-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        padding: 0 1rem;
+        padding: 0 0.5rem;
     }
 
-    .search-container .search {
-        margin-right: 0;
-        width: 100%;
-        max-width: 300px;
+    .search-group {
+        gap: 0.5rem;
     }
 
-    .filter-and-back {
-        flex-direction: row;
-        justify-content: flex-end;
-        gap: calc(16px + 27vw);
-        margin: 5px 0 0 41px;
+    .release-card {
+        flex: 0 0 calc(50% - 1rem);
+        min-height: 380px;
     }
 
     .filter-options {
-        flex-direction: column;
-        gap: 0.5rem;
-        padding: 0.75rem;
-        width: fit-content;
-        margin: 0;
-        align-self: flex-end;
-    }
-
-    .filter-options label {
-        font-size: 0.9rem;
-        white-space: nowrap;
-    }
-
-    .go-back-arrow {
-        align-self: flex-start;
-        margin-top: 0;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 0.5rem;
     }
 }
 
 @media (max-width: 480px) {
     .results-title {
         font-size: 1.5rem;
-        margin-bottom: 1.5rem;
+    }
+
+    .go-back-arrow {
+        width: 35px;
+        height: 35px;
+        padding: 6px;
+    }
+
+    .filter-options {
+        gap: 0.75rem;
+        font-size: 0.9rem;
     }
 
     .release-card {
-        flex: 0 0 calc(50% - 0.75rem);  /* 2 cards per row*/
         min-height: 320px;
     }
 
     .release-card img {
         height: 180px;
     }
+}
 
-    .results-header {
-        padding: 0 1rem;
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem !important;
+    max-width: 600px;
+    padding: 0 1rem;
+    margin: 30px auto 0; /* Centered horizontally */
+    width: 100%;
+}
+
+.search-group {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center search bar + arrow */
+    gap: 1rem;
+    width: 100%;
+    position: relative;
+}
+
+.search {
+    flex-grow: 1;
+    max-width: 500px; /* Limit search bar width */
+    position: relative;
+    display: flex;
+}
+
+.filter-options {
+    display: flex;
+    gap: 1.5rem !important;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    justify-content: center;
+    width: 100%;
+    max-width: 500px; /* Match search bar width */
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .search-group {
+        gap: 0.5rem;
+        padding: 0 10px;
     }
 
+    .search {
+        max-width: 100%;
+    }
+
+    .filter-options {
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 0.5rem;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
     .searchTerm {
         font-size: 14px;
     }
 
-    .filter-and-back {
-        gap: 17rem;
+    .filter-options {
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+}
+
+.search-results {
+    padding: 1rem 0 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem !important;
+    max-width: 1200px; /* Wider than card container */
+    width: 100%;
+    padding: 0 1rem;
+    margin: 30px auto 0;
+}
+
+.search-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 1000px; /* Increased width */
+}
+
+.results-section {
+    margin: 0 auto;
+    padding: 0 2rem;
+    margin-bottom: 2.5rem;
+    max-width: 1000px; /* Narrower than search container */
+}
+
+.release-card {
+    flex: 0 0 calc(25% - 1.2rem); /* Maintain card size */
+}
+
+.filter-options {
+    max-width: 1000px; /* Match search group width */
+    width: 100%;
+}
+
+/* Mobile adjustments */
+@media (max-width: 1200px) {
+    .search-container {
+        max-width: 100%;
+        padding: 0 2rem;
+    }
+
+    .search-group {
+        max-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-group {
+        max-width: 100%;
+        padding: 0;
     }
 
     .filter-options {
-        padding: 0.5rem;
+        max-width: 100%;
     }
 
-    .filter-options label {
-        font-size: 0.85rem;
+    .release-card {
+        flex: 0 0 calc(50% - 1rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .search-container {
+        padding: 0 1rem;
+    }
+
+    .search-group {
+        gap: 0.5rem;
+    }
+}
+
+.search-results {
+    padding: 1rem 0 2rem;
+    max-width: 1600px;  /* Increased from 1400px */
+    margin: 0 auto;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem !important;
+    max-width: 1400px;  /* Increased from 1200px */
+    width: 100%;
+    padding: 0 1rem;
+    margin: 30px auto 0;
+}
+
+.search-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 1200px;  /* Increased from 1000px */
+}
+
+.results-section {
+    margin: 0 auto;
+    padding: 0 2rem;
+    margin-bottom: 2.5rem;
+    max-width: 1000px;  /* Kept narrower than search section */
+}
+
+.searchTerm {
+    width: 100%;
+    padding: 12px;  /* Increased padding */
+    height: 46px;  /* Increased height */
+    font-size: 17px;  /* Larger font */
+}
+
+.filter-options {
+    max-width: 1200px;  /* Match search group width */
+    width: 100%;
+    padding: 1rem 2rem;  /* More padding */
+}
+
+/* Mobile adjustments */
+@media (min-width: 1600px) {
+    .search-group {
+        max-width: 1400px;
+    }
+
+    .filter-options {
+        max-width: 1400px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .search-container {
+        max-width: 100%;
+        padding: 0 4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        padding: 0 2rem;
+    }
+
+    .searchTerm {
+        font-size: 16px;
+        height: 42px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-container {
+        padding: 0 1rem;
+    }
+
+    .searchTerm {
+        font-size: 15px;
+        padding: 10px;
     }
 }
 </style>
