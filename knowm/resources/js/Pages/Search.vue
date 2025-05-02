@@ -63,7 +63,7 @@
                     </a>
                 </div>
                 <div class="track-list metadata-track-list">
-                    <div v-for="track in metadataMatches" :key="track.id" class="track-item">
+                    <div v-for="track in metadataMatches" :key="track.id" class="track-card">
                         <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
                         <div class="track-info">
                             <h3>{{ track.title }}</h3>
@@ -89,7 +89,7 @@
                     </a>
                 </div>
                 <div class="track-list lyric-matches">
-                    <div v-for="track in lyricsMatches" :key="track.id" class="track-item">
+                    <div v-for="track in lyricsMatches" :key="track.id" class="track-card">
                         <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
                         <div class="track-info">
                             <h3>{{ track.title }}</h3>
@@ -384,7 +384,7 @@ const cleanSnippet = (snippet) => {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.track-item {
+.track-card {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
@@ -398,11 +398,13 @@ const cleanSnippet = (snippet) => {
 }
 
 .track-image {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 4px;
     object-fit: cover;
     flex-shrink: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .track-info {
@@ -453,7 +455,7 @@ const cleanSnippet = (snippet) => {
     margin: 0 auto;
 }
 
-.lyric-matches .track-item {
+.lyric-matches .track-card {
     background: white;
     padding-left: 0.5rem;
 }
@@ -511,11 +513,6 @@ const cleanSnippet = (snippet) => {
 
     .track-info h3 {
         font-size: 0.9rem;
-
-    }
-
-    .lyric-matches .track-info h3 {
-
     }
 }
 

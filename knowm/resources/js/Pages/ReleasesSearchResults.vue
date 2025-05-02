@@ -1,5 +1,5 @@
 <template>
-    <Head title="All Releases Search Results" />
+    <Head title="All Releases Search Results {{ searchQuery }}" />
     <Navbar />
     <main class="flex-1">
         <div class="search-results">
@@ -457,6 +457,15 @@ const goBack = () => {
     }
 }
 
+@media (max-width: 540px) {
+    .searchTerm {
+        font-size: 14px;
+        padding: 10px;
+        height: 42px;
+        max-width: 500px;
+        width: 250px;
+    }
+}
 
 @media (max-width: 480px) {
     .search-container {
@@ -464,13 +473,6 @@ const goBack = () => {
         justify-content: center;
         align-items: center;
         margin-bottom: 0.5rem;
-    }
-
-    .searchTerm {
-        font-size: 15px;
-        padding: 10px;
-        width: 100%;
-        max-width: 280px;
     }
 
     .results-title {
@@ -490,6 +492,13 @@ const goBack = () => {
         align-items: center;
         gap: 0.75rem;
         font-size: 0.9rem;
+    }
+
+    .searchTerm {
+        font-size: 15px;
+        padding: 10px;
+        width: 100%;
+        max-width: 280px;
     }
 
     .release-results-wrapper {

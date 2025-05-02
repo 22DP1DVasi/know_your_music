@@ -96,7 +96,7 @@ class SearchController extends Controller
     {
         $query = $request->input('q', '');
         $type = $request->input('type', 'title');
-        $perPage = 20;
+        $perPage = $request->input('perPage', 20);
 
         $tracks = Track::when($type === 'title', function($q) use ($query) {
             $q->where('title', 'like', "%{$query}%");
@@ -109,7 +109,7 @@ class SearchController extends Controller
             ->with(['artists'])
             ->orderBy('title')
             ->paginate($perPage)
-            ->appends(['q' => $query, 'type' => $type]);
+            ->appends(['q' => $query, 'type' => $type, 'perPage' => $perPage]);
 
         return Inertia::render('TracksSearchResults', [
             'tracks' => $tracks->items(),
@@ -117,7 +117,8 @@ class SearchController extends Controller
             'searchType' => $type,
             'paginationLinks' => $tracks->toArray()['links'],
             'currentPage' => $tracks->currentPage(),
-            'totalPages' => $tracks->lastPage()
+            'totalPages' => $tracks->lastPage(),
+            'perPage' => $perPage
         ]);
     }
 

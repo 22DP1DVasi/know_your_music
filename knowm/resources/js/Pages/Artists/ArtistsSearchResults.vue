@@ -1,5 +1,5 @@
 <template>
-    <Head title="All Artists Search Results" />
+    <Head title="All Artists Search Results {{ searchQuery }}" />
     <Navbar />
     <main class="flex-1">
         <div class="search-results">
@@ -13,10 +13,12 @@
 
             <div class="artist-results">
                 <div v-for="artist in artists" :key="artist.id" class="artist-card">
-                    <img :src="getArtistImage(artist)" :alt="artist.name">
+                    <div class="image-wrapper">
+                        <img :src="getArtistImage(artist)" :alt="artist.name">
+                    </div>
                     <div class="artist-info">
                         <h3>{{ artist.name }}</h3>
-                        <p>{{ artist.tracks_count }} tracks</p>
+                        <p>{{ artist.tracks_count }} {{ artist.tracks_count === 1 ? 'track' : 'tracks' }}</p>
                     </div>
                 </div>
             </div>
@@ -68,7 +70,6 @@ const goBack = () => {
     font-size: 2.2rem;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 2rem;
     color: #0c4baa;
     font-weight: 600;
     padding: 1rem 2rem;
@@ -118,33 +119,43 @@ const goBack = () => {
 }
 
 .artist-card {
-    flex: 0 0 calc(25% - 1.2rem);  /* 4 cards per row*/
+    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
     background: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-                0 3px 6px rgba(0, 0, 0, 0.1);
+    0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-width: 0;
-    min-height: 320px;
-    aspect-ratio: 3/4;
+    display: flex;
+    flex-direction: column;
 }
 
 .artist-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-                0 8px 12px rgba(0, 0, 0, 0.15);
+    0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
-.artist-card img {
+.artist-card .image-wrapper {
     width: 100%;
-    height: 220px;
+    aspect-ratio: 1 / 1;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.artist-card .image-wrapper img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
 .artist-info {
     padding: 1rem;
-    min-width: 0;
+    overflow: hidden;
+    width: 100%;
 }
 
 /* max two rows for name/title, if overflows - ellipsis */
@@ -156,10 +167,6 @@ const goBack = () => {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
-    word-break: break-word;
-    line-height: 1.2;
-    max-height: 2.4em;
 }
 
 .artist-info p {
@@ -188,14 +195,7 @@ const goBack = () => {
     }
 
     .artist-card {
-        flex: 0 0 calc(50% - 1rem);  /* 2 cards per row */
-        min-height: 360px;
-        height: 360px ;
-        aspect-ratio: 3/4;
-    }
-
-    .artist-card img {
-        height: 240px;
+        flex: 0 0 calc(50% - 0.75rem); /* 2 cards per row */
     }
 
     .artist-info {
@@ -214,17 +214,20 @@ const goBack = () => {
 @media (max-width: 480px) {
     .results-title {
         font-size: 1.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .go-back-arrow {
+        padding-top: 6px !important;
+    }
+
+    .artist-results {
+        justify-content: center;
     }
 
     .artist-card {
-        flex: 0 0 calc(50% - 0.75rem);  /* 2 cards per row*/
-        min-height: 300px;
-        height: 300px;
-    }
-
-    .artist-card img {
-        height: 180px;
+        flex: 0 0 80%;
     }
 }
+
 </style>

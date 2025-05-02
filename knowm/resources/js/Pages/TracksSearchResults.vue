@@ -1,12 +1,17 @@
 <template>
-    <Head title="Tracks Search Results" />
+    <Head title="Tracks Search Results {{ searchQuery }}" />
     <Navbar />
     <main class="flex-1">
         <div class="search-results">
             <div class="results-header">
                 <h1 class="results-title">Tracks Matching "{{ searchQuery }}"</h1>
-                <div class="search-container">
-                    <div class="search">
+                <div class="go-back-arrow-wrapper">
+                    <div class="go-back-arrow" @click="goBack">
+                        <span class="arrow-icon">←</span>
+                    </div>
+                </div>
+                <div class="search-controls">
+                    <div class="search-container">
                         <input
                             type="text"
                             class="searchTerm"
@@ -22,34 +27,30 @@
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
-                    <div class="filter-and-back">
-                        <div class="go-back-arrow" @click="goBack">
-                            <span class="arrow-icon">←</span>
-                        </div>
-                        <div class="filter-options">
-                            <label>
-                                <input
-                                    type="radio"
-                                    v-model="searchType"
-                                    value="title"
-                                />
-                                By Title
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    v-model="searchType"
-                                    value="artist"
-                                />
-                                By Artist
-                            </label>
-                        </div>
+
+                    <div class="filter-options">
+                        <label>
+                            <input
+                                type="radio"
+                                v-model="searchType"
+                                value="title"
+                            />
+                            By Title
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                v-model="searchType"
+                                value="artist"
+                            />
+                            By Artist
+                        </label>
                     </div>
                 </div>
             </div>
 
             <div class="track-list metadata-track-list">
-                <div v-for="track in tracks" :key="track.id" class="track-item">
+                <div v-for="track in tracks" :key="track.id" class="track-card">
                     <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
                     <div class="track-info">
                         <h3>{{ track.title }}</h3>
@@ -82,7 +83,7 @@
 
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
-import { ref, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -96,14 +97,30 @@ const props = defineProps({
     },
     paginationLinks: Array,
     currentPage: Number,
-    totalPages: Number
+    totalPages: Number,
+    perPage: Number
 });
 
 const localSearchQuery = ref(props.searchQuery);
 const searchType = ref(props.searchType || 'title');
 
+const localPerPage = ref(props.perPage || 20);
+
+const checkScreenSize = () => {
+    localPerPage.value = window.innerWidth <= 768 ? 12 : 20;
+};
+
+onMounted(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkScreenSize);
+});
+
 const performSearch = () => {
-    router.visit(`/search/tracks?q=${localSearchQuery.value}&type=${searchType.value}`, {
+    router.visit(`/search/tracks?q=${localSearchQuery.value}&type=${searchType.value}&perPage=${localPerPage.value}`, {
         preserveState: true,
         replace: true
     });
@@ -134,40 +151,39 @@ const goBack = () => {
 .results-header {
     display: flex;
     flex-direction: column;
-    margin-bottom: 2rem;
     padding: 0 2rem;
+    gap: 0;
+    margin-bottom: 17px;
 }
 
 .search-container {
     display: flex;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-controls {
+    display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 0;
-    margin: 0;
+    align-items: center;
+    max-width: 800px;
+    position: relative;
+    margin: 0 auto;
     padding: 0;
 }
 
-.search-container .search {
-    margin-right: 6.6rem;
-}
-
-.search {
-    width: 300px;
-    position: relative;
-    display: flex;
-    z-index: 1;
-}
-
 .searchTerm {
-    width: 100%;
+    height: 46px;
+    width: 340px;
+    flex: 1;
+    padding: 12px;
+    font-size: 17px;
     border: 3px solid #54b3ebed;
     border-right: none;
-    padding: 10px;
-    height: 40px;
     border-radius: 7px 0 0 7px;
     outline: none;
-    color: #000000;
-    font-size: 16px;
 }
 
 .searchTerm:focus {
@@ -176,9 +192,8 @@ const goBack = () => {
 }
 
 .searchButton {
-    position: relative;
     width: 40px;
-    height: 40px;
+    height: 46px;
     border: 1px solid #54b3ebed;
     background: #54b3ebed;
     text-align: center;
@@ -187,6 +202,7 @@ const goBack = () => {
     cursor: pointer;
     font-size: 20px;
     overflow: hidden;
+    position: relative;
 }
 
 .searchButton i {
@@ -199,10 +215,8 @@ const goBack = () => {
 }
 
 .searchButton:hover::after {
-    content: "\f001";
+    content: "\f001";   /* FontAwesome music note */
     font-family: "FontAwesome";
-    font-size: 20px;
-    color: #fff;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -220,24 +234,20 @@ const goBack = () => {
     transform: translate(-50%, -50%) scale(0.5);
 }
 
-.filter-and-back {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: calc(12px + 48vw);
-    max-width: 1000px;
-    width: 100%;
-    margin: 5px 5.7rem 0 auto;
-    padding: 0 1rem;
-}
-
 .filter-options {
+    width: 200px;
+    height: 100%;
+    max-width: 300px;
+    margin: 0 auto;
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     background: white;
-    padding: 0.5rem 1rem;
+    padding: 1rem 0;
     border-radius: 7px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
 }
 
 .filter-options label {
@@ -248,19 +258,24 @@ const goBack = () => {
 }
 
 .results-title {
-    max-width: 800px;
+    margin-bottom: -15px;
+    padding: 0;
     text-align: center;
     font-size: 2.2rem;
-    margin: 0 auto;
     color: #0c4baa;
     font-weight: 600;
-    padding: 1rem 2rem;
+}
+
+.go-back-arrow-wrapper {
+    margin-top: -10px;
+    padding-left: calc(50% - 470px);
 }
 
 .go-back-arrow {
     cursor: pointer;
     background-color: #3f80e4;
     border-radius: 50%;
+    margin: 0.5rem auto 0;
     padding: 8px;
     display: inline-flex;
     align-items: center;
@@ -268,7 +283,6 @@ const goBack = () => {
     width: 40px;
     height: 40px;
     transition: background-color 0.2s ease;
-    flex-shrink: 0;
 }
 
 .go-back-arrow:hover {
@@ -293,31 +307,28 @@ const goBack = () => {
     margin: 0 auto;
 }
 
-.track-item {
+.track-card {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #eee;
     gap: 1rem;
-    transition: background-color 0.2s;
-}
-
-.track-item:hover {
-    background-color: #f9f9f9;
 }
 
 .track-image {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 4px;
     object-fit: cover;
     flex-shrink: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .track-info {
     flex: 1;
     min-width: 0;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     overflow: hidden;
 }
 
@@ -332,16 +343,14 @@ const goBack = () => {
 }
 
 .artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
     margin: 0;
     color: #666;
     font-size: 0.9rem;
     width: 100%;
+    display: block;
 }
 
 .track-duration {
@@ -362,138 +371,169 @@ const goBack = () => {
     justify-content: center;
 }
 
+@media (min-width: 1600px) {
+    .filter-options {
+        max-width: 500px;
+    }
+}
+
 @media (max-width: 1200px) {
-    .filter-and-back {
-        gap: 32rem;
-        margin-right: 4rem;
+    .search-container {
+        max-width: 100%;
+        padding: 0 4rem;
     }
 }
 
-@media (max-width: 1050px) {
-    .filter-and-back {
-        gap: 24rem;
-        margin-right: 3rem;
-    }
-}
-
-@media (max-width: 950px) {
-    .filter-and-back {
-        gap: 18rem;
-        margin-right: 2rem;
-    }
-}
-
-@media (max-width: 890px) {
-    .filter-and-back {
-        gap: 1rem;
-        justify-content: space-between;
-        margin: 5px 1rem 0;
-        padding: 0 1rem;
-        width: calc(100% - 2rem);
+@media (max-width: 870px) {
+    .metadata-track-list {
+        max-width: 85%;  /* Increased from 90% to 85% for more side space */
+        margin: 0 auto;
+        padding: 0 1.25rem;  /* Increased from 1rem */
     }
 
-    .search-container .search {
-        margin-right: 0;
+    .track-card {
+        padding: 0.75rem 0;  /* Added horizontal padding */
+        gap: 0.75rem;
+    }
+
+    .track-image {
+        width: 55px;
+        height: 55px;
+    }
+
+    .track-info h3 {
+        max-width: 180px;
     }
 }
 
 @media (max-width: 768px) {
     .results-title {
         font-size: 1.8rem;
-        padding-top: 0.5rem;
-    }
-
-    .track-info h3 {
-        max-width: 180px;
+        padding: 0.5rem 1rem 1rem;
     }
 
     .search-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
+        padding: 0 2rem;
+        max-width: 100%;
+    }
+
+    .search-controls {
         padding: 0 1rem;
     }
 
-    .search-container .search {
-        margin-right: 0;
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .filter-and-back {
-        flex-direction: row;
-        justify-content: flex-end;
-        gap: calc(16px + 27vw);
-        margin: 5px 0 0 41px;
+    .searchTerm {
+        font-size: 16px;
+        height: 46px;
     }
 
     .filter-options {
-        flex-direction: column;
-        gap: 0.5rem;
-        padding: 0.75rem;
-        width: fit-content;
-        margin: 0;
-        align-self: flex-end;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 0.5rem;
     }
 
-    .filter-options label {
-        font-size: 0.9rem;
-        white-space: nowrap;
+    .go-back-arrow-wrapper {
+        margin-bottom: 5px;
     }
 
     .go-back-arrow {
-        align-self: flex-start;
-        margin-top: 0;
+        left: 1rem;
+    }
+
+    .metadata-track-list {
+        max-width: 90%;  /* Slightly wider on smaller screens */
+        padding: 0 1.75rem;  /* Increased from 1.5rem */
+    }
+
+    .track-card {
+        padding: 0.75rem 0;  /* Increased horizontal padding */
+    }
+
+    .track-info h3 {
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 540px) {
+    .searchTerm {
+        font-size: 14px;
+        padding: 10px;
+        height: 42px;
+        max-width: 500px;
+        width: 250px;
+    }
+
+    .metadata-track-list {
+        padding: 0 1rem;
+    }
+
+    .track-info h3 {
+        max-width: 160px;
     }
 }
 
 @media (max-width: 480px) {
-    .results-title {
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
+    .search-container {
+        padding: 0 1rem;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0.5rem;
     }
 
-    .track-item {
-        padding: 0.75rem;
+    .results-title {
+        font-size: 1.5rem;
+    }
+
+    .go-back-arrow {
+        width: 35px;
+        height: 35px;
+        padding-top: 6px !important;
+    }
+
+    .searchTerm {
+        font-size: 15px;
+        padding: 10px;
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .filter-options {
+        width: 200px;
+        max-width: 300px;
+        margin: 0 auto;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .filter-options label {
+        font-size: 0.85rem;
+    }
+
+    .track-card {
+        padding: 0.75rem 0;
         gap: 0.75rem;
     }
 
     .track-image {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
     }
 
     .track-info {
         padding: 0 0.5rem;
     }
 
+    .metadata-track-list {
+        padding: 0 0.75rem;
+    }
+
     .track-info h3 {
-        font-size: 0.9rem;
-        max-width: 150px;
+        max-width: 140px;
     }
 
     .track-duration {
         flex: 0 0 60px;
-        font-size: 0.85rem;
-    }
-
-    .results-header {
-        padding: 0 1rem;
-    }
-
-    .searchTerm {
-        font-size: 14px;
-    }
-
-    .filter-and-back {
-        gap: 17rem;
-    }
-
-    .filter-options {
-        padding: 0.5rem;
-    }
-
-    .filter-options label {
         font-size: 0.85rem;
     }
 }
