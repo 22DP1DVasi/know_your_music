@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
     </list>
@@ -265,7 +266,7 @@
       <workItem from="1745851468181" duration="4000" />
       <workItem from="1745851507191" duration="5399000" />
       <workItem from="1745994032078" duration="8393000" />
-      <workItem from="1746170686707" duration="21397000" />
+      <workItem from="1746170686707" duration="23645000" />
     </task>
     <servers />
   </component>

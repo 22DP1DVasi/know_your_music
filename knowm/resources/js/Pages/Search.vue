@@ -15,10 +15,12 @@
                 </div>
                 <div class="artist-results">
                     <div v-for="artist in artists" :key="artist.id" class="artist-card">
-                        <img :src="getArtistImage(artist)" :alt="artist.name">
+                        <div class="image-wrapper">
+                            <img :src="getArtistImage(artist)" :alt="artist.name">
+                        </div>
                         <div class="artist-info">
                             <h3>{{ artist.name }}</h3>
-                            <p>{{ artist.tracks_count }} tracks</p>
+                            <p>{{ artist.tracks_count }} {{ artist.tracks_count === 1 ? 'track' : 'tracks' }}</p>
                         </div>
                     </div>
                 </div>
@@ -44,7 +46,7 @@
                         {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
                     </span>
                             </p>
-                            <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
+                            <p>{{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}</p>
                         </div>
                     </div>
                 </div>
@@ -66,9 +68,9 @@
                         <div class="track-info">
                             <h3>{{ track.title }}</h3>
                             <p class="artists-names">
-                    <span v-for="(artist, index) in track.artists" :key="artist.id">
-                        {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
-                    </span>
+                                <span v-for="(artist, index) in track.artists" :key="artist.id">
+                                    {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
+                                </span>
                             </p>
                         </div>
                         <div class="track-duration">{{ formatDuration(track.duration) }}</div>
@@ -185,7 +187,6 @@ const cleanSnippet = (snippet) => {
 
 .results-section {
     margin: 0 auto;
-    /*max-width: 1000px;*/
     padding: 0 2rem;
     margin-bottom: 2.5rem;
 }
@@ -226,16 +227,15 @@ const cleanSnippet = (snippet) => {
 }
 
 .artist-card {
-    flex: 0 0 calc(25% - 1.2rem);  /* 4 cards per row*/
+    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
     background: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-                0 3px 6px rgba(0, 0, 0, 0.1);
+    0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-width: 0;
-    min-height: 320px;
-    aspect-ratio: 3/4;
+    display: flex;
+    flex-direction: column;
 }
 
 .artist-card:hover {
@@ -244,15 +244,26 @@ const cleanSnippet = (snippet) => {
     0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
-.artist-card img {
+.artist-card .image-wrapper {
     width: 100%;
-    height: 220px;
+    aspect-ratio: 1 / 1;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.artist-card .image-wrapper img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
 .artist-info {
     padding: 1rem;
-    min-width: 0;
+    overflow: hidden;
+    width: 100%;
 }
 
 /* max two rows for name/title, if overflows - ellipsis */
@@ -264,10 +275,6 @@ const cleanSnippet = (snippet) => {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
-    word-break: break-word;
-    line-height: 1.2;
-    max-height: 2.4em;
 }
 
 .artist-info p {
@@ -324,12 +331,6 @@ const cleanSnippet = (snippet) => {
 .release-card .image-wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-}
-
-.release-card img {
-    width: 100%;
-    height: 220px;
     object-fit: cover;
 }
 
@@ -407,11 +408,10 @@ const cleanSnippet = (snippet) => {
 .track-info {
     flex: 1;
     min-width: 0;
-    padding: 0 1rem;
+    padding: 0 0.1rem;
     overflow: hidden;
 }
 
-/* max two rows for name/title, if overflows - ellipsis */
 .track-info h3 {
     margin: 0 0 0.25rem 0;
     font-size: 0.95rem;
@@ -432,16 +432,14 @@ const cleanSnippet = (snippet) => {
 }
 
 .track-info .artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
     margin: 0;
     color: #666;
     font-size: 0.9rem;
     width: 100%;
+    display: block;
 }
 
 .track-duration {
@@ -489,23 +487,11 @@ const cleanSnippet = (snippet) => {
     }
 
     .artist-card {
-        flex: 0 0 calc(50% - 1rem);  /* 2 cards per row */
-        min-height: 360px;
-        height: 360px ;
-        aspect-ratio: 3/4;
-    }
-
-    .release-results-wrapper {
-        padding: 0 1rem;
+        flex: 0 0 calc(50% - 0.75rem); /* 2 cards per row */
     }
 
     .release-card {
         flex: 0 0 calc(50% - 0.75rem);
-    }
-
-    .artist-card img,
-    .release-card img {
-        height: 240px;
     }
 
     .artist-info,
@@ -525,11 +511,11 @@ const cleanSnippet = (snippet) => {
 
     .track-info h3 {
         font-size: 0.9rem;
-        max-width: 180px;
+
     }
 
     .lyric-matches .track-info h3 {
-        max-width: 150px;
+
     }
 }
 
@@ -539,14 +525,12 @@ const cleanSnippet = (snippet) => {
         margin-bottom: 1.5rem;
     }
 
-    .artist-card {
-        flex: 0 0 calc(50% - 0.75rem);  /* 2 cards per row*/
-        min-height: 300px;
-        height: 300px;
+    .artist-results {
+        justify-content: center;
     }
 
-    .artist-card img {
-        height: 180px;
+    .artist-card {
+        flex: 0 0 80%;
     }
 
     .release-results {
@@ -554,7 +538,7 @@ const cleanSnippet = (snippet) => {
     }
 
     .release-card {
-        flex: 0 0 100%;
+        flex: 0 0 80%;
     }
 }
 </style>

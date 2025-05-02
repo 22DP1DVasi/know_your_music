@@ -63,7 +63,7 @@
                                         {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
                                     </span>
                                 </p>
-                                <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
+                                <p>{{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}</p>
                             </div>
                         </div>
                     </div>
@@ -501,7 +501,7 @@ const goBack = () => {
     }
 
     .release-card {
-        flex: 0 0 100%;
+        flex: 0 0 80%;
     }
 }
 </style>

@@ -607,4 +607,10 @@ nav ul li a:hover {
     }
 }
 
+@media screen and (max-width: 370px) {
+    .logo-container p {
+        display: none;
+    }
+}
+
 </style>
