@@ -78,12 +78,6 @@
     </div>
     <!-- search bar for mobile -->
     <div v-show="isMobileSearchActive" class="mobile-search-container">
-<!--        <div class="search">-->
-<!--            <input type="text" class="searchTerm" placeholder="Search..." />-->
-<!--            <button type="submit" class="searchButton">-->
-<!--                <i class="fa fa-search"></i>-->
-<!--            </button>-->
-<!--        </div>-->
         <div class="search">
             <input
                 type="text"
@@ -239,7 +233,7 @@ nav {
     z-index: 1;
     height: 55px;
     min-height: 55px;
-    position: relative; /* ensure the navbar acts as the containing block for absolute positioning */
+    position: relative;
 }
 
 nav ul {
@@ -250,8 +244,8 @@ nav ul {
 nav ul li {
     margin-left: 1rem;
     display: flex;
-    align-items: center; /* This ensures all items in the li are vertically centered */
-    height: 100%; /* Take full height of the nav */
+    align-items: center;
+    height: 100%;
     min-height: 55px;
 }
 
@@ -262,7 +256,7 @@ nav ul li a {
     font-weight: 400;
     padding: 12px 16px;
     border-radius: 5px;
-    display: block; /* ensure the anchor takes up the full width of the li */
+    display: block; /* takes up the full width of the li */
     font-size: 16px;
     transition: background-color 0.3s ease;
 }
@@ -277,14 +271,14 @@ nav ul li a:hover {
     align-items: center;
     text-decoration: none; /* remove underline from the link */
     cursor: pointer;
-    margin: 0;  /* remove default margins and padding */
+    margin: 0;
     padding: 0;
 }
 
 .logo {
     width: 100px;
     height: 56px;
-    object-fit: contain; /* ensures the image fits well */
+    object-fit: contain;
     margin-right: 10px;
     margin-bottom: 4px;
 }
@@ -297,7 +291,7 @@ nav ul li a:hover {
 
 .wrap {
     width: 25%;
-    position: absolute; /* position relative to the Navbar */
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* adjust for true center */
@@ -316,12 +310,12 @@ nav ul li a:hover {
     width: 100%;
     border: 3px solid #54b3ebed;
     border-right: none;
-    padding: 10px; /* Increase padding */
-    height: 40px; /* Increase height */
+    padding: 10px;
+    height: 40px;
     border-radius: 7px 0 0 7px;
     outline: none;
     color: #000000;
-    font-size: 16px; /* Ensure text is readable */
+    font-size: 16px;
 }
 
 .searchTerm:focus {
@@ -330,7 +324,7 @@ nav ul li a:hover {
 }
 
 .searchButton {
-    position: relative; /* Ensure a positioned ancestor for the ::after pseudo-element */
+    position: relative;
     width: 40px;
     height: 40px;
     border: 1px solid #54b3ebed;
@@ -340,32 +334,31 @@ nav ul li a:hover {
     border-radius: 0 7px 7px 0;
     cursor: pointer;
     font-size: 20px;
-    overflow: hidden; /* Prevent visual overflow */
+    overflow: hidden;
 }
 
-/* Transition the icon */
 .searchButton i {
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 /* change to music icon on hover */
 .searchButton:hover i {
-    opacity: 0; /* fade out the search icon */
-    transform: scale(0.5); /* shrink the search icon */
+    opacity: 0;
+    transform: scale(0.5);
 }
 
 /* add the music icon after hover */
 .searchButton:hover::after {
-    content: "\f001"; /* Unicode for FontAwesome fa-music */
+    content: "\f001";
     font-family: "FontAwesome";
     font-size: 20px;
     color: #fff;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(1); /* Center the icon and scale it up */
+    transform: translate(-50%, -50%) scale(1);
     opacity: 1;
-    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth appearance */
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .searchButton::after {
@@ -374,7 +367,7 @@ nav ul li a:hover {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.5); /* Start small */
+    transform: translate(-50%, -50%) scale(0.5);
 }
 
 .user-avatar {
@@ -408,7 +401,7 @@ nav ul li a:hover {
     text-overflow: ellipsis;
     flex-shrink: 1;
     min-width: 0;
-    max-width: 150px; /* Adjust based on your layout */
+    max-width: 150px;
     display: inline-block;
     vertical-align: middle;
 }
@@ -446,7 +439,7 @@ nav ul li a:hover {
     min-width: fit-content;
 }
 
-/* Mobile search container */
+/* mobile search container */
 .mobile-search-container {
     background-color: rgb(185, 225, 255);
     padding: 10px;
@@ -457,7 +450,6 @@ nav ul li a:hover {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px;
 }
 
-/* Mobile search button */
 .mobile-search-button {
     background: none;
     border: none;
@@ -525,7 +517,7 @@ nav ul li a:hover {
     font-size: 1.3rem;
 }
 
-/* vverlay to cover the screen when the menu is active */
+/* overlay to cover the screen when the menu is active */
 .overlay {
     position: fixed;
     top: 0;
@@ -558,11 +550,6 @@ nav ul li a:hover {
     transition: all 0.3s ease-in-out;
 }
 
-.icon {
-    font-size: 1.2rem;
-}
-
-/* Media Query for Mobile */
 @media screen and (max-width: 1370px){
     .search {
         width: 90%;
@@ -578,14 +565,10 @@ nav ul li a:hover {
         width: 80%;
     }
 
-    /* nav ul li a {
-      padding: 0px 0px;
-    } */
-
     .wrap {
         top: 50%;
         left: 50%;
-        transform: translate(-70%, -50%); /* adjust for true center */
+        transform: translate(-70%, -50%);
     }
 
 }
@@ -602,12 +585,12 @@ nav ul li a:hover {
     }
 
     nav ul {
-        display: none; /* Completely remove the nav elements from the layout */
+        display: none;
     }
 
     .mobile-search-button {
         position: absolute;
-        right: 55px; /* move it closer to the hamburger menu */
+        right: 55px;
         width: auto;
     }
 }

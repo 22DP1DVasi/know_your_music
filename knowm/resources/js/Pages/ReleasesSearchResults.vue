@@ -50,17 +50,19 @@
             </div>
 
             <section v-if="releases.length > 0" class="results-section">
-                <div class="release-results">
-                    <div v-for="release in releases" :key="release.id" class="release-card">
-                        <img :src="getReleaseImage(release)" :alt="release.title">
-                        <div class="release-info">
-                            <h3>{{ release.title }}</h3>
-                            <p class="artists-names">
-                                <span v-for="(artist, index) in release.artists" :key="artist.id">
-                                    {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
-                                </span>
-                            </p>
-                            <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
+                <div class="release-results-wrapper">
+                    <div class="release-results">
+                        <div v-for="release in releases" :key="release.id" class="release-card">
+                            <img :src="getReleaseImage(release)" :alt="release.title">
+                            <div class="release-info">
+                                <h3>{{ release.title }}</h3>
+                                <p class="artists-names">
+                                    <span v-for="(artist, index) in release.artists" :key="artist.id">
+                                        {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
+                                    </span>
+                                </p>
+                                <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,7 +158,7 @@ const goBack = () => {
 
 .searchTerm {
     height: 46px;
-    width: 300px ;
+    width: 340px ;
     flex: 1;
     padding: 12px;
     font-size: 17px;
@@ -176,10 +178,12 @@ const goBack = () => {
     height: 46px;
     border: 1px solid #54b3ebed;
     background: #54b3ebed;
+    text-align: center;
     color: #fff;
     border-radius: 0 7px 7px 0;
     cursor: pointer;
     font-size: 20px;
+    overflow: hidden;
 }
 
 .searchButton i {
@@ -205,9 +209,10 @@ const goBack = () => {
 }
 
 .filter-options {
-    max-width: 260px;
-    width: 100%;
+    width: 200px;
     height: 100%;
+    max-width: 300px;
+    margin: 0 auto;
     display: flex;
     gap: 1rem;
     background: white;
@@ -266,9 +271,14 @@ const goBack = () => {
 
 .results-section {
     margin: 0 auto;
-    padding: 0 2rem;
     margin-bottom: 2.5rem;
     max-width: 1000px;
+}
+
+.release-results-wrapper {
+    padding: 0 2rem;
+    margin: 0 auto;
+    max-width: 1200px;
 }
 
 .release-results {
@@ -279,7 +289,7 @@ const goBack = () => {
 }
 
 .release-card {
-    flex: 0 0 calc(25% - 1.2rem);
+    flex: 0 0 calc(25% - 1.125rem);
     background: white;
     border-radius: 8px;
     overflow: hidden;
@@ -379,12 +389,6 @@ const goBack = () => {
         padding: 0.5rem 1rem 1rem;
     }
 
-    .release-card {
-        flex: 0 0 calc(50% - 1rem);
-        min-height: 270px;
-        max-height: 320px;
-    }
-
     .filter-options {
         flex-wrap: wrap;
         gap: 1rem;
@@ -401,6 +405,16 @@ const goBack = () => {
 
     .go-back-arrow {
         left: 1rem;
+    }
+
+    .release-results-wrapper {
+        padding: 0 1rem;
+    }
+
+    .release-card {
+        flex: 0 0 calc(50% - 0.75rem);
+        min-height: 270px;
+        max-height: 340px;
     }
 }
 
@@ -431,12 +445,16 @@ const goBack = () => {
     }
 
     .filter-options {
-        width: 100%;
+        width: 200px;
         max-width: 300px;
         margin: 0 auto;
         align-items: center;
         gap: 0.75rem;
         font-size: 0.9rem;
+    }
+
+    .release-results-wrapper {
+        padding: 0 0.5rem;
     }
 
     .release-card {
