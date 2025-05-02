@@ -62,7 +62,7 @@ class SearchController extends Controller
     {
         $query = $request->input('q', '');
         $type = $request->input('type', 'title');
-        $perPage = 24;
+        $perPage = $request->input('perPage', 24);
 
         $releases = Release::when($type === 'title', function($q) use ($query) {
             $q->where('title', 'like', "%{$query}%");
@@ -76,7 +76,7 @@ class SearchController extends Controller
             ->withCount('tracks')
             ->orderBy('release_date', 'desc')
             ->paginate($perPage)
-            ->appends(['q' => $query, 'type' => $type]);
+            ->appends(['q' => $query, 'type' => $type, 'perPage' => $perPage]);
 
         return Inertia::render('ReleasesSearchResults', [
             'releases' => $releases->items(),
@@ -84,7 +84,8 @@ class SearchController extends Controller
             'searchType' => $type,
             'paginationLinks' => $releases->toArray()['links'],
             'currentPage' => $releases->currentPage(),
-            'totalPages' => $releases->lastPage()
+            'totalPages' => $releases->lastPage(),
+            'perPage' => $perPage
         ]);
     }
 

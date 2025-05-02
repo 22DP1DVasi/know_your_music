@@ -53,7 +53,9 @@
                 <div class="release-results-wrapper">
                     <div class="release-results">
                         <div v-for="release in releases" :key="release.id" class="release-card">
-                            <img :src="getReleaseImage(release)" :alt="release.title">
+                            <div class="image-wrapper">
+                                <img :src="getReleaseImage(release)" :alt="release.title" />
+                            </div>
                             <div class="release-info">
                                 <h3>{{ release.title }}</h3>
                                 <p class="artists-names">
@@ -87,7 +89,7 @@
 
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
-import { ref, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -101,14 +103,30 @@ const props = defineProps({
     },
     paginationLinks: Array,
     currentPage: Number,
-    totalPages: Number
+    totalPages: Number,
+    perPage: Number
 });
 
 const localSearchQuery = ref(props.searchQuery);
 const searchType = ref(props.searchType || 'title');
 
+const localPerPage = ref(props.perPage || 24);
+
+const checkScreenSize = () => {
+    localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
+};
+
+onMounted(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkScreenSize);
+});
+
 const performSearch = () => {
-    router.visit(`/search/releases?q=${localSearchQuery.value}&type=${searchType.value}`, {
+    router.visit(`/search/releases?q=${localSearchQuery.value}&type=${searchType.value}&perPage=${localPerPage.value}`, {
         preserveState: true,
         replace: true
     });
@@ -184,6 +202,7 @@ const goBack = () => {
     cursor: pointer;
     font-size: 20px;
     overflow: hidden;
+    position: relative;
 }
 
 .searchButton i {
@@ -196,16 +215,23 @@ const goBack = () => {
 }
 
 .searchButton:hover::after {
-    content: "\f001";
+    content: "\f001";   /* FontAwesome music note */
     font-family: "FontAwesome";
-    font-size: 20px;
-    color: #fff;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
     transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.searchButton::after {
+    content: "";
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
 }
 
 .filter-options {
@@ -259,7 +285,6 @@ const goBack = () => {
     transition: background-color 0.2s ease;
 }
 
-
 .go-back-arrow:hover {
     background-color: #14a8df;
 }
@@ -296,8 +321,24 @@ const goBack = () => {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
     0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-height: 340px;
-    aspect-ratio: 3/4;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .release-card:hover {
@@ -308,8 +349,8 @@ const goBack = () => {
 
 .release-card img {
     width: 100%;
-    height: 220px;
-    object-fit: cover;
+    height: 100%;
+    object-fit: contain; /* Shows the entire image */
 }
 
 .release-info {
@@ -413,8 +454,7 @@ const goBack = () => {
 
     .release-card {
         flex: 0 0 calc(50% - 0.75rem);
-        min-height: 270px;
-        max-height: 340px;
+
     }
 }
 
@@ -454,12 +494,16 @@ const goBack = () => {
     }
 
     .release-results-wrapper {
-        padding: 0 0.5rem;
+        padding: 0 1rem;
+    }
+
+    .release-results {
+        justify-content: center;
     }
 
     .release-card {
-        min-height: 320px;
-        height: 180px;
+        flex: 0 0 100%;
+
     }
 }
 </style>
