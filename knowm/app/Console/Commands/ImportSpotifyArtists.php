@@ -20,10 +20,11 @@ class ImportSpotifyArtists extends Command
         $artistsToImport = [
 //            'Bring Me The Horizon',
 //            'Porter Robinson',
-            'Brand of Sacrifice',
-            'KAMAARA',
-            'Oxxxymiron'
+//            'Brand of Sacrifice',
+//            'KAMAARA',
+//            'Oxxxymiron'
 //            'Korn'
+        'Green Apelsin'
         ];
 
         $spotify = new SpotifyService();

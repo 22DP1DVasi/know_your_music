@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -262,7 +263,9 @@
       <workItem from="1745737761629" duration="13870000" />
       <workItem from="1745761576955" duration="18389000" />
       <workItem from="1745851468181" duration="4000" />
-      <workItem from="1745851507191" duration="4509000" />
+      <workItem from="1745851507191" duration="5399000" />
+      <workItem from="1745994032078" duration="8393000" />
+      <workItem from="1746170686707" duration="2768000" />
     </task>
     <servers />
   </component>
