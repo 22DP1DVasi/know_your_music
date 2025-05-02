@@ -5,8 +5,10 @@
         <div class="search-results">
             <div class="results-header">
                 <h1 class="results-title">All Releases Matching "{{ searchQuery }}"</h1>
-                <div class="go-back-arrow" @click="goBack">
-                    <span class="arrow-icon">←</span>
+                <div class="go-back-arrow-wrapper">
+                    <div class="go-back-arrow" @click="goBack">
+                        <span class="arrow-icon">←</span>
+                    </div>
                 </div>
                 <div class="search-controls">
                         <div class="search-container">
@@ -120,16 +122,6 @@ const goBack = () => {
 </script>
 
 <style scoped>
-.search-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 800px;
-    position: relative;
-    margin: 0 auto;
-    padding: 0;
-}
-
 .search-results {
     padding: 1rem 0 2rem;
     max-width: 1200px;
@@ -141,6 +133,7 @@ const goBack = () => {
     flex-direction: column;
     padding: 0 2rem;
     gap: 0;
+    margin-bottom: 17px;
 }
 
 .search-container {
@@ -151,10 +144,21 @@ const goBack = () => {
     position: relative;
 }
 
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    position: relative;
+    margin: 0 auto;
+    padding: 0;
+}
+
 .searchTerm {
+    height: 46px;
+    width: 300px ;
     flex: 1;
     padding: 12px;
-    height: 46px;
     font-size: 17px;
     border: 3px solid #54b3ebed;
     border-right: none;
@@ -201,16 +205,18 @@ const goBack = () => {
 }
 
 .filter-options {
-    max-width: 300px;
+    max-width: 260px;
     width: 100%;
     height: 100%;
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     background: white;
-    padding: 1rem 2rem;
+    padding: 1rem 0;
     border-radius: 7px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-top: 1rem;
+    align-items: center;
+    justify-content: center;
 }
 
 .filter-options label {
@@ -227,6 +233,11 @@ const goBack = () => {
     font-size: 2.2rem;
     color: #0c4baa;
     font-weight: 600;
+}
+
+.go-back-arrow-wrapper {
+    margin-top: -10px;
+    padding-left: 2rem;
 }
 
 .go-back-arrow {
@@ -293,6 +304,8 @@ const goBack = () => {
 
 .release-info {
     padding: 1rem;
+    overflow: hidden;
+    width: 100%;
 }
 
 .release-info h3 {
@@ -315,11 +328,14 @@ const goBack = () => {
 }
 
 .artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    display: block;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%;
+    margin: 0 0 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
 }
 
 .no-results {
@@ -365,7 +381,8 @@ const goBack = () => {
 
     .release-card {
         flex: 0 0 calc(50% - 1rem);
-        min-height: 380px;
+        min-height: 270px;
+        max-height: 320px;
     }
 
     .filter-options {
@@ -378,6 +395,10 @@ const goBack = () => {
         padding: 0 1rem;
     }
 
+    .go-back-arrow-wrapper {
+        margin-bottom: 5px;
+    }
+
     .go-back-arrow {
         left: 1rem;
     }
@@ -387,11 +408,16 @@ const goBack = () => {
 @media (max-width: 480px) {
     .search-container {
         padding: 0 1rem;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0.5rem;
     }
 
     .searchTerm {
         font-size: 15px;
         padding: 10px;
+        width: 100%;
+        max-width: 280px;
     }
 
     .results-title {
@@ -401,10 +427,14 @@ const goBack = () => {
     .go-back-arrow {
         width: 35px;
         height: 35px;
-        padding: 6px;
+        padding-top: 4px !important;
     }
 
     .filter-options {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        align-items: center;
         gap: 0.75rem;
         font-size: 0.9rem;
     }
