@@ -3,11 +3,30 @@
     <Navbar />
     <main class="flex-1">
         <div class="search-results">
-            <h1 class="results-title">Lyrics Matching "{{ searchQuery }}"</h1>
-
             <div class="results-header">
-                <div class="go-back-arrow" @click="goBack">
-                    <span class="arrow-icon">←</span>
+                <h1 class="results-title">Lyrics Matching "{{ searchQuery }}"</h1>
+                <div class="go-back-arrow-wrapper">
+                    <div class="go-back-arrow" @click="goBack">
+                        <span class="arrow-icon">←</span>
+                    </div>
+                </div>
+                <div class="search-controls">
+                    <div class="search-container">
+                        <input
+                            type="text"
+                            class="searchTerm"
+                            placeholder="Search lyrics..."
+                            v-model="localSearchQuery"
+                            @keyup.enter="performSearch"
+                        >
+                        <button
+                            type="submit"
+                            class="searchButton"
+                            @click="performSearch"
+                        >
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -21,7 +40,7 @@
                                 {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
                             </span>
                         </p>
-                        <p class="lyric-snippet" v-html="track.lyric_snippet || 'No lyrics snippet available'"></p>
+                        <p class="lyric-snippet" v-html="cleanSnippet(track.lyric_snippet) || 'No lyrics snippet available'"></p>
                     </div>
                     <div class="track-duration">{{ formatDuration(track.duration) }}</div>
                 </div>
@@ -45,6 +64,7 @@
 
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
+import { ref, onBeforeUnmount, onMounted } from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -54,8 +74,32 @@ const props = defineProps({
     searchQuery: String,
     paginationLinks: Array,
     currentPage: Number,
-    totalPages: Number
+    totalPages: Number,
+    perPage: Number
 });
+
+const localSearchQuery = ref(props.searchQuery);
+const localPerPage = ref(props.perPage || 20);
+
+const checkScreenSize = () => {
+    localPerPage.value = window.innerWidth <= 768 ? 12 : 20;
+};
+
+onMounted(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkScreenSize);
+});
+
+const performSearch = () => {
+    router.visit(`/search/lyrics?q=${localSearchQuery.value}&perPage=${localPerPage.value}`, {
+        preserveState: true,
+        replace: true
+    });
+};
 
 const getTrackImage = (track) => {
     return track.cover_url || '/images/default-track-cover.webp';
@@ -71,8 +115,8 @@ const cleanSnippet = (snippet) => {
     if (!snippet) return '';
     return snippet
         .replace(/\\/g, '')
-        .replace(/[\x00-\x1F\x7F]/g, ' ')  // Remove control chars
-        .replace(/\s+/g, ' ')              // Collapse spaces
+        .replace(/[\x00-\x1F\x7F]/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim();
 };
 
@@ -82,31 +126,112 @@ const goBack = () => {
 </script>
 
 <style scoped>
-.results-title {
-    text-align: center;
-    font-size: 2.2rem;
-    margin-bottom: 2rem;
-    color: #0c4baa;
-    font-weight: 600;
-    padding-top: 1rem;
-}
-
-.results-header {
-    display: flex;
-    margin-bottom: 2rem;
-    padding: 0 2rem;
-}
-
 .search-results {
     padding: 1rem 2rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
+.results-header {
+    display: flex;
+    flex-direction: column;
+    padding: 0 2rem;
+    gap: 0;
+    margin-bottom: 17px;
+}
+
+.search-container {
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    position: relative;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.searchTerm {
+    height: 46px;
+    width: 340px;
+    flex: 1;
+    padding: 12px;
+    font-size: 17px;
+    border: 3px solid #54b3ebed;
+    border-right: none;
+    border-radius: 7px 0 0 7px;
+    outline: none;
+}
+
+.searchTerm:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.searchButton {
+    width: 40px;
+    height: 46px;
+    border: 1px solid #54b3ebed;
+    background: #54b3ebed;
+    text-align: center;
+    color: #fff;
+    border-radius: 0 7px 7px 0;
+    cursor: pointer;
+    font-size: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.searchButton i {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.searchButton:hover i {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.searchButton:hover::after {
+    content: "\f001";
+    font-family: "FontAwesome";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.searchButton::after {
+    content: "";
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+}
+
+.results-title {
+    margin-bottom: -15px;
+    padding: 0;
+    text-align: center;
+    font-size: 2.2rem;
+    color: #0c4baa;
+    font-weight: 600;
+}
+
 .go-back-arrow {
     cursor: pointer;
     background-color: #3f80e4;
     border-radius: 50%;
+    margin: 0.5rem auto 0;
     padding: 8px;
     display: inline-flex;
     align-items: center;
@@ -114,7 +239,6 @@ const goBack = () => {
     width: 40px;
     height: 40px;
     transition: background-color 0.2s ease;
-    flex-shrink: 0;
 }
 
 .go-back-arrow:hover {
@@ -228,10 +352,31 @@ const goBack = () => {
     justify-content: center;
 }
 
+@media (max-width: 1200px) {
+    .search-container {
+        max-width: 100%;
+        padding: 0 4rem;
+    }
+}
+
 @media (max-width: 768px) {
     .results-title {
         font-size: 1.8rem;
-        padding-top: 0.5rem;
+        padding: 0.5rem 1rem 1rem;
+    }
+
+    .search-container {
+        padding: 0 2rem;
+        max-width: 100%;
+    }
+
+    .searchTerm {
+        font-size: 16px;
+        height: 46px;
+    }
+
+    .go-back-arrow-wrapper {
+        margin-bottom: 5px;
     }
 
     .track-info h3 {
@@ -243,10 +388,40 @@ const goBack = () => {
     }
 }
 
+@media (max-width: 540px) {
+    .searchTerm {
+        font-size: 14px;
+        padding: 10px;
+        height: 42px;
+        max-width: 500px;
+        width: 250px;
+    }
+}
+
 @media (max-width: 480px) {
+    .search-container {
+        padding: 0 1rem;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
     .results-title {
         font-size: 1.5rem;
         margin-bottom: 1.5rem;
+    }
+
+    .go-back-arrow {
+        width: 35px;
+        height: 35px;
+        padding-top: 6px !important;
+    }
+
+    .searchTerm {
+        font-size: 15px;
+        padding: 10px;
+        width: 100%;
+        max-width: 280px;
     }
 
     .track-item {

@@ -39,19 +39,21 @@ class SearchController extends Controller
     public function artists(Request $request, SearchService $searchService)
     {
         $query = $request->input('q', '');
-        $perPage = 24;
+        $perPage = $request->input('perPage', 24);
+
         $artists = Artist::where('name', 'like', "%{$query}%")
             ->withCount('tracks')
             ->orderBy('name')
             ->paginate($perPage)
-            ->appends(['q' => $query]);
+            ->appends(['q' => $query, 'perPage' => $perPage]);
 
         return Inertia::render('Artists/ArtistsSearchResults', [
             'artists' => $artists->items(),
             'searchQuery' => $query,
             'paginationLinks' => $artists->links()->elements[0], // pagination links
             'currentPage' => $artists->currentPage(),
-            'totalPages' => $artists->lastPage()
+            'totalPages' => $artists->lastPage(),
+            'perPage' => $perPage
         ]);
     }
 
@@ -128,14 +130,15 @@ class SearchController extends Controller
     public function lyrics(Request $request, SearchService $searchService)
     {
         $query = $request->input('q', '');
-        $perPage = 20;
+        $perPage = $request->input('perPage', 20);
+
         $tracks = Track::whereHas('lyrics', function($q) use ($query) {
             $q->where('lyrics', 'like', "%{$query}%");
         })
             ->with(['artists', 'lyrics'])
             ->orderBy('title')
             ->paginate($perPage)
-            ->appends(['q' => $query, 'type' => 'lyrics']);
+            ->appends(['q' => $query, 'perPage' => $perPage]);
 
         $tracks->getCollection()->transform(function($track) use ($query, $searchService) {
             $lyricsText = $track->lyrics->pluck('lyrics')->implode("\n");
@@ -152,7 +155,8 @@ class SearchController extends Controller
             'searchQuery' => $query,
             'paginationLinks' => $tracks->toArray()['links'],
             'currentPage' => $tracks->currentPage(),
-            'totalPages' => $tracks->lastPage()
+            'totalPages' => $tracks->lastPage(),
+            'perPage' => $perPage
         ]);
     }
 }

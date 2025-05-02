@@ -60,7 +60,7 @@
 
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
-import { ref } from 'vue';
+import { ref, onBeforeUnmount, onMounted } from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -70,13 +70,28 @@ const props = defineProps({
     searchQuery: String,
     paginationLinks: Array,
     currentPage: Number,
-    totalPages: Number
+    totalPages: Number,
+    perPage: Number
 });
 
 const localSearchQuery = ref(props.searchQuery);
+const localPerPage = ref(props.perPage || 24);
+
+const checkScreenSize = () => {
+    localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
+};
+
+onMounted(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkScreenSize);
+});
 
 const performSearch = () => {
-    router.visit(`/search/artists?q=${localSearchQuery.value}`, {
+    router.visit(`/search/artists?q=${localSearchQuery.value}&perPage=${localPerPage.value}`, {
         preserveState: true,
         replace: true
     });
@@ -106,16 +121,6 @@ const goBack = () => {
     gap: 0;
     margin-bottom: 17px;
 }
-
-.results-title {
-    margin-bottom: -15px;
-    padding: 0;
-    text-align: center;
-    font-size: 2.2rem;
-    color: #0c4baa;
-    font-weight: 600;
-}
-
 
 .search-container {
     display: flex;
@@ -193,6 +198,15 @@ const goBack = () => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.5);
+}
+
+.results-title {
+    margin-bottom: -15px;
+    padding: 0;
+    text-align: center;
+    font-size: 2.2rem;
+    color: #0c4baa;
+    font-weight: 600;
 }
 
 .go-back-arrow {
