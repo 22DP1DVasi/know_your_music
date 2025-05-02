@@ -242,7 +242,7 @@ const goBack = () => {
 
 .go-back-arrow-wrapper {
     margin-top: -10px;
-    padding-left: 2rem;
+    padding-left: calc(50% - 470px);
 }
 
 .go-back-arrow {
@@ -441,7 +441,7 @@ const goBack = () => {
     .go-back-arrow {
         width: 35px;
         height: 35px;
-        padding-top: 4px !important;
+        padding-top: 6px !important;
     }
 
     .filter-options {
