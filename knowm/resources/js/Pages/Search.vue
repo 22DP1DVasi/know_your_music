@@ -34,10 +34,16 @@
                 </div>
                 <div class="release-results">
                     <div v-for="release in releases" :key="release.id" class="release-card">
-                        <img :src="getReleaseImage(release)" :alt="release.title">
+                        <div class="image-wrapper">
+                            <img :src="getReleaseImage(release)" :alt="release.title" />
+                        </div>
                         <div class="release-info">
                             <h3>{{ release.title }}</h3>
-                            <p>{{ release.artists[0]?.name }}</p>
+                            <p class="artists-names">
+                    <span v-for="(artist, index) in release.artists" :key="artist.id">
+                        {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
+                    </span>
+                            </p>
                             <p>{{ release.tracks_count }} tracks • {{ release.release_type }}</p>
                         </div>
                     </div>
@@ -288,22 +294,37 @@ const cleanSnippet = (snippet) => {
 }
 
 .release-card {
-    flex: 0 0 calc(25% - 1.2rem);  /* 4 cards per row*/
+    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
     background: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-                0 3px 6px rgba(0, 0, 0, 0.1);
+    0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-width: 0;
-    min-height: 340px;
-    aspect-ratio: 3/4;
+    display: flex;
+    flex-direction: column;
 }
 
 .release-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
     0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.release-card .image-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.release-card .image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .release-card img {
@@ -314,7 +335,8 @@ const cleanSnippet = (snippet) => {
 
 .release-info {
     padding: 1rem;
-    min-width: 0;
+    overflow: hidden;
+    width: 100%;
 }
 
 /* max two rows for name/title, if overflows - ellipsis */
@@ -326,10 +348,6 @@ const cleanSnippet = (snippet) => {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: normal;
-    word-break: break-word;
-    line-height: 1.2;
-    max-height: 2.4em;
 }
 
 .release-info p {
@@ -342,12 +360,11 @@ const cleanSnippet = (snippet) => {
 }
 
 .release-info .artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    display: block;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    width: 100%;
     margin: 0 0 0.25rem 0;
     color: #666;
     font-size: 0.9rem;
@@ -471,12 +488,19 @@ const cleanSnippet = (snippet) => {
         padding-top: 0.5rem;
     }
 
-    .artist-card,
-    .release-card {
+    .artist-card {
         flex: 0 0 calc(50% - 1rem);  /* 2 cards per row */
         min-height: 360px;
         height: 360px ;
         aspect-ratio: 3/4;
+    }
+
+    .release-results-wrapper {
+        padding: 0 1rem;
+    }
+
+    .release-card {
+        flex: 0 0 calc(50% - 0.75rem);
     }
 
     .artist-card img,
@@ -515,16 +539,22 @@ const cleanSnippet = (snippet) => {
         margin-bottom: 1.5rem;
     }
 
-    .artist-card,
-    .release-card {
+    .artist-card {
         flex: 0 0 calc(50% - 0.75rem);  /* 2 cards per row*/
         min-height: 300px;
         height: 300px;
     }
 
-    .artist-card img,
-    .release-card img {
+    .artist-card img {
         height: 180px;
+    }
+
+    .release-results {
+        justify-content: center;
+    }
+
+    .release-card {
+        flex: 0 0 100%;
     }
 }
 </style>

@@ -454,7 +454,6 @@ const goBack = () => {
 
     .release-card {
         flex: 0 0 calc(50% - 0.75rem);
-
     }
 }
 
@@ -503,7 +502,6 @@ const goBack = () => {
 
     .release-card {
         flex: 0 0 100%;
-
     }
 }
 </style>
