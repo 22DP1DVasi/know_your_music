@@ -67,7 +67,7 @@ class ArtistController extends Controller
     {
         $artist = Artist::where('slug', $artistSlug)->firstOrFail();
 
-        return Inertia::render('Artists/ArtistWiki', [
+        return Inertia::render('Artists/ArtistBio', [
             'artist' => $artist->load(['genres']),
             'title' => "{$artist->name} - Biography"
         ]);

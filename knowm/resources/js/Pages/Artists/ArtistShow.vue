@@ -36,13 +36,10 @@
                         <h3 class="info-title">Details</h3>
                         <div class="info-flex">
                             <div class="info-item">
-                                <span class="info-value">{{ artist.formed_year || 'Unknown' }}</span>
+                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Unknown' }} - {{ artist.disbanded_year || 'present' }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="info-value">{{ artist.disbanded_year || 'present' }}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-value">{{ artist.solo_or_band || 'Unknown' }}</span>
+                                <span class="info-value"><b>Type:</b> {{ artist.solo_or_band || 'Unknown' }}</span>
                             </div>
                         </div>
                     </div>
@@ -343,9 +340,10 @@ const formatDuration = (timeString) => {
     background: white;
     border-radius: 8px;
     padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     flex: 1;
-    min-width: 250px;
+    min-width: 200px;
+    max-width: 285px;
 }
 
 .info-title {
@@ -358,13 +356,14 @@ const formatDuration = (timeString) => {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    flex-direction: column;
 }
 
 .info-item {
     flex: 1 0 calc(50% - 0.75rem);
     min-width: 120px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .info-value {
@@ -522,7 +521,7 @@ const formatDuration = (timeString) => {
     }
 
     .info-card {
-        min-width: 100%;
+        width: 100%;
     }
 
     .release-card {
