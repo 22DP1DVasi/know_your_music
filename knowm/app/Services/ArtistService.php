@@ -24,7 +24,7 @@ class ArtistService
         return [
             'id' => $artist->id,
             'name' => $artist->name,
-            'profile_image' => $artist->profile_image,
+            'profile_url' => $artist->profile_url,
             'biography' => $artist->biography,
             'formed_year' => $artist->formed_year,
             'disbanded_year' => $artist->disbanded_year,

@@ -2,8 +2,19 @@
     <Head :title="artist.name" />
     <Navbar />
     <main class="artist-page">
-        <div class="artist-hero">
-            <img :src="getArtistImage(artist)" :alt="artist.name" class="hero-image">
+        <div class="artist-hero" :style="heroStyle">
+            <div class="hero-gradient" v-if="!isLandscape"></div>
+            <div class="hero-image-container">
+                <img
+                    :src="getArtistImage(artist)"
+                    :alt="artist.name"
+                    class="hero-image"
+                    ref="heroImage"
+                    @load="handleImageLoad"
+                    :style="imageStyle"
+                >
+            </div>
+            <h1 class="artist-name">{{ artist.name }}</h1>
         </div>
 
         <div class="artist-content">
@@ -16,7 +27,7 @@
                 <div class="artist-side-info">
                     <div class="info-card">
                         <h3 class="info-title">Details</h3>
-                        <div class="info-grid">
+                        <div class="info-flex">
                             <div class="info-item">
                                 <span class="info-value">{{ artist.formed_year || 'Unknown' }}</span>
                             </div>
@@ -56,7 +67,7 @@
 
                 <section class="artist-releases">
                     <h2 class="section-title">Releases</h2>
-                    <div class="release-grid">
+                    <div class="release-flex">
                         <div v-for="release in artist.releases" :key="release.id" class="release-card">
                             <img :src="release.cover_url" :alt="release.title" class="release-cover">
                             <div class="release-info">
@@ -89,14 +100,92 @@
 import { Head } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import Footer from '@/Components/Footer.vue'
+import { ref, onMounted } from 'vue'
+import ColorThief from 'colorthief'
 
 const props = defineProps({
     artist: Object
 })
 
+const heroImage = ref(null);
+const heroStyle = ref({});
+const imageStyle = ref({});
+const isLandscape = ref(false);
+const colorThief = new ColorThief();
+
+const handleImageLoad = () => {
+    if (heroImage.value.complete) {
+        analyzeImage();
+    } else {
+        heroImage.value.addEventListener('load', analyzeImage);
+    }
+};
+
+const analyzeImage = () => {
+    const img = heroImage.value;
+    isLandscape.value = img.naturalWidth > img.naturalHeight;
+
+    if (isLandscape.value) {
+        heroStyle.value = {
+            'height': '400px',
+            'position': 'relative',
+            'overflow': 'hidden'
+        };
+        imageStyle.value = {
+            'width': '100%',
+            'height': '120%', // Extra height to allow for upward shift
+            'object-fit': 'cover',
+            'object-position': 'center 30%', // Shift image up (30% from top)
+            'position': 'absolute',
+            'top': '-10%' // Pull image upward
+        };
+    } else {
+        try {
+            const dominantColor = colorThief.getColor(img);
+            const bgColor = `rgb(${dominantColor.join(',')})`;
+            const darkerColor = dominantColor.map(c => Math.max(0, c - 30)).join(',');
+
+            heroStyle.value = {
+                '--gradient-color-left': `rgba(${darkerColor},0.8)`,
+                '--gradient-color-right': `rgba(${darkerColor},0.8)`,
+                'background-color': bgColor,
+                'height': '400px',
+                'position': 'relative',
+                'display': 'flex',
+                'justify-content': 'center',
+                'align-items': 'center'
+            };
+
+            imageStyle.value = {
+                'max-height': '100%',
+                'max-width': '100%',
+                'object-fit': 'contain',
+                'position': 'relative',
+                'z-index': '2'
+            };
+        } catch (e) {
+            console.error('Error extracting color:', e);
+            heroStyle.value = {
+                '--gradient-color-left': 'rgba(0,0,0,0.3)',
+                '--gradient-color-right': 'rgba(0,0,0,0.3)',
+                'background-color': '#f0f0f0',
+                'height': '300px',
+                'position': 'relative'
+            };
+            imageStyle.value = {
+                'max-height': '100%',
+                'max-width': '100%',
+                'object-fit': 'contain'
+            };
+        }
+    }
+};
+
 const getArtistImage = (artist, type = 'profile') => {
-    if (artist.profile_url) return artist.profile_url;
-    return `/storage/artists/${artist.id}/${type}/${type}.webp`;
+    if (artist.profile_url) {
+        return artist.profile_url;
+    }
+    return '/images/default-artist-profile.webp';
 };
 
 const formatDuration = (timeString) => {
@@ -109,7 +198,7 @@ const formatDuration = (timeString) => {
 
 <style scoped>
 .artist-page {
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -117,13 +206,57 @@ const formatDuration = (timeString) => {
 .artist-hero {
     width: 100%;
     margin-bottom: 2rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    --gradient-color-left: rgba(0,0,0,0.3);
+    --gradient-color-right: rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.hero-image-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .hero-image {
     width: 100%;
-    max-height: 400px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 0 0 8px 8px;
+    object-position: center;
+    filter: brightness(0.9);
+    transition: all 0.3s ease;
+}
+
+/* For portrait images (existing styles) */
+.hero-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        var(--gradient-color-left) 0%,
+        transparent 20%,
+        transparent 80%,
+        var(--gradient-color-right) 100%
+    );
+    z-index: 1;
+}
+
+.artist-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 1.5rem;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    z-index: 3;
 }
 
 .artist-content {
@@ -133,7 +266,7 @@ const formatDuration = (timeString) => {
 
 .main-content {
     flex: 1;
-    max-width: 800px;
+    max-width: 750px;
 }
 
 .sidebar-space {
@@ -177,13 +310,15 @@ const formatDuration = (timeString) => {
     color: #333;
 }
 
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+.info-flex {
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
 }
 
 .info-item {
+    flex: 1 0 calc(50% - 0.75rem);
+    min-width: 120px;
     display: flex;
     flex-direction: column;
 }
@@ -258,14 +393,16 @@ const formatDuration = (timeString) => {
     font-size: 0.9rem;
 }
 
-.release-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+.release-flex {
+    display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
     margin-bottom: 3rem;
 }
 
 .release-card {
+    flex: 1 0 calc(20% - 1.5rem);
+    min-width: 180px;
     background: white;
     border-radius: 8px;
     overflow: hidden;
@@ -322,6 +459,20 @@ const formatDuration = (timeString) => {
 }
 
 @media (max-width: 768px) {
+    .artist-hero {
+        height: 220px;
+    }
+
+    .hero-parallax {
+        background-attachment: scroll;
+        height: 100%;
+    }
+
+    .artist-name {
+        font-size: 2rem;
+        padding: 1rem;
+    }
+
     .artist-side-info {
         flex-direction: column;
     }
@@ -330,8 +481,18 @@ const formatDuration = (timeString) => {
         min-width: 100%;
     }
 
-    .release-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    .release-card {
+        flex: 1 0 calc(33.333% - 1.5rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .release-card {
+        flex: 1 0 calc(50% - 1.5rem);
+    }
+
+    .info-item {
+        flex: 1 0 100%;
     }
 }
 </style>

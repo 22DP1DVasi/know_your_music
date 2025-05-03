@@ -99,7 +99,7 @@ const performSearch = () => {
 
 const getArtistImage = (artist, type = 'banner') => {
     if (artist.banner_url) return artist.banner_url;
-    return `/storage/artists/${artist.id}/${type}/${type}.webp`;
+    return '/images/default-artist-banner.webp';
 };
 
 const goBack = () => {

@@ -180,10 +180,11 @@ class Artist extends Model
      */
     public function getProfileUrlAttribute()
     {
-        $path = "artists/{$this->id}/profile/profile.jpg";
-        return Storage::disk('public')->exists($path)
-            ? Storage::url($path)
-            : asset('images/default-artist-profile.webp');
+        $path = "artists/{$this->id}/profile/profile.webp";
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::url($path);
+        }
+        return asset('images/default-artist-profile.webp');
     }
 
     /**
