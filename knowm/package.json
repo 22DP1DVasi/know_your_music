@@ -19,6 +19,8 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
-        "colorthief": "^2.6.0"
+        "colorthief": "^2.6.0",
+        "ziggy": "^2.4.0",
+        "ziggy-js": "^2.5.2"
     }
 }

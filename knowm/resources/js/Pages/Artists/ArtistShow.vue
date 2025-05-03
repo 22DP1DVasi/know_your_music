@@ -21,7 +21,14 @@
             <div class="main-content">
                 <section class="artist-description">
                     <h2 class="section-title">About</h2>
-                    <div class="bio-text" v-html="artist.biography"></div>
+                    <div class="bio-text" v-html="truncatedBio"></div>
+                    <button
+                        v-if="showReadMore"
+                        @click="redirectToFullBio"
+                        class="read-more-button"
+                    >
+                        Read more
+                    </button>
                 </section>
 
                 <div class="artist-side-info">
@@ -97,10 +104,10 @@
 </template>
 
 <script setup>
-import { Head } from '@inertiajs/vue3'
+import { Head, router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import Footer from '@/Components/Footer.vue'
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import ColorThief from 'colorthief'
 
 const props = defineProps({
@@ -112,6 +119,7 @@ const heroStyle = ref({});
 const imageStyle = ref({});
 const isLandscape = ref(false);
 const colorThief = new ColorThief();
+const bioMaxLength = 500;
 
 const handleImageLoad = () => {
     if (heroImage.value.complete) {
@@ -184,6 +192,20 @@ const getArtistImage = (artist, type = 'profile') => {
         return artist.profile_url;
     }
     return '/images/default-artist-profile.webp';
+};
+
+const truncatedBio = computed(() => {
+    if (!props.artist.biography) return '';
+    if (props.artist.biography.length <= bioMaxLength) return props.artist.biography;
+    return props.artist.biography.substring(0, bioMaxLength) + '...';
+});
+
+const showReadMore = computed(() => {
+    return props.artist.biography && props.artist.biography.length > bioMaxLength;
+});
+
+const redirectToFullBio = () => {
+    router.visit(`/artists/${props.artist.id}/bio`);
 };
 
 const formatDuration = (timeString) => {
@@ -285,6 +307,21 @@ const formatDuration = (timeString) => {
 
 .artist-description {
     margin-bottom: 2.5rem;
+}
+
+.read-more-button {
+    background: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.read-more-button:hover {
+    background: #1a5fc9;
 }
 
 .bio-text {

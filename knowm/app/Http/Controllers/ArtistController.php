@@ -63,4 +63,12 @@ class ArtistController extends Controller
         ]);
     }
 
+    public function showBio(Artist $artist)
+    {
+        return Inertia::render('Artists/ArtistWiki', [
+            'artist' => $artist->load(['genres']),
+            'title' => "{$artist->name} - Biography"
+        ]);
+    }
+
 }

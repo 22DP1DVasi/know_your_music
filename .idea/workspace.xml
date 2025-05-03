@@ -5,8 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistWiki.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/SearchService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -266,7 +273,7 @@
       <workItem from="1745994032078" duration="8393000" />
       <workItem from="1746170686707" duration="33302000" />
       <workItem from="1746263395291" duration="16052000" />
-      <workItem from="1746283612468" duration="693000" />
+      <workItem from="1746283612468" duration="5613000" />
     </task>
     <servers />
   </component>

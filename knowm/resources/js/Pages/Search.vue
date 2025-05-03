@@ -14,15 +14,16 @@
                     </a>
                 </div>
                 <div class="artist-results">
-                    <div v-for="artist in artists" :key="artist.id" class="artist-card">
-                        <div class="image-wrapper">
+                    <a v-for="artist in artists"
+                       :key="artist.id"
+                       :href="`/artists/${artist.slug}`"
+                       class="artist-card">
                             <img :src="getArtistImage(artist)" :alt="artist.name">
-                        </div>
                         <div class="artist-info">
                             <h3>{{ artist.name }}</h3>
                             <p>{{ artist.tracks_count }} {{ artist.tracks_count === 1 ? 'track' : 'tracks' }}</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </section>
 
@@ -116,9 +117,10 @@
 </template>
 
 <script setup>
-import { Head } from "@inertiajs/vue3";
+import { Head, router } from "@inertiajs/vue3";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
+import { route } from 'ziggy-js';
 
 const props = defineProps({
     artists: Array,
@@ -164,6 +166,11 @@ const cleanSnippet = (snippet) => {
         .replace(/\s+/g, ' ')              // Collapse spaces
         .trim();
 };
+
+const navigateToArtist = (artist) => {
+    router.get(route('artists.show', { artist: artist.slug }));
+};
+
 </script>
 
 <style scoped>
@@ -234,6 +241,11 @@ const cleanSnippet = (snippet) => {
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
     0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
     display: flex;
     flex-direction: column;
 }

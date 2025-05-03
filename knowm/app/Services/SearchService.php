@@ -54,6 +54,7 @@ class SearchService
                 return [
                     'id' => $artist->id,
                     'name' => $artist->name,
+                    'slug' => $artist->slug,
                     'tracks_count' => $artist->tracks_count,
                     'banner_url' => $artist->banner_url,
                 ];
