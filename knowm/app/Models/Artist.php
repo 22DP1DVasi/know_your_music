@@ -38,7 +38,7 @@ class Artist extends Model
     ];
 
     // explicit attributes for images URL
-    protected $appends = ['banner_url'];
+    protected $appends = ['profile_url', 'banner_url'];
 
     protected static function booted()
     {
@@ -172,7 +172,7 @@ class Artist extends Model
         if (Storage::disk('public')->exists($path)) {
             return Storage::url($path);
         }
-        return asset('images/default-artist.webp');
+        return asset('images/default-artist-banner.webp');
     }
 
     /**
@@ -183,7 +183,7 @@ class Artist extends Model
         $path = "artists/{$this->id}/profile/profile.jpg";
         return Storage::disk('public')->exists($path)
             ? Storage::url($path)
-            : asset('images/default-artist.jpg');
+            : asset('images/default-artist-profile.webp');
     }
 
     /**

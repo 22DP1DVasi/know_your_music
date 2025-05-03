@@ -3,7 +3,7 @@
     <Navbar />
     <main class="artist-page">
         <div class="artist-hero">
-            <img :src="artist.profile_image" :alt="artist.name" class="hero-image">
+            <img :src="getArtistImage(artist)" :alt="artist.name" class="hero-image">
         </div>
 
         <div class="artist-content">
@@ -94,9 +94,17 @@ const props = defineProps({
     artist: Object
 })
 
-const formatDuration = (seconds) => {
-    // Your duration formatting logic
-}
+const getArtistImage = (artist, type = 'profile') => {
+    if (artist.profile_url) return artist.profile_url;
+    return `/storage/artists/${artist.id}/${type}/${type}.webp`;
+};
+
+const formatDuration = (timeString) => {
+    if (!timeString) return '--:--';
+    const [hours, minutes, seconds] = timeString.split(':');
+    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
 </script>
 
 <style scoped>

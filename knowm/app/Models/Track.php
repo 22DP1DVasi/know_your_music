@@ -117,7 +117,7 @@ class Track extends Model
         // Get the first release that has a cover image
         $release = $this->releases()->first();
 
-        return $release?->cover_url ?? asset('images/default-release.webp');
+        return $release?->cover_url ?? asset('images/default-release-banner.webp');
     }
 
     /**

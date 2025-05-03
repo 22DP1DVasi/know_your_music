@@ -123,7 +123,7 @@ class Release extends Model
 
         return Storage::disk('public')->exists($path)
             ? Storage::url($path)
-            : asset('images/default-release.webp');
+            : asset('images/default-release-banner.webp');
     }
 
     /**
