@@ -57,9 +57,9 @@
                 <section class="artist-tracks">
                     <h2 class="section-title">Tracks</h2>
                     <div class="track-list">
-                        <div v-for="(track, index) in artist.top_tracks" :key="track.id" class="track-item">
+                        <div v-for="(track, index) in artist.top_tracks" :key="track.id" class="track-card">
                             <span class="track-number">{{ index + 1 }}</span>
-                            <img :src="track.cover_url" :alt="track.title" class="track-image">
+                            <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
                             <div class="track-info">
                                 <h3 class="track-title">{{ track.title }}</h3>
                                 <p class="track-album">{{ track.release_title }}</p>
@@ -204,6 +204,10 @@ const showReadMore = computed(() => {
 const redirectToFullBio = () => {
     const url = `/artists/${props.artist.slug}/bio`;
     router.visit(url);
+};
+
+const getTrackImage = (track) => {
+    return track.cover_url || '/images/default-release-banner.webp';
 };
 
 const formatDuration = (timeString) => {
@@ -389,10 +393,11 @@ const formatDuration = (timeString) => {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+    max-width: 100%;
 }
 
-.track-item {
+.track-card {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
@@ -404,18 +409,22 @@ const formatDuration = (timeString) => {
     color: #666;
     width: 24px;
     text-align: center;
+    font-size: 0.9rem;
 }
 
 .track-image {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 4px;
     object-fit: cover;
+    flex-shrink: 0;
 }
 
 .track-info {
     flex: 1;
     min-width: 0;
+    padding: 0 0.5rem;
+    overflow: hidden;
 }
 
 .track-title {
@@ -429,11 +438,16 @@ const formatDuration = (timeString) => {
 .track-album {
     font-size: 0.85rem;
     color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .track-duration {
     color: #666;
     font-size: 0.9rem;
+    flex: 0 0 60px;
+    text-align: right;
 }
 
 .release-flex {
@@ -506,11 +520,6 @@ const formatDuration = (timeString) => {
         height: 220px;
     }
 
-    .hero-parallax {
-        background-attachment: scroll;
-        height: 100%;
-    }
-
     .artist-name {
         font-size: 2rem;
         padding: 1rem;
@@ -524,18 +533,63 @@ const formatDuration = (timeString) => {
         width: 100%;
     }
 
+    .track-card {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .track-image {
+        width: 45px;
+        height: 45px;
+    }
+
+    .track-info {
+        padding: 0 0.25rem;
+    }
+
+    .track-duration {
+        flex: 0 0 50px;
+    }
+
     .release-card {
         flex: 1 0 calc(33.333% - 1.5rem);
     }
 }
 
 @media (max-width: 480px) {
-    .release-card {
-        flex: 1 0 calc(50% - 1.5rem);
-    }
-
     .info-item {
         flex: 1 0 100%;
+    }
+
+    .track-card {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .track-image {
+        width: 40px;
+        height: 40px;
+    }
+
+    .track-number {
+        width: 20px;
+    }
+
+    .track-title {
+        font-size: 0.9rem;
+    }
+
+    .track-album {
+        font-size: 0.8rem;
+    }
+
+    .track-duration {
+        font-size: 0.85rem;
+        flex: 0 0 45px;
+    }
+
+    .release-card {
+        flex: 1 0 calc(50% - 1.5rem);
     }
 }
 </style>

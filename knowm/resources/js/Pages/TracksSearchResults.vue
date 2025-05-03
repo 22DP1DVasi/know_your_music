@@ -127,7 +127,7 @@ const performSearch = () => {
 };
 
 const getTrackImage = (track) => {
-    return track.cover_url || '/images/default-track-cover.webp';
+    return track.cover_url || '/images/default-release-banner.webp';
 };
 
 const formatDuration = (timeString) => {

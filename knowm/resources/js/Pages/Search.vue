@@ -149,7 +149,7 @@ const getReleaseImage = (release) => {
 };
 
 const getTrackImage = (track) => {
-    return track.cover_url;
+    return track.cover_url || '/images/default-release-banner.webp';
 };
 
 const formatDuration = (timeString) => {
