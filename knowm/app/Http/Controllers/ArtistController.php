@@ -63,8 +63,10 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function showBio(Artist $artist)
+    public function showBio($artistSlug)
     {
+        $artist = Artist::where('slug', $artistSlug)->firstOrFail();
+
         return Inertia::render('Artists/ArtistWiki', [
             'artist' => $artist->load(['genres']),
             'title' => "{$artist->name} - Biography"

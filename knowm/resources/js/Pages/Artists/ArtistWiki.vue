@@ -4,7 +4,7 @@
     <main class="artist-bio-page">
         <div class="bio-header">
             <h1>{{ artist.name }}</h1>
-            <div class="back-button" @click="goBack">
+            <div class="back-button" @click="goBackToArtist">
                 ← Back to artist
             </div>
         </div>
@@ -46,14 +46,15 @@
 import { Head, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
+import { route } from 'ziggy-js';
 
 const props = defineProps({
     artist: Object,
     title: String
 });
 
-const goBack = () => {
-    window.history.back();
+const goBackToArtist = () => {
+    router.visit(`/artists/${props.artist.slug}`);
 };
 </script>
 

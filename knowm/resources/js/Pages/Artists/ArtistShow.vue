@@ -205,7 +205,8 @@ const showReadMore = computed(() => {
 });
 
 const redirectToFullBio = () => {
-    router.visit(`/artists/${props.artist.id}/bio`);
+    const url = `/artists/${props.artist.slug}/bio`;
+    router.visit(url);
 };
 
 const formatDuration = (timeString) => {
