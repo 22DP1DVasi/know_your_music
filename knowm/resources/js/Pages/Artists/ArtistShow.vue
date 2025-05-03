@@ -133,11 +133,9 @@ const analyzeImage = () => {
         };
         imageStyle.value = {
             'width': '100%',
-            'height': '120%', // Extra height to allow for upward shift
+            'height': '100%',
             'object-fit': 'cover',
-            'object-position': 'center 30%', // Shift image up (30% from top)
-            'position': 'absolute',
-            'top': '-10%' // Pull image upward
+            'object-position': 'center 13%',
         };
     } else {
         try {
@@ -198,9 +196,14 @@ const formatDuration = (timeString) => {
 
 <style scoped>
 .artist-page {
-    max-width: 1500px;
-    margin: 0 auto;
+    max-width: 80%;
+    width: 80%;
+    margin: 2rem auto;
     padding: 0 20px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .artist-hero {
@@ -266,7 +269,7 @@ const formatDuration = (timeString) => {
 
 .main-content {
     flex: 1;
-    max-width: 750px;
+    max-width: 60%;
 }
 
 .sidebar-space {
@@ -285,7 +288,10 @@ const formatDuration = (timeString) => {
 }
 
 .bio-text {
+    font-size: 0.9rem;
     line-height: 1.6;
+    white-space: pre-line;
+    word-wrap: break-word;
 }
 
 .artist-side-info {
