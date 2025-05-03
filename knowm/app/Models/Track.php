@@ -92,7 +92,7 @@ class Track extends Model
     }
 
     /**
-     * Get the formatted duration (mm:ss)
+     * Get the formated duration (mm:ss)
      */
     public function getFormattedDurationAttribute(): string
     {

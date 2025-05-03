@@ -18,7 +18,7 @@
                        :key="artist.id"
                        :href="`/artists/${artist.slug}`"
                        class="artist-card">
-                            <img :src="getArtistImage(artist)" :alt="artist.name">
+                            <img :src="artist.banner_url" :alt="artist.name">
                         <div class="artist-info">
                             <h3>{{ artist.name }}</h3>
                             <p>{{ artist.tracks_count }} {{ artist.tracks_count === 1 ? 'track' : 'tracks' }}</p>
@@ -38,7 +38,7 @@
                 <div class="release-results">
                     <div v-for="release in releases" :key="release.id" class="release-card">
                         <div class="image-wrapper">
-                            <img :src="getReleaseImage(release)" :alt="release.title" />
+                            <img :src="release.cover_url" :alt="release.title" />
                         </div>
                         <div class="release-info">
                             <h3>{{ release.title }}</h3>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="track-list metadata-track-list">
                     <div v-for="track in metadataMatches" :key="track.id" class="track-card">
-                        <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
+                        <img class="track-image" :src="track.cover_url" :alt="track.title">
                         <div class="track-info">
                             <h3>{{ track.title }}</h3>
                             <p class="artists-names">
@@ -91,7 +91,7 @@
                 </div>
                 <div class="track-list lyric-matches">
                     <div v-for="track in lyricsMatches" :key="track.id" class="track-card">
-                        <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
+                        <img class="track-image" :src="track.cover_url" :alt="track.title">
                         <div class="track-info">
                             <h3>{{ track.title }}</h3>
                             <p class="artists-names">
@@ -137,20 +137,6 @@ const props = defineProps({
     metadataMatchesCount: Number,
     lyricsMatchesCount: Number
 });
-
-// image handling
-const getArtistImage = (artist, type = 'banner') => {
-    if (artist.banner_url) return artist.banner_url;
-    return `/storage/artists/${artist.id}/${type}/${type}.webp`;
-};
-
-const getReleaseImage = (release) => {
-    return release.cover_url;
-};
-
-const getTrackImage = (track) => {
-    return track.cover_url || '/images/default-release-banner.webp';
-};
 
 const formatDuration = (timeString) => {
     if (!timeString) return '--:--';

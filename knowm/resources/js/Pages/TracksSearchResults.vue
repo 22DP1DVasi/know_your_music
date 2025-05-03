@@ -51,7 +51,7 @@
 
             <div class="track-list metadata-track-list">
                 <div v-for="track in tracks" :key="track.id" class="track-card">
-                    <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
+                    <img :src="track.cover_url" class="track-image" :alt="track.title">
                     <div class="track-info">
                         <h3>{{ track.title }}</h3>
                         <p class="artists-names">
@@ -124,10 +124,6 @@ const performSearch = () => {
         preserveState: true,
         replace: true
     });
-};
-
-const getTrackImage = (track) => {
-    return track.cover_url || '/images/default-release-banner.webp';
 };
 
 const formatDuration = (timeString) => {

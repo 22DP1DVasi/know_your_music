@@ -22,12 +22,7 @@ class ArtistController extends Controller
         $data = $this->artistService->getArtistWithDetails($artist->id);
 
         return Inertia::render('Artists/ArtistShow', [
-            'artist' => [
-                ...$data['artist'],
-                'genres' => $data['genres'],
-                'top_tracks' => $data['tracks'],
-                'releases' => $data['releases'],
-            ]
+            'artist' => $data
         ]);
     }
 

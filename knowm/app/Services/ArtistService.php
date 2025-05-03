@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Artist;
+use App\Models\Release;
+use App\Models\Track;
 use Illuminate\Support\Facades\DB;
 
 class ArtistService
@@ -12,8 +14,8 @@ class ArtistService
         return [
             'artist' => $this->getArtistInfo($artistId),
             'genres' => $this->getArtistGenres($artistId),
-            'tracks' => $this->getArtistTracks($artistId),
-            'releases' => $this->getArtistReleases($artistId),
+            'tracks' => $this->getArtistTracksWithDetails($artistId),
+            'releases' => $this->getArtistReleasesWithDetails($artistId),
         ];
     }
 
@@ -42,27 +44,55 @@ class ArtistService
             ->toArray();
     }
 
-    public function getArtistTracks(int $artistId, int $limit = 10): array
+    public function getArtistTracksWithDetails(int $artistId, int $limit = 10): array
     {
-        return DB::table('artists_tracks')
-            ->join('tracks', 'artists_tracks.track_id', '=', 'tracks.id')
-            ->leftJoin('tracks_releases', 'tracks.id', '=', 'tracks_releases.track_id')
-            ->leftJoin('releases', 'tracks_releases.release_id', '=', 'releases.id')
-            ->where('artists_tracks.artist_id', $artistId)
-            ->select([
-                'tracks.id',
-                'tracks.title',
-                'tracks.duration',
-                'releases.title as release_title',
-                'tracks_releases.track_position'
-            ])
-            ->orderBy('tracks.title')
+        /*$artist = Artist::findOrFail($artistId);*/
+        $tracks = $this->getTracksByArtist($artistId, $limit);
+
+        return $tracks->map(function ($track) {
+            return [
+                'id' => $track->id,
+                'title' => $track->title,
+                'duration' => $track->duration,
+                'cover_url' => $track->releases->first()->cover_url ?? '/images/default-release-banner.webp',
+                'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
+                'release_title' => $track->releases->first()->title ?? 'Unknown Release',
+            ];
+        })->toArray();
+    }
+
+    public function getArtistReleasesWithDetails(int $artistId, int $limit = 4): array
+    {
+        return Artist::findOrFail($artistId)
+            ->releases()
+            ->with(['artists'])
+            ->orderBy('release_date', 'desc')
             ->limit($limit)
             ->get()
+            ->map(function ($release) {
+                return [
+                    'id' => $release->id,
+                    'title' => $release->title,
+                    'year' => $release->release_date ? date('Y', strtotime($release->release_date)) : null,
+                    'type' => $release->release_type,
+                    'cover_url' => $release->cover_url ?? '/images/default-release-cover.webp',
+                    'artists' => $release->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
+                ];
+            })
             ->toArray();
     }
 
-    public function getArtistReleases(int $artistId, int $limit = 12): array
+    public function getTracksByArtist(int $artistId, int $limit = 10)
+    {
+        return Track::whereHas('artists', function($query) use ($artistId) {
+            $query->where('artists.id', $artistId);
+        })
+            ->with(['artists', 'releases'])
+            ->limit($limit)
+            ->get();
+    }
+
+    public function getArtistReleases(int $artistId, int $limit = 4): array
     {
         return DB::table('artists_releases')
             ->join('releases', 'artists_releases.release_id', '=', 'releases.id')

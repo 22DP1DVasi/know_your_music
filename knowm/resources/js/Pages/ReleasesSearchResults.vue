@@ -54,7 +54,7 @@
                     <div class="release-results">
                         <div v-for="release in releases" :key="release.id" class="release-card">
                             <div class="image-wrapper">
-                                <img :src="getReleaseImage(release)" :alt="release.title" />
+                                <img :src="release.cover_url" :alt="release.title" />
                             </div>
                             <div class="release-info">
                                 <h3>{{ release.title }}</h3>
@@ -130,10 +130,6 @@ const performSearch = () => {
         preserveState: true,
         replace: true
     });
-};
-
-const getReleaseImage = (release) => {
-    return release.cover_url || '/images/default-release-cover.webp';
 };
 
 const goBack = () => {

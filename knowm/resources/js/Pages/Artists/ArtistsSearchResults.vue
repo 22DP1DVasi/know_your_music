@@ -33,7 +33,7 @@
             <div class="artist-results">
                 <div v-for="artist in artists" :key="artist.id" class="artist-card">
                     <div class="image-wrapper">
-                        <img :src="getArtistImage(artist)" :alt="artist.name">
+                        <img :src="artist.banner_url" :alt="artist.name">
                     </div>
                     <div class="artist-info">
                         <h3>{{ artist.name }}</h3>
@@ -95,11 +95,6 @@ const performSearch = () => {
         preserveState: true,
         replace: true
     });
-};
-
-const getArtistImage = (artist, type = 'banner') => {
-    if (artist.banner_url) return artist.banner_url;
-    return '/images/default-artist-banner.webp';
 };
 
 const goBack = () => {

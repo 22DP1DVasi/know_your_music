@@ -1,20 +1,20 @@
 <template>
-    <Head :title="artist.name" />
+    <Head :title="artist.artist.name" />
     <Navbar />
     <main class="artist-page">
         <div class="artist-hero" :style="heroStyle">
             <div class="hero-gradient" v-if="!isLandscape"></div>
             <div class="hero-image-container">
                 <img
-                    :src="getArtistImage(artist)"
-                    :alt="artist.name"
+                    :src="artist.artist.profile_url"
+                    :alt="artist.artist.name"
                     class="hero-image"
                     ref="heroImage"
                     @load="handleImageLoad"
                     :style="imageStyle"
                 >
             </div>
-            <h1 class="artist-name">{{ artist.name }}</h1>
+            <h1 class="artist-name">{{ artist.artist.name }}</h1>
         </div>
 
         <div class="artist-content">
@@ -36,10 +36,10 @@
                         <h3 class="info-title">Details</h3>
                         <div class="info-flex">
                             <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Unknown' }} - {{ artist.disbanded_year || 'present' }}</span>
+                                <span class="info-value"><b>Years Active:</b> {{ artist.artist.formed_year || 'Unknown' }} - {{ artist.artist.disbanded_year || 'present' }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="info-value"><b>Type:</b> {{ artist.solo_or_band || 'Unknown' }}</span>
+                                <span class="info-value"><b>Type:</b> {{ artist.artist.solo_or_band || 'Unknown' }}</span>
                             </div>
                         </div>
                     </div>
@@ -57,25 +57,26 @@
                 <section class="artist-tracks">
                     <h2 class="section-title">Tracks</h2>
                     <div class="track-list">
-                        <div v-for="(track, index) in artist.top_tracks" :key="track.id" class="track-card">
+                        <div v-for="(track, index) in artist.tracks" :key="track.id" class="track-item">
                             <span class="track-number">{{ index + 1 }}</span>
-                            <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
+                            <img :src="track.cover_url" class="track-image" :alt="track.title">
                             <div class="track-info">
                                 <h3 class="track-title">{{ track.title }}</h3>
-                                <p class="track-album">{{ track.release_title }}</p>
                             </div>
-                            <span class="track-duration">{{ formatDuration(track.duration) }}</span>
+                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
                         </div>
                     </div>
                 </section>
 
                 <section class="artist-releases">
                     <h2 class="section-title">Releases</h2>
-                    <div class="release-flex">
-                        <div v-for="release in artist.releases" :key="release.id" class="release-card">
-                            <img :src="release.cover_url" :alt="release.title" class="release-cover">
+                    <div class="release-results">
+                        <div v-for="release in artist.releases" :key="release.id" class="release-card"> <!-- Path stays same -->
+                            <div class="image-wrapper">
+                                <img :src="release.cover_url" :alt="release.title">
+                            </div>
                             <div class="release-info">
-                                <h3 class="release-title">{{ release.title }}</h3>
+                                <h3>{{ release.title }}</h3>
                                 <p class="release-year">{{ release.year }}</p>
                                 <p class="release-type">{{ release.type }}</p>
                             </div>
@@ -184,30 +185,19 @@ const analyzeImage = () => {
     }
 };
 
-const getArtistImage = (artist, type = 'profile') => {
-    if (artist.profile_url) {
-        return artist.profile_url;
-    }
-    return '/images/default-artist-profile.webp';
-};
-
 const truncatedBio = computed(() => {
-    if (!props.artist.biography) return '';
-    if (props.artist.biography.length <= bioMaxLength) return props.artist.biography;
-    return props.artist.biography.substring(0, bioMaxLength) + '...';
+    if (!props.artist.artist.biography) return '';
+    if (props.artist.artist.biography.length <= bioMaxLength) return props.artist.artist.biography;
+    return props.artist.artist.biography.substring(0, bioMaxLength) + '...';
 });
 
 const showReadMore = computed(() => {
-    return props.artist.biography && props.artist.biography.length > bioMaxLength;
+    return props.artist.artist.biography && props.artist.artist.biography.length > bioMaxLength;
 });
 
 const redirectToFullBio = () => {
-    const url = `/artists/${props.artist.slug}/bio`;
+    const url = `/artists/${props.artist.artist.slug}/bio`;
     router.visit(url);
-};
-
-const getTrackImage = (track) => {
-    return track.cover_url || '/images/default-release-banner.webp';
 };
 
 const formatDuration = (timeString) => {
@@ -435,14 +425,6 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
 }
 
-.track-album {
-    font-size: 0.85rem;
-    color: #666;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .track-duration {
     color: #666;
     font-size: 0.9rem;
@@ -450,49 +432,74 @@ const formatDuration = (timeString) => {
     text-align: right;
 }
 
-.release-flex {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+.artist-releases {
     margin-bottom: 3rem;
 }
 
+.release-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: flex-start;
+}
+
 .release-card {
-    flex: 1 0 calc(20% - 1.5rem);
-    min-width: 180px;
+    flex: 0 0 calc(25% - 1.125rem);
     background: white;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .release-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
+    0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
-.release-cover {
+.image-wrapper {
     width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 1;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
 .release-info {
-    padding: 0.75rem;
+    padding: 1rem;
+    overflow: hidden;
+    width: 100%;
 }
 
-.release-title {
-    font-size: 0.95rem;
-    margin-bottom: 0.25rem;
+.release-info h3 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .release-year, .release-type {
-    font-size: 0.85rem;
+    margin: 0 0 0.25rem 0;
     color: #666;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .comments-section {
@@ -506,6 +513,10 @@ const formatDuration = (timeString) => {
 @media (max-width: 1024px) {
     .artist-content {
         flex-direction: column;
+    }
+
+    .release-card {
+        flex: 0 0 calc(33.333% - 1.125rem);
     }
 
     .sidebar-space {
@@ -552,7 +563,7 @@ const formatDuration = (timeString) => {
     }
 
     .release-card {
-        flex: 1 0 calc(33.333% - 1.5rem);
+        flex: 0 0 calc(50% - 0.75rem);
     }
 }
 
@@ -579,17 +590,25 @@ const formatDuration = (timeString) => {
         font-size: 0.9rem;
     }
 
-    .track-album {
-        font-size: 0.8rem;
-    }
-
     .track-duration {
         font-size: 0.85rem;
         flex: 0 0 45px;
     }
 
+    .release-results {
+        justify-content: center;
+    }
+
     .release-card {
-        flex: 1 0 calc(50% - 1.5rem);
+        flex: 0 0 80%;
+    }
+
+    .release-info h3 {
+        font-size: 0.95rem;
+    }
+
+    .release-year, .release-type {
+        font-size: 0.85rem;
     }
 }
 </style>
