@@ -11,11 +11,15 @@ class ArtistService
 {
     public function getArtistWithDetails(int $artistId): array
     {
+        $artist = $this->getArtistInfo($artistId);
+
         return [
-            'artist' => $this->getArtistInfo($artistId),
+            'artist' => $artist,
             'genres' => $this->getArtistGenres($artistId),
             'tracks' => $this->getArtistTracksWithDetails($artistId),
             'releases' => $this->getArtistReleasesWithDetails($artistId),
+            'total_tracks' => $this->getArtistTracksCount($artistId),
+            'total_releases' => $this->getArtistReleasesCount($artistId),
         ];
     }
 
@@ -108,5 +112,19 @@ class ArtistService
             ->limit($limit)
             ->get()
             ->toArray();
+    }
+
+    public function getArtistTracksCount(int $artistId): int
+    {
+        return Track::whereHas('artists', function($query) use ($artistId) {
+            $query->where('artists.id', $artistId);
+        })->count();
+    }
+
+    public function getArtistReleasesCount(int $artistId): int
+    {
+        return Release::whereHas('artists', function($query) use ($artistId) {
+            $query->where('artists.id', $artistId);
+        })->count();
     }
 }

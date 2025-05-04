@@ -71,7 +71,16 @@
                 </div>
 
                 <section class="artist-tracks">
-                    <h2 class="section-title">Tracks</h2>
+                    <div class="tracks-header">
+                        <h2 class="section-title">Tracks</h2>
+                        <button
+                            v-if="artist.total_tracks > artist.tracks.length"
+                            class="see-all-tracks"
+                            @click="redirectToAllTracks"
+                        >
+                            See all {{ artist.total_tracks }} tracks
+                        </button>
+                    </div>
                     <div class="track-list">
                         <div v-for="(track, index) in artist.tracks" :key="track.id" class="track-card">
                             <span class="track-number">{{ index + 1 }}</span>
@@ -85,7 +94,16 @@
                 </section>
 
                 <section class="artist-releases">
-                    <h2 class="section-title">Releases</h2>
+                    <div class="releases-header">
+                        <h2 class="section-title">Releases</h2>
+                        <button
+                            v-if="artist.total_releases > artist.releases.length"
+                            class="see-all-releases"
+                            @click="redirectToAllReleases"
+                        >
+                            See all {{ artist.total_releases }} releases
+                        </button>
+                    </div>
                     <div class="release-results">
                         <div v-for="release in artist.releases" :key="release.id" class="release-card"> <!-- Path stays same -->
                             <div class="image-wrapper">
@@ -125,8 +143,19 @@ import { ref, computed } from 'vue'
 import ColorThief from 'colorthief'
 
 const props = defineProps({
-    artist: Object
-})
+    artist: {
+        type: Object,
+        required: true,
+        default: () => ({
+            artist: Object,
+            tracks: Array,
+            total_tracks: Number,
+            genres: Array,
+            releases: Array,
+            total_releases: Number,
+        })
+    }
+});
 
 const heroImage = ref(null);
 const heroStyle = ref({});
@@ -217,6 +246,14 @@ const redirectToFullBio = () => {
 };
 
 const redirectToAllGenres = () => {
+    window.location.href = '#';
+};
+
+const redirectToAllTracks = () => {
+    window.location.href = '#';
+};
+
+const redirectToAllReleases = () => {
     window.location.href = '#';
 };
 
@@ -450,6 +487,33 @@ const formatDuration = (timeString) => {
     vertical-align: middle;
 }
 
+.tracks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.see-all-tracks {
+    background: none;
+    border: none;
+    color: #0c4baa;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.see-all-tracks:hover {
+    background: rgba(12, 75, 170, 0.1);
+}
+
 .track-list {
     background: white;
     border-radius: 8px;
@@ -491,7 +555,6 @@ const formatDuration = (timeString) => {
 
 .track-title {
     font-size: 0.95rem;
-    margin-bottom: 0.25rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -506,6 +569,29 @@ const formatDuration = (timeString) => {
 
 .artist-releases {
     margin-bottom: 3rem;
+}
+
+.releases-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.see-all-releases {
+    background: none;
+    border: none;
+    color: #0c4baa;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .release-results {
