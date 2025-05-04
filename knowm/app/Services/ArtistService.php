@@ -31,6 +31,7 @@ class ArtistService
             'biography' => $artist->biography,
             'formed_year' => $artist->formed_year,
             'disbanded_year' => $artist->disbanded_year,
+            'is_active' => $artist->is_active,
             'solo_or_band' => $artist->solo_or_band,
         ];
     }

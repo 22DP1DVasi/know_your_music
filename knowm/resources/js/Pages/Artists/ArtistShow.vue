@@ -41,7 +41,7 @@
                                 </span>
                             </div>
                             <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.artist.formed_year || 'Unknown' }} - {{ artist.artist.disbanded_year || 'present' }}</span>
+                                <span class="info-value"><b>Years Active:</b> {{ artist.artist.formed_year || 'Unknown' }} - {{ artist.artist.disbanded_year || (artist.artist.is_active ? 'present' : 'unknown') }}</span>
                             </div>
                         </div>
                     </div>
@@ -363,7 +363,7 @@ const formatDuration = (timeString) => {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     flex: 1;
     min-width: 200px;
-    max-width: 285px;
+    max-width: 300px;
 }
 
 .info-title {

@@ -33,7 +33,7 @@
                                 </span>
                             </div>
                             <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Unknown' }} - {{ artist.disbanded_year || 'present' }}</span>
+                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Unknown' }} - {{ artist.disbanded_year || (artist.is_active ? 'present' : 'unknown') }}</span>
                             </div>
                         </div>
                     </div>

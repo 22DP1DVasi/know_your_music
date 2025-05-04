@@ -48,6 +48,7 @@ class ImportSpotifyArtists extends Command
             ['name' => $spotifyArtist->name],
             [
                 'solo_or_band' => $this->determineArtistType($spotifyArtist->name),
+                'is_active' => true,
             ]
         );
         $this->info("Processing discography for: {$artist->name}");

@@ -35,6 +35,7 @@ class Artist extends Model
     protected $casts = [
         'formed_year' => 'integer',
         'disbanded_year' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     // explicit attributes for images URL
