@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use App\Models\Artist;
+use App\Models\Release;
+use App\Models\Track;
 
 class ArtistController extends Controller
 {
@@ -65,6 +67,30 @@ class ArtistController extends Controller
         return Inertia::render('Artists/ArtistBio', [
             'artist' => $artist->load(['genres']),
             'title' => "{$artist->name} - Biography"
+        ]);
+    }
+
+    public function showAllTracks($slug)
+    {
+        $artist = Artist::where('slug', $slug)->firstOrFail();
+
+        $tracks = Track::with(['releases', 'artists'])
+            ->whereHas('artists', function($query) use ($artist) {
+                $query->where('artist_id', $artist->id);
+            })
+            ->orderBy('title')
+            ->paginate(50);
+
+        $totalTracks = Track::whereHas('artists', function($query) use ($artist) {
+            $query->where('artist_id', $artist->id);
+        })->count();
+
+        return Inertia::render('Artists/ArtistAllTracks', [
+            'artist' => $artist,
+            'tracks' => $tracks->items(),
+            'totalTracks' => $totalTracks,
+            'paginationLinks' => $tracks->toArray()['links'],
+            'currentPage' => $tracks->currentPage(),
         ]);
     }
 

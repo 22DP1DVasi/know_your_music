@@ -1,5 +1,5 @@
 <template>
-    <Head :title="`${artist.name} Biography`" />
+    <Head :title="`${artist.name} - All Tracks`" />
     <Navbar />
     <main class="artist-page flex-1">
         <div class="artist-hero" :style="heroStyle">
@@ -22,25 +22,30 @@
 
         <div class="artist-content">
             <div class="main-content">
-                <h2 class="section-title">Biography</h2>
-                <div class="bio-wrapper">
-                    <div class="info-card wrapped">
-                        <h3 class="info-title">Details</h3>
-                        <div class="info-flex">
-                            <div class="info-item">
-                                <span class="info-value">
-                                  <b>{{ capitalize(artist.solo_or_band) || 'Unknown' }}</b>
-                                </span>
+                <h2 class="section-title">{{ totalTracks }} tracks</h2>
+                <div class="track-list-container">
+                    <div class="track-list">
+                        <div v-for="(track, index) in tracks" :key="track.id" class="track-row">
+                            <div class="track-cell index">{{ (currentPage - 1) * perPage + index + 1 }}</div>
+                            <div class="track-cell title">
+                                <img :src="track.cover_url" class="track-image" :alt="track.title">
+                                <div class="track-info">
+                                    <h3>{{ track.title }}</h3>
+                                    <p v-if="track.artist_names" class="artist-names">{{ track.artist_names }}</p>
+                                </div>
                             </div>
-                            <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Unknown' }} - {{ artist.disbanded_year || (artist.is_active ? 'present' : 'unknown') }}</span>
-                            </div>
+                            <div class="track-cell duration">{{ formatDuration(track.duration) }}</div>
                         </div>
                     </div>
-                    <div v-if="artist.biography" class="bio-text" v-html="artist.biography"></div>
-                    <div v-else class="bio-text">There is no background for this artist.</div>
                 </div>
             </div>
+
+            <Pagination
+                :links="paginationLinks"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                class="pagination"
+            />
 
             <div class="sidebar-space">
                 <!-- Future content like "Similar Artists" will go here -->
@@ -52,14 +57,42 @@
 
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
-import Navbar from '@/Components/Navbar.vue';
-import Footer from '@/Components/Footer.vue';
+import Navbar from '@/Components/Navbar.vue'
+import Footer from '@/Components/Footer.vue'
+import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue';
 import ColorThief from 'colorthief';
 
 const props = defineProps({
-    artist: Object,
-});
+    artist: {
+        type: Object,
+        required: true
+    },
+    tracks: {
+        type: Array,
+        required: true
+    },
+    totalTracks: {
+        type: Number,
+        required: true
+    },
+    paginationLinks: {
+        type: Array,
+        required: true
+    },
+    currentPage: {
+        type: Number,
+        required: true
+    },
+    totalPages: {
+        type: Number,
+        required: true
+    },
+    perPage: {
+        type: Number,
+        default: 50
+    }
+})
 
 // hero image
 const heroImage = ref(null);
@@ -145,11 +178,11 @@ const goBackToArtist = () => {
     router.visit(`/artists/${props.artist.slug}`);
 };
 
-const capitalize = (value) => {
-    if (!value) return 'Unknown';
-    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-};
-
+const formatDuration = (timeString) => {
+    if (!timeString) return '--:--'
+    const [hours, minutes, seconds] = timeString.split(':')
+    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0')
+}
 </script>
 
 <style scoped>
@@ -237,6 +270,12 @@ const capitalize = (value) => {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
+.track-count {
+    color: #666;
+    margin: 5px 0 0;
+    font-size: 0.9rem;
+}
+
 .artist-content {
     display: flex;
     gap: 40px;
@@ -254,90 +293,89 @@ const capitalize = (value) => {
     color: #0c4baa;
 }
 
-.bio-wrapper {
-    background: white;
-    border-radius: 8px;
-    padding: 1.25rem;
-    margin-bottom: 2rem;
-    position: relative;
-}
-
-.bio-text {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    white-space: pre-line;
-}
-
-.bio-wrapper .bio-text {
-    flex: 3;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    white-space: pre-line;
-}
-
-.info-card.wrapped {
-    float: right;
-    width: fit-content;
-    max-width: 50%;
-    margin: 0 0 1rem 1.5rem;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: none;
-}
-
-.full-bio h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #0c4baa;
-}
-
-.bio-text {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    white-space: pre-line;
-    background: white;
-    border-radius: 8px;
-    padding: 1.25rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    margin-bottom: 1.5rem;
-}
-
 .sidebar-space {
     width: 300px;
     flex-shrink: 0;
 }
 
-.info-card {
-    background: white;
-    border-radius: 8px;
-    padding: 1.25rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.track-list-container {
+    margin-bottom: 40px;
 }
 
-.info-title {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    color: #333;
+.track-list {
+    border-radius: 5px;
+    overflow: hidden;
 }
 
-.info-flex {
+.track-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    flex-direction: column;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
 }
 
-.info-item {
-    flex: 1 0 calc(50% - 0.75rem);
-    min-width: 120px;
+.track-row:hover {
+    background: #f9f9f9;
+}
+
+.track-cell {
+    padding: 0 10px;
+    flex-shrink: 0;
+}
+
+.track-cell.index {
+    width: 50px;
+    text-align: center;
+}
+
+.track-cell.title {
+    flex: 3;
     display: flex;
-    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
 }
 
-.info-value {
+.track-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.track-info {
+    min-width: 0;
+}
+
+.track-info h3 {
+    margin: 0;
+    font-size: 1rem;
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.artist-names {
+    margin: 3px 0 0;
+    color: #666;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-cell.duration {
+    width: 80px;
+    text-align: right;
+    color: #666;
+}
+
+.pagination {
+    margin-top: 30px;
+    justify-content: center;
 }
 
 @media (max-width: 1455px) {
@@ -353,23 +391,24 @@ const capitalize = (value) => {
         padding: 0 10px;
     }
 
+    .artist-hero {
+        margin-bottom: 0.5rem;
+    }
+
     .artist-content {
         flex-direction: column;
         gap: 10px;
     }
 
-    .artist-hero {
-        margin-bottom: 0.5rem;
+    .main-content {
+        max-width: 100%;
+        width: 100%;
     }
 
     .sidebar-space {
         width: 100%;
         order: -1;
         margin-bottom: 1rem;
-    }
-
-    .info-card.wrapped {
-        font-size: 0.8rem;
     }
 }
 
@@ -383,40 +422,19 @@ const capitalize = (value) => {
         padding: 1rem;
     }
 
-    .main-content {
-        max-width: 100%;
-        width: 100%;
-    }
-
-    .bio-wrapper {
-        flex-direction: column;
-    }
-
-    .info-card.wrapped {
-        float: none;
-        width: 100%;
-        max-width: 100%;
-        margin: 0 0 1rem 0;
-        line-height: 1.3;
-    }
-
-    .info-flex {
-        gap: 0.5rem;
-    }
-
     .sidebar-space {
         display: none;
     }
 }
 
 @media (max-width: 480px) {
-    .artist-name {
-        font-size: 1.8rem;
+    .track-image {
+        width: 40px;
+        height: 40px;
     }
 
-    .back-button {
-        font-size: 0.9rem;
-        padding: 0.4rem 0.8rem;
+    .release-info h3 {
+        font-size: 0.95rem;
     }
 }
 </style>

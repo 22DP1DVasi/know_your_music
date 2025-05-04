@@ -80,6 +80,10 @@ Route::get('/artists/{artist:slug}', [ArtistController::class, 'show'])
 Route::get('/artists/{artist}/bio', [ArtistController::class, 'showBio'])
     ->name('artist.bio');
 
+// page for all tracks for artist
+Route::get('/artists/{artist}/tracks', [ArtistController::class, 'showAllTracks'])
+    ->name('artists.tracks');
+
 // user account settings
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
