@@ -77,8 +77,9 @@ import { Head, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue'
 import Footer from '@/Components/Footer.vue'
 import Pagination from '@/Components/Pagination.vue'
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import ColorThief from 'colorthief';
+import { debounce } from 'lodash-es';
 
 const props = defineProps({
     artist: {
@@ -108,8 +109,12 @@ const props = defineProps({
     perPage: {
         type: Number,
         default: 50
+    },
+    filters: {
+        type: Object,
+        default: () => ({})
     }
-})
+});
 
 // hero image
 const heroImage = ref(null);
@@ -118,7 +123,7 @@ const imageStyle = ref({});
 const isLandscape = ref(false);
 const colorThief = new ColorThief();
 
-const localSearchQuery = ref('');
+const localSearchQuery = ref(props.filters.search || '');
 
 const handleImageLoad = () => {
     if (heroImage.value.complete) {
@@ -197,10 +202,18 @@ const goBackToArtist = () => {
     router.visit(`/artists/${props.artist.slug}`);
 };
 
-const performSearch = () => {
-    // Search functionality will be implemented later
-    console.log('Searching for:', localSearchQuery.value);
-};
+const performSearch = debounce(() => {
+    router.get(`/artists/${props.artist.slug}/tracks`, {
+        search: localSearchQuery.value
+    }, {
+        preserveState: true,
+        replace: true
+    });
+}, 300);
+
+watch(localSearchQuery, (newValue) => {
+    performSearch();
+});
 
 const formatDuration = (timeString) => {
     if (!timeString) return '--:--'

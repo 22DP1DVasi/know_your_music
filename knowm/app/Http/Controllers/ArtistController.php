@@ -79,20 +79,21 @@ class ArtistController extends Controller
             ->whereHas('artists', function($query) use ($artist) {
                 $query->where('artist_id', $artist->id);
             })
+            ->when(request('search'), function($query, $search) {
+                $query->where('title', 'like', "%{$search}%");
+            })
             ->orderBy('title')
             ->paginate($perPage);
-
-        // Convert paginator to array and format links
-        $pagination = $tracks->toArray();
 
         return Inertia::render('Artists/ArtistAllTracks', [
             'artist' => $artist,
             'tracks' => $tracks->items(),
             'totalTracks' => $tracks->total(),
-            'paginationLinks' => $pagination['links'], // Use the formatted links array
+            'paginationLinks' => $tracks->links()->elements[0],
             'currentPage' => $tracks->currentPage(),
             'totalPages' => $tracks->lastPage(),
             'perPage' => $perPage,
+            'filters' => request()->only(['search'])
         ]);
     }
 
