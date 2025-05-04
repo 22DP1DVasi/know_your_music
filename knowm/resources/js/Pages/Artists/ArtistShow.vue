@@ -577,6 +577,12 @@ const formatDuration = (timeString) => {
 }
 
 @media (max-width: 1024px) {
+    .artist-page {
+        max-width: 100%;
+        width: 100%;
+        padding: 0 10px;
+    }
+
     .artist-content {
         flex-direction: column;
         gap: 10px;
@@ -593,19 +599,9 @@ const formatDuration = (timeString) => {
     .release-card {
         flex: 0 0 calc(33.333% - 1.125rem);
     }
-
-    .sidebar-space {
-        display: none;
-    }
 }
 
 @media (max-width: 768px) {
-    .artist-page {
-        max-width: 100%;
-        width: 100%;
-        padding: 0 10px;
-    }
-
     .artist-hero {
         height: 220px;
     }
@@ -618,6 +614,10 @@ const formatDuration = (timeString) => {
     .main-content {
         max-width: 100%;
         width: 100%;
+    }
+
+    .sidebar-space {
+        display: none;
     }
 
     .artist-side-info {
