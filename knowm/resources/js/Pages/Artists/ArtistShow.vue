@@ -57,7 +57,7 @@
                 <section class="artist-tracks">
                     <h2 class="section-title">Tracks</h2>
                     <div class="track-list">
-                        <div v-for="(track, index) in artist.tracks" :key="track.id" class="track-item">
+                        <div v-for="(track, index) in artist.tracks" :key="track.id" class="track-card">
                             <span class="track-number">{{ index + 1 }}</span>
                             <img :src="track.cover_url" class="track-image" :alt="track.title">
                             <div class="track-info">
@@ -210,12 +210,13 @@ const formatDuration = (timeString) => {
 
 <style scoped>
 .artist-page {
-    max-width: 80%;
-    width: 80%;
-    margin: 2rem auto;
+    max-width: 85%;
+    width: 85%;
+    margin: 0 auto 0;
     padding: 0 20px;
     border: 1px solid #ddd;
-    border-radius: 12px;
+    border-bottom-style: none;
+
     background: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
@@ -283,7 +284,7 @@ const formatDuration = (timeString) => {
 
 .main-content {
     flex: 1;
-    max-width: 60%;
+    max-width: 70%;
 }
 
 .sidebar-space {
@@ -319,8 +320,7 @@ const formatDuration = (timeString) => {
 .bio-text {
     font-size: 0.9rem;
     line-height: 1.6;
-    white-space: pre-line;
-    word-wrap: break-word;
+
 }
 
 .artist-side-info {
@@ -485,7 +485,8 @@ const formatDuration = (timeString) => {
 
 .release-info h3 {
     margin: 0 0 0.25rem 0;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    font-weight: bold;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
