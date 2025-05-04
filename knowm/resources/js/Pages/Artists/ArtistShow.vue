@@ -241,7 +241,7 @@ const formatDuration = (timeString) => {
 
 .artist-hero {
     width: 100%;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     margin-top: 1rem;
     border-radius: 8px;
     overflow: hidden;
@@ -298,6 +298,7 @@ const formatDuration = (timeString) => {
 .artist-content {
     display: flex;
     gap: 40px;
+    margin-top: 0.5rem;
 }
 
 .main-content {
@@ -312,12 +313,12 @@ const formatDuration = (timeString) => {
 
 .section-title {
     font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     color: #0c4baa;
 }
 
 .artist-description {
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.7rem;
 }
 
 .read-more-button {
@@ -578,6 +579,15 @@ const formatDuration = (timeString) => {
 @media (max-width: 1024px) {
     .artist-content {
         flex-direction: column;
+        gap: 10px;
+    }
+
+    .artist-hero {
+        margin-bottom: 0.5rem;
+    }
+
+    .artist-description {
+        margin-bottom: 1rem;
     }
 
     .release-card {
@@ -585,13 +595,17 @@ const formatDuration = (timeString) => {
     }
 
     .sidebar-space {
-        width: 100%;
-        order: -1;
-        margin-bottom: 2rem;
+        display: none;
     }
 }
 
 @media (max-width: 768px) {
+    .artist-page {
+        max-width: 100%;
+        width: 100%;
+        padding: 0 10px;
+    }
+
     .artist-hero {
         height: 220px;
     }
@@ -599,6 +613,11 @@ const formatDuration = (timeString) => {
     .artist-name {
         font-size: 2rem;
         padding: 1rem;
+    }
+
+    .main-content {
+        max-width: 100%;
+        width: 100%;
     }
 
     .artist-side-info {
