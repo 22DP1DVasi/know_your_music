@@ -36,10 +36,12 @@
                         <h3 class="info-title">Details</h3>
                         <div class="info-flex">
                             <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.artist.formed_year || 'Unknown' }} - {{ artist.artist.disbanded_year || 'present' }}</span>
+                                <span class="info-value">
+                                  <b>{{ capitalize(artist.artist.solo_or_band) || 'Unknown' }}</b>
+                                </span>
                             </div>
                             <div class="info-item">
-                                <span class="info-value"><b>Type:</b> {{ artist.artist.solo_or_band || 'Unknown' }}</span>
+                                <span class="info-value"><b>Years Active:</b> {{ artist.artist.formed_year || 'Unknown' }} - {{ artist.artist.disbanded_year || 'present' }}</span>
                             </div>
                         </div>
                     </div>
@@ -200,7 +202,7 @@ const analyzeImage = () => {
 };
 
 const truncatedBio = computed(() => {
-    if (!props.artist.artist.biography) return '';
+    if (!props.artist.artist.biography) return 'There is no background for this artist.';
     if (props.artist.artist.biography.length <= bioMaxLength) return props.artist.artist.biography;
     return props.artist.artist.biography.substring(0, bioMaxLength) + '...';
 });
@@ -218,6 +220,11 @@ const redirectToAllGenres = () => {
     window.location.href = '#';
 };
 
+const capitalize = (value) => {
+    if (!value) return 'Unknown';
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+};
+
 const formatDuration = (timeString) => {
     if (!timeString) return '--:--';
     const [hours, minutes, seconds] = timeString.split(':');
@@ -228,8 +235,8 @@ const formatDuration = (timeString) => {
 
 <style scoped>
 .artist-page {
-    max-width: 85%;
-    width: 85%;
+    max-width: 90%;
+    width: 80%;
     margin: 0 auto 0;
     padding: 0 20px;
     border: 1px solid #ddd;
@@ -574,6 +581,13 @@ const formatDuration = (timeString) => {
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 3rem;
+}
+
+@media (max-width: 1455px) {
+    .artist-page {
+        width: 90%;
+    }
+
 }
 
 @media (max-width: 1024px) {

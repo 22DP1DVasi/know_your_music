@@ -1,7 +1,7 @@
 <template>
     <Head :title="title" />
     <Navbar />
-    <main class="artist-bio-page">
+    <main class="artist-page">
         <div class="artist-hero" :style="heroStyle">
             <div class="hero-gradient" v-if="!isLandscape"></div>
             <div class="hero-image-container">
@@ -20,33 +20,30 @@
             </div>
         </div>
 
-        <div class="bio-content">
-            <section class="full-bio">
-                <h2>Biography</h2>
-                <div class="bio-text" v-html="artist.biography"></div>
-            </section>
-
-            <div class="bio-sidebar">
-                <div class="info-card">
-                    <h3>Active Years</h3>
-                    <div class="info-item">
-                        <span class="info-label">Formed:</span>
-                        <span class="info-value">{{ artist.formed_year || 'Unknown' }}</span>
+        <div class="artist-content">
+            <div class="main-content">
+                <h2 class="section-title">Biography</h2>
+                <div class="bio-wrapper">
+                    <div class="info-card wrapped">
+                        <h3 class="info-title">Details</h3>
+                        <div class="info-flex">
+                            <div class="info-item">
+                                <span class="info-value">
+                                  <b>{{ capitalize(artist.solo_or_band) || 'Unknown' }}</b>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Unknown' }} - {{ artist.disbanded_year || 'present' }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Disbanded:</span>
-                        <span class="info-value">{{ artist.disbanded_year || 'Still active' }}</span>
-                    </div>
+                    <div v-if="artist.biography" class="bio-text" v-html="artist.biography"></div>
+                    <div v-else class="bio-text">There is no background for this artist.</div>
                 </div>
+            </div>
 
-                <div class="info-card">
-                    <h3>Genres</h3>
-                    <div class="genre-tags">
-                        <span v-for="genre in artist.genres" :key="genre" class="genre-tag">
-                            {{ genre }}
-                        </span>
-                    </div>
-                </div>
+            <div class="sidebar-space">
+                <!-- Future content like "Similar Artists" will go here -->
             </div>
         </div>
     </main>
@@ -148,40 +145,35 @@ const getArtistImage = (artist, type = 'profile') => {
 const goBackToArtist = () => {
     router.visit(`/artists/${props.artist.slug}`);
 };
+
+const capitalize = (value) => {
+    if (!value) return 'Unknown';
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+};
+
 </script>
 
 <style scoped>
-.artist-bio-page {
-    max-width: 1200px;
-    margin: 2rem auto;
+.artist-page {
+    max-width: 85%;
+    width: 85%;
+    margin: 0 auto 0;
     padding: 0 20px;
+    border: 1px solid #ddd;
+    border-bottom-style: none;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .artist-hero {
     width: 100%;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     margin-top: 1rem;
     border-radius: 8px;
     overflow: hidden;
     --gradient-color-left: rgba(0,0,0,0.3);
     --gradient-color-right: rgba(0,0,0,0.3);
     position: relative;
-}
-
-.hero-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        90deg,
-        var(--gradient-color-left) 0%,
-        transparent 20%,
-        transparent 80%,
-        var(--gradient-color-right) 100%
-    );
-    z-index: 1;
 }
 
 .hero-image-container {
@@ -198,6 +190,22 @@ const goBackToArtist = () => {
     object-position: center;
     filter: brightness(0.9);
     transition: all 0.3s ease;
+}
+
+.hero-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        var(--gradient-color-left) 0%,
+        transparent 20%,
+        transparent 80%,
+        var(--gradient-color-right) 100%
+    );
+    z-index: 1;
 }
 
 .artist-name {
@@ -230,13 +238,54 @@ const goBackToArtist = () => {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-.bio-content {
+.artist-content {
     display: flex;
     gap: 40px;
+    margin-top: 0.5rem;
 }
 
-.full-bio {
+.main-content {
     flex: 1;
+    max-width: 70%;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #0c4baa;
+}
+
+.bio-wrapper {
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.bio-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.bio-wrapper .bio-text {
+    flex: 3;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.info-card.wrapped {
+    float: right;
+    width: fit-content;
+    max-width: 50%;
+    margin: 0 0 1rem 1.5rem;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: none;
 }
 
 .full-bio h2 {
@@ -246,17 +295,19 @@ const goBackToArtist = () => {
 }
 
 .bio-text {
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 1.6;
     white-space: pre-line;
     background: white;
+    text-align: justify;
+    text-justify: inter-word;
     border-radius: 8px;
     padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     margin-bottom: 1.5rem;
 }
 
-.bio-sidebar {
+.sidebar-space {
     width: 300px;
     flex-shrink: 0;
 }
@@ -265,42 +316,65 @@ const goBackToArtist = () => {
     background: white;
     border-radius: 8px;
     padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.info-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.info-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    flex-direction: column;
 }
 
 .info-item {
-    margin-bottom: 0.75rem;
+    flex: 1 0 calc(50% - 0.75rem);
+    min-width: 120px;
     display: flex;
+    flex-direction: row;
 }
 
-.info-label {
+.info-value {
     font-weight: 500;
-    margin-right: 0.5rem;
-    min-width: 80px;
 }
 
-.genre-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+@media (max-width: 1500px) {
+    .artist-page {
+        max-width: 100%;
+        width: 100%;
+        padding: 0 10px;
+    }
 }
 
-.genre-tag {
-    background: #f0f4ff;
-    color: #0c4baa;
-    padding: 0.35rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
+@media (max-width: 1024px) {
+    .artist-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .artist-hero {
+        margin-bottom: 0.5rem;
+    }
+
+    .sidebar-space {
+        width: 100%;
+        order: -1;
+        margin-bottom: 1rem;
+    }
+
+    .info-card.wrapped {
+        font-size: 0.8rem;
+    }
 }
 
 @media (max-width: 768px) {
-    .bio-content {
-        flex-direction: column;
-    }
-
-    .bio-sidebar {
-        width: 100%;
+    .artist-hero {
+        height: 220px;
     }
 
     .artist-name {
@@ -308,8 +382,29 @@ const goBackToArtist = () => {
         padding: 1rem;
     }
 
-    .artist-hero {
-        height: 300px;
+    .main-content {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .bio-wrapper {
+        flex-direction: column;
+    }
+
+    .info-card.wrapped {
+        float: none;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 1rem 0;
+        line-height: 1.3;
+    }
+
+    .info-flex {
+        gap: 0.5rem;
+    }
+
+    .sidebar-space {
+        display: none;
     }
 }
 
