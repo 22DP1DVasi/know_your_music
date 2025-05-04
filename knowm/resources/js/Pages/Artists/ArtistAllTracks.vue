@@ -22,7 +22,7 @@
 
         <div class="artist-content">
             <div class="main-content">
-                <h2 class="section-title">{{ totalTracks }} tracks</h2>
+                <h2 class="section-title">{{ totalTracks }} {{ totalTracks === 1 ? 'track' : 'tracks' }}</h2>
                 <div class="track-list-container">
                     <div class="track-list">
                         <div v-for="(track, index) in tracks" :key="track.id" class="track-row">
@@ -37,15 +37,16 @@
                             <div class="track-cell duration">{{ formatDuration(track.duration) }}</div>
                         </div>
                     </div>
+
+                    <Pagination
+                        v-if="totalPages > 1"
+                        :links="paginationLinks"
+                        :current-page="currentPage"
+                        :total-pages="totalPages"
+                        class="pagination"
+                    />
                 </div>
             </div>
-
-            <Pagination
-                :links="paginationLinks"
-                :current-page="currentPage"
-                :total-pages="totalPages"
-                class="pagination"
-            />
 
             <div class="sidebar-space">
                 <!-- Future content like "Similar Artists" will go here -->

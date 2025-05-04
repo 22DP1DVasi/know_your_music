@@ -73,24 +73,26 @@ class ArtistController extends Controller
     public function showAllTracks($slug)
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
+        $perPage = 50;
 
         $tracks = Track::with(['releases', 'artists'])
             ->whereHas('artists', function($query) use ($artist) {
                 $query->where('artist_id', $artist->id);
             })
             ->orderBy('title')
-            ->paginate(50);
+            ->paginate($perPage);
 
-        $totalTracks = Track::whereHas('artists', function($query) use ($artist) {
-            $query->where('artist_id', $artist->id);
-        })->count();
+        // Convert paginator to array and format links
+        $pagination = $tracks->toArray();
 
         return Inertia::render('Artists/ArtistAllTracks', [
             'artist' => $artist,
             'tracks' => $tracks->items(),
-            'totalTracks' => $totalTracks,
-            'paginationLinks' => $tracks->toArray()['links'],
+            'totalTracks' => $tracks->total(),
+            'paginationLinks' => $pagination['links'], // Use the formatted links array
             'currentPage' => $tracks->currentPage(),
+            'totalPages' => $tracks->lastPage(),
+            'perPage' => $perPage,
         ]);
     }
 
