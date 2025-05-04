@@ -2,13 +2,14 @@
     <div v-if="totalPages > 1" class="pagination-container">
         <div class="pagination">
             <Link
-                v-for="(link, index) in links"
+                v-for="(link, index) in validLinks"
                 :key="index"
                 :href="link.url ? `${link.url}&q=${searchQuery}` : null"
                 class="page-link"
                 :class="{
                     'active': link.active,
-                    'disabled': !link.url
+                    'disabled': !link.url,
+                    'nav-link': isNavLink(link.label)
                 }"
                 v-html="formatLabel(link.label)"
                 preserve-state
@@ -19,15 +20,32 @@
 
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
 const props = defineProps({
-    links: Array,
+    links: {
+        type: Array,
+        default: () => []
+    },
     currentPage: Number,
     totalPages: Number,
-    searchQuery: String
+    searchQuery: {
+        type: String,
+        default: ''
+    }
 });
 
+const validLinks = computed(() => {
+    return Array.isArray(props.links) ? props.links : [];
+});
+
+const isNavLink = (label) => {
+    if (!label || typeof label !== 'string') return false;
+    return label.includes('Previous') || label.includes('Next');
+};
+
 const formatLabel = (label) => {
+    if (!label || typeof label !== 'string') return '';
     if (label.includes('Previous')) return '&laquo;';
     if (label.includes('Next')) return '&raquo;';
     return label;

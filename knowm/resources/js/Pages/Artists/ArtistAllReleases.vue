@@ -1,5 +1,5 @@
 <template>
-    <Head :title="`${artist.name} - All Tracks`" />
+    <Head :title="`${artist.name} - All Releases`" />
     <Navbar />
     <main class="artist-page flex-1">
         <div class="artist-hero" :style="heroStyle">
@@ -26,7 +26,7 @@
                     <input
                         type="text"
                         class="searchTerm"
-                        placeholder="Search tracks..."
+                        placeholder="Search releases..."
                         v-model="localSearchQuery"
                         @keyup.enter="performSearch"
                     >
@@ -38,22 +38,27 @@
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
-                <h2 class="section-title">{{ totalTracks }} {{ totalTracks === 1 ? 'track' : 'tracks' }}</h2>
-                <div class="track-list-container">
-                    <div class="track-list">
-                        <div v-for="(track, index) in tracks" :key="track.id" class="track-row">
-                            <div class="track-cell index">{{ (currentPage - 1) * perPage + index + 1 }}</div>
-                            <div class="track-cell title">
-                                <img :src="track.cover_url" class="track-image" :alt="track.title">
-                                <div class="track-info">
-                                    <h3>{{ track.title }}</h3>
-                                    <p v-if="track.artist_names" class="artist-names">{{ track.artist_names }}</p>
+                <h2 class="section-title">{{ totalReleases }} {{ totalReleases === 1 ? 'release' : 'releases' }}</h2>
+
+                <section v-if="releases.length > 0" class="results-section">
+                    <div class="release-results-wrapper">
+                        <div class="release-results">
+                            <div v-for="release in releases" :key="release.id" class="release-card">
+                                <div class="image-wrapper">
+                                    <img :src="release.cover_url" :alt="release.title" />
+                                </div>
+                                <div class="release-info">
+                                    <h3>{{ release.title }}</h3>
+                                    <p class="artists-names">
+                                        <span v-for="(artist, index) in release.artists" :key="artist.id">
+                                            {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
+                                        </span>
+                                    </p>
+                                    <p>{{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}</p>
                                 </div>
                             </div>
-                            <div class="track-cell duration">{{ formatDuration(track.duration) }}</div>
                         </div>
                     </div>
-
                     <Pagination
                         v-if="totalPages > 1"
                         :links="paginationLinks"
@@ -61,7 +66,9 @@
                         :total-pages="totalPages"
                         class="pagination"
                     />
-                </div>
+                </section>
+
+
             </div>
 
             <div class="sidebar-space">
@@ -86,11 +93,11 @@ const props = defineProps({
         type: Object,
         required: true
     },
-    tracks: {
+    releases: {
         type: Array,
         required: true
     },
-    totalTracks: {
+    totalReleases: {
         type: Number,
         required: true
     },
@@ -203,7 +210,7 @@ const goBackToArtist = () => {
 };
 
 const performSearch = debounce(() => {
-    router.get(`/artists/${props.artist.slug}/tracks`, {
+    router.get(`/artists/${props.artist.slug}/releases`, {
         search: localSearchQuery.value
     }, {
         preserveState: true,
@@ -214,12 +221,6 @@ const performSearch = debounce(() => {
 watch(localSearchQuery, (newValue) => {
     performSearch();
 });
-
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--'
-    const [hours, minutes, seconds] = timeString.split(':')
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0')
-}
 </script>
 
 <style scoped>
@@ -397,79 +398,92 @@ const formatDuration = (timeString) => {
     flex-shrink: 0;
 }
 
-.track-list-container {
-    margin-bottom: 40px;
+.results-section {
+    margin: 0 auto;
+    margin-bottom: 2.5rem;
+    max-width: 1000px;
+}
+.release-results-wrapper {
+    padding: 0 2rem;
+    margin: 0 auto;
+    max-width: 1200px;
 }
 
-.track-list {
-    border-radius: 5px;
+.release-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: flex-start;
+}
+
+.release-card {
+    flex: 0 0 calc(25% - 1.125rem);
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
 }
 
-.track-row {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    border-bottom: 1px solid #eee;
-    transition: background 0.2s;
-}
-
-.track-row:hover {
-    background: #f9f9f9;
-}
-
-.track-cell {
-    padding: 0 10px;
-    flex-shrink: 0;
-}
-
-.track-cell.index {
-    width: 50px;
-    text-align: center;
-}
-
-.track-cell.title {
-    flex: 3;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    min-width: 0;
-}
-
-.track-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 4px;
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    flex-shrink: 0;
 }
 
-.track-info {
-    min-width: 0;
+.release-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
+    0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
-.track-info h3 {
-    margin: 0;
+.release-info {
+    padding: 1rem;
+    overflow: hidden;
+    width: 100%;
+}
+
+.release-info h3 {
+    margin: 0 0 0.25rem 0;
     font-size: 1rem;
-    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.release-info p {
+    margin: 0 0 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.artist-names {
-    margin: 3px 0 0;
-    color: #666;
-    font-size: 0.85rem;
+.artists-names {
+    display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.track-cell.duration {
-    width: 80px;
-    text-align: right;
+    width: 100%;
+    margin: 0 0 0.25rem 0;
     color: #666;
+    font-size: 0.9rem;
 }
 
 .pagination {
@@ -515,6 +529,10 @@ const formatDuration = (timeString) => {
         order: -1;
         margin-bottom: 1rem;
     }
+
+    .release-card {
+        flex: 0 0 calc(33.333% - 1rem);
+    }
 }
 
 @media (max-width: 768px) {
@@ -539,6 +557,14 @@ const formatDuration = (timeString) => {
 
     .sidebar-space {
         display: none;
+    }
+
+    .release-results-wrapper {
+        padding: 0 1rem;
+    }
+
+    .release-card {
+        flex: 0 0 calc(50% - 0.75rem);
     }
 }
 
@@ -571,9 +597,12 @@ const formatDuration = (timeString) => {
         max-width: 280px;
     }
 
-    .track-image {
-        width: 40px;
-        height: 40px;
+    .release-card {
+        flex: 0 0 100%;
+    }
+
+    .release-results {
+        gap: 1rem;
     }
 }
 </style>

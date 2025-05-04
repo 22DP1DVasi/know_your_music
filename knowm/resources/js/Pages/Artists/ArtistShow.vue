@@ -287,9 +287,8 @@ const redirectToAllTracks = () => {
 };
 
 const redirectToAllReleases = () => {
-    window.location.href = '#';
+    window.location.href = `/artists/${props.artist.artist.slug}/releases`;
 };
-
 const capitalize = (value) => {
     if (!value) return 'Unknown';
     return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();

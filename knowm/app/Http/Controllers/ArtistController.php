@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\ArtistService;
+use App\Services\ReleaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -14,9 +15,10 @@ class ArtistController extends Controller
 {
     protected ArtistService $artistService;
 
-    public function __construct(ArtistService $artistService)
+    public function __construct(ArtistService $artistService, ReleaseService $releaseService)
     {
         $this->artistService = $artistService;
+        $this->releaseService = $releaseService;
     }
 
     public function show(Artist $artist)
@@ -70,6 +72,24 @@ class ArtistController extends Controller
         ]);
     }
 
+    public function showAllReleases($slug)
+    {
+        $artist = Artist::where('slug', $slug)->firstOrFail();
+        $service = new ReleaseService();
+
+        $releases = $service->getPaginatedReleases(
+            $slug,
+            20,
+            request('search')
+        );
+
+        return Inertia::render('Artists/ArtistAllReleases', [
+            'artist' => $artist,
+            ...$service->formatForView($releases),
+            'filters' => request()->only(['search'])
+        ]);
+    }
+
     public function showAllTracks($slug)
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
@@ -85,11 +105,13 @@ class ArtistController extends Controller
             ->orderBy('title')
             ->paginate($perPage);
 
+        $pagination = $tracks->toArray();
+
         return Inertia::render('Artists/ArtistAllTracks', [
             'artist' => $artist,
             'tracks' => $tracks->items(),
             'totalTracks' => $tracks->total(),
-            'paginationLinks' => $tracks->links()->elements[0],
+            'paginationLinks' => $pagination['links'],
             'currentPage' => $tracks->currentPage(),
             'totalPages' => $tracks->lastPage(),
             'perPage' => $perPage,
