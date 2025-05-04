@@ -643,7 +643,7 @@ const formatDuration = (timeString) => {
 
 .release-info h3 {
     margin: 0 0 0.25rem 0;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: bold;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -674,6 +674,12 @@ const formatDuration = (timeString) => {
         width: 90%;
     }
 
+}
+
+@media (max-width: 1230px) {
+    .release-info h3 {
+        font-size: 0.8rem;
+    }
 }
 
 @media (max-width: 1024px) {
