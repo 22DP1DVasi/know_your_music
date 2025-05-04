@@ -550,7 +550,7 @@ const formatDuration = (timeString) => {
 
 .release-info h3 {
     margin: 0 0 0.25rem 0;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: bold;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -596,8 +596,35 @@ const formatDuration = (timeString) => {
         margin-bottom: 1rem;
     }
 
+    .release-results {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px;
+        margin: 0 -10px;
+        scrollbar-width: thin;
+        scrollbar-color: #0c4baa #f0f0f0;
+    }
+
+    .release-results::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .release-results::-webkit-scrollbar-track {
+        background: #f0f0f0;
+    }
+
+    .release-results::-webkit-scrollbar-thumb {
+        background-color: #0c4baa;
+        border-radius: 6px;
+    }
+
     .release-card {
-        flex: 0 0 calc(33.333% - 1.125rem);
+        display: inline-block;
+        vertical-align: top;
+        width: 250px;
+        margin-right: 15px;
+        flex: none;
     }
 }
 
@@ -646,9 +673,7 @@ const formatDuration = (timeString) => {
         flex: 0 0 50px;
     }
 
-    .release-card {
-        flex: 0 0 calc(50% - 0.75rem);
-    }
+
 }
 
 @media (max-width: 480px) {
