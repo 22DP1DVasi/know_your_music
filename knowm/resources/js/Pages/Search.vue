@@ -148,8 +148,8 @@ const cleanSnippet = (snippet) => {
     if (!snippet) return '';
     return snippet
         .replace(/\\/g, '')
-        .replace(/[\x00-\x1F\x7F]/g, ' ')  // Remove control chars
-        .replace(/\s+/g, ' ')              // Collapse spaces
+        .replace(/[\x00-\x1F\x7F]/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim();
 };
 

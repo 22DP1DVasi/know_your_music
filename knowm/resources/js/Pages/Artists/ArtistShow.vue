@@ -45,11 +45,25 @@
                     </div>
 
                     <div class="info-card genres-card">
-                        <h3 class="info-title">Genres</h3>
+                        <div class="genres-header">
+                            <h3 class="info-title">Genres</h3>
+                            <button
+                                v-if="artist.genres.length > 5"
+                                class="see-all-genres"
+                                @click="redirectToAllGenres"
+                            >
+                                See all genres
+                            </button>
+                        </div>
                         <div class="genre-tags">
-                          <span v-for="genre in artist.genres" :key="genre" class="genre-tag">
-                            {{ genre }}
-                          </span>
+                            <span
+                                v-for="(genre, index) in artist.genres.slice(0, 5)"
+                                :key="genre"
+                                class="genre-tag"
+                                :title="genre.length > 16 ? genre : ''"
+                            >
+                                {{ genre }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -198,6 +212,10 @@ const showReadMore = computed(() => {
 const redirectToFullBio = () => {
     const url = `/artists/${props.artist.artist.slug}/bio`;
     router.visit(url);
+};
+
+const redirectToAllGenres = () => {
+    window.location.href = '#';
 };
 
 const formatDuration = (timeString) => {
@@ -364,6 +382,46 @@ const formatDuration = (timeString) => {
     font-weight: 500;
 }
 
+.genres-card {
+    min-width: 300px;
+    max-width: 350px;
+}
+
+.genres-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.genres-header .info-title {
+    margin: 0;
+    font-size: 1.1rem;
+    flex-shrink: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.see-all-genres {
+    background: none;
+    border: none;
+    color: #0c4baa;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.see-all-genres:hover {
+    background: rgba(12, 75, 170, 0.1);
+}
+
 .genre-tags {
     display: flex;
     flex-wrap: wrap;
@@ -376,6 +434,12 @@ const formatDuration = (timeString) => {
     padding: 0.35rem 0.75rem;
     border-radius: 20px;
     font-size: 0.85rem;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .track-list {
