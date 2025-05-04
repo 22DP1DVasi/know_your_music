@@ -75,7 +75,6 @@ class SearchService
             ->get();
     }
 
-
     protected function searchTracksByMetadata(string $query, int $limit)
     {
         return Track::where(function(Builder $q) use ($query) {

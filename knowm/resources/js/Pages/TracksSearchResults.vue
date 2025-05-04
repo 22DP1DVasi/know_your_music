@@ -382,13 +382,13 @@ const goBack = () => {
 
 @media (max-width: 870px) {
     .metadata-track-list {
-        max-width: 85%;  /* Increased from 90% to 85% for more side space */
+        max-width: 85%;
         margin: 0 auto;
-        padding: 0 1.25rem;  /* Increased from 1rem */
+        padding: 0 1.25rem;
     }
 
     .track-card {
-        padding: 0.75rem 0;  /* Added horizontal padding */
+        padding: 0.75rem 0;
         gap: 0.75rem;
     }
 
@@ -437,12 +437,12 @@ const goBack = () => {
     }
 
     .metadata-track-list {
-        max-width: 90%;  /* Slightly wider on smaller screens */
-        padding: 0 1.75rem;  /* Increased from 1.5rem */
+        max-width: 90%;
+        padding: 0 1.75rem;
     }
 
     .track-card {
-        padding: 0.75rem 0;  /* Increased horizontal padding */
+        padding: 0.75rem 0;
     }
 
     .track-info h3 {
@@ -476,6 +476,13 @@ const goBack = () => {
         margin-bottom: 0.5rem;
     }
 
+    .searchTerm {
+        font-size: 15px;
+        padding: 10px;
+        width: 100%;
+        max-width: 280px;
+    }
+
     .results-title {
         font-size: 1.5rem;
     }
@@ -484,13 +491,6 @@ const goBack = () => {
         width: 35px;
         height: 35px;
         padding-top: 6px !important;
-    }
-
-    .searchTerm {
-        font-size: 15px;
-        padding: 10px;
-        width: 100%;
-        max-width: 280px;
     }
 
     .filter-options {

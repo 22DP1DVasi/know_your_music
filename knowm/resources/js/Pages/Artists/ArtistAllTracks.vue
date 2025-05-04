@@ -22,6 +22,22 @@
 
         <div class="artist-content">
             <div class="main-content">
+                <div class="search-container">
+                    <input
+                        type="text"
+                        class="searchTerm"
+                        placeholder="Search tracks..."
+                        v-model="localSearchQuery"
+                        @keyup.enter="performSearch"
+                    >
+                    <button
+                        type="submit"
+                        class="searchButton"
+                        @click="performSearch"
+                    >
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
                 <h2 class="section-title">{{ totalTracks }} {{ totalTracks === 1 ? 'track' : 'tracks' }}</h2>
                 <div class="track-list-container">
                     <div class="track-list">
@@ -102,6 +118,8 @@ const imageStyle = ref({});
 const isLandscape = ref(false);
 const colorThief = new ColorThief();
 
+const localSearchQuery = ref('');
+
 const handleImageLoad = () => {
     if (heroImage.value.complete) {
         analyzeImage();
@@ -177,6 +195,11 @@ const getArtistImage = (artist, type = 'profile') => {
 
 const goBackToArtist = () => {
     router.visit(`/artists/${props.artist.slug}`);
+};
+
+const performSearch = () => {
+    // Search functionality will be implemented later
+    console.log('Searching for:', localSearchQuery.value);
 };
 
 const formatDuration = (timeString) => {
@@ -271,10 +294,72 @@ const formatDuration = (timeString) => {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-.track-count {
-    color: #666;
-    margin: 5px 0 0;
-    font-size: 0.9rem;
+.search-container {
+    display: flex;
+    width: 70%;
+    max-width: 500px;
+    margin: 20px auto;
+    position: relative;
+}
+
+.searchTerm {
+    height: 46px;
+    width: 340px;
+    flex: 1;
+    padding: 12px;
+    font-size: 17px;
+    border: 3px solid #54b3ebed;
+    border-right: none;
+    border-radius: 7px 0 0 7px;
+    outline: none;
+}
+
+.searchTerm:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.searchButton {
+    width: 40px;
+    height: 46px;
+    border: 1px solid #54b3ebed;
+    background: #54b3ebed;
+    text-align: center;
+    color: #fff;
+    border-radius: 0 7px 7px 0;
+    cursor: pointer;
+    font-size: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.searchButton i {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.searchButton:hover i {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.searchButton:hover::after {
+    content: "\f001";   /* FontAwesome music note */
+    font-family: "FontAwesome";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.searchButton::after {
+    content: "";
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
 }
 
 .artist-content {
@@ -385,6 +470,13 @@ const formatDuration = (timeString) => {
     }
 }
 
+@media (max-width: 1200px) {
+    .search-container {
+        max-width: 100%;
+
+    }
+}
+
 @media (max-width: 1024px) {
     .artist-page {
         max-width: 100%;
@@ -423,19 +515,57 @@ const formatDuration = (timeString) => {
         padding: 1rem;
     }
 
+    .search-container {
+        padding: 0 2rem;
+        max-width: 100%;
+    }
+
+    .search-controls {
+        padding: 0 1rem;
+    }
+
+    .searchTerm {
+        font-size: 16px;
+        height: 46px;
+    }
+
     .sidebar-space {
         display: none;
     }
 }
 
+@media (max-width: 540px) {
+    .searchTerm {
+        font-size: 14px;
+        padding: 10px;
+        height: 42px;
+        max-width: 500px;
+        width: 250px;
+    }
+
+    .searchButton {
+        height: 42px;
+    }
+}
+
 @media (max-width: 480px) {
+    .search-container {
+        padding: 0 1rem;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .searchTerm {
+        font-size: 15px;
+        padding: 10px;
+        width: 100%;
+        max-width: 280px;
+    }
+
     .track-image {
         width: 40px;
         height: 40px;
-    }
-
-    .release-info h3 {
-        font-size: 0.95rem;
     }
 }
 </style>
