@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ReleaseController;
+use App\Http\Controllers\TrackController;
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -77,6 +78,9 @@ Route::get('/artists/{artist}', [ArtistController::class, 'show'])
 
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
     ->name('releases.show');
+
+Route::get('/tracks/{track}', [TrackController::class, 'show'])
+    ->name('tracks.show');
 
 // page for artist's bio
 Route::get('/artists/{artist}/bio', [ArtistController::class, 'showBio'])

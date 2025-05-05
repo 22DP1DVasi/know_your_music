@@ -130,10 +130,16 @@ class Track extends Model
      */
     public function getCoverUrlAttribute()
     {
-        // Get the first release that has a cover image
         $release = $this->releases()->first();
-
         return $release?->cover_url ?? asset('images/default-release-banner.webp');
+    }
+
+    /**
+     * Get a slug value (used as route key)
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     /**

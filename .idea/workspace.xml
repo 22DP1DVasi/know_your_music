@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/TrackController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/app/Services/TrackService.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Artist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Artist.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Release.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Release.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Models/Track.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Track.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/TracksSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TracksSearchResults.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -277,7 +274,7 @@
       <workItem from="1746283612468" duration="14995000" />
       <workItem from="1746340877827" duration="45515000" />
       <workItem from="1746425949446" duration="3974000" />
-      <workItem from="1746433841257" duration="35478000" />
+      <workItem from="1746433841257" duration="37287000" />
     </task>
     <servers />
   </component>
