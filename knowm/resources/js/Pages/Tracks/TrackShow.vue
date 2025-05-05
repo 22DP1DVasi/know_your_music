@@ -64,6 +64,29 @@
                         <div v-if="track.description" class="description-text" v-html="track.description"></div>
                         <div v-else class="description-text">There is no background for this track.</div>
 
+                        <div v-if="track.genres && track.genres.length" class="genres-card">
+                            <div class="genres-header">
+                                <h3 class="info-title">Genres</h3>
+                                <!--                                <button-->
+                                <!--                                    v-if="release.genres.length > 5"-->
+                                <!--                                    class="see-all-genres"-->
+                                <!--                                    @click="redirectToAllGenres"-->
+                                <!--                                >-->
+                                <!--                                    See all genres-->
+                                <!--                                </button>-->
+                            </div>
+                            <div class="genre-tags">
+                                <span
+                                    v-for="(genre, index) in track.genres.slice(0, 5)"
+                                    :key="index"
+                                    class="genre-tag"
+                                    :title="genre.length > 16 ? genre : ''"
+                                >
+                                    {{ genre.name }}
+                                </span>
+                            </div>
+                        </div>
+
                         <section class="track-lyrics">
                             <div class="lyrics-header">
                                 <h2 class="section-title">Lyrics</h2>
@@ -81,29 +104,6 @@
                                 </div>
                             </div>
                         </section>
-
-                        <div v-if="track.genres && track.genres.length" class="genres-card">
-                            <div class="genres-header">
-                                <h3 class="info-title">Genres</h3>
-<!--                                <button-->
-<!--                                    v-if="release.genres.length > 5"-->
-<!--                                    class="see-all-genres"-->
-<!--                                    @click="redirectToAllGenres"-->
-<!--                                >-->
-<!--                                    See all genres-->
-<!--                                </button>-->
-                            </div>
-                            <div class="genre-tags">
-                                <span
-                                    v-for="(genre, index) in track.genres.slice(0, 5)"
-                                    :key="index"
-                                    class="genre-tag"
-                                    :title="genre.length > 16 ? genre : ''"
-                                >
-                                    {{ genre.name }}
-                                </span>
-                            </div>
-                        </div>
                     </div>
 
                     <section class="track-comments">
@@ -193,11 +193,7 @@ const formatDate = (dateString) => {
 const formatDuration = (timeString) => {
     if (!timeString) return '--:--';
     const [hours, minutes, seconds] = timeString.split(':');
-    if (hours && hours !== '00') {
-        return `${hours}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
-    } else {
-        return `${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
-    }
+    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
 };
 </script>
 
@@ -419,7 +415,7 @@ const formatDuration = (timeString) => {
     background: white;
     border-radius: 8px;
     padding: 1.5rem;
-    margin-bottom: 2rem;
+    margin: 2rem 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 

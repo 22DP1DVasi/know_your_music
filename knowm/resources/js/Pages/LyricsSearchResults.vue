@@ -40,7 +40,7 @@
                                 {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
                             </span>
                         </p>
-                        <p class="lyric-snippet" v-html="cleanSnippet(track.lyric_snippet) || 'No lyrics snippet available'"></p>
+                        <p class="lyric-snippet" v-html="track.lyric_snippet || 'No lyrics snippet available'"></p>
                     </div>
                     <div class="track-duration">{{ formatDuration(track.duration) }}</div>
                 </div>
@@ -111,14 +111,14 @@ const formatDuration = (timeString) => {
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
 };
 
-const cleanSnippet = (snippet) => {
-    if (!snippet) return '';
-    return snippet
-        .replace(/\\/g, '')
-        .replace(/[\x00-\x1F\x7F]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-};
+// const cleanSnippet = (snippet) => {
+//     if (!snippet) return '';
+//     return snippet
+//         .replace(/\\/g, '')
+//         .replace(/[\x00-\x1F\x7F]/g, ' ')
+//         .replace(/\s+/g, ' ')
+//         .trim();
+// };
 
 const goBack = () => {
     router.visit(`/search?q=${props.searchQuery}`);

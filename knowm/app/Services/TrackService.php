@@ -27,11 +27,13 @@ class TrackService
 
     protected function formatTrackData(Track $track)
     {
+        // format duration from TIME to H:i:s
+        $duration = $track->duration ? $track->duration->format('H:i:s') : null;
         return [
             'id' => $track->id,
             'title' => $track->title,
             'slug' => $track->slug,
-            'duration' => $track->duration,
+            'duration' => $duration,
             'description' => $track->description,
             'cover_url' => $track->cover_url,
             'release_date' => $track->release_date,

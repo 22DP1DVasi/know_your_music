@@ -51,6 +51,7 @@ class Lyric extends Model
 
     /**
      * Get cleaned lyrics
+     * @deprecated after placing standard to save lyrics to table without control characters
      */
     public function getCleanLyricsAttribute(): string
     {
@@ -59,6 +60,7 @@ class Lyric extends Model
 
     /**
      * Get original lyrics
+     * @deprecated after placing standard to save lyrics to table without control characters
      */
     public function getOriginalLyricsAttribute(): string
     {
@@ -67,6 +69,7 @@ class Lyric extends Model
 
     /**
      * Clean lyrics from control characters and normalize whitespace
+     * @deprecated after placing standard to save lyrics to table without control characters
      */
     public function cleanLyrics(string $lyrics = null): string
     {

@@ -133,16 +133,14 @@ class SearchService
 
     public function extractLyricSnippet(string $lyrics, string $query, int $context = 50)
     {
-        $cleanedLyrics = (new Lyric())->cleanLyrics($lyrics);
-
-        $position = stripos($cleanedLyrics, $query);
+        $position = stripos($lyrics, $query);
         if ($position === false) {
             return '';
         }
 
         $start = max(0, $position - $context);
         $length = strlen($query) + ($context * 2);
-        $snippet = substr($cleanedLyrics, $start, $length);
+        $snippet = substr($lyrics, $start, $length);
 
         $snippet = preg_replace(
             "/(" . preg_quote($query, '/') . ")/i",
@@ -151,7 +149,7 @@ class SearchService
         );
 
         if ($start > 0) $snippet = '...' . $snippet;
-        if ($start + $length < strlen($cleanedLyrics)) $snippet = $snippet . '...';
+        if ($start + $length < strlen($lyrics)) $snippet = $snippet . '...';
 
         return $snippet;
     }
