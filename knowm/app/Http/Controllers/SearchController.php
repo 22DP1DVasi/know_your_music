@@ -113,7 +113,7 @@ class SearchController extends Controller
             ->paginate($perPage)
             ->appends(['q' => $query, 'type' => $type, 'perPage' => $perPage]);
 
-        return Inertia::render('TracksSearchResults', [
+        return Inertia::render('Tracks/TracksSearchResults', [
             'tracks' => $tracks->items(),
             'searchQuery' => $query,
             'searchType' => $type,

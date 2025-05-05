@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
 class Track extends Model
 {
@@ -17,6 +18,7 @@ class Track extends Model
      */
     protected $fillable = [
         'title',
+        'slug',
         'duration',
         'audio_source',
         'release_date'
@@ -34,6 +36,20 @@ class Track extends Model
 
     // explicit attribute for covers URL
     protected $appends = ['cover_url'];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($track) {
+            $track->slug = $track->generateUniqueSlug();
+        });
+        static::created(function ($track) {
+            Storage::makeDirectory("public/tracks/{$track->id}");
+        });
+        static::deleted(function ($track) {
+            Storage::deleteDirectory("public/tracks/{$track->id}");
+        });
+    }
 
     /**
      * Get all genres associated with this track
@@ -118,6 +134,32 @@ class Track extends Model
         $release = $this->releases()->first();
 
         return $release?->cover_url ?? asset('images/default-release-banner.webp');
+    }
+
+    /**
+     * Generate unique slugs
+     */
+    public function generateUniqueSlug()
+    {
+        $slug = $this->customSlugify($this->title);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+        return $slug;
+    }
+
+    /**
+     * Generate a slug
+     */
+    private function customSlugify(string $title): string
+    {
+        $slug = mb_strtolower($title);
+        $slug = preg_replace('/\s+/u', '-', $slug);
+        $slug = preg_replace('/[^\p{L}\p{N}_-]/u', '', $slug);
+        return trim($slug, '-');
     }
 
     /**

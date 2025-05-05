@@ -39,18 +39,15 @@ class Release extends Model
     // explicit attributes for covers URL
     protected $appends = ['cover_url'];
 
-    protected static function booted()
+    protected static function boot()
     {
+        parent::boot();
         static::creating(function ($artist) {
             $artist->slug = $artist->generateUniqueSlug();
         });
-
-        // create folder for cover image when this release is created
         static::created(function ($release) {
-            Storage::makeDirectory("public/releases/{$release->id}/{$release->release_type}");
+            Storage::makeDirectory("public/releases/{$release->id}");
         });
-
-        // delete folder when this release is deleted
         static::deleted(function ($release) {
             Storage::deleteDirectory("public/releases/{$release->id}");
         });
@@ -116,24 +113,22 @@ class Release extends Model
      */
     public function generateUniqueSlug()
     {
-        $slug = $this->customSlugify($this->name);
+        $slug = $this->customSlugify($this->title);
         $originalSlug = $slug;
         $counter = 1;
-
         while (static::where('slug', $slug)->exists()) {
             $slug = "{$originalSlug}-{$counter}";
             $counter++;
         }
-
         return $slug;
     }
 
     /**
      * Generate a slug
      */
-    private function customSlugify(string $name): string
+    private function customSlugify(string $title): string
     {
-        $slug = mb_strtolower($name);
+        $slug = mb_strtolower($title);
         $slug = preg_replace('/\s+/u', '-', $slug);
         $slug = preg_replace('/[^\p{L}\p{N}_-]/u', '', $slug);
         return trim($slug, '-');

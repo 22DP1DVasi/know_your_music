@@ -41,18 +41,17 @@ class Artist extends Model
     // explicit attributes for images URL
     protected $appends = ['profile_url', 'banner_url'];
 
-    protected static function booted()
+    protected static function boot()
     {
+        parent::boot();
         static::creating(function ($artist) {
             $artist->slug = $artist->generateUniqueSlug();
         });
-
         // create folder for images when this artist is created
         static::created(function ($artist) {
             Storage::makeDirectory("public/artists/{$artist->id}/profile");
             Storage::makeDirectory("public/artists/{$artist->id}/banner");
         });
-
         // delete folder when this artist is deleted
         static::deleted(function ($artist) {
             Storage::deleteDirectory("public/artists/{$artist->id}");
@@ -132,12 +131,10 @@ class Artist extends Model
         $slug = $this->customSlugify($this->name);
         $originalSlug = $slug;
         $counter = 1;
-
         while (static::where('slug', $slug)->exists()) {
             $slug = "{$originalSlug}-{$counter}";
             $counter++;
         }
-
         return $slug;
     }
 
