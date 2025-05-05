@@ -51,13 +51,13 @@
                     <div class="info-card genres-card">
                         <div class="genres-header">
                             <h3 class="info-title">Genres</h3>
-                            <button
-                                v-if="artist.genres.length > 5"
-                                class="see-all-genres"
-                                @click="redirectToAllGenres"
-                            >
-                                See all genres
-                            </button>
+<!--                            <button-->
+<!--                                v-if="artist.genres.length > 5"-->
+<!--                                class="see-all-genres"-->
+<!--                                @click="redirectToAllGenres"-->
+<!--                            >-->
+<!--                                See all genres-->
+<!--                            </button>-->
                         </div>
                         <div class="genre-tags">
                             <span

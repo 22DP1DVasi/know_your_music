@@ -69,6 +69,30 @@
                         <h2 class="section-title">About This Release</h2>
                         <div v-if="release.description" class="description-text" v-html="release.description"></div>
                         <div v-else class="description-text">There is no background for this release.</div>
+
+                        <div v-if="release.genres && release.genres.length" class="genres-card">
+                            <div class="genres-header">
+                                <h3 class="info-title">Genres</h3>
+<!--                                <button-->
+<!--                                    v-if="release.genres.length > 5"-->
+<!--                                    class="see-all-genres"-->
+<!--                                    @click="redirectToAllGenres"-->
+<!--                                >-->
+<!--                                    See all genres-->
+<!--                                </button>-->
+                            </div>
+                            <div class="genre-tags">
+                                <span
+                                    v-for="(genre, index) in release.genres.slice(0, 5)"
+                                    :key="index"
+                                    class="genre-tag"
+                                    :title="genre.length > 16 ? genre : ''"
+                                >
+                                    {{ genre.name }}
+                                </span>
+                            </div>
+                        </div>
+
                     </div>
 
                     <section class="release-tracks">
@@ -303,7 +327,7 @@ const formatDuration = (timeString) => {
 .release-cover-container {
     position: absolute;
     top: -80px;
-    right: 62px;
+    right: 50px;
     width: 400px;
     height: 480px;
     z-index: 2;
@@ -342,18 +366,18 @@ const formatDuration = (timeString) => {
     box-shadow: none;
 }
 
+.main-content {
+    flex: 1;
+    max-width: calc(100% - 30px);
+    padding-right: 20px;
+    margin-left: 20px;
+}
+
 .release-content {
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
-    padding-right: 420px;
-}
-
-.main-content {
-    flex: 1;
-    max-width: calc(100% - 60px);
-    padding-right: 40px;
-    margin-left: 38px;
+    padding-right: 380px;
 }
 
 .section-title {
@@ -418,6 +442,77 @@ const formatDuration = (timeString) => {
     font-size: 0.9rem;
     line-height: 1.6;
     white-space: pre-line;
+}
+
+.genres-card {
+    width: fit-content;
+    max-width: 100%;
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+
+.genres-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.genres-header .info-title {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.see-all-genres {
+    background: none;
+    border: none;
+    color: #0c4baa;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.see-all-genres:hover {
+    background: rgba(12, 75, 170, 0.1);
+}
+
+.genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+}
+
+.genre-tag {
+    background: #f0f4ff;
+    color: #0c4baa;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.genre-tag:hover {
+    background: #e0e8ff;
+}
+
+.genre-tags::-webkit-scrollbar {
+    display: none;
 }
 
 .tracks-header {
@@ -546,13 +641,14 @@ const formatDuration = (timeString) => {
         font-size: 2.2rem;
         bottom: 55px;
     }
+
     .release-artists {
         font-size: 1.1rem;
         bottom: 28px;
     }
 
     .release-content {
-        padding-right: 370px;
+        padding-right: 340px;
     }
 
     .sidebar-space {
@@ -572,7 +668,7 @@ const formatDuration = (timeString) => {
     }
 
     .release-content {
-        padding-right: 320px;
+        padding-right: 290px;
     }
 
     .sidebar-space {
