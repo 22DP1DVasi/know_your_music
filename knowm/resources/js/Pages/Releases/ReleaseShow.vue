@@ -542,7 +542,7 @@ const formatDuration = (timeString) => {
 
 @media (max-width: 900px) {
     .release-content-container {
-        margin-top: 0;
+        flex-direction: column;
     }
 
     .release-cover-container {
@@ -550,20 +550,19 @@ const formatDuration = (timeString) => {
         top: 0;
         width: 100%;
         height: auto;
-        margin: 0 auto 2rem;
+        margin-bottom: 1.5rem;
         display: flex;
-        justify-content: center;
-        right: 0;
+        justify-content: flex-start;
+        left: 7%;
     }
 
     .release-cover {
-        position: static;
-        width: 250px;
-        height: 250px;
+        position: relative;
+        width: 300px;
+        height: 300px;
     }
 
     .release-content {
-        flex-direction: column;
         padding-right: 0;
     }
 
@@ -577,8 +576,6 @@ const formatDuration = (timeString) => {
         width: 100%;
         height: auto;
         margin-top: 2rem;
-        top: auto;
-        bottom: auto;
     }
 }
 
