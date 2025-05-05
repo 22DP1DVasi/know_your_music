@@ -77,7 +77,7 @@ import { Head, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue'
 import Footer from '@/Components/Footer.vue'
 import Pagination from '@/Components/Pagination.vue'
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import ColorThief from 'colorthief';
 import { debounce } from 'lodash-es';
 
@@ -210,10 +210,6 @@ const performSearch = debounce(() => {
         replace: true
     });
 }, 300);
-
-watch(localSearchQuery, (newValue) => {
-    performSearch();
-});
 
 const formatDuration = (timeString) => {
     if (!timeString) return '--:--'

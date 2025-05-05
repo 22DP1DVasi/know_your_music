@@ -138,7 +138,7 @@ const props = defineProps({
 
 const heroImage = ref(null);
 const heroStyle = ref({
-    height: '400px',
+    height: '300px',
     position: 'relative',
     overflow: 'hidden',
     backgroundColor: '#f0f0f0'
@@ -220,7 +220,7 @@ const formatDuration = (timeString) => {
 }
 
 .release-hero {
-    height: 400px;
+    height: 300px;
     width: 100%;
     overflow: hidden;
     position: relative;
@@ -296,10 +296,10 @@ const formatDuration = (timeString) => {
 
 .release-cover-container {
     position: absolute;
-    top: -120px;
+    top: -80px;
     right: 62px;
     width: 400px;
-    height: 520px;
+    height: 480px;
     z-index: 2;
     pointer-events: none;
 }
@@ -533,6 +533,18 @@ const formatDuration = (timeString) => {
 }
 
 @media (max-width: 1200px) {
+    .release-hero {
+        height: 280px !important;
+    }
+    .release-title {
+        font-size: 2.2rem;
+        bottom: 55px;
+    }
+    .release-artists {
+        font-size: 1.1rem;
+        bottom: 28px;
+    }
+
     .release-content {
         padding-right: 370px;
     }
@@ -569,9 +581,32 @@ const formatDuration = (timeString) => {
         width: 100%;
         padding: 0 10px;
     }
+    .release-hero {
+        height: 260px !important;
+    }
+    .release-title {
+        font-size: 2rem;
+        bottom: 50px;
+    }
+    .release-artists {
+        font-size: 1rem;
+        bottom: 26px;
+    }
 }
 
 @media (max-width: 900px) {
+    .release-hero {
+        height: 240px !important;
+    }
+    .release-title {
+        font-size: 1.8rem;
+        bottom: 45px;
+    }
+    .release-artists {
+        font-size: 0.95rem;
+        bottom: 24px;
+    }
+
     .release-content-container {
         flex-direction: column;
     }
@@ -623,19 +658,15 @@ const formatDuration = (timeString) => {
 
 @media (max-width: 768px) {
     .release-hero {
-        height: 300px;
+        height: 220px !important;
     }
-
     .release-title {
-        font-size: 2rem;
-        bottom: 50px;
-        max-width: 60%;
+        font-size: 1.6rem;
+        bottom: 40px;
     }
-
     .release-artists {
-        font-size: 1rem;
-        bottom: 25px;
-        max-width: 60%;
+        font-size: 0.9rem;
+        bottom: 22px;
     }
 
     .release-cover {
@@ -664,6 +695,20 @@ const formatDuration = (timeString) => {
 
     .track-duration {
         flex: 0 0 50px;
+    }
+}
+
+@media (max-width: 640px) {
+    .release-hero {
+        height: 200px !important;
+    }
+    .release-title {
+        font-size: 1.4rem;
+        bottom: 35px;
+    }
+    .release-artists {
+        font-size: 0.85rem;
+        bottom: 20px;
     }
 }
 
@@ -740,6 +785,22 @@ const formatDuration = (timeString) => {
     }
 }
 
+@media (max-width: 480px) {
+    .release-hero {
+        height: 180px !important;
+    }
+    .release-title {
+        font-size: 1.2rem;
+        bottom: 30px;
+        padding: 0 1rem;
+    }
+    .release-artists {
+        font-size: 0.8rem;
+        bottom: 18px;
+        padding: 0 1rem;
+    }
+}
+
 @media (max-width: 410px) {
     .release-cover {
         min-width: 150px;
@@ -786,6 +847,20 @@ const formatDuration = (timeString) => {
 
     .description-text {
         font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .release-hero {
+        height: 160px !important;
+    }
+    .release-title {
+        font-size: 1.1rem;
+        bottom: 25px;
+    }
+    .release-artists {
+        font-size: 0.75rem;
+        bottom: 15px;
     }
 }
 
