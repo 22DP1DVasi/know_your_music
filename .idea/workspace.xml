@@ -5,12 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistAllReleases.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistAllReleases.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseImageController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/SearchController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_04_27_195103_generate_artist_slugs.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_04_27_195103_generate_artist_slugs.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/ReleasesSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleasesSearchResults.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,6 +193,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\Pages\Releases" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\Pages\Artists" />
     </key>
   </component>
@@ -272,7 +274,8 @@
       <workItem from="1746263395291" duration="16052000" />
       <workItem from="1746283612468" duration="14995000" />
       <workItem from="1746340877827" duration="45515000" />
-      <workItem from="1746425949446" duration="1280000" />
+      <workItem from="1746425949446" duration="3974000" />
+      <workItem from="1746433841257" duration="590000" />
     </task>
     <servers />
   </component>

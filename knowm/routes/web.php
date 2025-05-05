@@ -8,9 +8,8 @@ use Inertia\Inertia;
 use App\Services\SpotifyService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\ArtistImageController;
-use App\Http\Controllers\ReleaseImageController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\ReleaseController;
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -111,7 +110,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('/artists/{artist}/profile-image', [ArtistController::class, 'uploadProfileImage']);
     Route::post('/artists/{artist}/banner-image', [ArtistController::class, 'uploadBannerImage']);
-    Route::post('/releases/{release}/cover-image', [ReleaseImageController::class, 'uploadCoverImage']);
+    Route::post('/releases/{release}/cover-image', [ReleaseController::class, 'uploadCoverImage']);
 });
 
 

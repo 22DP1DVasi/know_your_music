@@ -40,6 +40,10 @@ class Release extends Model
 
     protected static function booted()
     {
+        static::creating(function ($artist) {
+            $artist->slug = $artist->generateUniqueSlug();
+        });
+
         // create folder for cover image when this release is created
         static::created(function ($release) {
             Storage::makeDirectory("public/releases/{$release->id}/{$release->release_type}");
@@ -96,6 +100,42 @@ class Release extends Model
         return $this->hasMany(ReleaseComment::class)
             ->with('user')
             ->latest();
+    }
+
+    /**
+     * Get a slug value (used as route key)
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
+     * Generate unique slugs
+     */
+    public function generateUniqueSlug()
+    {
+        $slug = $this->customSlugify($this->name);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Generate a slug
+     */
+    private function customSlugify(string $name): string
+    {
+        $slug = mb_strtolower($name);
+        $slug = preg_replace('/\s+/u', '-', $slug);
+        $slug = preg_replace('/[^\p{L}\p{N}_-]/u', '', $slug);
+        return trim($slug, '-');
     }
 
     /**

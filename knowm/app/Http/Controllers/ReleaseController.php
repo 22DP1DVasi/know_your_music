@@ -5,9 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Release;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
-class ReleaseImageController extends Controller
+class ReleaseController extends Controller
 {
+
+    public function show(Release $release)
+    {
+        $data = $this->artistService->getArtistWithDetails($release->id);
+
+        return Inertia::render('Artists/ArtistShow', [
+            'artist' => $data
+        ]);
+    }
+
     public function uploadCoverImage(Request $request, Release $release)
     {
         $request->validate([

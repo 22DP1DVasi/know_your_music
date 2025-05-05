@@ -80,7 +80,7 @@ class SearchController extends Controller
             ->paginate($perPage)
             ->appends(['q' => $query, 'type' => $type, 'perPage' => $perPage]);
 
-        return Inertia::render('ReleasesSearchResults', [
+        return Inertia::render('Releases/ReleasesSearchResults', [
             'releases' => $releases->items(),
             'searchQuery' => $query,
             'searchType' => $type,
