@@ -25,76 +25,69 @@
             </div>
         </div>
 
-        <div class="release-content">
-            <div class="main-content">
-                <section class="release-info-section">
-                    <div class="release-meta">
-                        <div class="meta-item">
-                            <span class="meta-label">Release Date:</span>
-                            <span class="meta-value">{{ formatDate(release.release_date) }}</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Type:</span>
-                            <span class="meta-value">{{ capitalize(release.release_type) }}</span>
-                        </div>
-                        <div class="meta-item" v-if="release.genres.length">
-                            <span class="meta-label">Genres:</span>
-                            <span class="meta-value">
-                                <span v-for="(genre, index) in release.genres" :key="genre">
-                                    {{ genre }}<span v-if="index < release.genres.length - 1">, </span>
-                                </span>
-                            </span>
-                        </div>
-                    </div>
+        <div class="release-content-container">
+            <div class="release-cover-container">
+                <div class="release-cover">
+                    <img :src="release.cover_url" :alt="release.title">
+                </div>
+            </div>
 
-                    <div class="release-description" v-if="release.description">
-                        <h2 class="section-title">About This Release</h2>
-                        <div class="description-text" v-html="release.description"></div>
-                    </div>
-                </section>
-
-                <section class="release-tracks">
-                    <div class="tracks-header">
-                        <h2 class="section-title">Tracklist</h2>
-                        <span class="tracks-count">{{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}</span>
-                    </div>
-                    <div class="track-list">
-                        <div v-for="track in sortedTracks" :key="track.id" class="track-card">
-                            <span class="track-number">{{ track.pivot.track_position }}</span>
-                            <div class="track-info">
-                                <h3 class="track-title">{{ track.title }}</h3>
-                                <p class="track-artists" v-if="track.artists.length > 1">
-                                    <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                        <a :href="`/artists/${artist.slug}`">{{ artist.name }}</a>
-                                        <span v-if="index < track.artists.length - 1">, </span>
+            <div class="release-content">
+                <div class="main-content">
+                    <div class="release-description">
+                        <div class="info-card wrapped">
+                            <div class="info-flex">
+                                <div class="info-item">
+                                    <span class="meta-value"><b>{{ capitalize(release.release_type) }}</b></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="meta-value"><b>Release Date:</b> {{ formatDate(release.release_date) }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="meta-value">
+                                        <b>Length:</b> {{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}, {{ formatTotalDuration }}
                                     </span>
-                                </p>
+                                </div>
                             </div>
-                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
                         </div>
+                        <h2 class="section-title">About This Release</h2>
+                        <div v-if="release.description" class="description-text" v-html="release.description"></div>
+                        <div v-else class="description-text">There is no background for this release.</div>
                     </div>
-                </section>
 
-                <section class="release-comments">
-                    <h2 class="section-title">Comments</h2>
-                    <div class="comments-section">
-                        <!-- Comment components would go here -->
-                    </div>
-                </section>
+                    <section class="release-tracks">
+                        <div class="tracks-header">
+                            <h2 class="section-title">Tracklist</h2>
+                            <span class="tracks-count">{{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}</span>
+                        </div>
+                        <div class="track-list">
+                            <div v-for="track in sortedTracks" :key="track.id" class="track-card">
+                                <span class="track-number">{{ track.pivot.track_position }}</span>
+                                <div class="track-info">
+                                    <h3 class="track-title">{{ track.title }}</h3>
+                                    <p class="track-artists" v-if="track.artists.length > 1">
+                                        <span v-for="(artist, index) in track.artists" :key="artist.id">
+                                            <a :href="`/artists/${artist.slug}`">{{ artist.name }}</a>
+                                            <span v-if="index < track.artists.length - 1">, </span>
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="release-comments">
+                        <h2 class="section-title">Comments</h2>
+                        <div class="comments-section">
+                            <!-- Comment components would go here -->
+                        </div>
+                    </section>
+                </div>
             </div>
 
             <div class="sidebar-space">
-                <div class="similar-releases" v-if="similarReleases.length">
-                    <h3 class="sidebar-title">Similar Releases</h3>
-                    <div class="similar-list">
-                        <div v-for="similar in similarReleases" :key="similar.id" class="similar-item">
-                            <a :href="`/releases/${similar.slug}`">
-                                <img :src="similar.cover_url" :alt="similar.title">
-                                <span>{{ similar.title }}</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <!-- Future content like "Similar Artists" will go here -->
             </div>
         </div>
     </main>
@@ -148,8 +141,27 @@ const sortedTracks = computed(() => {
     return [...props.release.tracks].sort((a, b) => a.pivot.track_position - b.pivot.track_position);
 });
 
-const similarReleases = computed(() => {
-    return props.release.similar_releases || [];
+const totalDuration = computed(() => {
+    let totalSeconds = 0;
+
+    props.release.tracks.forEach(track => {
+        const [hours = 0, minutes = 0, seconds = 0] = track.duration.split(':').map(Number);
+        totalSeconds += hours * 3600 + minutes * 60 + seconds;
+    });
+
+    return totalSeconds;
+});
+
+const formatTotalDuration = computed(() => {
+    const hours = Math.floor(totalDuration.value / 3600);
+    const minutes = Math.floor((totalDuration.value % 3600) / 60);
+    const seconds = totalDuration.value % 60;
+
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } else {
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
 });
 
 const handleImageLoad = () => {
@@ -243,12 +255,13 @@ const formatDuration = (timeString) => {
 .release-page {
     max-width: 90%;
     width: 80%;
-    margin: 0 auto 0;
+    margin: 0 auto;
     padding: 0 20px;
     border: 1px solid #ddd;
     border-bottom-style: none;
     background: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative;
 }
 
 .release-hero {
@@ -309,6 +322,7 @@ const formatDuration = (timeString) => {
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
+    max-width: 70%;
 }
 
 .release-artists {
@@ -320,6 +334,7 @@ const formatDuration = (timeString) => {
     font-size: 1.2rem;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
+    max-width: 70%;
 }
 
 .release-artists a {
@@ -331,20 +346,53 @@ const formatDuration = (timeString) => {
     text-decoration: underline;
 }
 
+.release-content-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.release-cover-container {
+    position: absolute;
+    top: -120px;
+    right: 62px;
+    width: 400px;
+    height: 520px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.release-cover {
+    position: sticky;
+    top: 20px;
+    width: 400px;
+    height: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgb(136, 136, 136);
+    background: #f0f0f0;
+}
+
+.release-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .release-content {
     display: flex;
-    gap: 40px;
-    margin-top: 0.5rem;
+    flex-direction: column;
+    margin-top: 1rem;
+    padding-right: 420px;
 }
 
 .main-content {
     flex: 1;
-    max-width: 70%;
-}
-
-.sidebar-space {
-    width: 300px;
-    flex-shrink: 0;
+    max-width: calc(100% - 60px);
+    padding-right: 40px;
+    margin-left: 38px;
 }
 
 .section-title {
@@ -353,44 +401,60 @@ const formatDuration = (timeString) => {
     color: #0c4baa;
 }
 
-.release-info-section {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.release-meta {
-    flex: 0 0 250px;
-    background: white;
-    border-radius: 8px;
-    padding: 1.25rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    height: fit-content;
-}
-
-.meta-item {
-    margin-bottom: 1rem;
-}
-
-.meta-label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 0.25rem;
-    color: #333;
-}
-
 .meta-value {
     display: block;
-    color: #666;
 }
 
 .release-description {
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.info-card.wrapped {
+    float: right;
+    width: fit-content;
+    max-width: 50%;
+    margin: 3.3rem 0 1rem 1.5rem;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: none;
+}
+
+.info-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    flex-direction: column;
+}
+
+.info-item {
     flex: 1;
+    min-width: 120px;
+    display: flex;
+    flex-direction: row;
+}
+
+.sidebar-space {
+    width: 300px;
+    position: absolute;
+    right: 20px;
+    top: 440px;
+    bottom: 20px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .description-text {
-    font-size: 0.95rem;
+    flex: 3;
+    font-size: 0.9rem;
     line-height: 1.6;
+    white-space: pre-line;
 }
 
 .tracks-header {
@@ -461,26 +525,6 @@ const formatDuration = (timeString) => {
     text-align: right;
 }
 
-.similar-releases {
-    background: white;
-    border-radius: 8px;
-    padding: 1.25rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-}
-
-.sidebar-title {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    color: #333;
-}
-
-.similar-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
 .similar-item a {
     display: flex;
     align-items: center;
@@ -521,6 +565,57 @@ const formatDuration = (timeString) => {
     }
 }
 
+@media (max-width: 1200px) {
+    .release-cover-container {
+        width: 350px;
+        height: 470px;
+    }
+
+    .release-cover {
+        width: 350px;
+        height: 350px;
+    }
+
+    .release-content {
+        padding-right: 370px;
+    }
+
+    .main-content {
+        max-width: calc(100% - 370px);
+    }
+
+    .sidebar-space {
+        top: 390px;
+        height: calc(100vh - 410px);
+    }
+}
+
+@media (max-width: 1150px) {
+    .release-cover-container {
+        width: 300px;
+        height: 420px;
+    }
+
+    .release-cover {
+        width: 300px;
+        height: 300px;
+    }
+
+    .release-content {
+        padding-right: 320px;
+    }
+
+    .main-content {
+        max-width: calc(100% - 320px);
+    }
+
+    .sidebar-space {
+        top: 340px;
+        height: calc(100vh - 360px);
+        width: 280px;
+    }
+}
+
 @media (max-width: 1024px) {
     .release-page {
         max-width: 100%;
@@ -528,29 +623,44 @@ const formatDuration = (timeString) => {
         padding: 0 10px;
     }
 
+    .release-content-container {
+        margin-top: 0;
+    }
+
+    .release-cover-container {
+        position: relative;
+        top: 0;
+        width: 100%;
+        height: auto;
+        margin: 0 auto 2rem;
+        display: flex;
+        justify-content: center;
+        right: 0;
+    }
+
+    .release-cover {
+        position: static;
+        width: 250px;
+        height: 250px;
+    }
+
     .release-content {
         flex-direction: column;
-        gap: 10px;
-    }
-
-    .release-info-section {
-        flex-direction: column;
-    }
-
-    .release-meta {
-        flex: 1;
-        max-width: 100%;
+        padding-right: 0;
     }
 
     .main-content {
         max-width: 100%;
-        width: 100%;
+        padding-right: 0;
     }
 
     .sidebar-space {
+        position: static;
         width: 100%;
-        order: -1;
-        margin-bottom: 1rem;
+        height: auto;
+        margin-top: 2rem;
+        top: auto;
+        bottom: auto;
     }
 }
 
@@ -562,11 +672,18 @@ const formatDuration = (timeString) => {
     .release-title {
         font-size: 2rem;
         bottom: 50px;
+        max-width: 60%;
     }
 
     .release-artists {
         font-size: 1rem;
         bottom: 25px;
+        max-width: 60%;
+    }
+
+    .release-cover {
+        width: 200px;
+        height: 200px;
     }
 
     .sidebar-space {
@@ -592,12 +709,27 @@ const formatDuration = (timeString) => {
         font-size: 1.5rem;
         bottom: 40px;
         padding: 0 1rem;
+        max-width: 50%;
     }
 
     .release-artists {
         font-size: 0.9rem;
         bottom: 20px;
         padding: 0 1rem;
+        max-width: 50%;
+    }
+
+    .release-cover {
+        width: 160px;
+        height: 160px;
+    }
+
+    .meta-label {
+        font-size: 0.9rem;
+    }
+
+    .meta-value {
+        font-size: 0.9rem;
     }
 
     .track-card {
