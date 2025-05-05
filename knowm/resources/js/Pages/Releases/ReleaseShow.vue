@@ -4,7 +4,6 @@
     <Navbar />
     <main class="release-page flex-1">
         <div class="release-hero" :style="heroStyle">
-            <div class="hero-gradient" v-if="!isLandscape"></div>
             <div class="hero-image-container">
                 <img
                     :src="release.cover_url"
@@ -129,13 +128,21 @@ const heroStyle = ref({
 });
 const imageStyle = ref({
     opacity: 0,
-    transition: 'opacity 0.3s ease',
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover'
+    transition: 'opacity 0.3s ease'
 });
 const isLandscape = ref(false);
 const colorThief = new ColorThief();
+
+const handleImageLoad = () => {
+    const img = heroImage.value;
+    if (!img) return;
+
+    imageStyle.value.opacity = 1;
+    imageStyle.value.width = '100%';
+    imageStyle.value.height = 'auto';
+    imageStyle.value.objectFit = 'cover';
+    imageStyle.value.objectPosition = 'center';
+};
 
 const sortedTracks = computed(() => {
     return [...props.release.tracks].sort((a, b) => a.pivot.track_position - b.pivot.track_position);
@@ -163,75 +170,6 @@ const formatTotalDuration = computed(() => {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
 });
-
-const handleImageLoad = () => {
-    const img = heroImage.value;
-    if (!img) return;
-
-    imageStyle.value.opacity = 1;
-    analyzeImage();
-};
-
-const analyzeImage = () => {
-    const img = heroImage.value;
-    if (!img) return;
-
-    isLandscape.value = img.naturalWidth > img.naturalHeight;
-
-    if (isLandscape.value) {
-        heroStyle.value = {
-            'height': '400px',
-            'position': 'relative',
-            'overflow': 'hidden'
-        };
-        imageStyle.value = {
-            'width': '100%',
-            'height': '100%',
-            'object-fit': 'cover',
-            'object-position': 'center 13%',
-        };
-    } else {
-        try {
-            const dominantColor = colorThief.getColor(img);
-            const bgColor = `rgb(${dominantColor.join(',')})`;
-            const darkerColor = dominantColor.map(c => Math.max(0, c - 30)).join(',');
-
-            heroStyle.value = {
-                '--gradient-color-left': `rgba(${darkerColor},0.8)`,
-                '--gradient-color-right': `rgba(${darkerColor},0.8)`,
-                'background-color': bgColor,
-                'height': '400px',
-                'position': 'relative',
-                'display': 'flex',
-                'justify-content': 'center',
-                'align-items': 'center'
-            };
-
-            imageStyle.value = {
-                'max-height': '100%',
-                'max-width': '100%',
-                'object-fit': 'contain',
-                'position': 'relative',
-                'z-index': '2'
-            };
-        } catch (e) {
-            console.error('Error extracting color:', e);
-            heroStyle.value = {
-                '--gradient-color-left': 'rgba(0,0,0,0.3)',
-                '--gradient-color-right': 'rgba(0,0,0,0.3)',
-                'background-color': '#f0f0f0',
-                'height': '400px',
-                'position': 'relative'
-            };
-
-            imageStyle.value = {
-                'max-height': '100%',
-                'max-width': '100%',
-                'object-fit': 'contain'
-            };
-        }
-    }
-};
 
 const capitalize = (value) => {
     if (!value) return '';
@@ -271,10 +209,10 @@ const formatDuration = (timeString) => {
     position: relative;
     margin-bottom: 1rem;
     margin-top: 1rem;
-    border-radius: 8px;
     background-color: #f0f0f0;
-    --gradient-color-left: rgba(0,0,0,0.3);
-    --gradient-color-right: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-image-container {
@@ -286,30 +224,16 @@ const formatDuration = (timeString) => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: inherit;
 }
 
 .hero-image {
     width: 100%;
-    height: 100%;
+    height: auto;
+    min-height: 100%;
     object-fit: cover;
     object-position: center;
-}
-
-.hero-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        90deg,
-        var(--gradient-color-left) 0%,
-        transparent 20%,
-        transparent 80%,
-        var(--gradient-color-right) 100%
-    );
-    z-index: 1;
+    filter: brightness(0.7);
+    transition: filter 0.3s ease;
 }
 
 .release-title {
@@ -411,6 +335,8 @@ const formatDuration = (timeString) => {
     padding: 1.25rem;
     margin-bottom: 2rem;
     position: relative;
+    white-space: pre-line;
+    word-break: break-word;
 }
 
 .info-card.wrapped {
@@ -460,13 +386,13 @@ const formatDuration = (timeString) => {
 .tracks-header {
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
     gap: 1rem;
 }
 
 .tracks-count {
     color: #666;
     font-size: 1rem;
+    margin-bottom: 1rem;
 }
 
 .track-list {
@@ -563,9 +489,7 @@ const formatDuration = (timeString) => {
     .release-page {
         width: 90%;
     }
-}
 
-@media (max-width: 1200px) {
     .release-cover-container {
         width: 350px;
         height: 470px;
@@ -575,18 +499,15 @@ const formatDuration = (timeString) => {
         width: 350px;
         height: 350px;
     }
+}
 
+@media (max-width: 1200px) {
     .release-content {
         padding-right: 370px;
     }
 
-    .main-content {
-        max-width: calc(100% - 370px);
-    }
-
     .sidebar-space {
         top: 390px;
-        height: calc(100vh - 410px);
     }
 }
 
@@ -605,13 +526,8 @@ const formatDuration = (timeString) => {
         padding-right: 320px;
     }
 
-    .main-content {
-        max-width: calc(100% - 320px);
-    }
-
     .sidebar-space {
         top: 340px;
-        height: calc(100vh - 360px);
         width: 280px;
     }
 }
@@ -622,7 +538,9 @@ const formatDuration = (timeString) => {
         width: 100%;
         padding: 0 10px;
     }
+}
 
+@media (max-width: 900px) {
     .release-content-container {
         margin-top: 0;
     }

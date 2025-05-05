@@ -262,19 +262,6 @@ const capitalize = (value) => {
     position: relative;
 }
 
-.bio-text {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    white-space: pre-line;
-}
-
-.bio-wrapper .bio-text {
-    flex: 3;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    white-space: pre-line;
-}
-
 .info-card.wrapped {
     float: right;
     width: fit-content;
@@ -294,9 +281,11 @@ const capitalize = (value) => {
 }
 
 .bio-text {
+    flex: 3;
     font-size: 0.9rem;
     line-height: 1.6;
     white-space: pre-line;
+    word-break: break-word;
     background: white;
     border-radius: 8px;
     padding: 1.25rem;
