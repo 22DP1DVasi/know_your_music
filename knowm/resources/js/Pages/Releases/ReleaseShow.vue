@@ -29,12 +29,29 @@
                 <div class="release-cover">
                     <img :src="release.cover_url" :alt="release.title">
                 </div>
+                <div class="top-info-card">
+                    <div class="top-info-card-wrapped">
+                        <div class="info-flex">
+                            <div class="info-item">
+                                <span class="meta-value"><b>{{ capitalize(release.release_type) }}</b></span>
+                            </div>
+                            <div class="info-item">
+                                <span class="meta-value"><b>Release Date:</b> {{ formatDate(release.release_date) }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="meta-value">
+                                    <b>Length:</b> {{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}, {{ formatTotalDuration }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="release-content">
                 <div class="main-content">
                     <div class="release-description">
-                        <div class="info-card wrapped">
+                        <div class="info-card-wrapped">
                             <div class="info-flex">
                                 <div class="info-item">
                                     <span class="meta-value"><b>{{ capitalize(release.release_type) }}</b></span>
@@ -305,6 +322,20 @@ const formatDuration = (timeString) => {
     object-fit: cover;
 }
 
+.top-info-card {
+    display: none;
+}
+
+.top-info-card-wrapped {
+    width: 450px;
+    height: 130px;
+    max-width: 50%;
+    margin: 0 0 1rem 1.5rem;
+    top: 70%;
+    transform: translateY(70%);
+    box-shadow: none;
+}
+
 .release-content {
     display: flex;
     flex-direction: column;
@@ -339,7 +370,7 @@ const formatDuration = (timeString) => {
     word-break: break-word;
 }
 
-.info-card.wrapped {
+.info-card-wrapped {
     float: right;
     width: fit-content;
     max-width: 50%;
@@ -553,13 +584,18 @@ const formatDuration = (timeString) => {
         margin-bottom: 1.5rem;
         display: flex;
         justify-content: flex-start;
-        left: 7%;
+        left: 0;
+        margin-left: 30px;
     }
 
     .release-cover {
-        position: relative;
+        min-width: 300px;
         width: 300px;
         height: 300px;
+    }
+
+    .top-info-card {
+        display: flex;
     }
 
     .release-content {
@@ -569,6 +605,12 @@ const formatDuration = (timeString) => {
     .main-content {
         max-width: 100%;
         padding-right: 0;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .info-card-wrapped {
+        display: none;
     }
 
     .sidebar-space {
@@ -597,8 +639,14 @@ const formatDuration = (timeString) => {
     }
 
     .release-cover {
-        width: 200px;
-        height: 200px;
+        min-width: 250px;
+        width: 250px;
+        height: 250px;
+    }
+
+    .top-info-card-wrapped {
+        top: 50%;
+        transform: translateY(50%);
     }
 
     .sidebar-space {
@@ -619,7 +667,7 @@ const formatDuration = (timeString) => {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 580px) {
     .release-title {
         font-size: 1.5rem;
         bottom: 40px;
@@ -634,13 +682,11 @@ const formatDuration = (timeString) => {
         max-width: 50%;
     }
 
-    .release-cover {
-        width: 160px;
+    .top-info-card-wrapped {
         height: 160px;
-    }
-
-    .meta-label {
-        font-size: 0.9rem;
+        width: 300px;
+        top: 45%;
+        transform: translateY(45%);
     }
 
     .meta-value {
@@ -665,4 +711,82 @@ const formatDuration = (timeString) => {
         flex: 0 0 45px;
     }
 }
+
+@media (max-width: 530px) {
+    .release-cover-container {
+        margin-left: 10px;
+    }
+
+    .release-cover {
+        min-width: 200px;
+        width: 200px;
+        height: 200px;
+    }
+
+    .top-info-card-wrapped {
+        height: 160px;
+        width: 300px;
+        top: 30%;
+        transform: translateY(30%);
+        margin-left: 0.8rem;
+    }
+
+    .top-info-card-wrapped span {
+        font-size: 0.8rem;
+    }
+
+    .release-description {
+        padding: 1.25rem 0;
+    }
+}
+
+@media (max-width: 410px) {
+    .release-cover {
+        min-width: 150px;
+        width: 150px;
+        height: 150px;
+    }
+
+    .top-info-card-wrapped {
+        top: 15%;
+        transform: translateY(15%);
+        width: calc(100% - 170px);
+        max-width: 220px;
+        height: auto;
+        min-height: 120px;
+        padding: 0.5rem;
+        margin-left: 0.5rem;
+    }
+
+    .info-flex {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .meta-value {
+        font-size: 0.7rem;
+        line-height: 1.4;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        display: inline;
+    }
+
+    .meta-value b {
+        font-size: 0.75rem;
+        margin-right: 0.2rem;
+    }
+
+    .description-text {
+        font-size: 0.8rem;
+    }
+}
+
 </style>
