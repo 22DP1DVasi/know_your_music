@@ -52,7 +52,12 @@
             <section v-if="releases.length > 0" class="results-section">
                 <div class="release-results-wrapper">
                     <div class="release-results">
-                        <div v-for="release in releases" :key="release.id" class="release-card">
+                        <div
+                            v-for="release in releases"
+                            :key="release.id"
+                            class="release-card"
+                            @click="redirectToRelease(release.slug)"
+                        >
                             <div class="image-wrapper">
                                 <img :src="release.cover_url" :alt="release.title" />
                             </div>
@@ -141,6 +146,10 @@ const formatArtists = (artists) => {
     if (!artists || artists.length === 0) return '';
     const names = artists.map(artist => artist.name);
     return names.join(', ');
+};
+
+const redirectToRelease = (slug) => {
+    router.get(`/releases/${slug}`);
 };
 
 const goBack = () => {
@@ -327,6 +336,7 @@ const goBack = () => {
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
     0 3px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;

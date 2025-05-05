@@ -78,6 +78,7 @@ class ArtistService
                 return [
                     'id' => $release->id,
                     'title' => $release->title,
+                    'slug' => $release->slug,
                     'year' => $release->release_date ? date('Y', strtotime($release->release_date)) : null,
                     'type' => $release->release_type,
                     'cover_url' => $release->cover_url ?? '/images/default-release-cover.webp',

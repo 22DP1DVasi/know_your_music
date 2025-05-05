@@ -12,6 +12,7 @@
                     ref="heroImage"
                     @load="handleImageLoad"
                     :style="imageStyle"
+                    loading="eager"
                 >
             </div>
             <h1 class="artist-name">{{ artist.name }}</h1>
@@ -43,7 +44,12 @@
                 <section v-if="releases.length > 0" class="results-section">
                     <div class="release-results-wrapper">
                         <div class="release-results">
-                            <div v-for="release in releases" :key="release.id" class="release-card">
+                            <div
+                                v-for="release in releases"
+                                :key="release.id"
+                                class="release-card"
+                                @click="redirectToRelease(release.slug)"
+                            >
                                 <div class="image-wrapper">
                                     <img :src="release.cover_url" :alt="release.title" />
                                 </div>
@@ -126,44 +132,64 @@ const props = defineProps({
 
 // hero image
 const heroImage = ref(null);
-const heroStyle = ref({});
-const imageStyle = ref({});
+const heroStyle = ref({
+    height: '400px',
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0'
+});
+const imageStyle = ref({
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover'
+});
 const isLandscape = ref(false);
 const colorThief = new ColorThief();
 
 const localSearchQuery = ref(props.filters.search || '');
 
 const handleImageLoad = () => {
-    if (heroImage.value.complete) {
-        analyzeImage();
-    } else {
-        heroImage.value.addEventListener('load', analyzeImage);
-    }
+    const img = heroImage.value;
+    if (!img) return;
+
+    imageStyle.value.opacity = 1;
+    analyzeImage();
 };
 
 const analyzeImage = () => {
     const img = heroImage.value;
+    if (!img) return;
+    heroStyle.value = {
+        'height': '400px',
+        'position': 'relative',
+        'overflow': 'hidden',
+        'background-color': '#f0f0f0' // fallback
+    };
+    imageStyle.value = {
+        'opacity': '0',
+        'transition': 'opacity 0.3s ease'
+    };
     isLandscape.value = img.naturalWidth > img.naturalHeight;
-
     if (isLandscape.value) {
-        heroStyle.value = {
+        Object.assign(heroStyle.value, {
             'height': '400px',
             'position': 'relative',
             'overflow': 'hidden'
-        };
-        imageStyle.value = {
+        });
+        Object.assign(imageStyle.value, {
             'width': '100%',
             'height': '100%',
             'object-fit': 'cover',
             'object-position': 'center 13%',
-        };
+        });
     } else {
         try {
             const dominantColor = colorThief.getColor(img);
             const bgColor = `rgb(${dominantColor.join(',')})`;
             const darkerColor = dominantColor.map(c => Math.max(0, c - 30)).join(',');
-
-            heroStyle.value = {
+            Object.assign(heroStyle.value, {
                 '--gradient-color-left': `rgba(${darkerColor},0.8)`,
                 '--gradient-color-right': `rgba(${darkerColor},0.8)`,
                 'background-color': bgColor,
@@ -172,31 +198,32 @@ const analyzeImage = () => {
                 'display': 'flex',
                 'justify-content': 'center',
                 'align-items': 'center'
-            };
-
-            imageStyle.value = {
+            });
+            Object.assign(imageStyle.value, {
                 'max-height': '100%',
                 'max-width': '100%',
                 'object-fit': 'contain',
                 'position': 'relative',
                 'z-index': '2'
-            };
+            });
         } catch (e) {
             console.error('Error extracting color:', e);
-            heroStyle.value = {
+            Object.assign(heroStyle.value, {
                 '--gradient-color-left': 'rgba(0,0,0,0.3)',
                 '--gradient-color-right': 'rgba(0,0,0,0.3)',
                 'background-color': '#f0f0f0',
-                'height': '300px',
+                'height': '400px',
                 'position': 'relative'
-            };
-            imageStyle.value = {
+            });
+            Object.assign(imageStyle.value, {
                 'max-height': '100%',
                 'max-width': '100%',
                 'object-fit': 'contain'
-            };
+            });
         }
     }
+
+    imageStyle.value.opacity = '1';
 };
 
 const getArtistImage = (artist, type = 'profile') => {
@@ -208,6 +235,10 @@ const getArtistImage = (artist, type = 'profile') => {
 
 const goBackToArtist = () => {
     router.visit(`/artists/${props.artist.slug}`);
+};
+
+const redirectToRelease = (slug) => {
+    router.get(`/releases/${slug}`);
 };
 
 const performSearch = debounce(() => {
@@ -239,21 +270,28 @@ const getCoArtists = (release) => {
 }
 
 .artist-hero {
+    height: 400px;
     width: 100%;
+    overflow: hidden;
+    position: relative;
     margin-bottom: 1rem;
     margin-top: 1rem;
     border-radius: 8px;
-    overflow: hidden;
+    background-color: #f0f0f0; /* fallback color */
     --gradient-color-left: rgba(0,0,0,0.3);
     --gradient-color-right: rgba(0,0,0,0.3);
-    position: relative;
 }
 
 .hero-image-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: inherit;
 }
 
 .hero-image {
@@ -261,8 +299,6 @@ const getCoArtists = (release) => {
     height: 100%;
     object-fit: cover;
     object-position: center;
-    filter: brightness(0.9);
-    transition: all 0.3s ease;
 }
 
 .hero-gradient {
@@ -426,6 +462,7 @@ const getCoArtists = (release) => {
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
     0 3px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;

@@ -20,6 +20,7 @@ class Release extends Model
      */
     protected $fillable = [
         'title',
+        'slug',
         'release_date',
         'cover_image',
         'description',

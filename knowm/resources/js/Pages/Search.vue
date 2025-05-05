@@ -36,16 +36,21 @@
                     </a>
                 </div>
                 <div class="release-results">
-                    <div v-for="release in releases" :key="release.id" class="release-card">
+                    <div
+                        v-for="release in releases"
+                        :key="release.id"
+                        class="release-card"
+                        @click="redirectToRelease(release.slug)"
+                    >
                         <div class="image-wrapper">
                             <img :src="release.cover_url" :alt="release.title" />
                         </div>
                         <div class="release-info">
                             <h3>{{ release.title }}</h3>
                             <div v-if="release.artists.length > 1" class="artists-names-container">
-                                    <span class="artists-names">
-                                        {{ formatArtists(release.artists) }}
-                                    </span>
+                                <span class="artists-names">
+                                    {{ formatArtists(release.artists) }}
+                                </span>
                             </div>
                             <div v-else-if="release.artists.length === 1" class="single-artist">
                                 {{ release.artists[0].name }}
@@ -162,6 +167,10 @@ const formatArtists = (artists) => {
     if (!artists || artists.length === 0) return '';
     const names = artists.map(artist => artist.name);
     return names.join(', ');
+};
+
+const redirectToRelease = (slug) => {
+    router.get(`/releases/${slug}`);
 };
 
 </script>
@@ -312,6 +321,7 @@ const formatArtists = (artists) => {
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
     0 3px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;

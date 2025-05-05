@@ -26,7 +26,7 @@
                     <div class="bio-text" v-html="truncatedBio"></div>
                     <button
                         v-if="showReadMore"
-                        @click="redirectToFullBio"
+                        @click="redirectToFullBio(props.artist.artist.slug)"
                         class="read-more-button"
                     >
                         Read more
@@ -78,7 +78,7 @@
                         <button
                             v-if="artist.total_tracks > artist.tracks.length"
                             class="see-all-tracks"
-                            @click="redirectToAllTracks"
+                            @click="redirectToAllTracks(props.artist.artist.slug)"
                         >
                             See all {{ artist.total_tracks }} tracks
                         </button>
@@ -101,13 +101,18 @@
                         <button
                             v-if="artist.total_releases > artist.releases.length"
                             class="see-all-releases"
-                            @click="redirectToAllReleases"
+                            @click="redirectToAllReleases(props.artist.artist.slug)"
                         >
                             See all {{ artist.total_releases }} releases
                         </button>
                     </div>
                     <div class="release-results">
-                        <div v-for="release in artist.releases" :key="release.id" class="release-card"> <!-- Path stays same -->
+                        <div
+                            v-for="release in props.artist.releases"
+                            :key="release.id"
+                            class="release-card"
+                            @click="redirectToRelease(release.slug)"
+                        >
                             <div class="image-wrapper">
                                 <img :src="release.cover_url" :alt="release.title">
                             </div>
@@ -176,6 +181,7 @@ const isLandscape = ref(false);
 const colorThief = new ColorThief();
 const bioMaxLength = 500;
 
+// image handling
 const handleImageLoad = () => {
     const img = heroImage.value;
     if (!img) return;
@@ -187,30 +193,23 @@ const handleImageLoad = () => {
 const analyzeImage = () => {
     const img = heroImage.value;
     if (!img) return;
-
-    // Set initial styles (from new version)
     heroStyle.value = {
         'height': '400px',
         'position': 'relative',
         'overflow': 'hidden',
-        'background-color': '#f0f0f0' // Fallback
+        'background-color': '#f0f0f0' // fallback
     };
-
     imageStyle.value = {
         'opacity': '0',
         'transition': 'opacity 0.3s ease'
     };
-
-    // Then analyze and apply final styles (from original version)
     isLandscape.value = img.naturalWidth > img.naturalHeight;
-
     if (isLandscape.value) {
         Object.assign(heroStyle.value, {
             'height': '400px',
             'position': 'relative',
             'overflow': 'hidden'
         });
-
         Object.assign(imageStyle.value, {
             'width': '100%',
             'height': '100%',
@@ -222,7 +221,6 @@ const analyzeImage = () => {
             const dominantColor = colorThief.getColor(img);
             const bgColor = `rgb(${dominantColor.join(',')})`;
             const darkerColor = dominantColor.map(c => Math.max(0, c - 30)).join(',');
-
             Object.assign(heroStyle.value, {
                 '--gradient-color-left': `rgba(${darkerColor},0.8)`,
                 '--gradient-color-right': `rgba(${darkerColor},0.8)`,
@@ -233,7 +231,6 @@ const analyzeImage = () => {
                 'justify-content': 'center',
                 'align-items': 'center'
             });
-
             Object.assign(imageStyle.value, {
                 'max-height': '100%',
                 'max-width': '100%',
@@ -250,7 +247,6 @@ const analyzeImage = () => {
                 'height': '400px',
                 'position': 'relative'
             });
-
             Object.assign(imageStyle.value, {
                 'max-height': '100%',
                 'max-width': '100%',
@@ -259,7 +255,6 @@ const analyzeImage = () => {
         }
     }
 
-    // Finally fade in the image (from new version)
     imageStyle.value.opacity = '1';
 };
 
@@ -273,21 +268,25 @@ const showReadMore = computed(() => {
     return props.artist.artist.biography && props.artist.artist.biography.length > bioMaxLength;
 });
 
-const redirectToFullBio = () => {
-    const url = `/artists/${props.artist.artist.slug}/bio`;
-    router.visit(url);
+const redirectToFullBio = (slug) => {
+    //const url = `/artists/${props.artist.artist.slug}/bio`;
+    window.location.href = `/artists/${slug}/bio`;
 };
 
 const redirectToAllGenres = () => {
     window.location.href = '#';
 };
 
-const redirectToAllTracks = () => {
-    window.location.href = `/artists/${props.artist.artist.slug}/tracks`;
+const redirectToAllTracks = (slug) => {
+    window.location.href = `/artists/${slug}/tracks`;
 };
 
-const redirectToAllReleases = () => {
-    window.location.href = `/artists/${props.artist.artist.slug}/releases`;
+const redirectToRelease = (slug) => {
+    window.location.href = `/releases/${slug}`;
+};
+
+const redirectToAllReleases = (slug) => {
+    window.location.href = `/artists/${slug}/releases`;
 };
 const capitalize = (value) => {
     if (!value) return 'Unknown';
@@ -642,6 +641,7 @@ const formatDuration = (timeString) => {
     overflow: hidden;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
     0 3px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
