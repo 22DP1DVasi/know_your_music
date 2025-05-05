@@ -264,6 +264,12 @@ const formatDuration = (timeString) => {
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
     max-width: 70%;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .release-artists {
