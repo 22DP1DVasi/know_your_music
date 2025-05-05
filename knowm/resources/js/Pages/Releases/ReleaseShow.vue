@@ -104,7 +104,11 @@
                             <div v-for="track in sortedTracks" :key="track.id" class="track-card">
                                 <span class="track-number">{{ track.pivot.track_position }}</span>
                                 <div class="track-info">
-                                    <h3 class="track-title">{{ track.title }}</h3>
+                                    <h3>
+                                        <a @click="redirectToTrack(track.slug)" class="track-title">
+                                            {{ track.title }}
+                                        </a>
+                                    </h3>
                                     <p class="track-artists" v-if="track.artists.length > 1">
                                         <span v-for="(artist, index) in track.artists" :key="artist.id">
                                             <a :href="`/artists/${artist.slug}`">{{ artist.name }}</a>
@@ -226,6 +230,11 @@ const formatDuration = (timeString) => {
     const [hours, minutes, seconds] = timeString.split(':');
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
 };
+
+const redirectToTrack = (slug) => {
+    window.location.href = `/tracks/${slug}`;
+};
+
 </script>
 
 <style scoped>
@@ -554,8 +563,19 @@ const formatDuration = (timeString) => {
 }
 
 .track-title {
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
     font-size: 0.95rem;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-title:hover {
+    color: #0c4baa;
+    text-decoration: underline;
 }
 
 .track-artists {

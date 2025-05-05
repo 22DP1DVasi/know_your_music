@@ -34,7 +34,11 @@
                 <div v-for="track in tracks" :key="track.id" class="track-item">
                     <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
                     <div class="track-info">
-                        <h3>{{ track.title }}</h3>
+                        <h3>
+                            <a @click="redirectToTrack(track.slug)" class="track-title-link">
+                                {{ track.title }}
+                            </a>
+                        </h3>
                         <p class="artists-names">
                             <span v-for="(artist, index) in track.artists" :key="artist.id">
                                 {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
@@ -123,6 +127,11 @@ const formatDuration = (timeString) => {
 const goBack = () => {
     router.visit(`/search?q=${props.searchQuery}`);
 };
+
+const redirectToTrack = (slug) => {
+    router.get(`/tracks/${slug}`);
+};
+
 </script>
 
 <style scoped>
@@ -299,6 +308,18 @@ const goBack = () => {
     text-overflow: ellipsis;
     max-width: 100%;
     display: block;
+}
+
+.track-title-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.track-title-link:hover {
+    color: #0c4baa;
+    text-decoration: underline;
 }
 
 .artists-names {

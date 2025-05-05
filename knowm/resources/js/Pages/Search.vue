@@ -16,7 +16,7 @@
                 <div class="artist-results">
                     <a v-for="artist in artists"
                        :key="artist.id"
-                       :href="`/artists/${artist.slug}`"
+                       @click="redirectToArtist(artist.slug)"
                        class="artist-card">
                             <img :src="artist.banner_url" :alt="artist.name">
                         <div class="artist-info">
@@ -77,7 +77,11 @@
                     <div v-for="track in metadataMatches" :key="track.id" class="track-card">
                         <img class="track-image" :src="track.cover_url" :alt="track.title">
                         <div class="track-info">
-                            <h3>{{ track.title }}</h3>
+                            <h3>
+                                <a @click="redirectToTrack(track.slug)" class="track-title-link">
+                                    {{ track.title }}
+                                </a>
+                            </h3>
                             <p class="artists-names">
                                 <span v-for="(artist, index) in track.artists" :key="artist.id">
                                     {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
@@ -103,11 +107,15 @@
                     <div v-for="track in lyricsMatches" :key="track.id" class="track-card">
                         <img class="track-image" :src="track.cover_url" :alt="track.title">
                         <div class="track-info">
-                            <h3>{{ track.title }}</h3>
+                            <h3>
+                                <a @click="redirectToTrack(track.slug)" class="track-title-link">
+                                    {{ track.title }}
+                                </a>
+                            </h3>
                             <p class="artists-names">
-                    <span v-for="(artist, index) in track.artists" :key="artist.id">
-                        {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
-                    </span>
+                                <span v-for="(artist, index) in track.artists" :key="artist.id">
+                                    {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
+                                </span>
                             </p>
                             <p class="lyric-snippet" v-html="track.lyric_snippet"></p>
                         </div>
@@ -169,8 +177,16 @@ const formatArtists = (artists) => {
     return names.join(', ');
 };
 
+const redirectToArtist = (slug) => {
+    router.get(`/artists/${slug}`);
+};
+
 const redirectToRelease = (slug) => {
     router.get(`/releases/${slug}`);
+};
+
+const redirectToTrack = (slug) => {
+    router.get(`/tracks/${slug}`);
 };
 
 </script>
@@ -482,6 +498,18 @@ const redirectToRelease = (slug) => {
     font-size: 0.9rem;
     width: 100%;
     display: block;
+}
+
+.track-title-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.track-title-link:hover {
+    color: #0c4baa;
+    text-decoration: underline;
 }
 
 .track-duration {

@@ -88,7 +88,9 @@
                             <span class="track-number">{{ index + 1 }}</span>
                             <img :src="track.cover_url" class="track-image" :alt="track.title">
                             <div class="track-info">
-                                <h3 class="track-title">{{ track.title }}</h3>
+                                <a @click="redirectToTrack(track.slug)" class="track-title">
+                                    {{ track.title }}
+                                </a>
                             </div>
                             <div class="track-duration">{{ formatDuration(track.duration) }}</div>
                         </div>
@@ -279,6 +281,10 @@ const redirectToAllGenres = () => {
 
 const redirectToAllTracks = (slug) => {
     window.location.href = `/artists/${slug}/tracks`;
+};
+
+const redirectToTrack = (slug) => {
+    window.location.href = `/tracks/${slug}`;
 };
 
 const redirectToRelease = (slug) => {
@@ -587,10 +593,18 @@ const formatDuration = (timeString) => {
 }
 
 .track-title {
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
     font-size: 0.95rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.track-title:hover {
+    color: #0c4baa;
+    text-decoration: underline;
 }
 
 .track-duration {

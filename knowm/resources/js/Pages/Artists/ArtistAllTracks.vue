@@ -47,7 +47,11 @@
                             <div class="track-cell title">
                                 <img :src="track.cover_url" class="track-image" :alt="track.title">
                                 <div class="track-info">
-                                    <h3>{{ track.title }}</h3>
+                                    <h3>
+                                        <a @click="redirectToTrack(track.slug)" class="track-title-link">
+                                            {{ track.title }}
+                                        </a>
+                                    </h3>
                                     <p v-if="track.artist_names" class="artist-names">{{ track.artist_names }}</p>
                                 </div>
                             </div>
@@ -222,6 +226,10 @@ const getArtistImage = (artist, type = 'profile') => {
 
 const goBackToArtist = () => {
     router.visit(`/artists/${props.artist.slug}`);
+};
+
+const redirectToTrack = (slug) => {
+    router.get(`/tracks/${slug}`);
 };
 
 const performSearch = debounce(() => {
@@ -478,6 +486,18 @@ const formatDuration = (timeString) => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.track-title-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.track-title-link:hover {
+    color: #0c4baa;
+    text-decoration: underline;
 }
 
 .artist-names {

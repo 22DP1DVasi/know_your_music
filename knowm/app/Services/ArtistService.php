@@ -58,6 +58,7 @@ class ArtistService
             return [
                 'id' => $track->id,
                 'title' => $track->title,
+                'slug' => $track->slug,
                 'duration' => $track->duration,
                 'cover_url' => $track->releases->first()->cover_url ?? '/images/default-release-banner.webp',
                 'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
