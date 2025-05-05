@@ -49,12 +49,15 @@
                                 </div>
                                 <div class="release-info">
                                     <h3>{{ release.title }}</h3>
-                                    <p class="artists-names">
-                                        <span v-for="(artist, index) in release.artists" :key="artist.id">
-                                            {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
+                                    <div v-if="getCoArtists(release).length > 0" class="artists-names-container">
+                                        <span class="with-text">with</span>
+                                        <span class="artists-names">
+                                            {{ getCoArtists(release).map(a => a.name).join(', ') }}
                                         </span>
+                                    </div>
+                                    <p class="release-meta">
+                                        {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
                                     </p>
-                                    <p>{{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}</p>
                                 </div>
                             </div>
                         </div>
@@ -67,8 +70,6 @@
                         class="pagination"
                     />
                 </section>
-
-
             </div>
 
             <div class="sidebar-space">
@@ -221,6 +222,12 @@ const performSearch = debounce(() => {
 watch(localSearchQuery, (newValue) => {
     performSearch();
 });
+
+const getCoArtists = (release) => {
+    if (!release.artists || release.artists.length <= 1) return [];
+    return release.artists.filter(artist => artist.id !== props.artist.id);
+};
+
 </script>
 
 <style scoped>
@@ -457,7 +464,7 @@ watch(localSearchQuery, (newValue) => {
 }
 
 .release-info h3 {
-    margin: 0 0 0.25rem 0;
+    margin: 0 0 0.1rem 0;
     font-size: 1rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -475,15 +482,36 @@ watch(localSearchQuery, (newValue) => {
     text-overflow: ellipsis;
 }
 
-.artists-names {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
+.artists-names-container {
+    display: flex;
+    gap: 4px;
     margin: 0 0 0.25rem 0;
     color: #666;
     font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+.with-text {
+    font-style: italic;
+    flex-shrink: 0;
+}
+
+.artists-names {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.release-meta {
+    margin: 0 0 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .pagination {
@@ -494,6 +522,17 @@ watch(localSearchQuery, (newValue) => {
 @media (max-width: 1455px) {
     .artist-page {
         width: 90%;
+    }
+}
+
+@media (max-width: 1325px) {
+    .main-content {
+        max-width: 80%;
+        width: 80%;
+    }
+
+    .sidebar-space {
+        width: 20%;
     }
 }
 
@@ -525,9 +564,7 @@ watch(localSearchQuery, (newValue) => {
     }
 
     .sidebar-space {
-        width: 100%;
-        order: -1;
-        margin-bottom: 1rem;
+        display: none;
     }
 
     .release-card {
@@ -553,10 +590,6 @@ watch(localSearchQuery, (newValue) => {
     .searchTerm {
         font-size: 16px;
         height: 46px;
-    }
-
-    .sidebar-space {
-        display: none;
     }
 
     .release-results-wrapper {

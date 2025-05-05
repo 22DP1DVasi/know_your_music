@@ -677,8 +677,7 @@ const formatDuration = (timeString) => {
 
 .release-info h3 {
     margin: 0 0 0.25rem 0;
-    font-size: 0.9rem;
-    font-weight: bold;
+    font-size: 1rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;

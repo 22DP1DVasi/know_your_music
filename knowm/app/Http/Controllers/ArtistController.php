@@ -93,7 +93,7 @@ class ArtistController extends Controller
     public function showAllTracks($slug)
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
-        $perPage = 50;
+        $perPage = 40;
 
         $tracks = Track::with(['releases', 'artists'])
             ->whereHas('artists', function($query) use ($artist) {

@@ -58,12 +58,17 @@
                             </div>
                             <div class="release-info">
                                 <h3>{{ release.title }}</h3>
-                                <p class="artists-names">
-                                    <span v-for="(artist, index) in release.artists" :key="artist.id">
-                                        {{ artist.name }}<span v-if="index < release.artists.length - 1">, </span>
+                                <div v-if="release.artists.length > 1" class="artists-names-container">
+                                    <span class="artists-names">
+                                        {{ formatArtists(release.artists) }}
                                     </span>
+                                </div>
+                                <div v-else-if="release.artists.length === 1" class="single-artist">
+                                    {{ release.artists[0].name }}
+                                </div>
+                                <p class="release-meta">
+                                    {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
                                 </p>
-                                <p>{{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}</p>
                             </div>
                         </div>
                     </div>
@@ -130,6 +135,12 @@ const performSearch = () => {
         preserveState: true,
         replace: true
     });
+};
+
+const formatArtists = (artists) => {
+    if (!artists || artists.length === 0) return '';
+    const names = artists.map(artist => artist.name);
+    return names.join(', ');
 };
 
 const goBack = () => {
@@ -374,15 +385,40 @@ const goBack = () => {
     text-overflow: ellipsis;
 }
 
-.artists-names {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
+.artists-names-container {
     margin: 0 0 0.25rem 0;
     color: #666;
     font-size: 0.9rem;
+    line-height: 1.3;
+    height: 2.6em;
+    overflow: hidden;
+}
+
+.artists-names {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.single-artist {
+    margin: 0 0 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.release-meta {
+    margin: 0 0 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .no-results {
