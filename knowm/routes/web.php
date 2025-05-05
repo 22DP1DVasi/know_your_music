@@ -72,8 +72,11 @@ Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
     ->name('search.lyrics');
 
 // show pages (profiles)
-Route::get('/artists/{artist:slug}', [ArtistController::class, 'show'])
+Route::get('/artists/{artist}', [ArtistController::class, 'show'])
     ->name('artists.show');
+
+Route::get('/releases/{release}', [ReleaseController::class, 'show'])
+    ->name('releases.show');
 
 // page for artist's bio
 Route::get('/artists/{artist}/bio', [ArtistController::class, 'showBio'])
