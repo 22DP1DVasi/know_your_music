@@ -594,13 +594,16 @@ const formatDuration = (timeString) => {
 
 .track-info h3 {
     text-decoration: none;
-    cursor: pointer;
     transition: color 0.2s;
     font-size: 0.95rem;
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.track-title {
+    cursor: pointer;
 }
 
 .track-title:hover {
