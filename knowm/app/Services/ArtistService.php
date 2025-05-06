@@ -53,13 +53,13 @@ class ArtistService
     {
         /*$artist = Artist::findOrFail($artistId);*/
         $tracks = $this->getTracksByArtist($artistId, $limit);
-
         return $tracks->map(function ($track) {
             return [
                 'id' => $track->id,
                 'title' => $track->title,
                 'slug' => $track->slug,
-                'duration' => $track->duration,
+                'duration' => $track->duration->format('H:i:s'),
+                'audio_source' => $track->audio_source,
                 'cover_url' => $track->releases->first()->cover_url ?? '/images/default-release-banner.webp',
                 'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
                 'release_title' => $track->releases->first()->title ?? 'Unknown Release',
