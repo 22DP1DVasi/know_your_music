@@ -864,4 +864,17 @@ const formatDuration = (timeString) => {
     }
 }
 
+@media (max-width: 320px) {
+    .track-title {
+        font-size: 1rem !important;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 317px) {
+    .track-title {
+        margin-bottom: 23px;
+    }
+}
+
 </style>

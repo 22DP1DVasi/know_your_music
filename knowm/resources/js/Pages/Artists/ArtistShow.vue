@@ -88,9 +88,11 @@
                             <span class="track-number">{{ index + 1 }}</span>
                             <img :src="track.cover_url" class="track-image" :alt="track.title">
                             <div class="track-info">
-                                <a @click="redirectToTrack(track.slug)" class="track-title">
-                                    {{ track.title }}
-                                </a>
+                                <h3>
+                                    <a @click="redirectToTrack(track.slug)" class="track-title">
+                                        {{ track.title }}
+                                    </a>
+                                </h3>
                             </div>
                             <div class="track-duration">{{ formatDuration(track.duration) }}</div>
                         </div>
@@ -588,15 +590,14 @@ const formatDuration = (timeString) => {
 .track-info {
     flex: 1;
     min-width: 0;
-    padding: 0 0.5rem;
-    overflow: hidden;
 }
 
-.track-title {
+.track-info h3 {
     text-decoration: none;
     cursor: pointer;
     transition: color 0.2s;
     font-size: 0.95rem;
+    margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

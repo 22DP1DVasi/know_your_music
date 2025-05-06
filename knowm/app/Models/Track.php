@@ -130,7 +130,17 @@ class Track extends Model
      */
     public function getCoverUrlAttribute()
     {
-        $release = $this->releases()->first();
+        $release = $this->releases()
+            ->where('release_type', 'single')
+            ->first();
+        if (!$release) {
+            $release = $this->releases()
+                ->where('release_type', 'ep')
+                ->first();
+        }
+        if (!$release) {
+            $release = $this->releases()->first();
+        }
         return $release?->cover_url ?? asset('images/default-release-banner.webp');
     }
 

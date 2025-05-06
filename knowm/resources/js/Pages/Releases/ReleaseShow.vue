@@ -68,7 +68,7 @@
                         </div>
                         <h2 class="section-title">About This Release</h2>
                         <div v-if="release.description" class="description-text" v-html="release.description"></div>
-                        <div v-else class="description-text">There is no background for this release.</div>
+                        <div v-else class="description-text" style="margin-bottom: 150px;">There is no background for this release.</div>
 
                         <div v-if="release.genres && release.genres.length" class="genres-card">
                             <div class="genres-header">
@@ -562,7 +562,7 @@ const redirectToTrack = (slug) => {
     min-width: 0;
 }
 
-.track-title {
+.track-info h3 {
     text-decoration: none;
     cursor: pointer;
     transition: color 0.2s;
@@ -976,10 +976,24 @@ const redirectToTrack = (slug) => {
     .release-title {
         font-size: 1.1rem;
         bottom: 25px;
+        margin-bottom: 7px;
     }
     .release-artists {
         font-size: 0.75rem;
         bottom: 15px;
+    }
+}
+
+@media (max-width: 320px) {
+    .release-title {
+        font-size: 1rem !important;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 317px) {
+    .release-title {
+        margin-bottom: 23px;
     }
 }
 
