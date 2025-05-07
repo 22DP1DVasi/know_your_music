@@ -5,6 +5,9 @@
         <div class="privacy-container">
             <div class="privacy-header">
                 <h1>Privacy Policy</h1>
+                <p class="policy-update">
+                    <em>Last updated: May 2024</em>
+                </p>
             </div>
 
             <div class="privacy-content">
@@ -56,9 +59,6 @@
                     <p>
                         Visit our <a href="/contact">Contact Us</a> page or email us at <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a> — we're happy to explain anything!
                     </p>
-                    <p class="policy-update">
-                        <em>Last updated: May 2024</em>
-                    </p>
                 </section>
             </div>
         </div>
@@ -82,13 +82,19 @@ import Footer from '@/Components/Footer.vue'
 
 .privacy-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .privacy-header h1 {
     font-size: 2.5rem;
     color: #0c4baa;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+.privacy-header .policy-update {
+    text-align: left;
+    font-size: 0.9rem;
+    color: #666;
 }
 
 .privacy-section {
@@ -149,12 +155,6 @@ h2 {
 
 .contact-section a:hover {
     text-decoration: underline;
-}
-
-.policy-update {
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 30px;
 }
 
 @media (max-width: 768px) {
