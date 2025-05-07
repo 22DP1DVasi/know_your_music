@@ -1,6 +1,7 @@
 <template>
     <Head :title="artist.artist.name" />
     <link rel="preload" :href="artist.artist.profile_url" as="image">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <Navbar />
     <main class="artist-page flex-1">
         <div class="artist-hero" :style="heroStyle">
@@ -94,6 +95,13 @@
                                     </a>
                                 </h3>
                             </div>
+                            <button
+                                v-if="track.audio_source"
+                                @click="playTrack(track.audio_source)"
+                                class="play-button"
+                            >
+                                <i class="fa-regular fa-circle-play"></i>
+                            </button>
                             <div class="track-duration">{{ formatDuration(track.duration) }}</div>
                         </div>
                     </div>
@@ -141,6 +149,17 @@
                 <!-- Future content like "Similar Artists" will go here -->
             </div>
         </div>
+        <div v-if="showPlayer" class="audio-player">
+            <button @click="closePlayer" class="close-player">
+                <i class="fa-solid fa-times"></i>
+            </button>
+            <iframe
+                :src="currentAudioSource"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+            ></iframe>
+        </div>
     </main>
     <Footer />
 </template>
@@ -184,6 +203,8 @@ const imageStyle = ref({
 const isLandscape = ref(false);
 const colorThief = new ColorThief();
 const bioMaxLength = 500;
+const showPlayer = ref(false);
+const currentAudioSource = ref('');
 
 // image handling
 const handleImageLoad = () => {
@@ -271,6 +292,19 @@ const truncatedBio = computed(() => {
 const showReadMore = computed(() => {
     return props.artist.artist.biography && props.artist.artist.biography.length > bioMaxLength;
 });
+
+const playTrack = (source) => {
+    currentAudioSource.value = source;
+    showPlayer.value = true;
+    setTimeout(() => {
+        document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+};
+
+const closePlayer = () => {
+    showPlayer.value = false;
+    currentAudioSource.value = '';
+};
 
 const redirectToFullBio = (slug) => {
     //const url = `/artists/${props.artist.artist.slug}/bio`;
@@ -569,7 +603,7 @@ const formatDuration = (timeString) => {
     align-items: center;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #eee;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .track-number {
@@ -611,10 +645,26 @@ const formatDuration = (timeString) => {
     text-decoration: underline;
 }
 
+.play-button {
+    background: none;
+    border: none;
+    color: #0c4baa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 0.5rem;
+    transition: transform 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+
+.play-button:hover {
+    color: #1a5fc9;
+    transform: scale(1.1);
+}
+
 .track-duration {
     color: #666;
     font-size: 0.9rem;
-    flex: 0 0 60px;
+    flex: 0 0 50px;
     text-align: right;
 }
 
@@ -718,6 +768,46 @@ const formatDuration = (timeString) => {
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 3rem;
+}
+
+.audio-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 360px;
+    height: 200px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.audio-player iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.close-player {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.close-player:hover {
+    background: rgba(0, 0, 0, 0.9);
 }
 
 @media (max-width: 1455px) {

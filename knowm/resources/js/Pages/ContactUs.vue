@@ -3,11 +3,6 @@
     <Navbar />
     <div class="contact-container">
         <div class="contact-box">
-            <!-- Go-back arrow -->
-            <div class="go-back-arrow" @click="goBack">
-                <span class="arrow-icon">←</span>
-            </div>
-
             <div class="logo-container">
                 <img src="../../../public/images/mini-logo.png" alt="Know Your Music Logo" class="logo">
             </div>
@@ -65,17 +60,17 @@
 
             <div class="contact-info">
                 <h3>Other Ways to Reach Us</h3>
-                <div class="info-grid">
+                <div class="info-container">
                     <div class="info-item">
                         <span class="icon">✉️</span>
-                        <div>
+                        <div class="info-content">
                             <h4>Email</h4>
-                            <p>knowyourmusicsupprort@gmail.com</p>
+                            <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a>
                         </div>
                     </div>
                     <div class="info-item">
                         <span class="icon">📱</span>
-                        <div>
+                        <div class="info-content">
                             <h4>Social Media</h4>
                             <div class="social-links">
                                 <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
@@ -111,15 +106,12 @@ const submitForm = () => {
         onFinish: () => {
             if (!form.hasErrors()) {
                 form.reset()
-                // Add success message here
+                // to do - success message
             }
         }
     })
 };
 
-const goBack = () => {
-    window.history.back()
-}
 </script>
 
 <style scoped>
@@ -140,29 +132,6 @@ const goBack = () => {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     position: relative;
-}
-
-.go-back-arrow {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 50%;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease;
-}
-
-.go-back-arrow:hover {
-    background-color: rgba(255, 255, 255, 1);
-}
-
-.arrow-icon {
-    font-size: 24px;
-    color: #0c4baa;
 }
 
 .logo-container {
@@ -219,14 +188,6 @@ const goBack = () => {
     box-shadow: none;
 }
 
-select.input {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 1em;
-}
-
 textarea.input {
     resize: vertical;
     min-height: 120px;
@@ -272,20 +233,35 @@ textarea.input {
     margin-bottom: 20px;
 }
 
-.info-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+.info-container {
+    display: flex;
+    flex-direction: column;
     gap: 20px;
 }
 
 .info-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 15px;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-content a {
+    color: #0c4baa;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.info-content a:hover {
+    text-decoration: underline;
 }
 
 .icon {
     font-size: 24px;
+    margin-top: 3px;
 }
 
 .info-item h4 {
@@ -313,8 +289,13 @@ textarea.input {
         padding: 30px 20px;
     }
 
-    .info-grid {
-        grid-template-columns: 1fr;
+    .info-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .icon {
+        align-self: center;
     }
 }
 </style>

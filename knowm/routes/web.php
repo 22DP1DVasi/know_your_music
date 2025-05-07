@@ -52,6 +52,10 @@ Route::get('/contact', function () {
     return Inertia::render('ContactUs');
 })->name('contact');
 
+Route::get('/privacy-policy', function () {
+    return Inertia::render('PrivacyPolicy');
+})->name('privacy-policy');
+
 Route::get('/faq', function () {
     return Inertia::render('FAQ');
 })->name('faq');

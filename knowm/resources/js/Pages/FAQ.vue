@@ -32,7 +32,7 @@ export default {
         return {
             faqs: [
                 { question: "How do I create an account?", answer: "To create an account, click on the 'Sign Up' button at the top of the page and follow the instructions.", show: false },
-                { question: "How can I search for music and artists?", answer: "Use the search bar at the top of the page to find music by artist name, album title, or genre.", show: false },
+                { question: "How can I search for music and artists?", answer: "Use the search bar at the top of the page to find music by artist name, album or track title.", show: false },
                 { question: "Can I save my favorite tracks and artists?", answer: "Yes! Registered users can create personal collections and save their favorite songs and artists.", show: false },
                 { question: "How do I get personalized recommendations?", answer: "Our system analyzes your listening preferences and suggests music based on your taste.", show: false },
                 { question: "Is the service free to use?", answer: "Yes, our platform is free, but we may introduce premium features in the future.", show: false }
