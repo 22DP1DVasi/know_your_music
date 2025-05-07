@@ -10,7 +10,7 @@
                     <li><a href="/privacy-policy">Privacy Policy</a></li>
                     <li><a href="/terms-of-service">Terms of Service</a></li>
                     <li><a href="/faq">FAQ</a></li>
-                    <li><a href="#">Community Guidelines</a></li>
+                    <li><a href="/community-guidelines">Community Guidelines</a></li>
                 </ul>
             </div>
         </div>

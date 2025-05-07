@@ -5,7 +5,7 @@
         <div class="privacy-container">
             <div class="privacy-header">
                 <h1>Privacy Policy</h1>
-                <p class="policy-update">
+                <p class="update-date">
                     <em>Last updated: May 2024</em>
                 </p>
             </div>
@@ -91,9 +91,10 @@ import Footer from '@/Components/Footer.vue'
     margin-bottom: 10px;
 }
 
-.privacy-header .policy-update {
+.privacy-header .update-date {
     text-align: left;
     font-size: 0.9rem;
+    font-style: italic;
     color: #666;
 }
 

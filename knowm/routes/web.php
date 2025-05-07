@@ -64,6 +64,10 @@ Route::get('/faq', function () {
     return Inertia::render('FAQ');
 })->name('faq');
 
+Route::get('/community-guidelines', function () {
+    return Inertia::render('CommunityGuidelines');
+})->name('community-guidelines');
+
 // searches routes
 Route::get('/search', [SearchController::class, 'index'])
     ->name('search');

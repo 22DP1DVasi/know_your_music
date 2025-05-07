@@ -5,7 +5,7 @@
         <div class="terms-container">
             <div class="terms-header">
                 <h1>Terms of Service</h1>
-                <p class="terms-update">Last Updated: May 2024</p>
+                <p class="update-date">Last Updated: May 2024</p>
             </div>
 
             <div class="terms-content">
@@ -95,9 +95,11 @@ import Footer from '@/Components/Footer.vue'
     margin-bottom: 10px;
 }
 
-.terms-header .terms-update {
+.terms-header .update-date {
     text-align: left;
     font-size: 0.9rem;
+    font-style: italic;
+    margin-left: 10px;
     color: #666;
 }
 
