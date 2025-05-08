@@ -10,11 +10,11 @@
 
 .greeting {
     display: flex;
-    flex-direction: column; /* Stack items vertically */
-    justify-content: center; /* Center items vertically */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 60%;
-    margin: auto; /* Center the container horizontally */
+    margin: auto;
     font-size: 2.9rem;
     text-align: center;
     font-family: 'Montserrat', sans-serif;
@@ -35,7 +35,7 @@
 
 @media (max-width: 768px) {
     .greeting {
-        font-size: 2rem; /* Smaller font for mobile */
+        font-size: 2rem;
     }
 }
 
