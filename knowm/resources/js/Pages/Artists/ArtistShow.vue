@@ -1,7 +1,6 @@
 <template>
     <Head :title="artist.artist.name" />
     <link rel="preload" :href="artist.artist.profile_url" as="image">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <Navbar />
     <main class="artist-page flex-1">
         <div class="artist-hero" :style="heroStyle">
