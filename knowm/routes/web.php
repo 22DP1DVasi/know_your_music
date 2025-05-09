@@ -137,7 +137,11 @@ Route::middleware(['auth'])->group(function () {
 // admin routes
 //Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
-    Route::get('admin-users-index', [UserController::class, 'index'])->name('admin-users-index');
+
+    Route::get('admin-users-index', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin-users-index');
+    Route::get('admin-users-create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin-users-create');
+    Route::post('admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin-users-store');
+
 
 //    Route::resource('/admin-users-index', UserController::class)->except(['show']);
 //    Route::resource('roles', RoleController::class)->except(['show']);
