@@ -2,6 +2,15 @@
     <Head title="Know Your Music" />
     <Navbar/>
     <main class="flex-1">
+        <div class="adm-button-container">
+            <Link
+                v-if="$page.props.isAdmin"
+                :href="route('admin-dashboard')"
+                class="adm-button"
+            >
+                Admin Panel
+            </Link>
+        </div>
         <div class="home-title">
             <p>Enhance your music experience.</p>
             <p>Make new discoveries, learn the background of your favorite music and share your tastes.</p>
@@ -27,6 +36,9 @@
             </div>
         </section>
 
+        <!--        will be added later when recommendation system is created -->
+        <!--        <HomeRecomCards/>-->
+
         <section class="cta-section">
             <div class="cta-container">
                 <h2>Ready to dive deeper into music?</h2>
@@ -43,7 +55,11 @@
 <script setup>
 import Footer from '@/Components/Footer.vue';
 import Navbar from '@/Components/Navbar.vue';
-import { Head } from "@inertiajs/vue3";
+// import HomeRecomCards from '@/Components/HomeRecomCards.vue';
+import { Head, Link } from "@inertiajs/vue3";
+
+const ADMIN_ROLE_ID = 1;
+
 </script>
 
 <style scoped>
@@ -64,6 +80,12 @@ import { Head } from "@inertiajs/vue3";
 
 .home-title p {
     margin: 2%;
+}
+
+.adm-button-container {
+    margin-top: 5px;
+    position: absolute;
+    right: 50px;
 }
 
 .features-section {

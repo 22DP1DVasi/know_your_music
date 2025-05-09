@@ -76,7 +76,7 @@ class User extends Authenticatable
      */
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class)
+        return $this->belongsToMany(Role::class, 'users_roles')
             ->withTimestamps();
     }
 
@@ -102,12 +102,9 @@ class User extends Authenticatable
     /**
      * Check if this user has a certain role
      */
-    public function hasRole($role): bool
+    public function hasRole($roleName): bool
     {
-        if (is_string($role)) {
-            return $this->roles->contains('name', $role);
-        }
-        return (bool) $role->intersect($this->roles)->count();
+        return $this->roles()->where('name', $roleName)->exists();
     }
 
     /**
@@ -115,15 +112,7 @@ class User extends Authenticatable
      */
     public function hasAnyRole(array $roles): bool
     {
-        return $this->roles->whereIn('name', $roles)->isNotEmpty();
-    }
-
-    /**
-     * Check if this user is admin (has admin role)
-     */
-    public function isAdmin(): bool
-    {
-        return $this->hasRole('admin');
+        return $this->roles()->whereIn('name', $roles)->isNotEmpty();
     }
 
     /**

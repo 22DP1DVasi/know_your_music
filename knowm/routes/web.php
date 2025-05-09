@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Services\SpotifyService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ReleaseController;
@@ -32,9 +35,8 @@ use App\Http\Controllers\TrackController;
 //});
 
 // pages routes
-Route::get('/', function () {
-    return Inertia::render('HomeView');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home');
 
 Route::get('/login', function () {
     return Inertia::render('Login');
@@ -131,6 +133,20 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/artists/{artist}/banner-image', [ArtistController::class, 'uploadBannerImage']);
     Route::post('/releases/{release}/cover-image', [ReleaseController::class, 'uploadCoverImage']);
 });
+
+// admin routes
+//Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
+    Route::get('admin-users-index', [UserController::class, 'index'])->name('admin-users-index');
+
+//    Route::resource('/admin-users-index', UserController::class)->except(['show']);
+//    Route::resource('roles', RoleController::class)->except(['show']);
+    Route::resource('artists', ArtistController::class)->except(['show']);
+    Route::resource('releases', ReleaseController::class)->except(['show']);
+    Route::resource('tracks', TrackController::class)->except(['show']);
+//    Route::resource('genres', GenreController::class)->except(['show']);
+//    Route::resource('lyrics', LyricController::class)->except(['show']);
+//});
 
 
 // testing Spotify API

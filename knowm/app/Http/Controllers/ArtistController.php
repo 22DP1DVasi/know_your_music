@@ -21,6 +21,51 @@ class ArtistController extends Controller
         $this->releaseService = $releaseService;
     }
 
+    public function index()
+    {
+        return Inertia::render('Admin/Artists/Index', [
+            'artists' => Artist::query()
+                ->latest()
+                ->paginate(10)
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Admin/Artists/Create');
+    }
+
+    public function store(StoreArtistRequest $request)
+    {
+        Artist::create($request->validated());
+
+        return redirect()->route('admin.artists.index')
+            ->with('success', 'Artist created successfully');
+    }
+
+    public function edit(Artist $artist)
+    {
+        return Inertia::render('Admin/Artists/Edit', [
+            'artist' => $artist
+        ]);
+    }
+
+    public function update(UpdateArtistRequest $request, Artist $artist)
+    {
+        $artist->update($request->validated());
+
+        return redirect()->route('admin.artists.index')
+            ->with('success', 'Artist updated successfully');
+    }
+
+    public function destroy(Artist $artist)
+    {
+        $artist->delete();
+
+        return redirect()->route('admin.artists.index')
+            ->with('success', 'Artist deleted successfully');
+    }
+
     public function show(Artist $artist)
     {
         $data = $this->artistService->getArtistWithDetails($artist->id);
