@@ -38,4 +38,31 @@ class UserController extends Controller
         return redirect()->route('admin-users-index')
             ->with('success', 'User created successfully');
     }
+
+    public function edit(User $user)
+    {
+        return Inertia::render('Admin/Users/Edit', [
+            'user' => $user->only(['id', 'name', 'email', 'status']),
+            'statusOptions' => ['active', 'banned', 'deleted']
+        ]);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:100|unique:users,name,'.$user->id,
+            'email' => 'required|email|max:100|unique:users,email,'.$user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'status' => 'required|in:active,banned,deleted'
+        ]);
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+        return redirect()->route('admin-users-index')
+            ->with('success', 'User updated successfully');
+    }
 }

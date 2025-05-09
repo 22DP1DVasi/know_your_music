@@ -1,7 +1,7 @@
 <template>
     <AdminLayout>
         <div class="flex justify-between items-center mb-6">
-            <h1>Create New User</h1>
+            <h1>Edit User</h1>
             <Link :href="route('admin-users-index')" class="btn-secondary">
                 Back to Users
             </Link>
@@ -39,7 +39,7 @@
                     </div>
 
                     <div>
-                        <label for="password">Password</label>
+                        <label for="password">New Password (leave blank to keep current)</label>
                         <input
                             v-model="form.password"
                             id="password"
@@ -53,7 +53,7 @@
                     </div>
 
                     <div>
-                        <label for="password_confirmation">Confirm Password</label>
+                        <label for="password_confirmation">Confirm New Password</label>
                         <input
                             v-model="form.password_confirmation"
                             id="password_confirmation"
@@ -92,7 +92,7 @@
                             class="btn-primary"
                             :disabled="form.processing"
                         >
-                            Create User
+                            Update User
                         </button>
                     </div>
                 </div>
@@ -106,23 +106,27 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
+    user: Object,
     statusOptions: Array
 });
 
 const form = useForm({
-    name: '',
-    email: '',
+    name: props.user.name,
+    email: props.user.email,
     password: '',
     password_confirmation: '',
-    status: 'active'
+    status: props.user.status
 });
 
 const submit = () => {
-    form.post(route('admin-users-store'));
+    form.put(route('admin.users.update', props.user.id));
 };
 
 const resetForm = () => {
     form.reset();
+    form.name = props.user.name;
+    form.email = props.user.email;
+    form.status = props.user.status;
 };
 
 </script>
