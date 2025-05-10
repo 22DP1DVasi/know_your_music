@@ -79,6 +79,25 @@
                         </div>
                     </div>
 
+                    <div>
+                        <label>Roles</label>
+                        <div class="roles-grid">
+                            <div v-for="role in allRoles" :key="role.id" class="role-item">
+                                <input
+                                    type="checkbox"
+                                    :id="'role_' + role.id"
+                                    :value="role.id"
+                                    v-model="form.roles"
+                                    class="role-checkbox"
+                                >
+                                <label :for="'role_' + role.id">{{ role.name }}</label>
+                            </div>
+                        </div>
+                        <div v-if="form.errors.roles" class="error-message">
+                            {{ form.errors.roles }}
+                        </div>
+                    </div>
+
                     <div class="flex justify-end gap-4">
                         <button
                             type="button"
@@ -107,7 +126,8 @@ import { Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     user: Object,
-    statusOptions: Array
+    statusOptions: Array,
+    allRoles: Array
 });
 
 const form = useForm({
@@ -115,7 +135,8 @@ const form = useForm({
     email: props.user.email,
     password: '',
     password_confirmation: '',
-    status: props.user.status
+    status: props.user.status,
+    roles: props.user.roles || []
 });
 
 const submit = () => {
@@ -150,6 +171,23 @@ const resetForm = () => {
 
 .btn-secondary {
     @apply bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.role-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.role-checkbox {
+    margin: 0;
 }
 
 </style>
