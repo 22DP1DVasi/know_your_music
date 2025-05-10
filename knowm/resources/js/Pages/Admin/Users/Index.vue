@@ -11,6 +11,7 @@
             <table class="w-full">
                 <thead>
                 <tr class="bg-gray-100">
+                    <th class="px-6 py-3 text-left">ID</th>
                     <th class="px-6 py-3 text-left">Name</th>
                     <th class="px-6 py-3 text-left">Email</th>
                     <th class="px-6 py-3 text-left">Status</th>
@@ -22,6 +23,7 @@
                 </thead>
                 <tbody>
                 <tr v-for="user in users.data" :key="user.id">
+                    <td class="px-6 py-4">{{ user.id }}</td>
                     <td class="px-6 py-4">{{ user.name }}</td>
                     <td class="px-6 py-4">{{ user.email }}</td>
                     <td class="px-6 py-4">{{ user.status }}</td>

@@ -30,7 +30,7 @@ import { Link } from '@inertiajs/vue3';
 }
 
 .sidebar {
-    width: 250px;
+    width: 150px;
     background: #2c3e50;
     color: white;
     padding: 1rem;

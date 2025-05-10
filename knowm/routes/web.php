@@ -142,7 +142,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin-users-create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin-users-create');
     Route::post('/admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin-users-store');
     Route::get('/admin-users-edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin-users-edit');
-    Route::put('/admin-users-update', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin-users-update');
+    Route::put('/admin-users-update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin-users-update');
 
 
 
