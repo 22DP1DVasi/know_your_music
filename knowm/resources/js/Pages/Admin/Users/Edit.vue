@@ -119,8 +119,10 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('admin.users.update', props.user.id));
+    form.put(route('admin-users-update', props.user.id));
 };
+
+console.log(`Props info: ${props.user.name}, ${props.user.email}, ${props.user.status}`);
 
 const resetForm = () => {
     form.reset();

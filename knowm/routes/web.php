@@ -138,11 +138,11 @@ Route::middleware(['auth'])->group(function () {
 //Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
 
-    Route::get('admin-users-index', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin-users-index');
-    Route::get('admin-users-create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin-users-create');
-    Route::post('admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin-users-store');
-    Route::get('admin-users-edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin-users-edit');
-    Route::put('admin-users-update', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin-users-update');
+    Route::get('/admin-users-index', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin-users-index');
+    Route::get('/admin-users-create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin-users-create');
+    Route::post('/admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin-users-store');
+    Route::get('/admin-users-edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin-users-edit');
+    Route::put('/admin-users-update', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin-users-update');
 
 
 

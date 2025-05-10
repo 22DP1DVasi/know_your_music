@@ -33,7 +33,7 @@
                     <td class="px-6 py-4">{{ user.created_at }}</td>
                     <td class="px-6 py-4">{{ user.updated_at }}</td>
                     <td class="px-6 py-4 flex gap-2">
-                        <Link :href="route('admin-users-edit', user.id)" class="btn-edit">
+                        <Link :href="route('admin-users-edit', { id: user.id })" class="btn-edit">
                             Edit
                         </Link>
                     </td>

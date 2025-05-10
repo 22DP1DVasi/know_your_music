@@ -39,11 +39,17 @@ class UserController extends Controller
             ->with('success', 'User created successfully');
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
+        $user = User::findOrFail($id);
         return Inertia::render('Admin/Users/Edit', [
-            'user' => $user->only(['id', 'name', 'email', 'status']),
-            'statusOptions' => ['active', 'banned', 'deleted']
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'status' => $user->status
+            ],
+            'statusOptions' => ['active', 'banned']
         ]);
     }
 
