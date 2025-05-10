@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('releases', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->date('release_date');
             $table->text('description')->nullable();
             $table->enum('release_type', ['album', 'ep', 'single', 'compilation']);

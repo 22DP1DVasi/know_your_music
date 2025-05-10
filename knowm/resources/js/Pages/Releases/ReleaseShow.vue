@@ -193,7 +193,6 @@ const sortedTracks = computed(() => {
 
 const totalDuration = computed(() => {
     let totalSeconds = 0;
-
     props.release.tracks.forEach(track => {
         const [hours = 0, minutes = 0, seconds = 0] = track.duration.split(':').map(Number);
         totalSeconds += hours * 3600 + minutes * 60 + seconds;
@@ -206,7 +205,6 @@ const formatTotalDuration = computed(() => {
     const hours = Math.floor(totalDuration.value / 3600);
     const minutes = Math.floor((totalDuration.value % 3600) / 60);
     const seconds = totalDuration.value % 60;
-
     if (hours > 0) {
         return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     } else {

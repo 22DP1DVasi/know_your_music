@@ -165,7 +165,7 @@ class Release extends Model
     /**
      * Get the release duration in minutes
      */
-    public function getDurationAttribute(): int
+    public function getDuration(): int
     {
         return (int) $this->tracks()->sum('duration') / 60;
     }

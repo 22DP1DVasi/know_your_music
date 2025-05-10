@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\User;
+use App\Models\Track;
 
 class Lyric extends Model
 {
@@ -42,11 +44,11 @@ class Lyric extends Model
     }
 
     /**
-     * Get the admin who last updated these lyrics.
+     * Get the user (admin) who last updated these lyrics.
      */
     public function lastUpdatedBy(): BelongsTo
     {
-        return $this->belongsTo(Admin::class, 'last_updated_by_user');
+        return $this->belongsTo(User::class, 'last_updated_by_user');
     }
 
     /**
@@ -100,23 +102,23 @@ class Lyric extends Model
     /**
      * Update lyrics and track the admin.
      */
-    public function updateLyrics(string $content, Admin $admin): bool
+    public function updateLyrics(string $content, User $user): bool
     {
         return $this->update([
             'lyrics' => $content,
             'status' => 'requires verification',
-            'last_updated_by_user' => $admin->id
+            'last_updated_by_user' => $user->id
         ]);
     }
 
     /**
      * Verify lyrics (admin action).
      */
-    public function verify(Admin $admin): bool
+    public function verify(User $user): bool
     {
         return $this->update([
             'status' => 'verified',
-            'last_updated_by_user' => $admin->id
+            'last_updated_by_user' => $user->id
         ]);
     }
 }

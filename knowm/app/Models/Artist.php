@@ -150,18 +150,6 @@ class Artist extends Model
     }
 
     /**
-     * Get the artist's active years
-     */
-    public function getActiveYearsAttribute(): ?string
-    {
-        if (!$this->formed_year) return null;
-
-        return $this->disbanded_year
-            ? "{$this->formed_year} - {$this->disbanded_year}"
-            : "{$this->formed_year} - Present";
-    }
-
-    /**
      * Get banner image attribute for this artst
      */
     public function getBannerUrlAttribute()

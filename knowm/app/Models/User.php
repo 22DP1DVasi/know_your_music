@@ -50,6 +50,24 @@ class User extends Authenticatable
     ];
 
     /**
+     * Remember comment's author's username when they get deleted
+     */
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            // update all comments where this user is the author
+            ArtistComment::where('user_id', $user->id)
+                ->update(['deleted_username' => $user->name]);
+
+            ReleaseComment::where('user_id', $user->id)
+                ->update(['deleted_username' => $user->name]);
+
+            TrackComment::where('user_id', $user->id)
+                ->update(['deleted_username' => $user->name]);
+        });
+    }
+
+    /**
      * Relationship with ArtistComment model
      */
     public function artistComments(): HasMany
@@ -150,24 +168,6 @@ class User extends Authenticatable
     public function latestRecommendations(): HasOne
     {
         return $this->hasOne(Recommendation::class)->latest();
-    }
-
-    /**
-     * Remember comment's author's username when they get deleted
-     */
-    protected static function booted()
-    {
-        static::deleting(function ($user) {
-            // update all comments where this user is the author
-            ArtistComment::where('user_id', $user->id)
-                ->update(['deleted_username' => $user->name]);
-
-            ReleaseComment::where('user_id', $user->id)
-                ->update(['deleted_username' => $user->name]);
-
-            TrackComment::where('user_id', $user->id)
-                ->update(['deleted_username' => $user->name]);
-        });
     }
 
     /**

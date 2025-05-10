@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('genres', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100)->unique();
+            $table->string('slug', 120)->unique();
             $table->text('description')->nullable();
             $table->unsignedSmallInteger('origin_year')->nullable();
             $table->string('origin_country', 100)->nullable();

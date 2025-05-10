@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tracks', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->time('duration');
             $table->text('description')->nullable();
             $table->string('audio_source')->nullable();

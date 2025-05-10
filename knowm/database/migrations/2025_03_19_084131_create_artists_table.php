@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('artists', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
+            $table->string('slug')->unique();
             $table->text('biography')->nullable();
             $table->unsignedSmallInteger('formed_year')->nullable();
             $table->unsignedSmallInteger('disbanded_year')->nullable();
