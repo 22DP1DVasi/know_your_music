@@ -39,7 +39,7 @@ class ArtistController extends Controller
     {
         Artist::create($request->validated());
 
-        return redirect()->route('admin.artists.index')
+        return redirect()->route('admin-artists-index')
             ->with('success', 'Artist created successfully');
     }
 

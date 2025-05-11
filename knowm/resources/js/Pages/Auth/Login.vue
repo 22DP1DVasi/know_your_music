@@ -1,43 +1,10 @@
-<script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
-
-defineProps({
-    canResetPassword: Boolean,
-    status: String,
-});
-
-const form = useForm({
-    login: '', // Changed from 'email' to 'login'
-    password: '',
-    remember: false,
-});
-
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
-
-// go back to the previous page
-const goBack = () => {
-    window.history.back();
-};
-</script>
-
 <template>
     <Head title="Log in" />
     <div class="login-container">
-        <!-- go-back arrow -->
         <div class="go-back-arrow" @click="goBack">
             <span class="arrow-icon text-3xl">←</span>
         </div>
 
-        <!-- box for logo and fields -->
         <div class="login-box">
             <div class="logo-container">
                 <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
@@ -63,7 +30,6 @@ const goBack = () => {
             <!--                    <hr class="line">-->
             <!--                </div>-->
 
-            <!-- login form -->
             <form @submit.prevent="submit">
                 <div>
                     <InputLabel for="login" value="Username or Email" class="label" />
@@ -126,6 +92,36 @@ const goBack = () => {
     </div>
 </template>
 
+<script setup>
+import Checkbox from '@/Components/Checkbox.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+
+defineProps({
+    canResetPassword: Boolean,
+    status: String,
+});
+
+const form = useForm({
+    login: '',
+    password: '',
+    remember: false,
+});
+
+const submit = () => {
+    form.post(route('login'), {
+        onFinish: () => form.reset('password'),
+    });
+};
+
+const goBack = () => {
+    window.history.back();
+};
+</script>
+
 <style>
 .login-container {
     display: flex;
@@ -135,7 +131,6 @@ const goBack = () => {
     background-image: linear-gradient(to right, #ffffff, #b3eaff);
 }
 
-/* go-back arrow */
 .go-back-arrow {
     position: absolute;
     top: 20px;
@@ -153,7 +148,7 @@ const goBack = () => {
 .arrow-icon {
     width: 24px;
     height: 24px;
-    color: #0c4baa; /* Match the color scheme */
+    color: #0c4baa;
 }
 
 .login-box {
@@ -184,7 +179,6 @@ const goBack = () => {
     margin-bottom: 6px;
 }
 
-/* social buttons */
 .social-buttons {
     margin-top: 24px;
 }
@@ -214,7 +208,6 @@ const goBack = () => {
     margin-right: 10px;
 }
 
-/* separator */
 .separator {
     display: flex;
     align-items: center;
@@ -234,7 +227,6 @@ const goBack = () => {
     font-size: 14px;
 }
 
-/* form fields */
 .label {
     display: block;
     color: #000000;
@@ -256,14 +248,12 @@ const goBack = () => {
     box-shadow: none !important;
 }
 
-/* error text */
 .error-text {
     color: #ef4444;
     font-size: 12px;
     margin-top: 6px;
 }
 
-/* dorm dooter */
 .form-footer {
     display: flex;
     justify-content: space-between;
@@ -294,7 +284,6 @@ const goBack = () => {
     text-decoration: underline;
 }
 
-/* login button */
 .submit-button {
     margin-top: 24px;
 }
@@ -321,7 +310,6 @@ const goBack = () => {
     cursor: not-allowed;
 }
 
-/* sign up text */
 .signup-text {
     margin-top: 16px;
     text-align: center;

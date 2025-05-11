@@ -20,9 +20,9 @@ return new class extends Migration
                 $this->generateAndSetSlug($track);
             }
         });
-        Schema::table('tracks', function (Blueprint $table) {
-            $table->string('slug')->nullable(false)->unique()->change();
-        });
+//        Schema::table('tracks', function (Blueprint $table) {
+//            $table->string('slug')->nullable(false)->unique()->change();
+//        });
     }
 
     private function generateAndSetSlug(Track $track)

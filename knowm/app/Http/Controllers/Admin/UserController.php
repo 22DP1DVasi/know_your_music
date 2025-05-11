@@ -50,7 +50,7 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'status' => $user->status,
-                'roles' => $user->roles->pluck('id')->toArray() // Get array of role IDs
+                'roles' => $user->roles->pluck('id')->toArray()
             ],
             'statusOptions' => ['active', 'banned', 'deleted'],
             'allRoles' => Role::all()->map(function ($role) {
@@ -74,22 +74,15 @@ class UserController extends Controller
             'roles' => 'nullable|array',
             'roles.*' => 'exists:roles,id'
         ]);
-
-        // Update password if provided
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
         }
-
-        // Update user attributes
         $user->update($validated);
-
-        // Sync roles if they were provided
         if (array_key_exists('roles', $validated)) {
             $user->roles()->sync($validated['roles']);
         }
-
         return redirect()->route('admin-users-index')
             ->with('success', 'User updated successfully');
     }

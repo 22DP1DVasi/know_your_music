@@ -6,15 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Artist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Artist.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Lyric.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Lyric.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Release.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Release.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_082740_create_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_082740_create_genres_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_084131_create_artists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_084131_create_artists_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_085251_create_releases_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_085251_create_releases_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_090516_create_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_090516_create_tracks_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_04_27_195103_generate_artist_slugs.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_04_27_195103_generate_artist_slugs.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_05_05_084111_generate_release_slugs.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_05_05_084111_generate_release_slugs.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_05_05_204403_generate_track_slugs.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_05_05_204403_generate_track_slugs.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Auth/Register.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -288,7 +286,8 @@
       <workItem from="1746802091414" duration="17005000" />
       <workItem from="1746862003907" duration="7080000" />
       <workItem from="1746889276790" duration="1000" />
-      <workItem from="1746891942674" duration="8380000" />
+      <workItem from="1746891942674" duration="9081000" />
+      <workItem from="1746956469295" duration="9517000" />
     </task>
     <servers />
   </component>

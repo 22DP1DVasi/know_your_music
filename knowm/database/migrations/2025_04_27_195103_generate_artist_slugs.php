@@ -20,9 +20,9 @@ return new class extends Migration
                 $this->generateAndSetSlug($artist);
             }
         });
-        Schema::table('artists', function (Blueprint $table) {
-            $table->string('slug')->nullable(false)->unique()->change();
-        });
+//        Schema::table('artists', function (Blueprint $table) {
+//            $table->string('slug')->nullable(false)->unique()->change();
+//        });
     }
 
     private function generateAndSetSlug(Artist $artist)

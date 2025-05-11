@@ -1,12 +1,10 @@
 <template>
     <Head title="Register Signup" />
     <div class="register-container">
-        <!-- go-back arrow -->
         <div class="go-back-arrow" @click="goBack">
             <span class="arrow-icon text-3xl">←</span>
         </div>
 
-        <!-- box for logo and fields -->
         <div class="register-box">
             <div class="logo-container">
                 <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
@@ -14,7 +12,6 @@
 
             <h2 class="register-title">Press Play on Your Journey</h2>
 
-            <!-- Registration form -->
             <form @submit.prevent="submit">
                 <div>
                     <InputLabel for="name" value="Userame" class="label" />
@@ -29,7 +26,6 @@
                     />
                     <InputError class="error-text" :message="form.errors.name" />
                 </div>
-<!--                <br>-->
 
                 <div>
                     <InputLabel for="email" value="Email" class="label" />
@@ -43,7 +39,6 @@
                     />
                     <InputError class="error-text" :message="form.errors.email" />
                 </div>
-<!--                <br>-->
 
                 <div>
                     <InputLabel for="password" value="Password" class="label" />
@@ -57,7 +52,6 @@
                     />
                     <InputError class="error-text" :message="form.errors.password" />
                 </div>
-<!--                <br>-->
 
                 <div>
                     <InputLabel for="password_confirmation" value="Confirm Password" class="label" />
@@ -123,7 +117,6 @@ const submit = () => {
     });
 };
 
-// go back to the previous page
 const goBack = () => {
     window.history.back();
 };
@@ -145,11 +138,9 @@ const checkEmail = debounce(async (email) => {
         emailExists.value = response.data.exists;
     } catch (error) {
         if (error.response && error.response.status === 422) {
-            // Validation error (invalid email format)
             emailExists.value = false;
         } else {
             console.error('Email check failed:', error);
-            // Optional: show user-friendly error
         }
     } finally {
         checkingEmail.value = false;
@@ -166,7 +157,6 @@ const checkEmail = debounce(async (email) => {
     padding: 40px 0 80px;
 }
 
-/* go-back arrow */
 .go-back-arrow {
     position: absolute;
     top: 20px;
@@ -188,7 +178,7 @@ const checkEmail = debounce(async (email) => {
 .arrow-icon {
     width: 24px;
     height: 24px;
-    color: #0c4baa; /* Match the color scheme */
+    color: #0c4baa;
 }
 
 .register-box {

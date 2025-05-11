@@ -20,9 +20,9 @@ return new class extends Migration
                 $this->generateAndSetSlug($release);
             }
         });
-        Schema::table('releases', function (Blueprint $table) {
-            $table->string('slug')->nullable(false)->unique()->change();
-        });
+//        Schema::table('releases', function (Blueprint $table) {
+//            $table->string('slug')->nullable(false)->unique()->change();
+//        });
     }
 
     private function generateAndSetSlug(Release $release)
