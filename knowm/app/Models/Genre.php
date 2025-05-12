@@ -33,6 +33,14 @@ class Genre extends Model
         'origin_year' => 'integer',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($genre) {
+            $genre->slug = $genre->generateUniqueSlug();
+        });
+    }
+
     /**
      * Get all artists associated with this genre.
      */
@@ -66,6 +74,40 @@ class Genre extends Model
     public function recommendedIn(): HasMany
     {
         return $this->hasMany(RecommendationGenre::class);
+    }
+
+    /**
+     * Get a slug value (used as route key)
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
+     * Generate unique slugs
+     */
+    public function generateUniqueSlug()
+    {
+        $slug = $this->customSlugify($this->name);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (static::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+        return $slug;
+    }
+
+    /**
+     * Generate a slug
+     */
+    private function customSlugify(string $name): string
+    {
+        $slug = mb_strtolower($name);
+        $slug = preg_replace('/\s+/u', '-', $slug);
+        $slug = preg_replace('/[^\p{L}\p{N}_-]/u', '', $slug);
+        return trim($slug, '-');
     }
 
     /**
