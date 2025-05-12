@@ -143,6 +143,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin-users-store');
     Route::get('/admin-users-edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin-users-edit');
     Route::put('/admin-users-update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin-users-update');
+    Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin-users-destroy');
 
 
 

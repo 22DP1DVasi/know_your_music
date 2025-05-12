@@ -11,7 +11,7 @@ class TrackComment extends Model
 {
     use HasFactory;
 
-    protected $table = 'tracks_comments';
+    protected $table = 'comments_tracks';
 
     /**
      * The attributes that are mass assignable.

@@ -29,7 +29,7 @@
                     <td class="px-6 py-4">{{ user.status }}</td>
                     <td class="px-6 py-4">
                       <span v-for="role in user.roles" :key="role.id" class="role-pill">
-                        {{ role.name }};
+                        {{ role.name }}
                       </span>
                     </td>
                     <td class="px-6 py-4">{{ user.created_at }}</td>
@@ -38,6 +38,9 @@
                         <Link :href="route('admin-users-edit', { id: user.id })" class="btn-edit">
                             Edit
                         </Link>
+                        <button @click="deleteUser(user.id)" class="btn-danger">
+                            Delete
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -50,10 +53,49 @@
 
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 
 defineProps({
     users: Object
 });
 
+const deleteUser = (id) => {
+    if (confirm('Are you sure you want to delete this user?')) {
+        router.delete(route('admin-users-destroy', { id: id }), {
+            onSuccess: () => {
+            },
+            onError: (errors) => {
+                alert(errors.response.data.message || "");
+            },
+            preserveScroll: true
+        });
+    }
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
 </script>
+
+<style scoped>
+
+.role-pill {
+    @apply bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded mr-1 mb-1 inline-block;
+}
+
+.flex.gap-2 {
+    gap: 0.5rem;
+}
+
+.error-message {
+    @apply bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded;
+}
+
+tr.error-row {
+    @apply bg-red-50;
+}
+
+</style>
