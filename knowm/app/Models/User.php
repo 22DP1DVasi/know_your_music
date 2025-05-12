@@ -58,10 +58,8 @@ class User extends Authenticatable
             // update all comments where this user is the author
             ArtistComment::where('user_id', $user->id)
                 ->update(['deleted_username' => $user->name]);
-
             ReleaseComment::where('user_id', $user->id)
                 ->update(['deleted_username' => $user->name]);
-
             TrackComment::where('user_id', $user->id)
                 ->update(['deleted_username' => $user->name]);
         });

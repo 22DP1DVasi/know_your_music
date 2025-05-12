@@ -2,6 +2,9 @@
     <AdminLayout>
         <div class="flex justify-between items-center mb-6">
             <h1>User Management</h1>
+            <Link :href="route('home')" class="btn-secondary">
+                Back to website
+            </Link>
             <Link :href="route('admin-users-create')" class="btn-primary">
                 Add New User
             </Link>
