@@ -5,7 +5,7 @@
             <Link :href="route('home')" class="btn-secondary">
                 Back to website
             </Link>
-            <Link :href="route('admin-users-create')" class="btn-primary">
+            <Link :href="route('admin-users-create')" class="f">
                 Add New User
             </Link>
         </div>

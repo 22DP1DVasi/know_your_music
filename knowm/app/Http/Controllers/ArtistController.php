@@ -120,17 +120,14 @@ class ArtistController extends Controller
     public function showAllReleases($slug)
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
-        $service = new ReleaseService();
-
-        $releases = $service->getPaginatedReleases(
+        $releases = $this->releaseService->getPaginatedReleases(
             $slug,
             20,
             request('search')
         );
-
         return Inertia::render('Artists/ArtistAllReleases', [
             'artist' => $artist,
-            ...$service->formatForView($releases),
+            ...$this->releaseService->formatForView($releases),
             'filters' => request()->only(['search'])
         ]);
     }

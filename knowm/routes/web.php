@@ -145,6 +145,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin-users-update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin-users-update');
     Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin-users-destroy');
 
+    Route::get('/admin-artists-index', [App\Http\Controllers\Admin\ArtistController::class, 'index'])->name('admin-artists-index');
+    Route::get('/admin-artists-create', [App\Http\Controllers\Admin\ArtistController::class, 'create'])->name('admin-artists-create');
+    Route::post('/admin-artists-store', [App\Http\Controllers\Admin\ArtistController::class, 'store'])->name('admin-artists-store');
+    Route::get('/admin-artists-edit/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'edit'])->name('admin-artists-edit');
+    Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
+    Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
 
 
 

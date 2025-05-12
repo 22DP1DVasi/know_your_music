@@ -36,6 +36,8 @@ class Artist extends Model
         'formed_year' => 'integer',
         'disbanded_year' => 'integer',
         'is_active' => 'boolean',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     // explicit attributes for images URL

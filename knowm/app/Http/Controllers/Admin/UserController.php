@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Users/Index', [
-            'users' => User::with('roles')->paginate(10)
+            'users' => User::with('roles')->paginate(20)
         ]);
     }
 
@@ -65,7 +65,6 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-
         $validated = $request->validate([
             'name' => 'required|string|max:100|unique:users,name,'.$user->id,
             'email' => 'required|email|max:100|unique:users,email,'.$user->id,

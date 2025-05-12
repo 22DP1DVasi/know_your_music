@@ -5,7 +5,7 @@
                 <ul>
                     <li><Link :href="route('admin-dashboard')">Dashboard</Link></li>
                     <li><Link :href="route('admin-users-index')">Users</Link></li>
-<!--                <Link :href="route('admin.artists.index')">Artists</Link>-->
+                    <Link :href="route('admin-artists-index')">Artists</Link>
 <!--                <Link :href="route('admin.releases.index')">Releases</Link>-->
 <!--                <Link :href="route('admin.tracks.index')">Tracks</Link>-->
                 </ul>
