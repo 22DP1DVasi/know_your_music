@@ -371,7 +371,7 @@ const formatDuration = (timeString) => {
     float: right;
     width: fit-content;
     max-width: 50%;
-    margin: 3.3rem 0 1rem 1.5rem;
+    margin: 3.3rem 3rem 1rem 1.5rem;
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -542,12 +542,17 @@ const formatDuration = (timeString) => {
         width: 350px;
         height: 350px;
     }
+
+    .info-card-wrapped {
+        margin-right: 0.7rem;
+    }
 }
 
 @media (max-width: 1200px) {
     .track-hero {
         height: 280px !important;
     }
+
     .track-title {
         font-size: 2.2rem;
         bottom: 55px;
@@ -556,6 +561,10 @@ const formatDuration = (timeString) => {
     .track-artists {
         font-size: 1.1rem;
         bottom: 28px;
+    }
+
+    .info-card-wrapped {
+        margin-right: 2rem;
     }
 
     .track-content {

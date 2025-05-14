@@ -113,10 +113,6 @@ const ADMIN_ROLE_ID = 1;
     transition: transform 0.3s ease;
 }
 
-.feature-card:hover {
-    transform: translateY(-5px);
-}
-
 .feature-icon {
     font-size: 2.5rem;
     margin-bottom: 15px;

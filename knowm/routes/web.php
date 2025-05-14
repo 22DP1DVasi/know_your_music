@@ -121,18 +121,18 @@ Route::middleware('auth')->group(function () {
 });
 
 // authentication routes
-Route::middleware('guest')->group(function () {
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-});
+//Route::middleware('guest')->group(function () {
+//    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('auth');
+//    Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware('auth');
+//    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+//});
 
 // artist and release cover images routes
-Route::middleware(['auth'])->group(function () {
+//Route::middleware(['auth'])->group(function () {
     Route::post('/artists/{artist}/profile-image', [ArtistController::class, 'uploadProfileImage']);
     Route::post('/artists/{artist}/banner-image', [ArtistController::class, 'uploadBannerImage']);
     Route::post('/releases/{release}/cover-image', [ReleaseController::class, 'uploadCoverImage']);
-});
+//});
 
 // admin routes
 //Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
