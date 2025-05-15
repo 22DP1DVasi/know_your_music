@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreShow.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/MiniAudioPlayer.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Auth/AuthenticatedSessionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Auth/AuthenticatedSessionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/auth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -291,7 +286,8 @@
       <workItem from="1747040832643" duration="1677000" />
       <workItem from="1747067559953" duration="9966000" />
       <workItem from="1747120090155" duration="4533000" />
-      <workItem from="1747210017079" duration="7982000" />
+      <workItem from="1747210017079" duration="8796000" />
+      <workItem from="1747301556247" duration="1321000" />
     </task>
     <servers />
   </component>

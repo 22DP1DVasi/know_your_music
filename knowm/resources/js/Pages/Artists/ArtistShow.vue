@@ -148,17 +148,11 @@
                 <!-- Future content like "Similar Artists" will go here -->
             </div>
         </div>
-        <div v-if="showPlayer" class="audio-player">
-            <button @click="closePlayer" class="close-player">
-                <i class="fa-solid fa-times"></i>
-            </button>
-            <iframe
-                :src="currentAudioSource"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-            ></iframe>
-        </div>
+        <AudioPlayer
+            :source="currentAudioSource"
+            :show="showPlayer"
+            @close="closePlayer"
+        />
     </main>
     <Footer />
 </template>
@@ -166,6 +160,7 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
+import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
 import { ref, computed } from 'vue'
 import ColorThief from 'colorthief'
