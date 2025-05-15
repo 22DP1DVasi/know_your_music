@@ -59,7 +59,8 @@
 <!--                                See all genres-->
 <!--                            </button>-->
                         </div>
-                        <div class="genre-tags">
+                        <div v-if="!artist.genres.length">No genres related to this artist.</div>
+                        <div v-else class="genre-tags">
                             <span
                                 v-for="(genre, index) in artist.genres.slice(0, 5)"
                                 :key="genre"
@@ -83,7 +84,8 @@
                             See all {{ artist.total_tracks }} tracks
                         </button>
                     </div>
-                    <div class="track-list">
+                    <div v-if="!artist.tracks.length" style="margin-bottom: 2rem;">No tracks found from this artist.</div>
+                    <div v-else class="track-list">
                         <div v-for="(track, index) in artist.tracks" :key="track.id" class="track-card">
                             <span class="track-number">{{ index + 1 }}</span>
                             <img :src="track.cover_url" class="track-image" :alt="track.title">
@@ -117,7 +119,8 @@
                             See all {{ artist.total_releases }} releases
                         </button>
                     </div>
-                    <div class="release-results">
+                    <div v-if="!artist.releases.length">No releases found for this artist.</div>
+                    <div v-else class="release-results">
                         <div
                             v-for="release in props.artist.releases"
                             :key="release.id"
