@@ -26,7 +26,6 @@ class ArtistService
     public function getArtistInfo(int $artistId): array
     {
         $artist = Artist::findOrFail($artistId);
-
         return [
             'id' => $artist->id,
             'name' => $artist->name,
@@ -62,7 +61,7 @@ class ArtistService
                 'audio_source' => $track->audio_source,
                 'cover_url' => $track->releases->first()->cover_url ?? '/images/default-release-banner.webp',
                 'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
-                'release_title' => $track->releases->first()->title ?? 'Unknown Release',
+                'release_title' => $track->releases->first()->title,
             ];
         })->toArray();
     }

@@ -14,6 +14,8 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ReleaseController;
 use App\Http\Controllers\TrackController;
+use App\Http\Controllers\GenreController;
+
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -90,12 +92,6 @@ Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
 Route::get('/artists/{artist}', [ArtistController::class, 'show'])
     ->name('artists.show');
 
-Route::get('/releases/{release}', [ReleaseController::class, 'show'])
-    ->name('releases.show');
-
-Route::get('/tracks/{track}', [TrackController::class, 'show'])
-    ->name('tracks.show');
-
 // page for artist's bio
 Route::get('/artists/{artist}/bio', [ArtistController::class, 'showBio'])
     ->name('artist.bio');
@@ -107,6 +103,18 @@ Route::get('/artists/{artist}/tracks', [ArtistController::class, 'showAllTracks'
 // page for all releases for artist
 Route::get('/artists/{artist}/releases', [ArtistController::class, 'showAllReleases'])
     ->name('artists.releases');
+
+// release page
+Route::get('/releases/{release}', [ReleaseController::class, 'show'])
+    ->name('releases.show');
+
+// track page
+Route::get('/tracks/{track}', [TrackController::class, 'show'])
+    ->name('tracks.show');
+
+// genre page
+Route::get('/genres/{genre}', [GenreController::class, 'show'])
+    ->name('genres.show');
 
 // user account settings
 Route::middleware('auth')->group(function () {
