@@ -9,17 +9,29 @@
 
         <div class="genre-content">
             <div class="main-content">
+<!--                <section class="genre-description">-->
+<!--                    <h2 class="section-title">About</h2>-->
+<!--                    <div class="description-text">-->
+<!--                        <p v-if="genre.description">{{ genre.description }}</p>-->
+<!--                        <p v-else>No description available for this genre.</p>-->
+
+<!--                        <div class="origin-info">-->
+<!--                            <p><strong>Origin Year:</strong> {{ genre.origin_year || "Not specified" }}</p>-->
+<!--                            <p><strong>Origin Country:</strong> {{ genre.origin_country || "Not specified" }}</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </section>-->
+
                 <section class="genre-description">
                     <h2 class="section-title">About</h2>
-                    <div class="description-text">
-                        <p v-if="genre.description">{{ genre.description }}</p>
-                        <p v-else>No description available for this genre.</p>
-
-                        <div v-if="genre.origin_year || genre.origin_country" class="origin-info">
-                            <p v-if="genre.origin_year"><strong>Origin Year:</strong> {{ genre.origin_year }}</p>
-                            <p v-if="genre.origin_country"><strong>Origin Country:</strong> {{ genre.origin_country }}</p>
-                        </div>
-                    </div>
+                    <div class="description-text" v-html="truncatedDescription"></div>
+                        <button
+                            v-if="showReadMore"
+                            @click="redirectToFullDescription(genre.slug)"
+                            class="read-more-button"
+                        >
+                            Read more
+                        </button>
                 </section>
 
                 <section class="genre-artists">
@@ -121,7 +133,7 @@ import { Head, router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
-import { ref } from 'vue'
+import {computed, ref} from 'vue'
 
 const props = defineProps({
     genre: {
@@ -164,6 +176,21 @@ const props = defineProps({
 
 const showPlayer = ref(false);
 const currentAudioSource = ref('');
+const descriptionMaxLength = 500;
+
+const truncatedDescription = computed(() => {
+    if (!props.genre.description) return 'There is no background for this genre.';
+    if (props.genre.description.length <= descriptionMaxLength) return props.genre.description;
+    return props.genre.description.substring(0, descriptionMaxLength) + '...';
+});
+
+const showReadMore = computed(() => {
+    return props.genre.description && props.genre.description.length > descriptionMaxLength;
+});
+
+const redirectToFullDescription = (slug) => {
+    window.location.href = `/genres/${slug}/description`;
+};
 
 const playTrack = (source) => {
     currentAudioSource.value = source;
@@ -284,6 +311,21 @@ const formatDuration = (timeString) => {
 .description-text {
     font-size: 0.9rem;
     line-height: 1.6;
+}
+
+.read-more-button {
+    background: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.read-more-button:hover {
+    background: #1a5fc9;
 }
 
 .origin-info {
