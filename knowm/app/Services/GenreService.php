@@ -121,4 +121,28 @@ class GenreService
             ->where('genre_id', $genreId)
             ->count();
     }
+
+    public function getGenreArtistsPaginated(int $genreId, int $perPage = 24): array
+    {
+        $query = Artist::query()
+            ->select([
+                'artists.id',
+                'artists.name',
+                'artists.slug',
+                DB::raw('COUNT(tracks.id) as tracks_count')
+            ])
+            ->join('artists_genres', 'artists.id', '=', 'artists_genres.artist_id')
+            ->leftJoin('artists_tracks', 'artists.id', '=', 'artists_tracks.artist_id')
+            ->leftJoin('tracks', 'artists_tracks.track_id', '=', 'tracks.id')
+            ->where('artists_genres.genre_id', $genreId)
+            ->groupBy('artists.id', 'artists.name', 'artists.slug')
+            ->orderBy('artists.name');
+        $paginator = $query->paginate($perPage);
+        return [
+            'artists' => $paginator->items(),
+            'paginationLinks' => $paginator->toArray()['links'],
+            'currentPage' => $paginator->currentPage(),
+            'totalPages' => $paginator->lastPage()
+        ];
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\ArtistService;
 use App\Services\ReleaseService;
+use App\Services\TrackService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -15,11 +16,13 @@ class ArtistController extends Controller
 {
     protected ArtistService $artistService;
     protected ReleaseService $releaseService;
+    protected TrackService $trackService;
 
-    public function __construct(ArtistService $artistService, ReleaseService $releaseService)
+    public function __construct(ArtistService $artistService, ReleaseService $releaseService, TrackService $trackService)
     {
         $this->artistService = $artistService;
         $this->releaseService = $releaseService;
+        $this->trackService = $trackService;
     }
 
     public function index()
@@ -132,28 +135,14 @@ class ArtistController extends Controller
     public function showAllTracks($slug)
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
-        $perPage = 40;
-
-        $tracks = Track::with(['releases', 'artists'])
-            ->whereHas('artists', function($query) use ($artist) {
-                $query->where('artist_id', $artist->id);
-            })
-            ->when(request('search'), function($query, $search) {
-                $query->where('title', 'like', "%{$search}%");
-            })
-            ->orderBy('title')
-            ->paginate($perPage);
-
-        $pagination = $tracks->toArray();
-
+        $tracks = $this->trackService->getPaginatedTracks(
+            $slug,
+            40,
+            request('search')
+        );
         return Inertia::render('Artists/ArtistAllTracks', [
             'artist' => $artist,
-            'tracks' => $tracks->items(),
-            'totalTracks' => $tracks->total(),
-            'paginationLinks' => $pagination['links'],
-            'currentPage' => $tracks->currentPage(),
-            'totalPages' => $tracks->lastPage(),
-            'perPage' => $perPage,
+            ...$this->trackService->formatForView($tracks),
             'filters' => request()->only(['search'])
         ]);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Artist;
+use App\Models\Release;
 use App\Models\Track;
 use App\Models\Lyric;
 
@@ -71,6 +73,32 @@ class TrackService
             'text' => $lyrics->lyrics ?? null,
             'status' => $lyrics->status ?? 'requires verification',
             'track_id' => $lyrics->track_id ?? null
+        ];
+    }
+
+    public function getPaginatedTracks($artistSlug, $perPage = 40, $search = null)
+    {
+        $artist = Artist::where('slug', $artistSlug)->firstOrFail();
+        return Track::with(['releases', 'artists'])
+            ->whereHas('artists', function($query) use ($artist) {
+                $query->where('artist_id', $artist->id);
+            })
+            ->when(request('search'), function($query, $search) {
+                $query->where('title', 'like', "%{$search}%");
+            })
+            ->orderBy('title')
+            ->paginate($perPage);
+    }
+
+    public function formatForView($paginator)
+    {
+        return [
+            'tracks' => $paginator->items(),
+            'totalTracks' => $paginator->total(),
+            'paginationLinks' => $paginator->onEachSide(1)->toArray()['links'],
+            'currentPage' => $paginator->currentPage(),
+            'totalPages' => $paginator->lastPage(),
+            'perPage' => $paginator->perPage()
         ];
     }
 }

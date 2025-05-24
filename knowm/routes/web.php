@@ -120,6 +120,10 @@ Route::get('/genres/{genre}', [GenreController::class, 'show'])
 Route::get('/genres/{genre}/description', [GenreController::class, 'showDescription'])
     ->name('genre.description');
 
+// page for all artists associated with a genre
+Route::get('/genres/{slug}/artists', [GenreController::class, 'showAllArtists'])
+    ->name('genres.artists');
+
 // user account settings
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {

@@ -19,6 +19,12 @@ class GenreController extends Controller
         $this->genreService = $genreService;
     }
 
+    /**
+     * @param $slug
+     * @return \Inertia\Response
+     * Method for show page
+     */
+
     public function show($slug)
     {
         $genre = Genre::where('slug', $slug)->firstOrFail();
@@ -34,11 +40,42 @@ class GenreController extends Controller
         ]);
     }
 
+    /**
+     * @param $genreSlug
+     * @return \Inertia\Response
+     * Method for showDescription page
+     */
     public function showDescription($genreSlug)
     {
         $genre = Genre::where('slug', $genreSlug)->firstOrFail();
         return Inertia::render('Genres/GenreDescription', [
             'genre' => $genre,
+        ]);
+    }
+
+    /**
+     * @param $slug
+     * @param Request $request
+     * @param GenreService $genreService
+     * @return \Inertia\Response|\Inertia\ResponseFactory
+     * Method for allArtists page
+     */
+    public function showAllArtists($slug, Request $request, GenreService $genreService)
+    {
+        $genre = Genre::where('slug', $slug)->firstOrFail();
+        $perPage = $request->input('perPage', 24);
+        $data = $genreService->getGenreArtistsPaginated($genre->id, $perPage);
+        return inertia('Genres/GenreAllArtists', [
+            'genre' => [
+                'id' => $genre->id,
+                'name' => $genre->name,
+                'slug' => $genre->slug
+            ],
+            'artists' => $data['artists'],
+            'paginationLinks' => $data['paginationLinks'],
+            'currentPage' => $data['currentPage'],
+            'totalPages' => $data['totalPages'],
+            'perPage' => $perPage
         ]);
     }
 }

@@ -60,7 +60,6 @@ class ReleaseService
     public function getPaginatedReleases($artistSlug, $perPage = 20, $search = null)
     {
         $artist = Artist::where('slug', $artistSlug)->firstOrFail();
-
         return Release::with(['artists', 'tracks'])
             ->whereHas('artists', function($query) use ($artist) {
                 $query->where('artist_id', $artist->id);

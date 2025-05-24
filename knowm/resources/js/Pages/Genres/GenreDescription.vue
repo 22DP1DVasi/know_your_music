@@ -88,7 +88,6 @@ const handleImageLoad = () => {
 };
 
 const handleImageError = () => {
-    // Set fallback gradient background when image fails to load
     Object.assign(heroStyle.value, {
         'background': 'linear-gradient(135deg, #0c4baa 0%, #093a88 100%)',
         'height': '300px',
@@ -98,7 +97,7 @@ const handleImageError = () => {
         'justify-content': 'center',
         'align-items': 'center'
     });
-    imageStyle.value.opacity = 0; // Hide the broken image
+    imageStyle.value.opacity = 0;
 };
 
 const analyzeImage = () => {
