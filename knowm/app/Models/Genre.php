@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
 class Genre extends Model
 {
@@ -18,6 +18,7 @@ class Genre extends Model
      */
     protected $fillable = [
         'name',
+        'slug',
         'description',
         'origin_year',
         'origin_country',
@@ -33,11 +34,23 @@ class Genre extends Model
         'origin_year' => 'integer',
     ];
 
+    // explicit attributes for images URL
+    protected $appends = ['profile_url', 'banner_url'];
+
     protected static function boot()
     {
         parent::boot();
         static::creating(function ($genre) {
             $genre->slug = $genre->generateUniqueSlug();
+        });
+        // create folder for images when this genre is created
+        static::created(function ($genre) {
+            Storage::makeDirectory("public/genres/{$genre->slug}/profile");
+            Storage::makeDirectory("public/genres/{$genre->slug}/banner");
+        });
+        // delete folder when this genre is deleted
+        static::deleted(function ($genre) {
+            Storage::deleteDirectory("public/genres/{$genre->slug}");
         });
     }
 
@@ -108,6 +121,30 @@ class Genre extends Model
         $slug = preg_replace('/\s+/u', '-', $slug);
         $slug = preg_replace('/[^\p{L}\p{N}_-]/u', '', $slug);
         return trim($slug, '-');
+    }
+
+    /**
+     * Get banner image attribute for this genre
+     */
+    public function getBannerUrlAttribute()
+    {
+        $path = "genres/{$this->slug}/banner/banner.webp";
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::url($path);
+        }
+        return '';
+    }
+
+    /**
+     * Get profile image attribute for this genre
+     */
+    public function getProfileUrlAttribute()
+    {
+        $path = "genres/{$this->slug}/profile/profile.webp";
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::url($path);
+        }
+        return '';
     }
 
     /**

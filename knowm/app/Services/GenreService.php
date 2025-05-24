@@ -33,6 +33,7 @@ class GenreService
             'description' => $genre->description,
             'origin_year' => $genre->origin_year,
             'origin_country' => $genre->origin_country,
+            'profile_url' => $genre->profile_url,
         ];
     }
 

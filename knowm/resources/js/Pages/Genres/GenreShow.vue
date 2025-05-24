@@ -2,9 +2,25 @@
     <Head :title="genre.name" />
     <Navbar />
     <main class="genre-page flex-1">
-        <div class="genre-hero">
-            <div class="hero-gradient"></div>
-            <h1 class="genre-name">{{ genre.name }}</h1>
+<!--        <div class="genre-hero">-->
+<!--            <div class="hero-gradient"></div>-->
+<!--            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>-->
+<!--        </div>-->
+
+        <div class="genre-hero" :style="heroStyle">
+            <div class="hero-gradient" v-if="!isLandscape"></div>
+            <div class="hero-image-container">
+                <img
+                    :src="genre.profile_url"
+                    :alt="genre.name"
+                    class="hero-image"
+                    ref="heroImage"
+                    @load="handleImageLoad"
+                    :style="imageStyle"
+                    loading="eager"
+                >
+            </div>
+            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>
         </div>
 
         <div class="genre-content">
@@ -129,11 +145,12 @@
 </template>
 
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
-import {computed, ref} from 'vue'
+import { ref, computed } from 'vue'
+import ColorThief from 'colorthief'
 
 const props = defineProps({
     genre: {
@@ -145,7 +162,8 @@ const props = defineProps({
             slug: String,
             description: String,
             origin_year: String,
-            origin_country: String
+            origin_country: String,
+            profile_url: String
         })
     },
     artists: {
@@ -177,6 +195,98 @@ const props = defineProps({
 const showPlayer = ref(false);
 const currentAudioSource = ref('');
 const descriptionMaxLength = 500;
+const heroImage = ref(null);
+const heroStyle = ref({
+    height: '180px',
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0'
+});
+const imageStyle = ref({
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover'
+});
+const isLandscape = ref(false);
+const colorThief = new ColorThief();
+
+const handleImageLoad = () => {
+    const img = heroImage.value;
+    if (!img) return;
+
+    imageStyle.value.opacity = 1;
+    analyzeImage();
+};
+
+const analyzeImage = () => {
+    const img = heroImage.value;
+    if (!img) return;
+    heroStyle.value = {
+        'height': '180px',
+        'position': 'relative',
+        'overflow': 'hidden',
+        'background-color': '#f0f0f0' // fallback
+    };
+    imageStyle.value = {
+        'opacity': '0',
+        'transition': 'opacity 0.3s ease'
+    };
+    isLandscape.value = img.naturalWidth > img.naturalHeight;
+    if (isLandscape.value) {
+        Object.assign(heroStyle.value, {
+            'height': '180px',
+            'position': 'relative',
+            'overflow': 'hidden'
+        });
+        Object.assign(imageStyle.value, {
+            'width': '100%',
+            'height': '100%',
+            'object-fit': 'cover',
+            'object-position': 'center 13%',
+        });
+    } else {
+        try {
+            const dominantColor = colorThief.getColor(img);
+            const bgColor = `rgb(${dominantColor.join(',')})`;
+            const darkerColor = dominantColor.map(c => Math.max(0, c - 30)).join(',');
+            Object.assign(heroStyle.value, {
+                '--gradient-color-left': `rgba(${darkerColor},0.8)`,
+                '--gradient-color-right': `rgba(${darkerColor},0.8)`,
+                'background-color': bgColor,
+                'height': '180px',
+                'position': 'relative',
+                'display': 'flex',
+                'justify-content': 'center',
+                'align-items': 'center'
+            });
+            Object.assign(imageStyle.value, {
+                'max-height': '100%',
+                'max-width': '100%',
+                'object-fit': 'contain',
+                'position': 'relative',
+                'z-index': '2'
+            });
+        } catch (e) {
+            console.error('Error extracting color:', e);
+            Object.assign(heroStyle.value, {
+                '--gradient-color-left': 'rgba(0,0,0,0.3)',
+                '--gradient-color-right': 'rgba(0,0,0,0.3)',
+                'background-color': '#f0f0f0',
+                'height': '180px',
+                'position': 'relative'
+            });
+            Object.assign(imageStyle.value, {
+                'max-height': '100%',
+                'max-width': '100%',
+                'object-fit': 'contain'
+            });
+        }
+    }
+
+    imageStyle.value.opacity = '1';
+};
 
 const truncatedDescription = computed(() => {
     if (!props.genre.description) return 'There is no background for this genre.';
@@ -187,6 +297,10 @@ const truncatedDescription = computed(() => {
 const showReadMore = computed(() => {
     return props.genre.description && props.genre.description.length > descriptionMaxLength;
 });
+
+function capitalizeFirstLetter(val) {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
 
 const redirectToFullDescription = (slug) => {
     window.location.href = `/genres/${slug}/description`;
@@ -250,17 +364,35 @@ const formatDuration = (timeString) => {
 }
 
 .genre-hero {
-    height: 300px;
+    height: 180px;
     width: 100%;
     overflow: hidden;
     position: relative;
     margin-bottom: 1rem;
     margin-top: 1rem;
     border-radius: 8px;
-    background: linear-gradient(135deg, #0c4baa 0%, #093a88 100%);
+    background-color: #f0f0f0; /* fallback color */
+    --gradient-color-left: rgba(0,0,0,0.3);
+    --gradient-color-right: rgba(0,0,0,0.3);
+}
+
+.hero-image-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    background-color: inherit;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .hero-gradient {
@@ -271,21 +403,24 @@ const formatDuration = (timeString) => {
     bottom: 0;
     background: linear-gradient(
         90deg,
-        rgba(0,0,0,0.3) 0%,
+        var(--gradient-color-left) 0%,
         transparent 20%,
         transparent 80%,
-        rgba(0,0,0,0.3) 100%
+        var(--gradient-color-right) 100%
     );
+    z-index: 1;
 }
 
 .genre-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 1.5rem;
     color: white;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    z-index: 2;
-    text-align: center;
-    padding: 0 20px;
+    z-index: 3;
 }
 
 .genre-content {

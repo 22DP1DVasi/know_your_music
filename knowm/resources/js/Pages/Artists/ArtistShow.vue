@@ -161,7 +161,7 @@
 </template>
 
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'

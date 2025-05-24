@@ -152,7 +152,7 @@ class Artist extends Model
     }
 
     /**
-     * Get banner image attribute for this artst
+     * Get banner image attribute for this artist
      */
     public function getBannerUrlAttribute()
     {
@@ -164,7 +164,7 @@ class Artist extends Model
     }
 
     /**
-     * Get profile image attribute for this artst
+     * Get profile image attribute for this artist
      */
     public function getProfileUrlAttribute()
     {
