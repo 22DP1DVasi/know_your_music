@@ -66,15 +66,6 @@ class ArtistController extends Controller
 //            ->with('success', 'Artist deleted successfully');
 //    }
 
-    public function show(Artist $artist)
-    {
-        $data = $this->artistService->getArtistWithDetails($artist->id);
-
-        return Inertia::render('Artists/ArtistShow', [
-            'artist' => $data
-        ]);
-    }
-
     public function uploadBannerImage(Request $request, Artist $artist)
     {
         $request->validate([
@@ -107,13 +98,19 @@ class ArtistController extends Controller
         ]);
     }
 
+    public function show(Artist $artist)
+    {
+        $data = $this->artistService->getArtistWithDetails($artist->id);
+        return Inertia::render('Artists/ArtistShow', [
+            'artist' => $data
+        ]);
+    }
+
     public function showBio($artistSlug)
     {
         $artist = Artist::where('slug', $artistSlug)->firstOrFail();
-
         return Inertia::render('Artists/ArtistBio', [
-            'artist' => $artist->load(['genres']),
-            'title' => "{$artist->name} - Biography"
+            'artist' => $artist,
         ]);
     }
 

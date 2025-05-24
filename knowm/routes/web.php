@@ -116,6 +116,10 @@ Route::get('/tracks/{track}', [TrackController::class, 'show'])
 Route::get('/genres/{genre}', [GenreController::class, 'show'])
     ->name('genres.show');
 
+// page for genre's full description
+Route::get('/genres/{genre}/description', [GenreController::class, 'showDescription'])
+    ->name('genre.description');
+
 // user account settings
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {

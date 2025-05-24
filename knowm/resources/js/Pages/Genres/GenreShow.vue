@@ -2,11 +2,6 @@
     <Head :title="genre.name" />
     <Navbar />
     <main class="genre-page flex-1">
-<!--        <div class="genre-hero">-->
-<!--            <div class="hero-gradient"></div>-->
-<!--            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>-->
-<!--        </div>-->
-
         <div class="genre-hero" :style="heroStyle">
             <div class="hero-gradient" v-if="!isLandscape"></div>
             <div class="hero-image-container">
