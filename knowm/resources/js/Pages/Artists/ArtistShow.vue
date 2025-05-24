@@ -53,7 +53,7 @@
                             <h3 class="info-title">Genres</h3>
 <!--                            <button-->
 <!--                                v-if="artist.genres.length > 5"-->
-<!--                                class="see-all-genres"-->
+<!--                                class="see-all-button"-->
 <!--                                @click="redirectToAllGenres"-->
 <!--                            >-->
 <!--                                See all genres-->
@@ -78,7 +78,7 @@
                         <h2 class="section-title">Tracks</h2>
                         <button
                             v-if="artist.total_tracks > artist.tracks.length"
-                            class="see-all-tracks"
+                            class="see-all-button"
                             @click="redirectToAllTracks(props.artist.artist.slug)"
                         >
                             See all {{ artist.total_tracks }} tracks
@@ -113,7 +113,7 @@
                         <h2 class="section-title">Releases</h2>
                         <button
                             v-if="artist.total_releases > artist.releases.length"
-                            class="see-all-releases"
+                            class="see-all-button"
                             @click="redirectToAllReleases(props.artist.artist.slug)"
                         >
                             See all {{ artist.total_releases }} releases
@@ -408,7 +408,15 @@ const formatDuration = (timeString) => {
     color: white;
     font-size: 2.5rem;
     font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    text-shadow:
+        -1px -1px 0 rgba(0, 0, 0, 0.9),
+        1px -1px 0 rgba(0, 0, 0, 0.9),
+        -1px  1px 0 rgba(0, 0, 0, 0.9),
+        1px  1px 0 rgba(0, 0, 0, 0.9),
+        -2px  0px 0 rgba(0, 0, 0, 0.7),
+        2px  0px 0 rgba(0, 0, 0, 0.7),
+        0px -2px 0 rgba(0, 0, 0, 0.7),
+        0px  2px 0 rgba(0, 0, 0, 0.7);
     z-index: 3;
 }
 
@@ -426,6 +434,24 @@ const formatDuration = (timeString) => {
 .sidebar-space {
     width: 300px;
     flex-shrink: 0;
+}
+
+.see-all-button {
+    background: none;
+    border: none;
+    color: #0c4baa;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.see-all-button:hover {
+    background: rgba(12, 75, 170, 0.1);
 }
 
 .section-title {
@@ -522,23 +548,6 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
 }
 
-.see-all-genres {
-    background: none;
-    border: none;
-    color: #0c4baa;
-    font-size: 0.8rem;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    transition: background 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.see-all-genres:hover {
-    background: rgba(12, 75, 170, 0.1);
-}
-
 .genre-tags {
     display: flex;
     flex-wrap: wrap;
@@ -566,24 +575,6 @@ const formatDuration = (timeString) => {
     margin-bottom: 1rem;
     flex-wrap: nowrap;
     width: 100%;
-}
-
-.see-all-tracks {
-    background: none;
-    border: none;
-    color: #0c4baa;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    transition: background 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.see-all-tracks:hover {
-    background: rgba(12, 75, 170, 0.1);
 }
 
 .track-list {
@@ -678,20 +669,6 @@ const formatDuration = (timeString) => {
     width: 100%;
 }
 
-.see-all-releases {
-    background: none;
-    border: none;
-    color: #0c4baa;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    transition: background 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
 .release-results {
     display: flex;
     flex-wrap: wrap;
@@ -765,46 +742,6 @@ const formatDuration = (timeString) => {
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 3rem;
-}
-
-.audio-player {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 360px;
-    height: 200px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-.audio-player iframe {
-    width: 100%;
-    height: 100%;
-}
-
-.close-player {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-.close-player:hover {
-    background: rgba(0, 0, 0, 0.9);
 }
 
 @media (max-width: 1455px) {

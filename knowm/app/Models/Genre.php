@@ -45,12 +45,12 @@ class Genre extends Model
         });
         // create folder for images when this genre is created
         static::created(function ($genre) {
-            Storage::makeDirectory("public/genres/{$genre->slug}/profile");
-            Storage::makeDirectory("public/genres/{$genre->slug}/banner");
+            Storage::makeDirectory("public/genres/{$genre->id}/profile");
+            Storage::makeDirectory("public/genres/{$genre->id}/banner");
         });
         // delete folder when this genre is deleted
         static::deleted(function ($genre) {
-            Storage::deleteDirectory("public/genres/{$genre->slug}");
+            Storage::deleteDirectory("public/genres/{$genre->id}");
         });
     }
 
@@ -128,7 +128,7 @@ class Genre extends Model
      */
     public function getBannerUrlAttribute()
     {
-        $path = "genres/{$this->slug}/banner/banner.webp";
+        $path = "genres/{$this->id}/banner/banner.webp";
         if (Storage::disk('public')->exists($path)) {
             return Storage::url($path);
         }
@@ -140,7 +140,7 @@ class Genre extends Model
      */
     public function getProfileUrlAttribute()
     {
-        $path = "genres/{$this->slug}/profile/profile.webp";
+        $path = "genres/{$this->id}/profile/profile.webp";
         if (Storage::disk('public')->exists($path)) {
             return Storage::url($path);
         }

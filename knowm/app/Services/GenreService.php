@@ -37,7 +37,7 @@ class GenreService
         ];
     }
 
-    public function getGenreArtistsWithDetails(int $genreId, int $limit = 8): array
+    public function getGenreArtistsWithDetails(int $genreId, int $limit = 4): array
     {
         return Artist::whereHas('genres', function($query) use ($genreId) {
             $query->where('genres.id', $genreId);
@@ -69,7 +69,7 @@ class GenreService
                     'id' => $track->id,
                     'title' => $track->title,
                     'slug' => $track->slug,
-                    'duration' => $track->duration,
+                    'duration' => $track->duration->format('H:i:s'),
                     'audio_source' => $track->audio_source,
                     'cover_url' => $track->releases->first()->cover_url ?? '/images/default-release-cover.webp',
                     'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),

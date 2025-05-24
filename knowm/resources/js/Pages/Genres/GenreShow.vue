@@ -51,7 +51,16 @@
                 </section>
 
                 <section class="genre-artists">
-                    <h2 class="section-title">Representative Artists</h2>
+                    <div class="genre-artists-header">
+                        <h2 class="section-title">Representative Artists</h2>
+                        <button
+                            v-if="totalArtists > artists.length"
+                            class="see-all-button"
+                            @click="redirectToAllArtists(genre.slug)"
+                        >
+                            See all {{ totalArtists }} artists
+                        </button>
+                    </div>
                     <div class="artist-list">
                         <div v-for="artist in artists" :key="artist.id" class="artist-card" @click="redirectToArtist(artist.slug)">
                             <img :src="artist.profile_url" class="artist-image" :alt="artist.name">
@@ -60,17 +69,10 @@
                             </div>
                         </div>
                     </div>
-                    <button
-                        v-if="totalArtists > artists.length"
-                        class="see-all-button"
-                        @click="redirectToAllArtists(genre.slug)"
-                    >
-                        See all {{ totalArtists }} artists
-                    </button>
                 </section>
 
                 <section class="genre-tracks">
-                    <div class="tracks-header">
+                    <div class="genre-tracks-header">
                         <h2 class="section-title">Popular Tracks</h2>
                         <button
                             v-if="totalTracks > tracks.length"
@@ -105,7 +107,7 @@
                 </section>
 
                 <section class="genre-releases">
-                    <div class="releases-header">
+                    <div class="genre-releases-header">
                         <h2 class="section-title">Notable Releases</h2>
                         <button
                             v-if="totalReleases > releases.length"
@@ -133,6 +135,17 @@
                         </div>
                     </div>
                 </section>
+
+                <section class="genre-comments">
+                    <h2 class="section-title">Comments</h2>
+                    <div class="comments-section">
+                        <!-- Comment components would go here -->
+                    </div>
+                </section>
+            </div>
+
+            <div class="sidebar-space">
+                <!-- Future content like "Similar Artists" will go here -->
             </div>
         </div>
         <AudioPlayer
@@ -415,7 +428,7 @@ const formatDuration = (timeString) => {
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 1.5rem;
+    padding: 1rem;
     color: white;
     font-size: 2.5rem;
     font-weight: 700;
@@ -431,6 +444,11 @@ const formatDuration = (timeString) => {
 
 .main-content {
     flex: 1;
+}
+
+.sidebar-space {
+    width: 300px;
+    flex-shrink: 0;
 }
 
 .section-title {
@@ -478,6 +496,15 @@ const formatDuration = (timeString) => {
     margin-bottom: 2rem;
 }
 
+.genre-artists-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
 .artist-list {
     display: flex;
     flex-wrap: wrap;
@@ -519,17 +546,19 @@ const formatDuration = (timeString) => {
     color: #0c4baa;
     font-size: 1rem;
     cursor: pointer;
-    padding: 0.5rem 1rem;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 1rem;
     border-radius: 4px;
     transition: background 0.2s;
-    margin-top: 0.5rem;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .see-all-button:hover {
     background: rgba(12, 75, 170, 0.1);
 }
 
-.tracks-header {
+.genre-tracks-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -632,7 +661,7 @@ const formatDuration = (timeString) => {
     text-align: right;
 }
 
-.releases-header {
+.genre-releases-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -646,6 +675,7 @@ const formatDuration = (timeString) => {
     flex-wrap: wrap;
     gap: 1.5rem;
     justify-content: flex-start;
+    margin-bottom: 2rem;
 }
 
 .release-card {
@@ -721,6 +751,14 @@ const formatDuration = (timeString) => {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.comments-section {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 3rem;
 }
 
 /* Responsive styles */
@@ -818,6 +856,10 @@ const formatDuration = (timeString) => {
 
     .track-duration {
         flex: 0 0 50px;
+    }
+
+    .sidebar-space {
+        display: none;
     }
 }
 

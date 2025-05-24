@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="" />
+    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Genre.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Genre.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Services/GenreService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/GenreService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/storage/app/public/genres/metalcore/profile/profile.webp" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -287,7 +294,7 @@
       <workItem from="1747567981213" duration="6217000" />
       <workItem from="1747899888203" duration="814000" />
       <workItem from="1747979782206" duration="2696000" />
-      <workItem from="1748075874639" duration="1120000" />
+      <workItem from="1748075874639" duration="6542000" />
     </task>
     <servers />
   </component>
