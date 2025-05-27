@@ -64,7 +64,7 @@
                         <div v-if="track.description" class="description-text" v-html="track.description"></div>
                         <div v-else class="description-text">There is no background for this track.</div>
 
-                        <div v-if="track.genres && track.genres.length" class="genres-card">
+                        <div class="genres-card">
                             <div class="genres-header">
                                 <h3 class="info-title">Genres</h3>
                                 <!--                                <button-->
@@ -75,7 +75,8 @@
                                 <!--                                    See all genres-->
                                 <!--                                </button>-->
                             </div>
-                            <div class="genre-tags">
+                            <div v-if="!track.genres.length">No genres related to this track.</div>
+                            <div v-else class="genre-tags">
                                 <span
                                     v-for="(genre, index) in track.genres.slice(0, 5)"
                                     :key="index"
@@ -335,7 +336,7 @@ const formatDuration = (timeString) => {
 
 .main-content {
     flex: 1;
-    max-width: calc(100% - 30px);
+    max-width: calc(100% - 100px);
     padding-right: 20px;
     margin-left: 20px;
 }
@@ -360,7 +361,6 @@ const formatDuration = (timeString) => {
 .track-description {
     background: white;
     border-radius: 8px;
-    padding: 1.25rem;
     margin-bottom: 2rem;
     position: relative;
     white-space: pre-line;
@@ -371,7 +371,7 @@ const formatDuration = (timeString) => {
     float: right;
     width: fit-content;
     max-width: 50%;
-    margin: 3.3rem 3rem 1rem 1.5rem;
+    margin: 3.3rem 1rem 1rem 1.5rem;
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -546,6 +546,10 @@ const formatDuration = (timeString) => {
     .info-card-wrapped {
         margin-right: 0.7rem;
     }
+
+    .main-content {
+        max-width: calc(100% - 40px);
+    }
 }
 
 @media (max-width: 1200px) {
@@ -568,7 +572,7 @@ const formatDuration = (timeString) => {
     }
 
     .track-content {
-        padding-right: 340px;
+        padding-right: 370px;
     }
 
     .sidebar-space {
@@ -588,7 +592,7 @@ const formatDuration = (timeString) => {
     }
 
     .track-content {
-        padding-right: 290px;
+        padding-right: 320px;
     }
 
     .sidebar-space {

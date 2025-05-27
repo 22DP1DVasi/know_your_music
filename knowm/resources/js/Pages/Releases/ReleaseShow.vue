@@ -70,18 +70,19 @@
                         <div v-if="release.description" class="description-text" v-html="release.description"></div>
                         <div v-else class="description-text" style="margin-bottom: 150px;">There is no background for this release.</div>
 
-                        <div v-if="release.genres && release.genres.length" class="genres-card">
+                        <div class="genres-card">
                             <div class="genres-header">
                                 <h3 class="info-title">Genres</h3>
-<!--                                <button-->
-<!--                                    v-if="release.genres.length > 5"-->
-<!--                                    class="see-all-genres"-->
-<!--                                    @click="redirectToAllGenres"-->
-<!--                                >-->
-<!--                                    See all genres-->
-<!--                                </button>-->
+                                <!--                                <button-->
+                                <!--                                    v-if="release.genres.length > 5"-->
+                                <!--                                    class="see-all-genres"-->
+                                <!--                                    @click="redirectToAllGenres"-->
+                                <!--                                >-->
+                                <!--                                    See all genres-->
+                                <!--                                </button>-->
                             </div>
-                            <div class="genre-tags">
+                            <div v-if="!release.genres.length">No genres related to this release.</div>
+                            <div v-else class="genre-tags">
                                 <span
                                     v-for="(genre, index) in release.genres.slice(0, 5)"
                                     :key="index"
@@ -373,7 +374,7 @@ const redirectToTrack = (slug) => {
 
 .main-content {
     flex: 1;
-    max-width: calc(100% - 30px);
+    max-width: calc(100% - 100px);
     padding-right: 20px;
     margin-left: 20px;
 }
@@ -398,7 +399,6 @@ const redirectToTrack = (slug) => {
 .release-description {
     background: white;
     border-radius: 8px;
-    padding: 1.25rem;
     margin-bottom: 2rem;
     position: relative;
     white-space: pre-line;
@@ -409,7 +409,7 @@ const redirectToTrack = (slug) => {
     float: right;
     width: fit-content;
     max-width: 50%;
-    margin: 3.3rem 3rem 1rem 1.5rem;
+    margin: 3.3rem 1rem 1rem 1.5rem;
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -653,12 +653,17 @@ const redirectToTrack = (slug) => {
     .info-card-wrapped {
         margin-right: 0.7rem;
     }
+
+    .main-content {
+        max-width: calc(100% - 40px);
+    }
 }
 
 @media (max-width: 1200px) {
     .release-hero {
         height: 280px !important;
     }
+
     .release-title {
         font-size: 2.2rem;
         bottom: 55px;
@@ -670,7 +675,7 @@ const redirectToTrack = (slug) => {
     }
 
     .release-content {
-        padding-right: 340px;
+        padding-right: 370px;
     }
 
     .sidebar-space {
@@ -690,7 +695,7 @@ const redirectToTrack = (slug) => {
     }
 
     .release-content {
-        padding-right: 290px;
+        padding-right: 320px;
     }
 
     .sidebar-space {

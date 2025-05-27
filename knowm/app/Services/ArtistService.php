@@ -12,7 +12,6 @@ class ArtistService
     public function getArtistWithDetails(int $artistId): array
     {
         $artist = $this->getArtistInfo($artistId);
-
         return [
             'artist' => $artist,
             'genres' => $this->getArtistGenres($artistId),
@@ -59,7 +58,7 @@ class ArtistService
                 'slug' => $track->slug,
                 'duration' => $track->duration->format('H:i:s'),
                 'audio_source' => $track->audio_source,
-                'cover_url' => $track->releases->first()->cover_url ?? '/images/default-release-banner.webp',
+                'cover_url' => $track->cover_url,
                 'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
                 'release_title' => $track->releases->first()->title,
             ];

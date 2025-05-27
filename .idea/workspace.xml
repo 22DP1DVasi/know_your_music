@@ -5,15 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreAllArtists.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/GenreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/GenreController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/GenreService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/GenreService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/ReleaseService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/ReleaseService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/TrackService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/TrackService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreDescription.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreDescription.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -297,7 +291,8 @@
       <workItem from="1747567981213" duration="6217000" />
       <workItem from="1747899888203" duration="814000" />
       <workItem from="1747979782206" duration="2696000" />
-      <workItem from="1748075874639" duration="10427000" />
+      <workItem from="1748075874639" duration="11235000" />
+      <workItem from="1748356107978" duration="3956000" />
     </task>
     <servers />
   </component>
