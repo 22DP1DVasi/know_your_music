@@ -77,14 +77,15 @@
                             </div>
                             <div v-if="!track.genres.length">No genres related to this track.</div>
                             <div v-else class="genre-tags">
-                                <span
+                                <button
                                     v-for="(genre, index) in track.genres.slice(0, 5)"
-                                    :key="index"
+                                    :key="genre"
                                     class="genre-tag"
-                                    :title="genre.length > 16 ? genre : ''"
+                                    :title="genre.name.length > 16 ? genre.name : ''"
+                                    @click="redirectToGenre(genre.slug)"
                                 >
                                     {{ genre.name }}
-                                </span>
+                                </button>
                             </div>
                         </div>
 
@@ -180,11 +181,6 @@ const handleImageLoad = () => {
     imageStyle.value.objectPosition = 'center';
 };
 
-const capitalize = (value) => {
-    if (!value) return '';
-    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-};
-
 const formatDate = (dateString) => {
     if (!dateString) return 'Unknown';
     const date = new Date(dateString);
@@ -196,6 +192,11 @@ const formatDuration = (timeString) => {
     const [hours, minutes, seconds] = timeString.split(':');
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
 };
+
+const redirectToGenre = (slug) => {
+    window.location.href = `/genres/${slug}`;
+};
+
 </script>
 
 <style scoped>

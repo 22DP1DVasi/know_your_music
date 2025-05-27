@@ -43,7 +43,8 @@ class ArtistService
         return DB::table('artists_genres')
             ->join('genres', 'artists_genres.genre_id', '=', 'genres.id')
             ->where('artist_id', $artistId)
-            ->pluck('genres.name')
+            ->select('genres.name', 'genres.slug')
+            ->get()
             ->toArray();
     }
 
@@ -95,23 +96,6 @@ class ArtistService
             ->with(['artists', 'releases'])
             ->limit($limit)
             ->get();
-    }
-
-    public function getArtistReleases(int $artistId, int $limit = 4): array
-    {
-        return DB::table('artists_releases')
-            ->join('releases', 'artists_releases.release_id', '=', 'releases.id')
-            ->where('artist_id', $artistId)
-            ->select([
-                'releases.id',
-                'releases.title',
-                'releases.release_date as year',
-                'releases.release_type as type'
-            ])
-            ->orderBy('releases.release_date', 'desc')
-            ->limit($limit)
-            ->get()
-            ->toArray();
     }
 
     public function getArtistTracksCount(int $artistId): int

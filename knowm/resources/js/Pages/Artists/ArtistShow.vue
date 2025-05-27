@@ -61,14 +61,15 @@
                         </div>
                         <div v-if="!artist.genres.length">No genres related to this artist.</div>
                         <div v-else class="genre-tags">
-                            <span
+                            <button
                                 v-for="(genre, index) in artist.genres.slice(0, 5)"
                                 :key="genre"
                                 class="genre-tag"
-                                :title="genre.length > 16 ? genre : ''"
+                                :title="genre.name.length > 16 ? genre.name : ''"
+                                @click="redirectToGenre(genre.slug)"
                             >
-                                {{ genre }}
-                            </span>
+                                {{ genre.name }}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -310,6 +311,10 @@ const redirectToFullBio = (slug) => {
 
 const redirectToAllGenres = () => {
     window.location.href = '#';
+};
+
+const redirectToGenre = (slug) => {
+    window.location.href = `/genres/${slug}`;
 };
 
 const redirectToAllTracks = (slug) => {
@@ -566,6 +571,12 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
     display: inline-block;
     vertical-align: middle;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.genre-tag:hover {
+    background: #e0e8ff;
 }
 
 .tracks-header {

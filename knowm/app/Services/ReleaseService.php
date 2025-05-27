@@ -17,7 +17,7 @@ class ReleaseService
                 $query->select('artists.id', 'artists.name', 'artists.slug');
             },
             'genres' => function($query) {
-                $query->select('genres.id', 'genres.name');
+                $query->select('genres.id', 'genres.name', 'genres.slug');
             },
             'tracks' => function($query) {
                 $query->with(['artists' => function($q) {
@@ -35,8 +35,7 @@ class ReleaseService
     public function getSimilarReleases($releaseId, $limit = 5)
     {
         $release = Release::findOrFail($releaseId);
-
-        // Get releases with the same primary genre
+        // get releases with the same primary genre
         return Release::with(['artists'])
             ->whereHas('genres', function($query) use ($release) {
                 $query->whereIn('genres.id', $release->genres->pluck('id'));

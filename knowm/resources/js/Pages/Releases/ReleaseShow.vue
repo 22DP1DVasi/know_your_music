@@ -83,14 +83,15 @@
                             </div>
                             <div v-if="!release.genres.length">No genres related to this release.</div>
                             <div v-else class="genre-tags">
-                                <span
+                                <button
                                     v-for="(genre, index) in release.genres.slice(0, 5)"
-                                    :key="index"
+                                    :key="genre"
                                     class="genre-tag"
-                                    :title="genre.length > 16 ? genre : ''"
+                                    :title="genre.name.length > 16 ? genre.name : ''"
+                                    @click="redirectToGenre(genre.slug)"
                                 >
                                     {{ genre.name }}
-                                </span>
+                                </button>
                             </div>
                         </div>
 
@@ -228,6 +229,10 @@ const formatDuration = (timeString) => {
     if (!timeString) return '--:--';
     const [hours, minutes, seconds] = timeString.split(':');
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
+const redirectToGenre = (slug) => {
+    window.location.href = `/genres/${slug}`;
 };
 
 const redirectToTrack = (slug) => {

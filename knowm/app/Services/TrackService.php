@@ -50,7 +50,8 @@ class TrackService
             'genres' => $track->genres->map(function($genre) {
                 return [
                     'id' => $genre->id,
-                    'name' => $genre->name
+                    'name' => $genre->name,
+                    'slug' => $genre->slug
                 ];
             }),
             'releases' => $track->releases->map(function($release) {
