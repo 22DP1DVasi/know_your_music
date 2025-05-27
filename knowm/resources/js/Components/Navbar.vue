@@ -27,7 +27,17 @@
                 </div>
             </li>
             <li><a href="/">Home</a></li>
-            <li><a href="/explore">Explore</a></li>
+            <li class="explore-menu">
+                <div class="explore-link" @click="toggleExploreDropdown">
+                    Explore <i class="fa fa-caret-down"></i>
+                </div>
+                <div v-show="showExploreDropdown" class="explore-dropdown">
+                    <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
+                    <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
+                    <a href="#" @click.prevent="redirectToExplore('tracks')">Tracks</a>
+                    <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                </div>
+            </li>
             <li><a href="/about">About</a></li>
             <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
             <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
@@ -65,10 +75,18 @@
             <span>MENU</span>
         </div>
         <ul>
+            <!-- conditional rendering for mobile menu -->
             <li><a href="/">Home</a></li>
-            <li><a href="/explore">Explore</a></li>
+            <li class="mobile-explore-item">
+                <a href="#" @click.prevent="toggleMobileExplore">Explore <i class="fa fa-caret-down"></i></a>
+                <div v-show="showMobileExplore" class="mobile-explore-dropdown">
+                    <a href="/explore/artists">Artists</a>
+                    <a href="/explore/releases">Releases</a>
+                    <a href="/explore/tracks">Tracks</a>
+                    <a href="/explore/genres">Genres</a>
+                </div>
+            </li>
             <li><a href="/about">About</a></li>
-            <!-- Conditional rendering for mobile menu -->
             <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
             <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
             <li v-if="isLoggedIn"><a href="/profile">Profile</a></li>
@@ -104,53 +122,50 @@ import { usePage, router } from '@inertiajs/vue3';
 export default {
     setup() {
         const page = usePage();
-
-        // Dark mode state
         const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
-
-        // Menu state
         const isMenuActive = ref(false);
-
-        // Mobile state
         const isMobile = ref(false);
         const isMobileSearchActive = ref(false);
-
-        // User dropdown state
         const showUserDropdown = ref(false);
-
-        // Authentication state
+        const showExploreDropdown = ref(false);
+        const showMobileExplore = ref(false);
         const isLoggedIn = ref(page.props.auth.user !== null);
         const user = ref(page.props.auth.user || { name: 'User' });
-
-        // Toggle dark mode function
         const toggleDarkMode = () => {
             isDarkMode.value = !isDarkMode.value;
             document.documentElement.classList.toggle("dark-mode", isDarkMode.value);
             localStorage.setItem("darkMode", isDarkMode.value);
         };
-
-        // Toggle navigation menu function
         const toggleNav = () => {
             isMenuActive.value = !isMenuActive.value;
-            // Close user dropdown when opening mobile menu
             if (isMenuActive.value) {
                 showUserDropdown.value = false;
+                showExploreDropdown.value = false;
             }
         };
-
-        // Toggle user dropdown
         const toggleUserDropdown = () => {
             showUserDropdown.value = !showUserDropdown.value;
+            showExploreDropdown.value = false;
         };
-
-        // Close dropdown when clicking outside
-        const closeDropdownOnClickOutside = (event) => {
+        const toggleExploreDropdown = () => {
+            showExploreDropdown.value = !showExploreDropdown.value;
+            showUserDropdown.value = false;
+        };
+        const toggleMobileExplore = () => {
+            showMobileExplore.value = !showMobileExplore.value;
+        };
+        const closeDropdownsOnClickOutside = (event) => {
             if (!event.target.closest('.user-menu')) {
                 showUserDropdown.value = false;
             }
+            if (!event.target.closest('.explore-menu')) {
+                showExploreDropdown.value = false;
+            }
         };
-
-        // Logout function - corrected version
+        const redirectToExplore = (type) => {
+            showExploreDropdown.value = false;
+            router.visit(`/explore/${type}`);
+        };
         const logout = () => {
             router.post('/logout', {}, {
                 onFinish: () => {
@@ -161,38 +176,25 @@ export default {
                 }
             });
         };
-
-        // Toggle mobile search bar visibility
         const toggleMobileSearch = () => {
             isMobileSearchActive.value = !isMobileSearchActive.value;
         };
-
-        // Handle screen size changes to detect mobile view
         const handleResize = () => {
             isMobile.value = window.innerWidth <= 910;
         };
-
-        // Apply dark mode on mount if it's active
         if (isDarkMode.value) {
             document.documentElement.classList.add("dark-mode");
         }
-
-        // Add event listeners on mount
         onMounted(() => {
             window.addEventListener("resize", handleResize);
-            window.addEventListener('click', closeDropdownOnClickOutside);
+            window.addEventListener('click', closeDropdownsOnClickOutside);
             handleResize(); // Check screen size on initial load
         });
-
-        // Cleanup event listeners
         onUnmounted(() => {
             window.removeEventListener("resize", handleResize);
-            window.removeEventListener('click', closeDropdownOnClickOutside);
+            window.removeEventListener('click', closeDropdownsOnClickOutside);
         });
-
-        // search query state
         const searchQuery = ref('');
-
         const performSearch = () => {
             if (searchQuery.value.trim()) {
                 router.get('/search', {
@@ -200,7 +202,6 @@ export default {
                 });
             }
         };
-
         return {
             isDarkMode,
             toggleDarkMode,
@@ -213,6 +214,11 @@ export default {
             user,
             showUserDropdown,
             toggleUserDropdown,
+            showExploreDropdown,
+            toggleExploreDropdown,
+            showMobileExplore,
+            toggleMobileExplore,
+            redirectToExplore,
             logout,
             searchQuery,
             performSearch
@@ -368,6 +374,83 @@ nav ul li a:hover {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.5);
+}
+
+.explore-menu {
+    position: relative;
+}
+
+.explore-link {
+    cursor: pointer;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    padding: 12px 16px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.explore-link:hover {
+    background-color: #20c1f7;
+}
+
+.explore-link i {
+    margin-left: 5px;
+    font-size: 14px;
+}
+
+.explore-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.explore-dropdown a {
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: background-color 0.2s;
+}
+
+.explore-dropdown a:hover {
+    background-color: #f5f5f5;
+}
+
+.mobile-explore-dropdown {
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-explore-dropdown a {
+    padding: 8px 0;
+    color: #000;
+    text-decoration: none;
+}
+
+.mobile-explore-item {
+    position: relative;
+}
+
+.mobile-explore-item > a {
+    display: flex;
+    align-items: center;
+}
+
+.mobile-explore-item i {
+    margin-left: 5px;
+    font-size: 14px;
 }
 
 .user-avatar {
