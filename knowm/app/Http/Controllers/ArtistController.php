@@ -147,4 +147,25 @@ class ArtistController extends Controller
         ]);
     }
 
+    public function explore(Request $request)
+    {
+        $searchQuery = $request->input('q', '');
+        $perPage = $request->input('perPage', 24);
+        $artists = Artist::query()
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where('name', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy('name')
+            ->paginate($perPage)
+            ->withQueryString();
+        return Inertia::render('Artists/ArtistsExplore', [
+            'artists' => $artists->items(),
+            'searchQuery' => $searchQuery,
+            'paginationLinks' => $artists->toArray()['links'],
+            'currentPage' => $artists->currentPage(),
+            'totalPages' => $artists->lastPage(),
+            'perPage' => $perPage,
+        ]);
+    }
+
 }

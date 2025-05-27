@@ -1,15 +1,10 @@
 <template>
-    <Head title="All Artists Search Results {{ searchQuery }}" />
+    <Head title="Explore Artists" />
     <Navbar />
     <main class="flex-1">
-        <div class="search-results">
+        <div class="explore-artists">
             <div class="results-header">
-                <h1 class="results-title">All Artists Matching "{{ searchQuery }}"</h1>
-                <div class="go-back-arrow-wrapper">
-                    <div class="go-back-arrow" @click="goBack">
-                        <span class="arrow-icon">←</span>
-                    </div>
-                </div>
+                <h1 class="results-title">Explore Artists</h1>
                 <div class="search-controls">
                     <div class="search-container">
                         <input
@@ -46,14 +41,15 @@
             </div>
 
             <div v-if="artists.length === 0" class="no-results">
-                No artists found for "{{ searchQuery }}"
+                No artists found
+                <span v-if="localSearchQuery">for "{{ localSearchQuery }}"</span>
             </div>
 
             <Pagination
                 :links="paginationLinks"
                 :current-page="currentPage"
                 :total-pages="totalPages"
-                :search-query="searchQuery"
+                :search-query="localSearchQuery"
                 class="pagination"
             />
         </div>
@@ -62,7 +58,7 @@
 </template>
 
 <script setup>
-import { Head, router } from "@inertiajs/vue3";
+import { Head, Link, router } from "@inertiajs/vue3";
 import { ref, onBeforeUnmount, onMounted } from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
@@ -77,7 +73,7 @@ const props = defineProps({
     perPage: Number
 });
 
-const localSearchQuery = ref(props.searchQuery);
+const localSearchQuery = ref(props.searchQuery || '');
 const localPerPage = ref(props.perPage || 24);
 
 const checkScreenSize = () => {
@@ -94,24 +90,20 @@ onBeforeUnmount(() => {
 });
 
 const performSearch = () => {
-    router.visit(`/search/artists?q=${localSearchQuery.value}&perPage=${localPerPage.value}`, {
+    router.visit(`/explore/artists?q=${localSearchQuery.value}&perPage=${localPerPage.value}`, {
         preserveState: true,
         replace: true
     });
 };
 
-const goBack = () => {
-    router.visit(`/search?q=${props.searchQuery}`);
-};
-
 const redirectToArtist = (slug) => {
-    router.get(`/artists/${slug}`);
+    window.location.href = `/artists/${slug}`;
 };
 
 </script>
 
 <style scoped>
-.search-results {
+.explore-artists {
     padding: 1rem 0 2rem;
     max-width: 1000px;
     margin: 0 auto;
@@ -204,35 +196,12 @@ const redirectToArtist = (slug) => {
 }
 
 .results-title {
-    margin-bottom: -15px;
+    margin-bottom: 15px;
     padding: 0;
     text-align: center;
     font-size: 2.2rem;
     color: #0c4baa;
     font-weight: 600;
-}
-
-.go-back-arrow {
-    cursor: pointer;
-    background-color: #3f80e4;
-    border-radius: 50%;
-    margin: 0.5rem auto 0;
-    padding: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    transition: background-color 0.2s ease;
-}
-
-.go-back-arrow:hover {
-    background-color: #14a8df;
-}
-
-.arrow-icon {
-    font-size: 24px;
-    color: white;
 }
 
 .artist-results {
@@ -262,6 +231,14 @@ const redirectToArtist = (slug) => {
     0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
+.artist-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
 .artist-card .image-wrapper {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -284,7 +261,6 @@ const redirectToArtist = (slug) => {
     width: 100%;
 }
 
-/* max two rows for name/title, if overflows - ellipsis */
 .artist-info h3 {
     margin: 0 0 0.25rem 0;
     font-size: 1rem;
@@ -337,10 +313,6 @@ const redirectToArtist = (slug) => {
         height: 46px;
     }
 
-    .go-back-arrow-wrapper {
-        margin-bottom: 5px;
-    }
-
     .artist-card {
         flex: 0 0 calc(50% - 0.75rem); /* 2 cards per row */
     }
@@ -378,12 +350,6 @@ const redirectToArtist = (slug) => {
 
     .results-title {
         font-size: 1.5rem;
-    }
-
-    .go-back-arrow {
-        width: 35px;
-        height: 35px;
-        padding-top: 6px !important;
     }
 
     .searchTerm {

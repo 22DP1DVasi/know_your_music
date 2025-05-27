@@ -18,7 +18,9 @@
                        :key="artist.id"
                        @click="redirectToArtist(artist.slug)"
                        class="artist-card">
+                        <div class="image-wrapper">
                             <img :src="artist.banner_url" :alt="artist.name">
+                        </div>
                         <div class="artist-info">
                             <h3>{{ artist.name }}</h3>
                             <p>{{ artist.tracks_count }} {{ artist.tracks_count === 1 ? 'track' : 'tracks' }}</p>
@@ -261,14 +263,10 @@ const redirectToTrack = (slug) => {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
 }
 
 .artist-card:hover {
+    cursor: pointer;
     transform: translateY(-6px);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
     0 8px 12px rgba(0, 0, 0, 0.15);
