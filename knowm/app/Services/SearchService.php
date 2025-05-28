@@ -21,7 +21,6 @@ class SearchService
         $metadataTracksCount = $this->getMetadataTracksCount($query);
         $lyricsTracksCount = $this->getLyricsTracksCount($query);
         $tracksCount = $metadataTracksCount + $lyricsTracksCount;
-
         return [
             'artists' => $this->searchArtists($query, $limit),
             'releases' => $this->searchReleases($query, $limit),

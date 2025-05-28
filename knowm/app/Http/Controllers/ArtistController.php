@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use App\Models\Artist;
 use App\Models\Release;
 use App\Models\Track;
+use App\Models\Genre;
 
 class ArtistController extends Controller
 {
@@ -151,13 +152,27 @@ class ArtistController extends Controller
     {
         $searchQuery = $request->input('q', '');
         $perPage = $request->input('perPage', 24);
+        $selectedGenres = $request->input('genres', []);
+        if (is_string($selectedGenres)) {
+            $selectedGenres = $selectedGenres === '' ? [] : explode(',', $selectedGenres);
+        }
+        $selectedGenres = is_array($selectedGenres) ? $selectedGenres : [];
+        $genreIds = array_filter(array_map('intval', $selectedGenres));
         $artists = Artist::query()
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where('name', 'like', "%{$searchQuery}%");
             })
+            ->when(!empty($genreIds), function ($query) use ($genreIds) {
+                $query->whereHas('genres', function ($q) use ($genreIds) {
+                    $q->whereIn('genres.id', $genreIds);
+                });
+            })
+            ->withCount('tracks')
+            ->with('genres')
             ->orderBy('name')
             ->paginate($perPage)
             ->withQueryString();
+        $genres = Genre::orderBy('name')->get();
         return Inertia::render('Artists/ArtistsExplore', [
             'artists' => $artists->items(),
             'searchQuery' => $searchQuery,
@@ -165,6 +180,8 @@ class ArtistController extends Controller
             'currentPage' => $artists->currentPage(),
             'totalPages' => $artists->lastPage(),
             'perPage' => $perPage,
+            'allGenres' => $genres,
+            'selectedGenres' => $genreIds,
         ]);
     }
 

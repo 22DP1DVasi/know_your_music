@@ -5,22 +5,71 @@
         <div class="explore-artists">
             <div class="results-header">
                 <h1 class="results-title">Explore Artists</h1>
-                <div class="search-controls">
-                    <div class="search-container">
-                        <input
-                            type="text"
-                            class="searchTerm"
-                            placeholder="Search artists..."
-                            v-model="localSearchQuery"
-                            @keyup.enter="performSearch"
-                        >
-                        <button
-                            type="submit"
-                            class="searchButton"
-                            @click="performSearch"
-                        >
-                            <i class="fa fa-search"></i>
-                        </button>
+                <div class="filters-container">
+                    <div class="search-controls">
+                        <div class="search-container">
+                            <input
+                                type="text"
+                                class="searchTerm"
+                                placeholder="Search artists..."
+                                v-model="localSearchQuery"
+                                @keyup.enter="performSearch"
+                            >
+                            <button
+                                type="submit"
+                                class="searchButton"
+                                @click="performSearch"
+                            >
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="filter-button" @click="showGenreModal = true">
+                        <i class="fa fa-filter"></i> Filter by Genre
+                    </button>
+                </div>
+
+                <div v-if="selectedGenres.length > 0" class="selected-genres">
+                    <div class="selected-genres-label">Selected genres:</div>
+                    <div class="genre-tags">
+                        <div v-for="genre in allGenres.filter(g => localSelectedGenres.includes(g.id))"
+                             :key="genre.id"
+                             class="genre-tag">
+                            <span class="genre-tag-content">{{ lowercaseString(genre.name) }}</span>
+                            <span class="remove-genre" @click="removeGenre(genre.id)">×</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Filter by Genre</h3>
+                        <button class="close-modal" @click="showGenreModal = false">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="genre-list">
+                            <div
+                                v-for="genre in allGenres"
+                                :key="genre.id"
+                                class="genre-item"
+                                @click="toggleGenre(genre.id)"
+                            >
+                                <input
+                                    type="checkbox"
+                                    :id="'genre-' + genre.id"
+                                    :checked="localSelectedGenres.includes(genre.id)"
+                                    @change="toggleGenre(genre.id)"
+                                >
+                                <label :for="'genre-' + genre.id">{{ lowercaseString(genre.name) }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-clear" @click="clearGenres">Clear All</button>
+                        <button class="btn-apply" @click="applyGenreFilters">Apply Filters</button>
                     </div>
                 </div>
             </div>
@@ -43,6 +92,7 @@
             <div v-if="artists.length === 0" class="no-results">
                 No artists found
                 <span v-if="localSearchQuery">for "{{ localSearchQuery }}"</span>
+                <span v-if="selectedGenres.length > 0"> with selected genres</span>
             </div>
 
             <Pagination
@@ -50,6 +100,7 @@
                 :current-page="currentPage"
                 :total-pages="totalPages"
                 :search-query="localSearchQuery"
+                :selected-genres="localSelectedGenres"
                 class="pagination"
             />
         </div>
@@ -59,7 +110,7 @@
 
 <script setup>
 import { Head, Link, router } from "@inertiajs/vue3";
-import { ref, onBeforeUnmount, onMounted } from 'vue';
+import {ref, computed, onBeforeUnmount, onMounted, watch} from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -70,11 +121,18 @@ const props = defineProps({
     paginationLinks: Array,
     currentPage: Number,
     totalPages: Number,
-    perPage: Number
+    perPage: Number,
+    allGenres: Array,
+    selectedGenres: {
+        type: Array,
+        default: () => []
+    }
 });
 
 const localSearchQuery = ref(props.searchQuery || '');
 const localPerPage = ref(props.perPage || 24);
+const showGenreModal = ref(false);
+const localSelectedGenres = ref([...props.selectedGenres]);
 
 const checkScreenSize = () => {
     localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
@@ -90,15 +148,52 @@ onBeforeUnmount(() => {
 });
 
 const performSearch = () => {
-    router.visit(`/explore/artists?q=${localSearchQuery.value}&perPage=${localPerPage.value}`, {
+    router.visit(`/explore/artists?q=${localSearchQuery.value}&genres=${localSelectedGenres.value.join(',')}&perPage=${localPerPage.value}`, {
         preserveState: true,
         replace: true
     });
 };
 
+const selectedGenreNames = computed(() => {
+    return props.allGenres.filter(genre =>
+        localSelectedGenres.value.includes(genre.id)
+    );
+});
+
+watch(() => props.selectedGenres, (newVal) => {
+    localSelectedGenres.value = [...newVal];
+});
+
 const redirectToArtist = (slug) => {
     window.location.href = `/artists/${slug}`;
 };
+
+const toggleGenre = (genreId) => {
+    const index = localSelectedGenres.value.indexOf(genreId);
+    if (index === -1) {
+        localSelectedGenres.value.push(genreId);
+    } else {
+        localSelectedGenres.value.splice(index, 1);
+    }
+};
+
+const removeGenre = (genreId) => {
+    toggleGenre(genreId);
+    performSearch();
+};
+
+const clearGenres = () => {
+    localSelectedGenres.value = [];
+};
+
+const applyGenreFilters = () => {
+    showGenreModal.value = false;
+    performSearch();
+};
+
+function lowercaseString(val) {
+    return String(val).toLowerCase();
+}
 
 </script>
 
@@ -193,6 +288,207 @@ const redirectToArtist = (slug) => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.5);
+}
+
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.filter-button {
+    background-color: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 auto;
+    transition: background-color 0.2s;
+}
+
+.filter-button:hover {
+    background-color: #14a8df;
+}
+
+.selected-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.selected-genres-label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.genre-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.genre-tag {
+    background: #f0f4ff;
+    color: #0c4baa;
+    padding: 0.35rem 0.75rem 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    position: relative;
+    transition: background 0.2s;
+}
+
+.genre-tag .remove-genre {
+    flex-shrink: 0;
+    margin-left: auto;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 0.1rem;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.2s;
+}
+
+.genre-tag-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+.genre-tag .remove-genre:hover {
+    background-color: #d1dcff;
+}
+
+/* modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #0c4baa;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-body {
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.genre-item {
+    display: flex;
+    flex: 1 0 calc(20% - 0.75rem); /* 5 items per row */
+    min-width: 150px;
+    max-width: 200px;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.genre-item:hover {
+    background-color: #f5f5f5;
+}
+
+.genre-item input {
+    cursor: pointer;
+}
+
+.genre-item label {
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.modal-footer {
+    padding: 1rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.btn-clear {
+    background: none;
+    border: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-apply {
+    background-color: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-apply:hover {
+    background-color: #14a8df;
 }
 
 .results-title {
@@ -328,6 +624,15 @@ const redirectToArtist = (slug) => {
     .artist-info p {
         font-size: 0.95rem;
     }
+
+    .filters-container {
+        flex-direction: column;
+    }
+
+    .genre-item {
+        flex: 1 0 calc(33.333% - 0.75rem); /* 3 items per row */
+        min-width: 120px;
+    }
 }
 
 @media (max-width: 540px) {
@@ -365,6 +670,10 @@ const redirectToArtist = (slug) => {
 
     .artist-card {
         flex: 0 0 80%;
+    }
+
+    .genre-item {
+        flex: 1 0 calc(50% - 0.75rem); /* 2 items per row on mobile */
     }
 }
 
