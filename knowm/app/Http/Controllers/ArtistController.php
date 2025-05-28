@@ -152,6 +152,7 @@ class ArtistController extends Controller
     {
         $searchQuery = $request->input('q', '');
         $perPage = $request->input('perPage', 24);
+        $sortOrder = $request->input('sort', 'asc');
         $selectedGenres = $request->input('genres', []);
         if (is_string($selectedGenres)) {
             $selectedGenres = $selectedGenres === '' ? [] : explode(',', $selectedGenres);
@@ -169,7 +170,7 @@ class ArtistController extends Controller
             })
             ->withCount('tracks')
             ->with('genres')
-            ->orderBy('name')
+            ->orderBy('name', $sortOrder)
             ->paginate($perPage)
             ->withQueryString();
         $genres = Genre::orderBy('name')->get();
@@ -182,6 +183,7 @@ class ArtistController extends Controller
             'perPage' => $perPage,
             'allGenres' => $genres,
             'selectedGenres' => $genreIds,
+            'sortOrder' => $sortOrder
         ]);
     }
 

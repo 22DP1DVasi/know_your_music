@@ -30,6 +30,14 @@
                     </button>
                 </div>
 
+                <div class="sort-controls">
+                    <label>Sort by:</label>
+                    <select v-model="localSortOrder" @change="applySort">
+                        <option value="asc">A-Z</option>
+                        <option value="desc">Z-A</option>
+                    </select>
+                </div>
+
                 <div v-if="selectedGenres.length > 0" class="selected-genres">
                     <div class="selected-genres-label">Selected genres:</div>
                     <div class="genre-tags">
@@ -126,6 +134,10 @@ const props = defineProps({
     selectedGenres: {
         type: Array,
         default: () => []
+    },
+    sortOrder: {
+        type: String,
+        default: 'asc'
     }
 });
 
@@ -133,6 +145,7 @@ const localSearchQuery = ref(props.searchQuery || '');
 const localPerPage = ref(props.perPage || 24);
 const showGenreModal = ref(false);
 const localSelectedGenres = ref([...props.selectedGenres]);
+const localSortOrder = ref(props.sortOrder);
 
 const checkScreenSize = () => {
     localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
@@ -148,7 +161,7 @@ onBeforeUnmount(() => {
 });
 
 const performSearch = () => {
-    router.visit(`/explore/artists?q=${localSearchQuery.value}&genres=${localSelectedGenres.value.join(',')}&perPage=${localPerPage.value}`, {
+    router.visit(`/explore/artists?q=${localSearchQuery.value}&genres=${localSelectedGenres.value.join(',')}&perPage=${localPerPage.value}&sort=${localSortOrder.value}`, {
         preserveState: true,
         replace: true
     });
@@ -189,6 +202,26 @@ const clearGenres = () => {
 const applyGenreFilters = () => {
     showGenreModal.value = false;
     performSearch();
+};
+
+const applySort = () => {
+    const params = new URLSearchParams();
+
+    if (localSearchQuery.value) {
+        params.set('q', localSearchQuery.value);
+    }
+
+    if (localSelectedGenres.value.length > 0) {
+        params.set('genres', localSelectedGenres.value.join(','));
+    }
+
+    params.set('perPage', localPerPage.value);
+    params.set('sort', localSortOrder.value);
+
+    router.visit(`/explore/artists?${params.toString()}`, {
+        preserveState: true,
+        replace: true
+    });
 };
 
 function lowercaseString(val) {
@@ -491,6 +524,35 @@ function lowercaseString(val) {
     background-color: #14a8df;
 }
 
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    padding: 0 2rem;
+}
+
+.sort-controls label {
+    font-weight: 500;
+    color: #0c4baa;
+}
+
+.sort-controls select {
+    padding: 0.5rem;
+    border: 2px solid #54b3ebed;
+    border-radius: 5px;
+    background: white;
+    color: #333;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.sort-controls select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(84, 179, 235, 0.3);
+}
+
 .results-title {
     margin-bottom: 15px;
     padding: 0;
@@ -632,6 +694,10 @@ function lowercaseString(val) {
     .genre-item {
         flex: 1 0 calc(33.333% - 0.75rem); /* 3 items per row */
         min-width: 120px;
+    }
+
+    .sort-controls {
+        padding: 0 1rem;
     }
 }
 
