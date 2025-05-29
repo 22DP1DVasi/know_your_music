@@ -128,6 +128,10 @@ Route::get('/genres/{slug}/artists', [GenreController::class, 'showAllArtists'])
 Route::get('/explore/artists', [ArtistController::class, 'explore'])
     ->name('explore.artists');
 
+// page for releases explore
+Route::get('/explore/releases', [ReleaseController::class, 'explore'])
+    ->name('explore.releases');
+
 // user account settings
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {

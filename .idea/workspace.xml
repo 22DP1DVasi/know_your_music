@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleasesExplore.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistsExplore.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistsExplore.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -293,7 +294,9 @@
       <workItem from="1747979782206" duration="2696000" />
       <workItem from="1748075874639" duration="11235000" />
       <workItem from="1748356107978" duration="11466000" />
-      <workItem from="1748428545469" duration="7059000" />
+      <workItem from="1748428545469" duration="7289000" />
+      <workItem from="1748440482165" duration="1593000" />
+      <workItem from="1748506933532" duration="1077000" />
     </task>
     <servers />
   </component>
