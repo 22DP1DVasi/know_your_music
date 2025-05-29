@@ -132,7 +132,7 @@ class Genre extends Model
         if (Storage::disk('public')->exists($path)) {
             return Storage::url($path);
         }
-        return '';
+        return asset('images/default-genre-banner.webp');
     }
 
     /**

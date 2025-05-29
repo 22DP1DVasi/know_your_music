@@ -24,7 +24,8 @@ class ImportSpotifyArtists extends Command
 //            'KAMAARA',
 //            'Oxxxymiron'
 //            'Korn'
-        'Green Apelsin'
+//        'Green Apelsin'
+        'Twenty One Pilots'
         ];
 
         $spotify = new SpotifyService();

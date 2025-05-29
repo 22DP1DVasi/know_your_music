@@ -78,4 +78,27 @@ class GenreController extends Controller
             'perPage' => $perPage
         ]);
     }
+
+    public function explore(Request $request)
+    {
+        $searchQuery = $request->input('q', '');
+        $perPage = $request->input('perPage', 24);
+        $sortOrder = $request->input('sort', 'asc');
+        $genres = Genre::query()
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where('name', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy('name', $sortOrder)
+            ->paginate($perPage)
+            ->withQueryString();
+        return Inertia::render('Genres/GenresExplore', [
+            'genres' => $genres->items(),
+            'searchQuery' => $searchQuery,
+            'paginationLinks' => $genres->toArray()['links'],
+            'currentPage' => $genres->currentPage(),
+            'totalPages' => $genres->lastPage(),
+            'perPage' => $perPage,
+            'sortOrder' => $sortOrder,
+        ]);
+    }
 }

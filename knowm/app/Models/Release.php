@@ -156,7 +156,6 @@ class Release extends Model
     public function getCoverUrlAttribute()
     {
         $path = "releases/{$this->release_type}/{$this->id}/cover.webp";
-
         return Storage::disk('public')->exists($path)
             ? Storage::url($path)
             : asset('images/default-release-banner.webp');

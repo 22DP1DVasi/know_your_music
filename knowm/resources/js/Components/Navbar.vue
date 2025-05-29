@@ -34,7 +34,7 @@
                 <div v-show="showExploreDropdown" class="explore-dropdown">
                     <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
                     <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
-                    <a href="#" @click.prevent="redirectToExplore('tracks')">Tracks</a>
+<!--                    <a href="#" @click.prevent="redirectToExplore('tracks')">Tracks</a>-->
                     <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
                 </div>
             </li>
@@ -82,7 +82,7 @@
                 <div v-show="showMobileExplore" class="mobile-explore-dropdown">
                     <a href="/explore/artists">Artists</a>
                     <a href="/explore/releases">Releases</a>
-                    <a href="/explore/tracks">Tracks</a>
+<!--                    <a href="/explore/tracks">Tracks</a>-->
                     <a href="/explore/genres">Genres</a>
                 </div>
             </li>
