@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
@@ -28,23 +29,20 @@ class LastFmService
             $response = $this->client->get($this->baseUrl, [
                 'query' => [
                     'method' => 'artist.getinfo',
-                    'artist' => urlencode($artistName), // Encode special characters
+                    'artist' => urlencode($artistName), // encode special characters
                     'api_key' => $this->apiKey,
                     'format' => 'json',
                     'autocorrect' => 1
                 ],
                 'headers' => [
-                    'User-Agent' => 'YourMusicApp/1.0' // Some APIs require user agent
+                    'User-Agent' => 'YourMusicApp/1.0' // some APIs require user agent
                 ]
             ]);
-
             $data = json_decode($response->getBody()->getContents(), true);
-
-            // Check if artist was autocorrected
+            // check if artist was autocorrected
             if (isset($data['artist']['name']) && strtolower($data['artist']['name']) !== strtolower(urldecode($artistName))) {
-                $this->info("Artist name autocorrected from {$artistName} to {$data['artist']['name']}");
+                Log::info("Artist name autocorrected from {$artistName} to {$data['artist']['name']}");
             }
-
             return $data;
         } catch (\Exception $e) {
             Log::error("Last.fm artist info error for {$artistName}: " . $e->getMessage());
@@ -70,6 +68,9 @@ class LastFmService
         } catch (\Exception $e) {
             Log::error("Last.fm top albums error for {$artistName}: " . $e->getMessage());
             return ['error' => $e->getMessage()];
+        } catch (GuzzleException $e) {
+            Log::error("Last.fm top albums error for {$artistName}: " . $e->getResponse());
+            return ['error' => $e->getResponse()];
         }
     }
 

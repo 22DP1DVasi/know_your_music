@@ -22,7 +22,7 @@ class ImportLastFmData extends Command
         $this->lastFmService = $lastFmService;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $artistName = $this->argument('artist');
         $limit = (int)$this->option('limit');
@@ -34,6 +34,26 @@ class ImportLastFmData extends Command
         }
         $this->importTopAlbums($artist, $limit);
         $this->info("Import completed successfully!");
+    }
+
+    protected function importTopAlbums(Artist $artist, int $limit): void
+    {
+        $this->info("Fetching top {$limit} albums for {$artist->name}");
+        // use the service method instead of direct HTTP call
+        $topAlbums = $this->lastFmService->getArtistTopAlbums($artist->name, $limit);
+        if (isset($topAlbums['error'])) {
+            $this->error("Failed to fetch top albums: " . $topAlbums['error']);
+            return;
+        }
+        if (empty($topAlbums['topalbums']['album'])) {
+            $this->error("No albums found");
+            return;
+        }
+        $this->info("Found " . count($topAlbums['topalbums']['album']) . " albums");
+        foreach ($topAlbums['topalbums']['album'] as $album) {
+            $this->processAlbum($album, $artist);
+            sleep(1);
+        }
     }
 
     protected function importArtist(string $artistName): ?Artist
@@ -76,31 +96,6 @@ class ImportLastFmData extends Command
         }
 
         return $artist;
-    }
-
-    protected function importTopAlbums(Artist $artist, int $limit)
-    {
-        $this->info("Fetching top {$limit} albums for {$artist->name}");
-
-        // Use the service method instead of direct HTTP call
-        $topAlbums = $this->lastFmService->getArtistTopAlbums($artist->name, $limit);
-
-        if (isset($topAlbums['error'])) {
-            $this->error("Failed to fetch top albums: " . $topAlbums['error']);
-            return;
-        }
-
-        if (empty($topAlbums['topalbums']['album'])) {
-            $this->error("No albums found");
-            return;
-        }
-
-        $this->info("Found " . count($topAlbums['topalbums']['album']) . " albums");
-
-        foreach ($topAlbums['topalbums']['album'] as $album) {
-            $this->processAlbum($album, $artist);
-            sleep(1);
-        }
     }
 
     protected function processAlbum(array $albumData, Artist $artist)

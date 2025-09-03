@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenresExplore.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/GenreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/GenreController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Genre.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Genre.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Release.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Release.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Services/LastFmService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/LastFmService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -207,8 +204,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-PS-243.23654.168" />
-        <option value="bundled-php-predefined-a98d8de5180a-4c3855d0ab16-com.jetbrains.php.sharedIndexes-PS-243.23654.168" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-PS-243.26574.100" />
+        <option value="bundled-php-predefined-a98d8de5180a-1ec7b7818973-com.jetbrains.php.sharedIndexes-PS-243.26574.100" />
       </set>
     </attachedChunks>
   </component>
@@ -300,7 +297,12 @@
       <workItem from="1748356107978" duration="11466000" />
       <workItem from="1748428545469" duration="7289000" />
       <workItem from="1748440482165" duration="1593000" />
-      <workItem from="1748506933532" duration="4499000" />
+      <workItem from="1748506933532" duration="4549000" />
+      <workItem from="1748516341127" duration="1029000" />
+      <workItem from="1749104612893" duration="9090000" />
+      <workItem from="1754741008810" duration="80000" />
+      <workItem from="1754741471418" duration="810000" />
+      <workItem from="1756399302467" duration="3736000" />
     </task>
     <servers />
   </component>
