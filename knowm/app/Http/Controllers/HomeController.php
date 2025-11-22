@@ -14,7 +14,7 @@ class HomeController
             'auth' => [
                 'user' => auth()->check() ? auth()->user()->load('roles') : null
             ],
-            'isAdmin' => auth()->check() && auth()->user()->roles()->where('id', 1)->exists()
+            'isAdmin' => auth()->check() && auth()->user()->roles()->where('role_id', 1)->exists()
         ]);
     }
 

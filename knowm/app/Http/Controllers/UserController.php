@@ -17,7 +17,7 @@ class UserController extends Controller
 
         return Inertia::render('Users/Show', [
             'user' => $user,
-            'isAdmin' => $user->roles()->where('id', 1)->exists(),
+            'isAdmin' => $user->roles()->where('role_id', 1)->exists(),
             'roles' => $user->roles,
         ]);
     }
