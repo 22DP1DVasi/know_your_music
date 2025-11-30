@@ -1,3 +1,34 @@
+<script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { Link, router } from '@inertiajs/vue3';
+import Pagination from "@/Components/Admin/Pagination.vue";
+import {route} from "ziggy-js";
+
+defineProps({
+    users: Object
+});
+
+const deleteUser = (id) => {
+    if (confirm('Are you sure you want to delete this user?')) {
+        router.delete(route('admin-users-destroy', { id: id }), {
+            onSuccess: () => {
+            },
+            onError: (errors) => {
+                alert(errors.response.data.message || "");
+            },
+            preserveScroll: true
+        });
+    }
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+</script>
+
 <template>
     <AdminLayout>
         <div class="header-container">
@@ -35,8 +66,8 @@
                         {{ role.name }}
                       </span>
                     </td>
-                    <td class="created-updated-at-table-data">{{ user.created_at }}</td>
-                    <td class="created-updated-at-table-data">{{ user.updated_at }}</td>
+                    <td class="created-updated-at-table-data">{{ formatDate(user.created_at) }}</td>
+                    <td class="created-updated-at-table-data">{{ formatDate(user.updated_at) }}</td>
                     <td class="actions-cell">
                         <Link :href="route('admin-users-edit', { id: user.id })" class="btn-edit">
                             Edit
@@ -49,40 +80,10 @@
                 </tbody>
             </table>
 
-            <Pagination :links="users.links" class="pagination" />
+            <Pagination :links="users.links" />
         </div>
     </AdminLayout>
 </template>
-
-<script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link, router } from '@inertiajs/vue3';
-import Pagination from "@/Components/Pagination.vue";
-
-defineProps({
-    users: Object
-});
-
-const deleteUser = (id) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-        router.delete(route('admin-users-destroy', { id: id }), {
-            onSuccess: () => {
-            },
-            onError: (errors) => {
-                alert(errors.response.data.message || "");
-            },
-            preserveScroll: true
-        });
-    }
-};
-
-const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
-</script>
 
 <style scoped>
 .header-container {
