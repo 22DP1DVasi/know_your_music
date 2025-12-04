@@ -23,7 +23,8 @@ class ReleaseComment extends Model
         'status',
         'deleted_username',
         'user_id',
-        'release_id'
+        'release_id',
+        'parent_id'
     ];
 
     /**

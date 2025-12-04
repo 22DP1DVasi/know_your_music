@@ -19,10 +19,12 @@ class Genre extends Model
     protected $fillable = [
         'name',
         'slug',
-        'description',
+        'description_en',
+        'description_lv',
         'origin_year',
         'origin_country',
-        'image'
+        'image',
+        'popularity'
     ];
 
     /**
@@ -32,6 +34,7 @@ class Genre extends Model
      */
     protected $casts = [
         'origin_year' => 'integer',
+        'popularity' => 'decimal:2',
     ];
 
     // explicit attributes for images URL

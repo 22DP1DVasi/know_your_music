@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments_releases', function (Blueprint $table) {
+        Schema::create('comments_genres', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('release_id');
+            $table->unsignedBigInteger('genre_id');
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
             $table->string('deleted_username', 100)->nullable(); // saglabāt lietotājvārdu pirms lietotāja dzēšanas kā metadatus
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index('user_id');
-            $table->index('release_id');
+            $table->index('genre_id');
             $table->index('parent_id');
 
             $table->foreign('user_id')
@@ -30,9 +30,9 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('set null');
 
-            $table->foreign('release_id')
+            $table->foreign('genre_id')
                 ->references('id')
-                ->on('releases')
+                ->on('genres')
                 ->onDelete('cascade');
 
             $table->foreign('parent_id')
@@ -47,6 +47,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments_releases');
+        Schema::dropIfExists('comments_genres');
     }
 };

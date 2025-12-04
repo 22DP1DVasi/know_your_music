@@ -20,11 +20,13 @@ class Artist extends Model
     protected $fillable = [
         'name',
         'slug',
-        'biography',
+        'biography_en',
+        'biography_lv',
         'formed_year',
         'disbanded_year',
         'image',
         'solo_or_band',
+        'popularity'
     ];
 
     /**
@@ -36,6 +38,7 @@ class Artist extends Model
         'formed_year' => 'integer',
         'disbanded_year' => 'integer',
         'is_active' => 'boolean',
+        'popularity' => 'decimal:2',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
