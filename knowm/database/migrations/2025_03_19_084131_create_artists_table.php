@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('biography_en')->nullable();
+            $table->text('biography')->nullable();
             $table->text('biography_lv')->nullable();
             $table->unsignedSmallInteger('formed_year')->nullable();
             $table->unsignedSmallInteger('disbanded_year')->nullable();

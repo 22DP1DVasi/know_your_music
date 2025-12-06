@@ -19,7 +19,7 @@ class Genre extends Model
     protected $fillable = [
         'name',
         'slug',
-        'description_en',
+        'description',
         'description_lv',
         'origin_year',
         'origin_country',

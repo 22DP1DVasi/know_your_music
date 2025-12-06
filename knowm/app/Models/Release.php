@@ -23,7 +23,7 @@ class Release extends Model
         'slug',
         'release_date',
         'cover_image',
-        'description_en',
+        'description',
         'description_lv',
         'release_type',
         'popularity'

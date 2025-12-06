@@ -21,12 +21,6 @@ const deleteUser = (id) => {
     }
 };
 
-const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
 </script>
 
 <template>
@@ -66,8 +60,8 @@ const formatDate = (dateString) => {
                         {{ role.name }}
                       </span>
                     </td>
-                    <td class="created-updated-at-table-data">{{ formatDate(user.created_at) }}</td>
-                    <td class="created-updated-at-table-data">{{ formatDate(user.updated_at) }}</td>
+                    <td class="created-updated-at-table-data">{{ user.created_at }}</td>
+                    <td class="created-updated-at-table-data">{{ user.updated_at }}</td>
                     <td class="actions-cell">
                         <Link :href="route('admin-users-edit', { id: user.id })" class="btn-edit">
                             Edit

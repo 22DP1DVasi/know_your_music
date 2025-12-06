@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100)->unique();
             $table->string('slug', 120)->unique();
-            $table->text('description_en')->nullable();
+            $table->text('description')->nullable();
             $table->text('description_lv')->nullable();
             $table->unsignedSmallInteger('origin_year')->nullable();
             $table->string('origin_country', 100)->nullable();

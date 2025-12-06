@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->date('release_date');
-            $table->text('description_en')->nullable();
+            $table->text('description')->nullable();
             $table->text('description_lv')->nullable();
             $table->enum('release_type', ['album', 'ep', 'single', 'compilation']);
             $table->double('popularity', 10, 2)->default(0.00);

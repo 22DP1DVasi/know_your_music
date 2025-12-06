@@ -19,7 +19,7 @@ class Track extends Model
     protected $fillable = [
         'title',
         'slug',
-        'description_en',
+        'description',
         'description_lv',
         'duration',
         'audio_source',

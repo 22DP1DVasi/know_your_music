@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->time('duration');
-            $table->text('description_en')->nullable();
+            $table->text('description')->nullable();
             $table->text('description_lv')->nullable();
             $table->string('audio_source')->nullable();
             $table->date('release_date');

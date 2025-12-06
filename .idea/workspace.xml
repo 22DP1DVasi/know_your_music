@@ -4,23 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Artist.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Artist.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Genre.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Genre.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Release.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Release.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/ReleaseComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/ReleaseComment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Track.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Track.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/TrackComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/TrackComment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_082740_create_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_082740_create_genres_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_084131_create_artists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_084131_create_artists_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_085251_create_releases_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_085251_create_releases_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_090516_create_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_19_090516_create_tracks_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_165959_create_comments_releases_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_165959_create_comments_releases_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_171840_create_comments_artists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_171840_create_comments_artists_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_172446_create_comments_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_172446_create_comments_tracks_table.php" afterDir="false" />
-    </list>
+    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -327,7 +311,7 @@
       <workItem from="1764182342517" duration="2190000" />
       <workItem from="1764522626127" duration="6008000" />
       <workItem from="1764579181537" duration="5661000" />
-      <workItem from="1764869106873" duration="850000" />
+      <workItem from="1764869106873" duration="1717000" />
     </task>
     <servers />
   </component>

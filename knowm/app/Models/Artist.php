@@ -20,7 +20,7 @@ class Artist extends Model
     protected $fillable = [
         'name',
         'slug',
-        'biography_en',
+        'biography',
         'biography_lv',
         'formed_year',
         'disbanded_year',
