@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         $users = User::with('roles')
             ->orderBy('name')
-            ->paginate(10);
+            ->paginate(8);
 
         return Inertia::render('Admin/Users/Index', [
             'users' => $users

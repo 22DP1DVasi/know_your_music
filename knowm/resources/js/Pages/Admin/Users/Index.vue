@@ -36,43 +36,58 @@ const deleteUser = (id) => {
         </div>
 
         <div class="table-container">
-            <table class="users-table">
-                <thead>
-                <tr class="table-header">
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th class="email-header">Email</th>
-                    <th>Status</th>
-                    <th>Roles</th>
-                    <th class="created-updated-at-header">Created at</th>
-                    <th class="created-updated-at-header">Updated at</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="user in users.data" :key="user.id">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.status }}</td>
-                    <td>
-                      <span v-for="role in user.roles" :key="role.id" class="role-pill">
-                        {{ role.name }}
-                      </span>
-                    </td>
-                    <td class="created-updated-at-table-data">{{ user.created_at }}</td>
-                    <td class="created-updated-at-table-data">{{ user.updated_at }}</td>
-                    <td class="actions-cell">
-                        <Link :href="route('admin-users-edit', { id: user.id })" class="btn-edit">
+            <div class="table-inner">
+                <!-- Galvenes -->
+                <div class="users-header">
+                    <div>Name</div>
+                    <div class="email-header">Email</div>
+                    <div>Status</div>
+                    <div>Roles</div>
+                    <div class="created-updated-at-header">Created at</div>
+                    <div class="created-updated-at-header">Updated at</div>
+                    <div>Actions</div>
+                </div>
+
+                <!-- Rindas -->
+                <div
+                    v-for="user in users.data"
+                    :key="user.id"
+                    class="users-row"
+                >
+                    <div>{{ user.name }}</div>
+                    <div class="email-header">{{ user.email }}</div>
+                    <div>{{ user.status }}</div>
+                    <div class="roles-cell">
+                        <span
+                            v-for="role in user.roles"
+                            :key="role.id"
+                            class="role-pill"
+                        >
+                            {{ role.name }}
+                        </span>
+                    </div>
+                    <div class="created-updated-at-table-data">
+                        {{ user.created_at }}
+                    </div>
+                    <div class="created-updated-at-table-data">
+                        {{ user.updated_at }}
+                    </div>
+                    <div class="actions-cell">
+                        <Link
+                            :href="route('admin-users-edit', { id: user.id })"
+                            class="btn-edit"
+                        >
                             Edit
                         </Link>
-                        <button @click="deleteUser(user.id)" class="btn-danger">
+                        <button
+                            @click="deleteUser(user.id)"
+                            class="btn-danger"
+                        >
                             Delete
                         </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </div>
+                </div>
+            </div>
 
             <Pagination :links="users.links" />
         </div>
@@ -94,7 +109,6 @@ const deleteUser = (id) => {
     margin: 0;
 }
 
-/* Pogas */
 .btn-secondary,
 .btn-primary,
 .btn-edit,
@@ -150,48 +164,59 @@ const deleteUser = (id) => {
 .table-container {
     background-color: white;
     border-radius: 0.5rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    width: clamp(320px, 95vw, 1400px);
+    margin: 0 auto;
     overflow-x: auto;
 }
 
-/* Tabula */
-.users-table {
-    width: 100%;
-    border-collapse: collapse;
+.table-inner {
+    min-width: 1100px;
 }
 
-.users-table th,
-.users-table td {
-    padding: 0.75rem 1.5rem;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
+.users-header,
+.users-row {
+    display: flex;
+    align-items: center;
+    min-width: 100%;
 }
 
-.created-updated-at-header {
-    font-size: 0.9rem;
-}
-
-.users-table td {
-    vertical-align: middle;
-    min-height: 100px;
-}
-
-.created-updated-at-table-data {
-    font-size: 0.8rem;
-}
-
-.table-header {
+.users-header {
     background-color: #f3f4f6;
-}
-
-.table-header th {
     font-weight: 600;
     color: #374151;
     border-bottom: 2px solid #d1d5db;
 }
 
-.users-table tbody tr:hover {
+.users-row {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.users-row:hover {
     background-color: #f9fafb;
+}
+
+.users-header > div,
+.users-row > div {
+    padding: 0.75rem 1.5rem;
+    flex: 1;
+    min-width: 120px;
+}
+
+.users-header > div:nth-child(3),
+.users-row > div:nth-child(3) {
+    max-width: 80px;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.roles-cell {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .role-pill {
@@ -202,53 +227,22 @@ const deleteUser = (id) => {
     border-radius: 0.25rem;
     margin-right: 0.25rem;
     margin-bottom: 0.25rem;
-    display: inline-block;
 }
 
-.actions-cell {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: flex-start;
+.created-updated-at-header {
+    font-size: 0.9rem;
 }
 
-.pagination {
-    margin-top: 1rem;
-    padding: 0 1.5rem 1.5rem;
+.created-updated-at-table-data {
+    font-size: 0.8rem;
 }
 
-/* Responsivitāte - izstrādes posmā, horizontālā ritjosla nestrādā */
-@media (max-width: 1260px) {
-    .table-container {
-        overflow-x: auto; /* horizontālā ritjosla */
-    }
-
-    .users-table {
-        min-width: 1000px;
-        overflow-x: auto;
-    }
-}
-
-@media (max-width: 1024px) {
-    .table-container {
-        margin: 0 -1rem;
-        border-radius: 0;
-    }
-
-    .users-table {
-        min-width: 900px;
-    }
-}
-
+/* Responsivitāte */
 @media (max-width: 768px) {
     .header-container {
         flex-direction: column;
         gap: 1rem;
         align-items: flex-start;
-    }
-
-    .header-container h1 {
-        font-size: 1.5rem;
     }
 
     .email-header,
@@ -257,26 +251,13 @@ const deleteUser = (id) => {
         display: none;
     }
 
-    .users-table th:nth-child(3), /* E-pasts */
-    .users-table td:nth-child(3), /* E-pasts */
-    .users-table th:nth-child(6), /* Izveidots */
-    .users-table td:nth-child(6), /* Izveidots */
-    .users-table th:nth-child(7), /* Atjaunināts */
-    .users-table td:nth-child(7) { /* Atjaunināts */
-        display: none;
-    }
-
-    .users-table {
-        min-width: 600px;
-    }
-
     .actions-cell {
         flex-direction: column;
         gap: 0.25rem;
     }
 
-    .users-table th,
-    .users-table td {
+    .users-header > div,
+    .users-row > div {
         padding: 0.5rem 0.75rem;
     }
 
@@ -290,19 +271,6 @@ const deleteUser = (id) => {
 }
 
 @media (max-width: 480px) {
-    .header-container h1 {
-        font-size: 1.25rem;
-    }
-
-    .users-table th:nth-child(4), /* Statuss */
-    .users-table td:nth-child(4) { /* Statuss */
-        display: none;
-    }
-
-    .users-table {
-        min-width: 500px;
-    }
-
     .role-pill {
         font-size: 0.7rem;
         padding: 0.125rem 0.375rem;

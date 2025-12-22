@@ -21,8 +21,9 @@ class ArtistController extends Controller
 
     public function index()
     {
+        $artists = Artist::orderBy('name')->paginate(10);
         return Inertia::render('Admin/Artists/Index', [
-            'artists' => Artist::orderBy('id')->paginate(20)
+            'artists' => $artists
         ]);
     }
 
@@ -39,13 +40,17 @@ class ArtistController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
+            'biography_lv' => 'nullable|string',
             'formed_year' => "nullable|integer|min:1900|max:{$nextYear}",
-            'disbanded_year' => "nullable|integer|min:1900|max:{$nextYear}|gte:formed_year",
+            'disbanded_year' => "nullable|integer|min:1900|max:{$nextYear}|gte:formed_year", // gte -> greater than or equal / lielāks vai vienāds
             'is_active' => 'required|boolean',
             'solo_or_band' => 'nullable|in:solo,band'
         ]);
-        $this->artist->slug = $this->artist->generateUniqueSlug();
-        $this->artist->save();
+        // izveidot izpildītāju ar validētiem datiem
+        $artist = Artist::create($validated);
+        // ģenerēt un saglabāt slug'u
+        $artist->slug = $artist->generateUniqueSlug();
+        $artist->save();
         return redirect()->route('admin-artists-index')
             ->with('success', 'Artist created successfully');
     }
@@ -66,20 +71,20 @@ class ArtistController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
+            'biography_lv' => 'nullable|string',
             'formed_year' => "nullable|integer|min:1900|max:{$nextYear}",
             'disbanded_year' => "nullable|integer|min:1900|max:{$nextYear}|gte:formed_year",
             'is_active' => 'required|boolean',
             'solo_or_band' => 'nullable|in:solo,band'
         ]);
+        // pārbaudiet, vai nosaukums ir mainīts
         if ($artist->name !== $validated['name']) {
-            $this->artist->slug = $this->artist->generateUniqueSlug();
-            $this->artist->save();
+            $validated['slug'] = $artist->generateUniqueSlug($validated['name']);
         }
         $artist->update($validated);
         return redirect()->route('admin-artists-index')
             ->with('success', 'Artist updated successfully');
     }
-
 
     public function destroy($id)
     {
