@@ -165,7 +165,7 @@ const deleteUser = (id) => {
     background-color: white;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    width: clamp(320px, 95vw, 1400px);
+    width: clamp(320px, 95vw, 100%);
     margin: 0 auto;
     overflow-x: auto;
 }
@@ -238,6 +238,24 @@ const deleteUser = (id) => {
 }
 
 /* Responsivitāte */
+@media (max-width: 1260px) {
+    .table-container {
+        width: clamp(320px, 95vw, 1000px);
+    }
+}
+
+@media (max-width: 1170px) {
+    .table-container {
+        width: clamp(320px, 95vw, 800px);
+    }
+}
+
+@media (max-width: 965px) {
+    .table-container {
+        width: clamp(320px, 95vw, 600px);
+    }
+}
+
 @media (max-width: 768px) {
     .header-container {
         flex-direction: column;
