@@ -68,7 +68,6 @@ class UserController extends Controller
         ]);
     }
 
-
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -103,5 +102,27 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin-users-index')
             ->with('success', 'User deleted successfully');
+    }
+
+    /**
+     * Metode, kas dzēš (noņem) lomu no lietotāja.
+     *
+     * @param $userId
+     * @param $roleId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroyUserRole($userId, $roleId)
+    {
+        $user = User::findOrFail($userId);
+//        $role = Role::findOrFail($roleId);
+        // Neļaut dzēst administratora lomu no sevis
+//        if ($user->id === auth()->id() && $role->name === 'admin') {
+//            return redirect()->back()
+//                ->with('error', 'You cannot remove your own admin role.');
+//        }
+        // lomas atvienošana no lietotāja (pivot tabula)
+        $user->roles()->detach($roleId);
+        return redirect()->route('admin-users-edit', ['id' => $userId])
+            ->with('success', 'Role removed successfully.');
     }
 }

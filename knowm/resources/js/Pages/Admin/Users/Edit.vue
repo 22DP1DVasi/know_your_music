@@ -1,6 +1,7 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm, router } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
@@ -36,6 +37,20 @@ const resetForm = () => {
 const formatDateTimeUTC = (dateString) => {
     if (!dateString) return 'Unknown';
     return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
+};
+
+const deleteUserRole = (userId, roleId) => {
+    if (!confirm('Are you sure you want to remove this role from the user?')) {
+        return;
+    }
+    router.delete(route('admin-users-roles-destroy', { user: userId, role: roleId }), {
+        onSuccess: () => {
+        },
+        onError: (errors) => {
+            alert(errors.response?.data?.message || 'An error occurred');
+        },
+        preserveScroll: true,
+    });
 };
 
 </script>
@@ -178,7 +193,11 @@ const formatDateTimeUTC = (dateString) => {
                                         {{ formatDateTimeUTC(role.assigned_at) }}
                                     </div>
                                     <div class="roles-table-cell roles-table-cell-actions">
-                                        <button class="btn-danger">
+                                        <button
+                                            type="button"
+                                            class="btn-danger"
+                                            @click="deleteUserRole(props.user.id, role.id)"
+                                        >
                                             Delete
                                         </button>
                                     </div>
@@ -327,7 +346,6 @@ select.input-field {
     background-color: #dc2626;
 }
 
-/* Roles Table Styles - FLEXBOX ONLY */
 .roles-table-container {
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
@@ -426,7 +444,7 @@ select.input-field {
     gap: 1rem;
 }
 
-/* Responsive Styles */
+/* Responsivitāte */
 @media (max-width: 1024px) {
     .roles-table-cell-name {
         min-width: 120px;
