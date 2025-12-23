@@ -1,3 +1,77 @@
+<script setup>
+import { Head, router } from '@inertiajs/vue3'
+import Navbar from '@/Components/Navbar.vue'
+import Footer from '@/Components/Footer.vue'
+import { ref, computed } from 'vue'
+import ColorThief from 'colorthief'
+import dayjs from 'dayjs';
+
+const props = defineProps({
+    track: {
+        type: Object,
+        required: true,
+        default: () => ({
+            id: Number,
+            title: String,
+            cover_url: String,
+            release_date: String,
+            duration: String,
+            artists: Array,
+            genres: Array,
+            release: Object
+        })
+    },
+    lyrics: {
+        type: Object,
+        default: () => ({
+            id: Number,
+            text: String,
+            status: String,
+            track_id: Number
+        })
+    }
+});
+
+const heroImage = ref(null);
+const heroStyle = ref({
+    height: '300px',
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0'
+});
+const imageStyle = ref({
+    opacity: 0,
+    transition: 'opacity 0.3s ease'
+});
+
+const handleImageLoad = () => {
+    const img = heroImage.value;
+    if (!img) return;
+
+    imageStyle.value.opacity = 1;
+    imageStyle.value.width = '100%';
+    imageStyle.value.height = 'auto';
+    imageStyle.value.objectFit = 'cover';
+    imageStyle.value.objectPosition = 'center';
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return 'Unknown';
+    return dayjs(dateString).format('MMMM D, YYYY');
+};
+
+const formatDuration = (timeString) => {
+    if (!timeString) return '--:--';
+    const [hours, minutes, seconds] = timeString.split(':');
+    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
+const redirectToGenre = (slug) => {
+    window.location.href = `/genres/${slug}`;
+};
+
+</script>
+
 <template>
     <Head :title="track.title" />
     <link rel="preload" :href="track.cover_url" as="image">
@@ -124,80 +198,6 @@
     </main>
     <Footer />
 </template>
-
-<script setup>
-import { Head, router } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import { ref, computed } from 'vue'
-import ColorThief from 'colorthief'
-
-const props = defineProps({
-    track: {
-        type: Object,
-        required: true,
-        default: () => ({
-            id: Number,
-            title: String,
-            cover_url: String,
-            release_date: String,
-            duration: String,
-            artists: Array,
-            genres: Array,
-            release: Object
-        })
-    },
-    lyrics: {
-        type: Object,
-        default: () => ({
-            id: Number,
-            text: String,
-            status: String,
-            track_id: Number
-        })
-    }
-});
-
-const heroImage = ref(null);
-const heroStyle = ref({
-    height: '300px',
-    position: 'relative',
-    overflow: 'hidden',
-    backgroundColor: '#f0f0f0'
-});
-const imageStyle = ref({
-    opacity: 0,
-    transition: 'opacity 0.3s ease'
-});
-
-const handleImageLoad = () => {
-    const img = heroImage.value;
-    if (!img) return;
-
-    imageStyle.value.opacity = 1;
-    imageStyle.value.width = '100%';
-    imageStyle.value.height = 'auto';
-    imageStyle.value.objectFit = 'cover';
-    imageStyle.value.objectPosition = 'center';
-};
-
-const formatDate = (dateString) => {
-    if (!dateString) return 'Unknown';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-};
-
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const [hours, minutes, seconds] = timeString.split(':');
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
-};
-
-const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
-};
-
-</script>
 
 <style scoped>
 .track-page {

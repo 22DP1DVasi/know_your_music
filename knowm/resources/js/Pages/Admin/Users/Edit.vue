@@ -1,6 +1,10 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const props = defineProps({
     user: Object,
@@ -14,7 +18,7 @@ const form = useForm({
     password: '',
     password_confirmation: '',
     status: props.user.status,
-    roles: props.user.roles || []
+    roles: props.user.roles.map(r => r.id)
 });
 
 const submit = () => {
@@ -26,6 +30,12 @@ const resetForm = () => {
     form.name = props.user.name;
     form.email = props.user.email;
     form.status = props.user.status;
+    form.roles = props.user.roles.map(r => r.id);
+};
+
+const formatDateTimeUTC = (dateString) => {
+    if (!dateString) return 'Unknown';
+    return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
 };
 
 </script>
@@ -46,6 +56,7 @@ const resetForm = () => {
                     type="submit"
                     class="btn-primary"
                     :disabled="form.processing"
+                    @click="submit"
                 >
                     Update User
                 </button>
@@ -129,18 +140,56 @@ const resetForm = () => {
 
                     <div class="form-group">
                         <label>Roles</label>
-                        <div class="roles-grid">
-                            <div v-for="role in allRoles" :key="role.id" class="role-item">
-                                <input
-                                    type="checkbox"
-                                    :id="'role_' + role.id"
-                                    :value="role.id"
-                                    v-model="form.roles"
-                                    class="role-checkbox"
+
+                        <!-- Roles Table Container -->
+                        <div class="roles-table-container">
+                            <!-- Table Header -->
+                            <div class="roles-table-header">
+                                <div class="roles-table-row">
+                                    <div class="roles-table-cell roles-table-cell-name">
+                                        Name
+                                    </div>
+                                    <div class="roles-table-cell roles-table-cell-description">
+                                        Description
+                                    </div>
+                                    <div class="roles-table-cell roles-table-cell-added">
+                                        Assigned At
+                                    </div>
+                                    <div class="roles-table-cell roles-table-cell-actions">
+                                        Actions
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Table Body -->
+                            <div class="roles-table-body">
+                                <div
+                                    v-for="role in user.roles"
+                                    :key="role.id"
+                                    class="roles-table-row role-assigned"
                                 >
-                                <label :for="'role_' + role.id">{{ role.name }}</label>
+                                    <div class="roles-table-cell roles-table-cell-name">
+                                        {{ role.name }}
+                                    </div>
+                                    <div class="roles-table-cell roles-table-cell-description">
+                                        {{ role.description || 'No description' }}
+                                    </div>
+                                    <div class="roles-table-cell roles-table-cell-added">
+                                        {{ formatDateTimeUTC(role.assigned_at) }}
+                                    </div>
+                                    <div class="roles-table-cell roles-table-cell-actions">
+                                        <button class="btn-danger">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div v-if="!user.roles || user.roles.length === 0" class="roles-table-empty">
+                                    No roles assigned to this user
+                                </div>
                             </div>
                         </div>
+
                         <div v-if="form.errors.roles" class="error-message">
                             {{ form.errors.roles }}
                         </div>
@@ -152,7 +201,6 @@ const resetForm = () => {
 </template>
 
 <style scoped>
-
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -233,7 +281,8 @@ select.input-field {
 }
 
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-danger {
     display: inline-block;
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
@@ -269,47 +318,131 @@ select.input-field {
     background-color: #4b5563;
 }
 
-.roles-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.75rem;
-    margin-top: 0.5rem;
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
 }
 
-.role-item {
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
+/* Roles Table Styles - FLEXBOX ONLY */
+.roles-table-container {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    background-color: white;
+}
+
+.roles-table-header {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.roles-table-body {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.roles-table-row {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    min-height: 3rem;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.roles-table-row:last-child {
+    border-bottom: none;
+}
+
+.roles-table-row:hover {
     background-color: #f9fafb;
-    border-radius: 0.375rem;
-    border: 1px solid #e5e7eb;
 }
 
-.role-checkbox {
-    margin: 0;
-    width: 1rem;
-    height: 1rem;
-    border-radius: 0.25rem;
-    border: 1px solid #d1d5db;
-    cursor: pointer;
+.roles-table-row.role-assigned {
+    background-color: #f0f9ff;
 }
 
-.role-item label {
-    margin: 0;
-    cursor: pointer;
-    font-weight: normal;
+.roles-table-row.role-assigned:hover {
+    background-color: #e0f2fe;
+}
+
+.roles-table-cell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
     color: #374151;
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    flex: 1;
+    overflow: hidden;
+}
+
+.roles-table-cell-name {
+    font-weight: 500;
+    color: #1f2937;
+    min-width: 150px;
+    max-width: 200px;
+    flex: 1.5;
+}
+
+.roles-table-cell-description {
+    white-space: normal;
+    word-break: break-word;
+    flex: 3;
+    min-width: 250px;
+    max-width: 500px;
+}
+
+.roles-table-cell-added {
+    font-size: 0.8125rem;
+    min-width: 120px;
+    max-width: 150px;
+    flex: 1.5;
+}
+
+.roles-table-cell-actions {
+    min-width: 120px;
+    max-width: 140px;
+    flex: 1;
+}
+
+.roles-table-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: #9ca3af;
+    font-style: italic;
+    font-size: 0.875rem;
 }
 
 .form-actions {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-
 }
 
-/* Responsivitāte */
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .roles-table-cell-name {
+        min-width: 120px;
+        max-width: 160px;
+    }
+
+    .roles-table-cell-description {
+        min-width: 200px;
+    }
+
+    .roles-table-cell-added {
+        min-width: 100px;
+        max-width: 130px;
+    }
+}
+
 @media (max-width: 768px) {
     .header-container {
         flex-direction: column;
@@ -327,9 +460,48 @@ select.input-field {
         border-radius: 0;
     }
 
-    .roles-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    .roles-table-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
         gap: 0.5rem;
+    }
+
+    .roles-table-cell {
+        padding: 0.25rem 0;
+        border-bottom: 1px solid #f3f4f6;
+        min-height: auto;
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        flex: none;
+        justify-content: flex-start;
+    }
+
+    .roles-table-cell:last-child {
+        border-bottom: none;
+    }
+
+    .roles-table-cell-name {
+        font-weight: 600;
+        order: 1;
+    }
+
+    .roles-table-cell-description {
+        color: #4b5563;
+        order: 2;
+    }
+
+    .roles-table-cell-added {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        order: 3;
+        justify-content: flex-start;
+    }
+
+    .roles-table-cell-actions {
+        order: 4;
+        justify-content: flex-start;
     }
 
     .form-actions {
@@ -344,10 +516,6 @@ select.input-field {
 @media (max-width: 480px) {
     .header-container h1 {
         font-size: 1.25rem;
-    }
-
-    .roles-grid {
-        grid-template-columns: 1fr;
     }
 }
 

@@ -1,12 +1,21 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import { ref, watchEffect } from 'vue';
 
+const page = usePage();
 const mobileMenuOpen = ref(false);
+const showFlash = ref(true);
 
 const toggleMobileMenu = () => {
     mobileMenuOpen.value = !mobileMenuOpen.value;
 };
+
+watchEffect(() => {
+    if (page.props.flash?.success || page.props.flash?.error) {
+        showFlash.value = true;
+        setTimeout(() => showFlash.value = false, 5000);
+    }
+});
 
 </script>
 
@@ -33,6 +42,14 @@ const toggleMobileMenu = () => {
         ></div>
 
         <main class="content">
+            <!-- Flash ziņojumi -->
+            <div v-if="showFlash && page.props.flash?.success" class="alert alert-success">
+                {{ page.props.flash.success }}
+            </div>
+            <div v-if="showFlash && page.props.flash?.error" class="alert alert-error">
+                {{ page.props.flash.error }}
+            </div>
+
             <slot />
         </main>
     </div>
@@ -57,6 +74,26 @@ const toggleMobileMenu = () => {
 .content {
     flex: 1;
     padding: 2rem;
+}
+
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    transition: opacity 0.3s ease;
+}
+
+.alert-success {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #10b981;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
 }
 
 .mobile-menu-btn {
@@ -115,6 +152,11 @@ const toggleMobileMenu = () => {
     .content {
         padding: 1rem;
         padding-top: 4rem;
+    }
+
+    .alert {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
     }
 }
 

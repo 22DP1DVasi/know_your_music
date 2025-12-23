@@ -46,25 +46,28 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $user = User::with('roles')->findOrFail($id);
-
+        $user = User::with(['roles' => function ($query) {
+            $query->select('roles.id', 'roles.name', 'roles.description')
+                ->withPivot('created_at');
+        }])->findOrFail($id);
         return Inertia::render('Admin/Users/Edit', [
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'status' => $user->status,
-                'roles' => $user->roles->pluck('id')->toArray()
+                'roles' => $user->roles->map(fn ($role) => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'description' => $role->description,
+                    'assigned_at' => $role->pivot->created_at,
+                ]),
             ],
             'statusOptions' => ['active', 'banned', 'deleted'],
-            'allRoles' => Role::all()->map(function ($role) {
-                return [
-                    'id' => $role->id,
-                    'name' => $role->name
-                ];
-            })
+            'allRoles' => Role::select('id', 'name', 'description')->get(),
         ]);
     }
+
 
     public function update(Request $request, $id)
     {
