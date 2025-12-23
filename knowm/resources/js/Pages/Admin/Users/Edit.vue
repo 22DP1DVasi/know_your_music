@@ -34,6 +34,22 @@ const resetForm = () => {
     <AdminLayout>
         <div class="header-container">
             <h1>Edit User</h1>
+            <div class="form-actions">
+                <button
+                    type="button"
+                    @click="resetForm"
+                    class="btn-secondary"
+                >
+                    Reset
+                </button>
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    :disabled="form.processing"
+                >
+                    Update User
+                </button>
+            </div>
             <Link :href="route('admin-users-index')" class="btn-secondary">
                 Back to Users
             </Link>
@@ -128,23 +144,6 @@ const resetForm = () => {
                         <div v-if="form.errors.roles" class="error-message">
                             {{ form.errors.roles }}
                         </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button
-                            type="button"
-                            @click="resetForm"
-                            class="btn-secondary"
-                        >
-                            Reset
-                        </button>
-                        <button
-                            type="submit"
-                            class="btn-primary"
-                            :disabled="form.processing"
-                        >
-                            Update User
-                        </button>
                     </div>
                 </div>
             </form>
@@ -307,9 +306,7 @@ select.input-field {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #e5e7eb;
+
 }
 
 /* Responsivitāte */

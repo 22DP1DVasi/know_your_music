@@ -42,7 +42,7 @@ const deleteUser = (id) => {
                     <div>Name</div>
                     <div class="email-header">Email</div>
                     <div>Status</div>
-                    <div>Roles</div>
+<!--                    <div>Roles</div>-->
                     <div class="created-updated-at-header">Created at</div>
                     <div class="created-updated-at-header">Updated at</div>
                     <div>Actions</div>
@@ -57,15 +57,15 @@ const deleteUser = (id) => {
                     <div>{{ user.name }}</div>
                     <div class="email-header">{{ user.email }}</div>
                     <div>{{ user.status }}</div>
-                    <div class="roles-cell">
-                        <span
-                            v-for="role in user.roles"
-                            :key="role.id"
-                            class="role-pill"
-                        >
-                            {{ role.name }}
-                        </span>
-                    </div>
+<!--                    <div class="roles-cell">-->
+<!--                        <span-->
+<!--                            v-for="role in user.roles"-->
+<!--                            :key="role.id"-->
+<!--                            class="role-pill"-->
+<!--                        >-->
+<!--                            {{ role.name }}-->
+<!--                        </span>-->
+<!--                    </div>-->
                     <div class="created-updated-at-table-data">
                         {{ user.created_at }}
                     </div>
@@ -200,12 +200,28 @@ const deleteUser = (id) => {
 .users-row > div {
     padding: 0.75rem 1.5rem;
     flex: 1;
-    min-width: 120px;
+    min-width: 0;
+}
+
+.users-row > div:first-child,
+.users-row > div.email-header {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.email-header {
+    overflow-wrap: anywhere;
 }
 
 .users-header > div:nth-child(3),
 .users-row > div:nth-child(3) {
-    max-width: 80px;
+    max-width: 90px;
+}
+
+.users-header > div:nth-child(6),
+.users-row > div:nth-child(6) {
+    max-width: 180px;
 }
 
 .actions-cell {
@@ -231,10 +247,12 @@ const deleteUser = (id) => {
 
 .created-updated-at-header {
     font-size: 0.9rem;
+    max-width: 130px;
 }
 
 .created-updated-at-table-data {
     font-size: 0.8rem;
+    max-width: 130px;
 }
 
 /* Responsivitāte */
@@ -263,11 +281,11 @@ const deleteUser = (id) => {
         align-items: flex-start;
     }
 
-    .email-header,
+    /*.email-header,
     .created-updated-at-header,
     .created-updated-at-table-data {
         display: none;
-    }
+    }*/
 
     .actions-cell {
         flex-direction: column;
@@ -288,11 +306,11 @@ const deleteUser = (id) => {
     }
 }
 
-@media (max-width: 480px) {
+/*@media (max-width: 480px) {
     .role-pill {
         font-size: 0.7rem;
         padding: 0.125rem 0.375rem;
     }
-}
+}*/
 
 </style>
