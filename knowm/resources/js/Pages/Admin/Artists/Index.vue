@@ -2,6 +2,7 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
 import Pagination from "@/Components/Admin/Pagination.vue";
+import { route } from "ziggy-js";
 
 defineProps({
     artists: Object
@@ -26,83 +27,83 @@ const deleteArtist = (id) => {
     <AdminLayout>
         <div class="header-container">
             <h1>Artist Management</h1>
-            <Link :href="route('home')" class="btn-secondary">
-                Back to website
-            </Link>
-            <Link :href="route('admin-artists-create')" class="btn-primary">
-                Add New Artist
-            </Link>
+            <div class="header-actions">
+                <Link :href="route('home')" class="btn-secondary">
+                    Back to website
+                </Link>
+                <Link :href="route('admin-artists-create')" class="btn-primary">
+                    Add New Artist
+                </Link>
+            </div>
         </div>
 
         <div class="table-container">
-            <table class="artists-table">
-                <thead>
-                <tr class="table-header">
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th class="slug-header">Slug</th>
-                    <th class="type-header">Type</th>
-                    <th class="years-header">Years Active</th>
-                    <th>Status</th>
-                    <th class="bio-header">Biography</th>
-                    <th class="created-updated-at-header">Created</th>
-                    <th class="created-updated-at-header">Updated</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="artist in artists.data" :key="artist.id">
-                    <td>{{ artist.id }}</td>
-                    <td>{{ artist.name }}</td>
-                    <td class="slug-cell">
-                        <span class="slug-text" :title="artist.slug">{{ artist.slug }}</span>
-                    </td>
-                    <td class="type-data">{{ artist.solo_or_band || '-' }}</td>
-                    <td class="years-data">
+            <div class="table-inner">
+                <!-- Galvenes -->
+                <div class="artists-header">
+                    <div class="id-cell">ID</div>
+                    <div class="name-cell">Name</div>
+                    <div class="slug-cell" style="font-size: 1em;">Slug</div>
+                    <div class="type-cell" style="font-size: 1em;">Type</div>
+                    <div class="years-cell">Years Active</div>
+                    <div class="status-cell">Status</div>
+                    <div class="created-updated-at-header">Created at</div>
+                    <div class="created-updated-at-header">Updated at</div>
+                    <div class="actions-cell-header">Actions</div>
+                </div>
+
+                <!-- Rindas -->
+                <div
+                    v-for="artist in artists.data"
+                    :key="artist.id"
+                    class="artists-row"
+                >
+                    <div class="id-cell">{{ artist.id }}</div>
+                    <div class="name-cell">{{ artist.name }}</div>
+                    <div class="slug-cell">{{ artist.slug }}</div>
+                    <div class="type-cell">{{ artist.solo_or_band || '-' }}</div>
+                    <div class="years-cell">
                         <span v-if="artist.formed_year">
                             {{ artist.formed_year }}
                             <span v-if="artist.disbanded_year">- {{ artist.disbanded_year }}</span>
                             <span v-else>- Present</span>
                         </span>
                         <span v-else>-</span>
-                    </td>
-                    <td>
+                    </div>
+                    <div class="status-cell">
                         <span :class="artist.is_active ? 'status-active' : 'status-inactive'">
                             {{ artist.is_active ? 'Active' : 'Inactive' }}
                         </span>
-                    </td>
-                    <td class="biography-cell">
-                        <div class="bio-status">
-                            <span class="bio-flag" :title="artist.biography ? 'English biography exists' : 'No English biography'">
-                                EN
-                                <span :class="artist.biography ? 'bio-check' : 'bio-cross'">
-                                    {{ artist.biography ? '✓' : '✗' }}
-                                </span>
-                            </span>
-                            <span class="bio-flag" :title="artist.biography_lv ? 'Latvian biography exists' : 'No Latvian biography'">
-                                LV
-                                <span :class="artist.biography_lv ? 'bio-check' : 'bio-cross'">
-                                    {{ artist.biography_lv ? '✓' : '✗' }}
-                                </span>
-                            </span>
-                        </div>
-                    </td>
-                    <td class="created-updated-at-table-data">{{ artist.created_at }}</td>
-                    <td class="created-updated-at-table-data">{{ artist.updated_at }}</td>
-                    <td class="actions-cell">
-                        <Link :href="route('admin-artists-edit', { id: artist.id })" class="btn-edit">
+                    </div>
+                    <div class="created-updated-at-table-data">{{ artist.created_at }}</div>
+                    <div class="created-updated-at-table-data">{{ artist.updated_at }}</div>
+                    <div class="actions-cell">
+                        <Link
+                            :href="route('admin-artists-edit', { id: artist.id })"
+                            class="btn-edit"
+                        >
                             Edit
                         </Link>
-                        <button @click="deleteArtist(artist.id)" class="btn-danger">
+                        <button
+                            @click="deleteArtist(artist.id)"
+                            class="btn-danger"
+                        >
                             Delete
                         </button>
-                        <Link :href="`/artists/${artist.slug}`" target="_blank" class="btn-view">
+                        <Link
+                            :href="`/artists/${artist.slug}`"
+                            target="_blank"
+                            class="btn-view"
+                        >
                             View
                         </Link>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </div>
+                </div>
+
+                <div v-if="artists.data.length === 0" class="no-results">
+                    <p>No artists found in the system.</p>
+                </div>
+            </div>
 
             <Pagination :links="artists.links" />
         </div>
@@ -115,6 +116,8 @@ const deleteArtist = (id) => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .header-container h1 {
@@ -122,6 +125,12 @@ const deleteArtist = (id) => {
     font-weight: bold;
     color: #1f2937;
     margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
 }
 
 .btn-secondary,
@@ -189,50 +198,114 @@ const deleteArtist = (id) => {
 .table-container {
     background-color: white;
     border-radius: 0.5rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    width: clamp(320px, 95vw, 100%);
+    margin: 0 auto;
     overflow-x: auto;
 }
 
-.artists-table {
-    width: 100%;
-    border-collapse: collapse;
+.table-inner {
+    min-width: 1100px;
 }
 
-.artists-table th,
-.artists-table td {
-    padding: 0.75rem 1.5rem;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
+.artists-header,
+.artists-row {
+    display: flex;
+    align-items: center;
+    min-width: 100%;
 }
 
-.slug-header,
-.type-header,
-.years-header,
-.bio-header,
-.created-updated-at-header {
-    font-size: 0.9rem;
-}
-
-.artists-table td {
-    vertical-align: middle;
-}
-
-.created-updated-at-table-data {
-    font-size: 0.8rem;
-}
-
-.table-header {
+.artists-header {
     background-color: #f3f4f6;
-}
-
-.table-header th {
     font-weight: 600;
     color: #374151;
     border-bottom: 2px solid #d1d5db;
 }
 
-.artists-table tbody tr:hover {
+.artists-row {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.artists-row:hover {
     background-color: #f9fafb;
+}
+
+.artists-header > div,
+.artists-row > div {
+    padding: 0.75rem 1.5rem;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+}
+
+.id-cell {
+    flex: 0 0 50px;
+    max-width: 70px;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.name-cell {
+    flex: 2;
+    min-width: 150px;
+    max-width: 150px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.slug-header {
+    font-size: 1em;
+}
+
+.slug-cell {
+    flex: 2 0 150px;
+    min-width: 150px;
+    max-width: 150px;
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.type-cell {
+    flex: 0 0 80px;
+    max-width: 100px;
+    font-size: 0.9rem;
+}
+
+.years-cell {
+    flex: 0 0 120px;
+    max-width: 140px;
+    font-size: 0.85rem;
+}
+
+.status-cell {
+    flex: 0 0 90px;
+    max-width: 110px;
+}
+
+.created-updated-at-header {
+    flex: 0 0 120px;
+    max-width: 130px;
+    font-size: 0.9rem;
+}
+
+.created-updated-at-table-data {
+    flex: 0 0 120px;
+    max-width: 130px;
+    font-size: 0.8rem;
+}
+
+.actions-cell-header {
+    flex: 0 0 200px;
+    max-width: 220px;
+}
+
+.actions-cell {
+    flex: 0 0 200px;
+    max-width: 220px;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .status-active,
@@ -255,123 +328,57 @@ const deleteArtist = (id) => {
     color: #991b1b;
 }
 
-.actions-cell {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.slug-cell {
-    font-family: monospace;
-    font-size: 0.8rem;
-    color: #666;
-}
-
-.slug-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.biography-cell {
-    min-width: 100px;
-}
-
-.bio-status {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.bio-flag {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    background-color: #f3f4f6;
-}
-
-.bio-check {
-    color: #10b981;
-    font-weight: bold;
-}
-
-.bio-cross {
-    color: #ef4444;
-    font-weight: bold;
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+    grid-column: 1 / -1;
 }
 
 /* Responsivitāte */
 @media (max-width: 1260px) {
     .table-container {
-        overflow-x: auto;
-    }
-
-    .artists-table {
-        min-width: 1100px;
+        width: clamp(320px, 95vw, 1000px);
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1170px) {
     .table-container {
-        margin: 0 -1rem;
-        border-radius: 0;
+        width: clamp(320px, 95vw, 800px);
     }
+}
 
-    .artists-table {
-        min-width: 1000px;
+@media (max-width: 965px) {
+    .table-container {
+        width: clamp(320px, 95vw, 600px);
     }
 }
 
 @media (max-width: 768px) {
     .header-container {
         flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
+        align-items: stretch;
     }
 
-    .header-container h1 {
-        font-size: 1.5rem;
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
     }
 
-    .slug-header,
-    .type-header,
-    .years-header,
-    .bio-header,
-    .created-updated-at-header,
-    .created-updated-at-table-data {
-        display: none;
-    }
-
-    .artists-table th:nth-child(3), /* Slug */
-    .artists-table td:nth-child(3), /* Slug */
-    .artists-table th:nth-child(4), /* Type */
-    .artists-table td:nth-child(4), /* Type */
-    .artists-table th:nth-child(5), /* Years Active */
-    .artists-table td:nth-child(5), /* Years Active */
-    .artists-table th:nth-child(7), /* Biography */
-    .artists-table td:nth-child(7), /* Biography */
-    .artists-table th:nth-child(8), /* Created at */
-    .artists-table td:nth-child(8), /* Created at */
-    .artists-table th:nth-child(9), /* Updated at */
-    .artists-table td:nth-child(9) { /* Updated at */
-        display: none;
-    }
-
-    .artists-table {
-        min-width: 600px;
+    .header-actions a,
+    .header-actions button {
+        width: 100%;
+        text-align: center;
     }
 
     .actions-cell {
         flex-direction: column;
         gap: 0.25rem;
+        align-items: center;
     }
 
-    .artists-table th,
-    .artists-table td {
+    .artists-header > div,
+    .artists-row > div {
         padding: 0.5rem 0.75rem;
     }
 
@@ -382,21 +389,6 @@ const deleteArtist = (id) => {
     .btn-view {
         padding: 0.375rem 0.75rem;
         font-size: 0.8rem;
-    }
-
-    .bio-status {
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-container h1 {
-        font-size: 1.25rem;
-    }
-
-    .artists-table {
-        min-width: 500px;
     }
 }
 
