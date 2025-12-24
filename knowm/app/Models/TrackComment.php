@@ -23,7 +23,8 @@ class TrackComment extends Model
         'status',
         'deleted_username',
         'user_id',
-        'track_id'
+        'track_id',
+        'parent_id'
     ];
 
     /**

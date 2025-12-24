@@ -19,9 +19,12 @@ class Track extends Model
     protected $fillable = [
         'title',
         'slug',
+        'description',
+        'description_lv',
         'duration',
         'audio_source',
-        'release_date'
+        'release_date',
+        'popularity'
     ];
 
     /**
@@ -32,6 +35,7 @@ class Track extends Model
     protected $casts = [
         'duration' => 'datetime:H:i:s',
         'release_date' => 'date:Y-m-d',
+        'popularity' => 'decimal:2',
     ];
 
     // explicit attribute for covers URL

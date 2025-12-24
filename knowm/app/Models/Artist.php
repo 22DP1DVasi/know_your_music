@@ -21,10 +21,12 @@ class Artist extends Model
         'name',
         'slug',
         'biography',
+        'biography_lv',
         'formed_year',
         'disbanded_year',
         'image',
         'solo_or_band',
+        'popularity'
     ];
 
     /**
@@ -36,6 +38,7 @@ class Artist extends Model
         'formed_year' => 'integer',
         'disbanded_year' => 'integer',
         'is_active' => 'boolean',
+        'popularity' => 'decimal:2',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
@@ -126,14 +129,17 @@ class Artist extends Model
     }
 
     /**
-     * Generate unique slugs
+     * Generate unique slug.
     */
-    public function generateUniqueSlug()
+    public function generateUniqueSlug($name = null)
     {
-        $slug = $this->customSlugify($this->name);
+        $nameToUse = $name ?? $this->name;
+        $slug = $this->customSlugify($nameToUse);
         $originalSlug = $slug;
         $counter = 1;
-        while (static::where('slug', $slug)->exists()) {
+        while (static::where('slug', $slug)
+            ->where('id', '!=', $this->id) // atjaunināšanas laikā izslēgt pašreizējo izpildītāju
+            ->exists()) {
             $slug = "{$originalSlug}-{$counter}";
             $counter++;
         }
@@ -147,7 +153,7 @@ class Artist extends Model
     {
         $slug = mb_strtolower($name);
         $slug = preg_replace('/\s+/u', '-', $slug);
-        $slug = preg_replace('/[^\p{L}\p{N}_-]/u', '', $slug);
+        $slug = preg_replace('/[^\p{L}\p{N}]+/u', '-', $slug);
         return trim($slug, '-');
     }
 

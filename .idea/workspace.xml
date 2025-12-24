@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/HomeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +168,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/admin-panel&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -310,7 +307,24 @@
       <workItem from="1759821502755" duration="29000" />
       <workItem from="1760182554294" duration="317000" />
       <workItem from="1761903531629" duration="847000" />
-      <workItem from="1763833650667" duration="1368000" />
+      <workItem from="1763833650667" duration="3883000" />
+      <workItem from="1764001789201" duration="1373000" />
+      <workItem from="1764095331864" duration="4481000" />
+      <workItem from="1764182342517" duration="2190000" />
+      <workItem from="1764522626127" duration="6008000" />
+      <workItem from="1764579181537" duration="5661000" />
+      <workItem from="1764869106873" duration="1717000" />
+      <workItem from="1765038077323" duration="5552000" />
+      <workItem from="1765115439131" duration="9457000" />
+      <workItem from="1765221566973" duration="723000" />
+      <workItem from="1765720328638" duration="1286000" />
+      <workItem from="1765909227425" duration="2674000" />
+      <workItem from="1765989928399" duration="1066000" />
+      <workItem from="1766405630757" duration="10083000" />
+      <workItem from="1766477356310" duration="2696000" />
+      <workItem from="1766493692193" duration="19944000" />
+      <workItem from="1766564469782" duration="16648000" />
+      <workItem from="1766606497358" duration="302000" />
     </task>
     <servers />
   </component>

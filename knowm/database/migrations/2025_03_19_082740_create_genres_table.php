@@ -16,9 +16,13 @@ return new class extends Migration
             $table->string('name', 100)->unique();
             $table->string('slug', 120)->unique();
             $table->text('description')->nullable();
+            $table->text('description_lv')->nullable();
             $table->unsignedSmallInteger('origin_year')->nullable();
             $table->string('origin_country', 100)->nullable();
+            $table->double('popularity', 10, 2)->default(0.00);
             $table->timestamps();
+
+            $table->index('popularity');
         });
     }
 

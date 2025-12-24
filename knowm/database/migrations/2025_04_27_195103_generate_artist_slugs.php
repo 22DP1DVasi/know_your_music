@@ -44,7 +44,7 @@ return new class extends Migration
         // replace spaces with dashes
         $slug = preg_replace('/\s+/u', '-', $slug);
         // remove characters that are not letters, numbers, dashes, or underscores
-        $slug = preg_replace('/[^\p{L}\p{N}_-]/u', '', $slug);
+        $slug = preg_replace('/[^\p{L}\p{N}]+/u', '-', $slug);
         return trim($slug, '-');
     }
 

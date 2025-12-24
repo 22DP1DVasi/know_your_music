@@ -24,7 +24,9 @@ class Release extends Model
         'release_date',
         'cover_image',
         'description',
-        'release_type'
+        'description_lv',
+        'release_type',
+        'popularity'
     ];
 
     /**
@@ -34,6 +36,7 @@ class Release extends Model
      */
     protected $casts = [
         'release_date' => 'date:Y-m-d',
+        'popularity' => 'decimal:2'
     ];
 
     // explicit attributes for covers URL

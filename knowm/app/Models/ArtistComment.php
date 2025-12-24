@@ -22,7 +22,8 @@ class ArtistComment extends Model
         'status',
         'deleted_username',
         'user_id',
-        'artist_id'
+        'artist_id',
+        'parent_id'
     ];
 
     /**

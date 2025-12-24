@@ -11,12 +11,41 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+    /***
+     * Metode priekš Index.vue lapas.
+     * Šī metode uzskaita visus lietotājus ar lietotiem meklēšanas
+     * vai filtrēšanas parametriem no pieprasījuma ($request).
+     *
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function index(Request $request)
     {
+        $users = User::with('roles')
+            ->when($request->search_name, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->when($request->search_email, function ($query, $search) {
+                $query->where('email', 'like', "%{$search}%");
+            })
+            ->when($request->filter_status, function ($query, $status) {
+                $query->where('status', $status);
+            })
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
         return Inertia::render('Admin/Users/Index', [
-            'users' => User::with('roles')->paginate(20)
+            'users' => $users,
+            'filters' => $request->only([
+                'search_name',
+                'search_email',
+                'filter_status'
+            ]),
+            'statusOptions' => ['active', 'banned', 'deleted'],
         ]);
     }
+
 
     public function create()
     {
@@ -42,23 +71,25 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $user = User::with('roles')->findOrFail($id);
-
+        $user = User::with(['roles' => function ($query) {
+            $query->select('roles.id', 'roles.name', 'roles.description')
+                ->withPivot('created_at');
+        }])->findOrFail($id);
         return Inertia::render('Admin/Users/Edit', [
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'status' => $user->status,
-                'roles' => $user->roles->pluck('id')->toArray()
+                'roles' => $user->roles->map(fn ($role) => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'description' => $role->description,
+                    'assigned_at' => $role->pivot->created_at,
+                ]),
             ],
             'statusOptions' => ['active', 'banned', 'deleted'],
-            'allRoles' => Role::all()->map(function ($role) {
-                return [
-                    'id' => $role->id,
-                    'name' => $role->name
-                ];
-            })
+            'allRoles' => Role::select('id', 'name', 'description')->get(),
         ]);
     }
 
@@ -96,5 +127,47 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin-users-index')
             ->with('success', 'User deleted successfully');
+    }
+
+
+    /***
+     * Metode, kas saglabā visas piešķirtās lomas lietotājam.
+     *
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function storeRoles(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'roles' => ['required', 'array'],
+            'roles.*' => ['integer', 'exists:roles,id'],
+        ]);
+
+        // pievienot lomas, nenoņemot esošās lomas
+        $user->roles()->syncWithoutDetaching($validated['roles']);
+        return redirect()->back()->with('success', 'Roles assigned successfully');
+    }
+
+    /**
+     * Metode, kas dzēš (noņem) lomu no lietotāja.
+     *
+     * @param $userId
+     * @param $roleId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroyUserRole($userId, $roleId)
+    {
+        $user = User::findOrFail($userId);
+//        $role = Role::findOrFail($roleId);
+        // Neļaut dzēst administratora lomu no sevis
+//        if ($user->id === auth()->id() && $role->name === 'admin') {
+//            return redirect()->back()
+//                ->with('error', 'You cannot remove your own admin role.');
+//        }
+        // lomas atvienošana no lietotāja (pivot tabula)
+        $user->roles()->detach($roleId);
+        return redirect()->route('admin-users-edit', ['id' => $userId])
+            ->with('success', 'Role removed successfully.');
     }
 }

@@ -1,3 +1,104 @@
+<script setup>
+import { Head, router } from '@inertiajs/vue3'
+import Navbar from '@/Components/Navbar.vue'
+import Footer from '@/Components/Footer.vue'
+import { ref, computed } from 'vue'
+import ColorThief from 'colorthief'
+import dayjs from 'dayjs';
+
+const props = defineProps({
+    release: {
+        type: Object,
+        required: true,
+        default: () => ({
+            id: Number,
+            title: String,
+            cover_url: String,
+            release_date: String,
+            description: String,
+            release_type: String,
+            artists: Array,
+            genres: Array,
+            tracks: Array,
+            similar_releases: Array
+        })
+    }
+});
+
+const heroImage = ref(null);
+const heroStyle = ref({
+    height: '300px',
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0'
+});
+const imageStyle = ref({
+    opacity: 0,
+    transition: 'opacity 0.3s ease'
+});
+
+const handleImageLoad = () => {
+    const img = heroImage.value;
+    if (!img) return;
+
+    imageStyle.value.opacity = 1;
+    imageStyle.value.width = '100%';
+    imageStyle.value.height = 'auto';
+    imageStyle.value.objectFit = 'cover';
+    imageStyle.value.objectPosition = 'center';
+};
+
+const sortedTracks = computed(() => {
+    return [...props.release.tracks].sort((a, b) => a.pivot.track_position - b.pivot.track_position);
+});
+
+const totalDuration = computed(() => {
+    let totalSeconds = 0;
+    props.release.tracks.forEach(track => {
+        const [hours = 0, minutes = 0, seconds = 0] = track.duration.split(':').map(Number);
+        totalSeconds += hours * 3600 + minutes * 60 + seconds;
+    });
+
+    return totalSeconds;
+});
+
+const formatTotalDuration = computed(() => {
+    const hours = Math.floor(totalDuration.value / 3600);
+    const minutes = Math.floor((totalDuration.value % 3600) / 60);
+    const seconds = totalDuration.value % 60;
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } else {
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+});
+
+const capitalize = (value) => {
+    if (!value) return '';
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return 'Unknown';
+    return dayjs(dateString).format('MMMM D, YYYY');
+};
+
+const formatDuration = (timeString) => {
+    if (!timeString) return '--:--';
+    const [hours, minutes, seconds] = timeString.split(':');
+    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
+const redirectToGenre = (slug) => {
+    window.location.href = `/genres/${slug}`;
+};
+
+const redirectToTrack = (slug) => {
+    window.location.href = `/tracks/${slug}`;
+};
+
+</script>
+
 <template>
     <Head :title="release.title" />
     <link rel="preload" :href="release.cover_url" as="image">
@@ -139,107 +240,6 @@
     </main>
     <Footer />
 </template>
-
-<script setup>
-import { Head, router } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import { ref, computed } from 'vue'
-import ColorThief from 'colorthief'
-
-const props = defineProps({
-    release: {
-        type: Object,
-        required: true,
-        default: () => ({
-            id: Number,
-            title: String,
-            cover_url: String,
-            release_date: String,
-            description: String,
-            release_type: String,
-            artists: Array,
-            genres: Array,
-            tracks: Array,
-            similar_releases: Array
-        })
-    }
-});
-
-const heroImage = ref(null);
-const heroStyle = ref({
-    height: '300px',
-    position: 'relative',
-    overflow: 'hidden',
-    backgroundColor: '#f0f0f0'
-});
-const imageStyle = ref({
-    opacity: 0,
-    transition: 'opacity 0.3s ease'
-});
-
-const handleImageLoad = () => {
-    const img = heroImage.value;
-    if (!img) return;
-
-    imageStyle.value.opacity = 1;
-    imageStyle.value.width = '100%';
-    imageStyle.value.height = 'auto';
-    imageStyle.value.objectFit = 'cover';
-    imageStyle.value.objectPosition = 'center';
-};
-
-const sortedTracks = computed(() => {
-    return [...props.release.tracks].sort((a, b) => a.pivot.track_position - b.pivot.track_position);
-});
-
-const totalDuration = computed(() => {
-    let totalSeconds = 0;
-    props.release.tracks.forEach(track => {
-        const [hours = 0, minutes = 0, seconds = 0] = track.duration.split(':').map(Number);
-        totalSeconds += hours * 3600 + minutes * 60 + seconds;
-    });
-
-    return totalSeconds;
-});
-
-const formatTotalDuration = computed(() => {
-    const hours = Math.floor(totalDuration.value / 3600);
-    const minutes = Math.floor((totalDuration.value % 3600) / 60);
-    const seconds = totalDuration.value % 60;
-    if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    } else {
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    }
-});
-
-const capitalize = (value) => {
-    if (!value) return '';
-    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-};
-
-const formatDate = (dateString) => {
-    if (!dateString) return 'Unknown';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-};
-
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const [hours, minutes, seconds] = timeString.split(':');
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
-};
-
-const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
-};
-
-const redirectToTrack = (slug) => {
-    window.location.href = `/tracks/${slug}`;
-};
-
-</script>
 
 <style scoped>
 .release-page {
