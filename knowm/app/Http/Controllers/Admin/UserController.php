@@ -21,23 +21,31 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::with('roles');
-        if ($request->has('search_name') && $request->search_name !== '') {
-            $query->where('name', 'like', '%' . $request->search_name . '%');
-        }
-        if ($request->has('search_email') && $request->search_email !== '') {
-            $query->where('email', 'like', '%' . $request->search_email . '%');
-        }
-        if ($request->has('filter_status') && $request->filter_status !== '') {
-            $query->where('status', $request->filter_status);
-        }
-        $users = $query->orderBy('name')->paginate(8);
+        $users = User::with('roles')
+            ->when($request->search_name, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->when($request->search_email, function ($query, $search) {
+                $query->where('email', 'like', "%{$search}%");
+            })
+            ->when($request->filter_status, function ($query, $status) {
+                $query->where('status', $status);
+            })
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
         return Inertia::render('Admin/Users/Index', [
             'users' => $users,
-            'filters' => $request->only(['search_name', 'search_email', 'filter_status']),
-            'statusOptions' => ['active', 'banned', 'deleted'] // Add this for dropdown
+            'filters' => $request->only([
+                'search_name',
+                'search_email',
+                'filter_status'
+            ]),
+            'statusOptions' => ['active', 'banned', 'deleted'],
         ]);
     }
+
 
     public function create()
     {

@@ -3,9 +3,74 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
 import Pagination from "@/Components/Admin/Pagination.vue";
 import { route } from "ziggy-js";
+import { ref, watch, computed } from 'vue';
+import { debounce } from 'lodash';
 
-defineProps({
-    artists: Object
+const props = defineProps({
+    artists: Object,
+    filters: {
+        type: Object,
+        default: () => ({
+            search_name: '',
+            filter_type: '',
+            filter_status: ''
+        })
+    }
+});
+
+// meklēšanas ievades, inicializēt no props
+const searchName = ref(props.filters.search_name || '');
+const filterType = ref(props.filters.filter_type || '');
+const filterStatus = ref(props.filters.filter_status || '');
+
+// filtru atjaunināšanas funkcija
+const updateFilters = () => {
+    const filters = {};
+
+    if (searchName.value) {
+        filters.search_name = searchName.value;
+    }
+
+    if (filterType.value) {
+        filters.filter_type = filterType.value;
+    }
+
+    if (filterStatus.value !== '') {
+        filters.filter_status = filterStatus.value;
+    }
+
+    router.get(route('admin-artists-index'), filters, {
+        preserveState: true,
+        replace: true,
+        preserveScroll: true,
+        only: ['artists', 'filters']
+    });
+};
+
+/*
+* debounce() ir funkcija, kas aizkavē dotās funkcijas izpildi,
+* līdz ir pagājis norādītais gaidīšanas laiks kopš pēdējās izsaukšanas
+* */
+const debouncedSearchName = debounce(updateFilters, 500);
+
+watch(searchName, (newValue) => {
+    if (newValue === '' || newValue.length >= 1) {
+        debouncedSearchName();
+    }
+});
+
+watch(filterType, updateFilters);
+watch(filterStatus, updateFilters);
+
+const clearFilters = () => {
+    searchName.value = '';
+    filterType.value = '';
+    filterStatus.value = '';
+    updateFilters();
+};
+
+const hasActiveFilters = computed(() => {
+    return searchName.value || filterType.value || filterStatus.value !== '';
 });
 
 const deleteArtist = (id) => {
@@ -34,6 +99,72 @@ const deleteArtist = (id) => {
                 <Link :href="route('admin-artists-create')" class="btn-primary">
                     Add New Artist
                 </Link>
+            </div>
+        </div>
+
+        <div class="filters-container">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="search-name">Search by Artist Name</label>
+                    <div class="search-input-wrapper">
+                        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input
+                            id="search-name"
+                            v-model="searchName"
+                            type="text"
+                            placeholder="Type artist name..."
+                            class="input-field"
+                        />
+                        <button
+                            v-if="searchName"
+                            @click="searchName = ''"
+                            class="clear-search-btn"
+                            type="button"
+                        >
+                            ×
+                        </button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filter-type">Filter by Type</label>
+                    <select
+                        id="filter-type"
+                        v-model="filterType"
+                        class="input-field"
+                    >
+                        <option value="">All Types</option>
+                        <option value="solo">Solo</option>
+                        <option value="band">Band</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filter-status">Filter by Status</label>
+                    <select
+                        id="filter-status"
+                        v-model="filterStatus"
+                        class="input-field"
+                    >
+                        <option value="">All Statuses</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="filter-group filter-actions">
+                    <button
+                        v-if="hasActiveFilters"
+                        @click="clearFilters"
+                        class="btn-clear-filters"
+                        type="button"
+                    >
+                        Clear Filters
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -101,7 +232,15 @@ const deleteArtist = (id) => {
                 </div>
 
                 <div v-if="artists.data.length === 0" class="no-results">
-                    <p>No artists found in the system.</p>
+                    <template v-if="hasActiveFilters">
+                        <p>No artists found matching your search criteria.</p>
+                        <button @click="clearFilters" class="text-link">
+                            Clear filters to see all artists
+                        </button>
+                    </template>
+                    <template v-else>
+                        <p>No artists found in the system.</p>
+                    </template>
                 </div>
             </div>
 
@@ -109,6 +248,7 @@ const deleteArtist = (id) => {
         </div>
     </AdminLayout>
 </template>
+
 
 <style scoped>
 .header-container {
@@ -193,6 +333,132 @@ const deleteArtist = (id) => {
 
 .btn-view:hover {
     background-color: #7c3aed;
+}
+
+.filters-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.search-input-wrapper {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    padding-left: 2.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    color: #374151;
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+select.input-field {
+    padding-left: 0.75rem;
+    appearance: none;
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.clear-search-btn:hover {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.input-field:not(:placeholder-shown) + .clear-search-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.btn-clear-filters {
+    padding: 0.625rem 1.25rem;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    font-size: 0.875rem;
+}
+
+.btn-clear-filters:hover {
+    background-color: #dc2626;
 }
 
 .table-container {
@@ -335,6 +601,21 @@ const deleteArtist = (id) => {
     grid-column: 1 / -1;
 }
 
+.text-link {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+.text-link:hover {
+    color: #2563eb;
+}
+
 /* Responsivitāte */
 @media (max-width: 1260px) {
     .table-container {
@@ -369,6 +650,14 @@ const deleteArtist = (id) => {
     .header-actions button {
         width: 100%;
         text-align: center;
+    }
+
+    .filters-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-actions {
+        justify-content: flex-start;
     }
 
     .actions-cell {

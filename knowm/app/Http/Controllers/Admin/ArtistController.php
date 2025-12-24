@@ -12,18 +12,37 @@ use Illuminate\Support\Str;
 
 class ArtistController extends Controller
 {
-    protected Artist $artist;
-
-    public function __construct(Artist $artist)
+    /***
+     * Metode priekš Index.vue lapas.
+     * Šī metode uzskaita visus mūziķus ar lietotiem meklēšanas
+     * vai filtrēšanas parametriem no pieprasījuma ($request).
+     *
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function index(Request $request)
     {
-        $this->artist = $artist;
-    }
+        $artists = Artist::query()
+            ->when($request->search_name, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->when($request->filter_type, function ($query, $type) {
+                $query->where('solo_or_band', $type);
+            })
+            ->when($request->filter_status !== null, function ($query) use ($request) {
+                $query->where('is_active', $request->filter_status);
+            })
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
 
-    public function index()
-    {
-        $artists = Artist::orderBy('name')->paginate(10);
         return Inertia::render('Admin/Artists/Index', [
-            'artists' => $artists
+            'artists' => $artists,
+            'filters' => $request->only([
+                'search_name',
+                'filter_type',
+                'filter_status'
+            ])
         ]);
     }
 
