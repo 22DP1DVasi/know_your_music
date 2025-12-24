@@ -1,3 +1,27 @@
+<script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { Link, router } from '@inertiajs/vue3';
+import Pagination from "@/Components/Admin/Pagination.vue";
+
+defineProps({
+    artists: Object
+});
+
+const deleteArtist = (id) => {
+    if (confirm('Are you sure you want to delete this artist?')) {
+        router.delete(route('admin-artists-destroy', { id: id }), {
+            onSuccess: () => {
+            },
+            onError: (errors) => {
+                alert(errors.response.data.message || "Could not delete artist");
+            },
+            preserveScroll: true
+        });
+    }
+};
+
+</script>
+
 <template>
     <AdminLayout>
         <div class="header-container">
@@ -85,31 +109,7 @@
     </AdminLayout>
 </template>
 
-<script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
-import { Link, router } from '@inertiajs/vue3';
-import Pagination from "@/Components/Admin/Pagination.vue";
-
-defineProps({
-    artists: Object
-});
-
-const deleteArtist = (id) => {
-    if (confirm('Are you sure you want to delete this artist?')) {
-        router.delete(route('admin-artists-destroy', { id: id }), {
-            onSuccess: () => {
-            },
-            onError: (errors) => {
-                alert(errors.response.data.message || "Could not delete artist");
-            },
-            preserveScroll: true
-        });
-    }
-};
-</script>
-
 <style scoped>
-/* Header Styles - Same as Users Index */
 .header-container {
     display: flex;
     justify-content: space-between;
@@ -124,7 +124,6 @@ const deleteArtist = (id) => {
     margin: 0;
 }
 
-/* Button Styles - Same as Users Index */
 .btn-secondary,
 .btn-primary,
 .btn-edit,
@@ -187,7 +186,6 @@ const deleteArtist = (id) => {
     background-color: #7c3aed;
 }
 
-/* Table Container - Same as Users Index */
 .table-container {
     background-color: white;
     border-radius: 0.5rem;
@@ -195,7 +193,6 @@ const deleteArtist = (id) => {
     overflow-x: auto;
 }
 
-/* Table Styles */
 .artists-table {
     width: 100%;
     border-collapse: collapse;
@@ -238,14 +235,14 @@ const deleteArtist = (id) => {
     background-color: #f9fafb;
 }
 
-/* Status Badges */
 .status-active,
 .status-inactive {
     display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.8rem;
     font-size: 0.75rem;
     font-weight: 500;
+    text-transform: capitalize;
 }
 
 .status-active {
@@ -258,7 +255,6 @@ const deleteArtist = (id) => {
     color: #991b1b;
 }
 
-/* Actions Cell - Same as Users Index */
 .actions-cell {
     display: flex;
     gap: 0.5rem;
@@ -266,7 +262,6 @@ const deleteArtist = (id) => {
     justify-content: flex-start;
 }
 
-/* Slug Cell */
 .slug-cell {
     font-family: monospace;
     font-size: 0.8rem;
@@ -278,7 +273,6 @@ const deleteArtist = (id) => {
     text-overflow: ellipsis;
 }
 
-/* Biography Status */
 .biography-cell {
     min-width: 100px;
 }
@@ -310,7 +304,7 @@ const deleteArtist = (id) => {
     font-weight: bold;
 }
 
-/* Responsive Design */
+/* Responsivitāte */
 @media (max-width: 1260px) {
     .table-container {
         overflow-x: auto;

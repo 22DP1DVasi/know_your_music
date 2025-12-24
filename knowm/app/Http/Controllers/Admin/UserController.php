@@ -11,14 +11,31 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+    /***
+     * Metode priekš Index.vue lapas.
+     * Šī metode uzskaita visus lietotājus ar lietotiem meklēšanas
+     * vai filtrēšanas parametriem no pieprasījuma ($request).
+     *
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function index(Request $request)
     {
-        $users = User::with('roles')
-            ->orderBy('name')
-            ->paginate(8);
-
+        $query = User::with('roles');
+        if ($request->has('search_name') && $request->search_name !== '') {
+            $query->where('name', 'like', '%' . $request->search_name . '%');
+        }
+        if ($request->has('search_email') && $request->search_email !== '') {
+            $query->where('email', 'like', '%' . $request->search_email . '%');
+        }
+        if ($request->has('filter_status') && $request->filter_status !== '') {
+            $query->where('status', $request->filter_status);
+        }
+        $users = $query->orderBy('name')->paginate(8);
         return Inertia::render('Admin/Users/Index', [
-            'users' => $users
+            'users' => $users,
+            'filters' => $request->only(['search_name', 'search_email', 'filter_status']),
+            'statusOptions' => ['active', 'banned', 'deleted'] // Add this for dropdown
         ]);
     }
 
