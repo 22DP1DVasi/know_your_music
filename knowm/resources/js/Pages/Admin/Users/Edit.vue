@@ -2,6 +2,7 @@
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm, router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
+import {computed, ref, watch } from 'vue';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
@@ -52,6 +53,76 @@ const deleteUserRole = (userId, roleId) => {
         preserveScroll: true,
     });
 };
+
+/* Daļa priekš modālajam logam */
+
+const isAddRolesModalOpen = ref(false);
+const roleSearch = ref('');
+const selectedRoleIds = ref([]);
+
+/* pieejamās lomas, kuru lietotājam vēl nav */
+const availableRoles = computed(() => {
+    const assignedIds = props.user.roles.map(r => r.id);
+    return props.allRoles.filter(role => !assignedIds.includes(role.id));
+});
+
+/* filtrētas pieejamās lomas, meklēšana */
+const filteredRoles = computed(() => {
+    if (!roleSearch.value) {
+        return availableRoles.value;
+    }
+    const q = roleSearch.value.toLowerCase();
+    return availableRoles.value.filter(role =>
+        role.name.toLowerCase().includes(q) ||
+        (role.description && role.description.toLowerCase().includes(q))
+    );
+});
+
+/* atlasītas lomas */
+const selectedRoles = computed(() => {
+    return availableRoles.value.filter(role =>
+        selectedRoleIds.value.includes(role.id)
+    );
+});
+
+const toggleRoleSelection = (roleId) => {
+    if (selectedRoleIds.value.includes(roleId)) {
+        selectedRoleIds.value = selectedRoleIds.value.filter(id => id !== roleId);
+    } else {
+        selectedRoleIds.value.push(roleId);
+    }
+};
+
+const assignRolesToUser = () => {
+    if (!selectedRoleIds.value.length) return;
+    router.post(
+        route('admin-users-roles-store', { user: props.user.id }),
+        {
+            roles: selectedRoleIds.value,
+        },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeAddRolesModal();
+            },
+            onError: (errors) => {
+                alert(errors.message || 'Failed to assign roles');
+            },
+        }
+    );
+};
+
+const openAddRolesModal = () => {
+    selectedRoleIds.value = [];
+    roleSearch.value = '';
+    isAddRolesModalOpen.value = true;
+};
+
+const closeAddRolesModal = () => {
+    isAddRolesModalOpen.value = false;
+};
+
+/*  */
 
 </script>
 
@@ -154,11 +225,20 @@ const deleteUserRole = (userId, roleId) => {
                     </div>
 
                     <div class="form-group">
-                        <label>Roles</label>
+                        <div class="roles-header">
+                            <label>Roles</label>
+                            <button
+                                type="button"
+                                class="btn-primary btn-sm"
+                                @click="openAddRolesModal"
+                            >
+                                + Add Roles
+                            </button>
+                        </div>
 
-                        <!-- Roles Table Container -->
+                        <!-- Lomu tabulas konteiners -->
                         <div class="roles-table-container">
-                            <!-- Table Header -->
+                            <!-- Galvenes -->
                             <div class="roles-table-header">
                                 <div class="roles-table-row">
                                     <div class="roles-table-cell roles-table-cell-name">
@@ -176,7 +256,7 @@ const deleteUserRole = (userId, roleId) => {
                                 </div>
                             </div>
 
-                            <!-- Table Body -->
+                            <!-- Tabulas saturs -->
                             <div class="roles-table-body">
                                 <div
                                     v-for="role in user.roles"
@@ -216,6 +296,75 @@ const deleteUserRole = (userId, roleId) => {
                 </div>
             </form>
         </div>
+
+        <!-- Modāls logs lomu pievienošanai -->
+        <div v-if="isAddRolesModalOpen" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>Add Roles</h2>
+                    <button class="modal-close" @click="closeAddRolesModal">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Meklēšana -->
+                    <input
+                        v-model="roleSearch"
+                        type="text"
+                        placeholder="Search roles..."
+                        class="input-field"
+                    />
+
+                    <!-- Atlasītās lomas -->
+                    <div v-if="selectedRoles.length" class="selected-roles">
+                        <h4>Selected roles</h4>
+                        <div class="selected-roles-list">
+                    <span
+                        v-for="role in selectedRoles"
+                        :key="role.id"
+                        class="selected-role-pill"
+                        @click="toggleRoleSelection(role.id)"
+                    >
+                        {{ role.name }} ✕
+                    </span>
+                        </div>
+                    </div>
+
+                    <!-- Pieejamās lomas -->
+                    <div class="roles-list">
+                        <div
+                            v-for="role in filteredRoles"
+                            :key="role.id"
+                            class="role-item"
+                            :class="{ selected: selectedRoleIds.includes(role.id) }"
+                            @click="toggleRoleSelection(role.id)"
+                        >
+                            <div class="role-name">{{ role.name }}</div>
+                            <div class="role-description">
+                                {{ role.description || 'No description' }}
+                            </div>
+                        </div>
+
+                        <div v-if="!filteredRoles.length" class="roles-empty">
+                            No roles found
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" @click="closeAddRolesModal">
+                        Cancel
+                    </button>
+                    <button
+                        class="btn-primary"
+                        :disabled="!selectedRoleIds.length"
+                        @click="assignRolesToUser"
+                    >
+                        Add selected roles
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </AdminLayout>
 </template>
 
@@ -256,6 +405,16 @@ const deleteUserRole = (userId, roleId) => {
     color: #374151;
     margin-bottom: 0.375rem;
     font-size: 0.875rem;
+}
+
+.roles-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
 }
 
 .input-field {
@@ -442,6 +601,115 @@ select.input-field {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: white;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.modal-header,
+.modal-footer {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    border-bottom: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.modal-body {
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.roles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.role-item {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.role-item:hover {
+    background-color: #f9fafb;
+}
+
+.role-item.selected {
+    background-color: #e0f2fe;
+    border-color: #38bdf8;
+}
+
+.role-name {
+    font-weight: 600;
+}
+
+.role-description {
+    font-size: 0.8125rem;
+    color: #6b7280;
+}
+
+.selected-roles {
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+}
+
+.selected-roles-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.selected-role-pill {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.roles-empty {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #9ca3af;
 }
 
 /* Responsivitāte */

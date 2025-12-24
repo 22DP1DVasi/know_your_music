@@ -171,6 +171,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin-users-store');
     Route::get('/admin-users-edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin-users-edit');
     Route::put('/admin-users-update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin-users-update');
+    Route::post('/admin/users/{user}/roles', [App\Http\Controllers\Admin\UserController::class, 'storeRoles'])->name('admin-users-roles-store');
     Route::delete('/admin/users/{user}/roles/{role}', [App\Http\Controllers\Admin\UserController::class, 'destroyUserRole'])->name('admin-users-roles-destroy');
     Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin-users-destroy');
 

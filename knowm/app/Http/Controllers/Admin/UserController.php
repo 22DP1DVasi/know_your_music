@@ -104,6 +104,26 @@ class UserController extends Controller
             ->with('success', 'User deleted successfully');
     }
 
+
+    /***
+     * Metode, kas saglabā visas piešķirtās lomas lietotājam.
+     *
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function storeRoles(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'roles' => ['required', 'array'],
+            'roles.*' => ['integer', 'exists:roles,id'],
+        ]);
+
+        // pievienot lomas, nenoņemot esošās lomas
+        $user->roles()->syncWithoutDetaching($validated['roles']);
+        return redirect()->back()->with('success', 'Roles assigned successfully');
+    }
+
     /**
      * Metode, kas dzēš (noņem) lomu no lietotāja.
      *
