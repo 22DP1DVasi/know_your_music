@@ -1,0 +1,25 @@
+{
+    "index": {
+        "title": "Lietotāju pārvaldība",
+        "back_to_website": "Atpakaļ uz vietni",
+        "add_new_user": "Pievienot jaunu lietotāju",
+        "search_username": "Meklēt pēc lietotājvārda",
+        "search_username_placeholder": "Ierakstiet lietotājvārdu...",
+        "search_email": "Meklēt pēc e-pasta",
+        "search_email_placeholder": "Ierakstiet e-pasta adresi...",
+        "filter_status": "Filtrēt pēc statusa",
+        "all_statuses": "Visi statusi",
+        "clear_filters": "Notīrīt filtrus",
+        "header_name": "Lietotājvārds",
+        "header_email": "E-pasts",
+        "header_status": "Statuss",
+        "header_created_at": "Izveidots",
+        "header_updated_at": "Atjaunināts",
+        "header_actions": "Darbības",
+        "edit_btn": "Rediģēt",
+        "delete_btn": "Dzēst",
+        "no_users_found_msg": "Netika atrasts neviens lietotājs, kas atbilstu meklēšanas kritērijiem.",
+        "clear_filters_msg": "Notīriet filtrus, lai redzētu visus lietotājus",
+        "no_users_found_sys": "Sistēmā nav atrasts neviens lietotājs."
+    }
+}

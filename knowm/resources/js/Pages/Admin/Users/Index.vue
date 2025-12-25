@@ -5,6 +5,7 @@ import Pagination from "@/Components/Admin/Pagination.vue";
 import { route } from "ziggy-js";
 import { ref, watch, computed } from 'vue';
 import { debounce } from 'lodash';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     users: Object,
@@ -22,6 +23,7 @@ const props = defineProps({
     }
 });
 
+const { t } = useI18n()
 // meklēšanas ievades, inicializēt no props
 const searchName = ref(props.filters.search_name || '');
 const searchEmail = ref(props.filters.search_email || '');
@@ -100,13 +102,13 @@ const deleteUser = (id) => {
 <template>
     <AdminLayout>
         <div class="header-container">
-            <h1>User Management</h1>
+            <h1>{{ t('adm_artists.index.title') }}</h1>
             <div class="header-actions">
                 <Link :href="route('home')" class="btn-secondary">
-                    Back to website
+                    {{ t('adm_artists.index.back_to_website') }}
                 </Link>
                 <Link :href="route('admin-users-create')" class="btn-primary">
-                    Add New User
+                    {{ t('adm_artists.index.add_new_user') }}
                 </Link>
             </div>
         </div>
@@ -114,7 +116,7 @@ const deleteUser = (id) => {
         <div class="filters-container">
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="search-name">Search by Username</label>
+                    <label for="search-name">{{ t('adm_artists.index.search_username') }}</label>
                     <div class="search-input-wrapper">
                         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -124,7 +126,7 @@ const deleteUser = (id) => {
                             id="search-name"
                             v-model="searchName"
                             type="text"
-                            placeholder="Type username..."
+                            :placeholder="t('adm_artists.index.search_username_placeholder')"
                             class="input-field"
                         />
                         <button
@@ -139,7 +141,7 @@ const deleteUser = (id) => {
                 </div>
 
                 <div class="filter-group">
-                    <label for="search-email">Search by Email</label>
+                    <label for="search-email">{{ t('adm_artists.index.search_email') }}</label>
                     <div class="search-input-wrapper">
                         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -149,7 +151,7 @@ const deleteUser = (id) => {
                             id="search-email"
                             v-model="searchEmail"
                             type="email"
-                            placeholder="Type email address..."
+                            :placeholder="t('adm_artists.index.search_email_placeholder')"
                             class="input-field"
                         />
                         <button
@@ -164,13 +166,13 @@ const deleteUser = (id) => {
                 </div>
 
                 <div class="filter-group">
-                    <label for="filter-status">Filter by Status</label>
+                    <label for="filter-status">{{ t('adm_artists.index.filter_status') }}</label>
                     <select
                         id="filter-status"
                         v-model="filterStatus"
                         class="input-field"
                     >
-                        <option value="">All Statuses</option>
+                        <option value="">{{ t('adm_artists.index.all_statuses') }}</option>
                         <option
                             v-for="status in statusOptions"
                             :key="status"
@@ -188,7 +190,7 @@ const deleteUser = (id) => {
                         class="btn-clear-filters"
                         type="button"
                     >
-                        Clear Filters
+                        {{ t('adm_artists.index.clear_filters') }}
                     </button>
                 </div>
             </div>
@@ -198,13 +200,13 @@ const deleteUser = (id) => {
             <div class="table-inner">
                 <!-- Galvenes -->
                 <div class="users-header">
-                    <div>Name</div>
-                    <div class="email-header">Email</div>
-                    <div>Status</div>
+                    <div>{{ t('adm_artists.index.header_name') }}</div>
+                    <div class="email-header">{{ t('adm_artists.index.header_email') }}</div>
+                    <div>{{ t('adm_artists.index.header_status') }}</div>
 <!--                    <div>Roles</div>-->
-                    <div class="created-updated-at-header">Created at</div>
-                    <div class="created-updated-at-header">Updated at</div>
-                    <div>Actions</div>
+                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_created_at') }}</div>
+                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_updated_at') }}</div>
+                    <div>{{ t('adm_artists.index.header_actions') }}</div>
                 </div>
 
                 <!-- Rindas -->
@@ -240,24 +242,24 @@ const deleteUser = (id) => {
                             :href="route('admin-users-edit', { id: user.id })"
                             class="btn-edit"
                         >
-                            Edit
+                            {{ t('adm_artists.index.edit_btn') }}
                         </Link>
                         <button
                             @click="deleteUser(user.id)"
                             class="btn-danger"
                         >
-                            Delete
+                            {{ t('adm_artists.index.delete_btn') }}
                         </button>
                     </div>
                 </div>
 
                 <div v-if="users.data.length === 0" class="no-results">
                     <template v-if="hasActiveFilters">
-                        <p>No users found matching your search criteria.</p>
-                        <button @click="clearFilters" class="text-link">Clear filters to see all users</button>
+                        <p>{{ t('adm_artists.index.no_users_found_msg') }}</p>
+                        <button @click="clearFilters" class="text-link">{{ t('adm_artists.index.clear_filters_msg') }}</button>
                     </template>
                     <template v-else>
-                        <p>No users found in the system.</p>
+                        <p>{{ t('adm_artists.index.no_users_found_sys') }}</p>
                     </template>
                 </div>
             </div>

@@ -1,0 +1,25 @@
+{
+    "index": {
+        "title": "User Management",
+        "back_to_website": "Back to website",
+        "add_new_user": "Add New User",
+        "search_username": "Search by Username",
+        "search_username_placeholder": "Type username...",
+        "search_email": "Search by Email",
+        "search_email_placeholder": "Type email address...",
+        "filter_status": "Filter by Status",
+        "all_statuses": "All Statuses",
+        "clear_filters": "Clear Filters",
+        "header_name": "Username",
+        "header_email": "Email",
+        "header_status": "Status",
+        "header_created_at": "Created at",
+        "header_updated_at": "Updated at",
+        "header_actions": "Actions",
+        "edit_btn": "Edit",
+        "delete_btn": "Delete",
+        "no_users_found_msg": "No users found matching your search criteria.",
+        "clear_filters_msg": "Clear filters to see all users",
+        "no_users_found_sys": "No users found in the system."
+    }
+}
