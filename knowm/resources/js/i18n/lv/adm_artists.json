@@ -1,0 +1,32 @@
+{
+    "index": {
+        "title": "Izpildītāju pārvaldība",
+        "back_to_website": "Atpakaļ uz vietni",
+        "add_new_artist": "Pievienot jaunu izpildītāju",
+        "search_name": "Meklēt pēc izpildītāja vārda",
+        "search_name_placeholder": "Ierakstiet izpildītāja vārdu...",
+        "filter_type": "Filtrēt pēc tipa",
+        "filter_all_types": "Visi tipi",
+        "type_solo": "Solo",
+        "type_band": "Grupa",
+        "filter_status": "Filtrēt pēc statusa",
+        "filter_all_statuses": "Visi statusi",
+        "status_active": "Aktīvs",
+        "status_inactive": "Neaktīvs",
+        "clear_filter_btn": "Notīrīt filtrus",
+        "header_name": "Vārds",
+        "header_type": "Tips",
+        "header_years": "Aktīvie gadi",
+        "header_status": "Statuss",
+        "header_created_at": "Izveidots",
+        "header_updated_at": "Atjaunināts",
+        "header_actions": "Darbības",
+        "years_present": "- pašlaik",
+        "edit_btn": "Rediģēt",
+        "delete_btn": "Dzēst",
+        "view_btn": "Skatīt",
+        "search_not_found": "Netika atrasts neviens izpildītājs, kas atbilstu meklēšanas kritērijiem.",
+        "clear_filters_msg": "Notīriet filtrus, lai skatītu visus izpildītājus",
+        "no_artists_found_sys": "Sistēmā nav atrasts neviens izpildītājs."
+    }
+}

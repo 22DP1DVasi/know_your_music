@@ -1,0 +1,32 @@
+{
+    "index": {
+        "title": "Artist Management",
+        "back_to_website": "Back to website",
+        "add_new_artist": "Add New Artist",
+        "search_name": "Search by Artist Name",
+        "search_name_placeholder": "Type artist name...",
+        "filter_type": "Filter by Type",
+        "filter_all_types": "All Types",
+        "type_solo": "Solo",
+        "type_band": "Band",
+        "filter_status": "Filter by Status",
+        "filter_all_statuses": "All Statuses",
+        "status_active": "Active",
+        "status_inactive": "Inactive",
+        "clear_filter_btn": "Clear Filters",
+        "header_name": "Name",
+        "header_type": "Type",
+        "header_years": "Years Active",
+        "header_status": "Status",
+        "header_created_at": "Created at",
+        "header_updated_at": "Updated at",
+        "header_actions": "Actions",
+        "years_present": "- present",
+        "edit_btn": "Edit",
+        "delete_btn": "Delete",
+        "view_btn": "View",
+        "search_not_found": "No artists found matching your search criteria.",
+        "clear_filters_msg": "Clear filters to see all artists",
+        "no_artists_found_sys": "No artists found in the system."
+    }
+}
