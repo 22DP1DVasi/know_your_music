@@ -12,32 +12,48 @@ export default {
         const isMobileSearchActive = ref(false);
         const showUserDropdown = ref(false);
         const showExploreDropdown = ref(false);
+        const showLanguageDropdown = ref(false);
         const showMobileExplore = ref(false);
         const isLoggedIn = ref(page.props.auth.user !== null);
         const user = ref(page.props.auth.user || { name: 'User' });
+
         const toggleDarkMode = () => {
             isDarkMode.value = !isDarkMode.value;
             document.documentElement.classList.toggle("dark-mode", isDarkMode.value);
             localStorage.setItem("darkMode", isDarkMode.value);
         };
+
         const toggleNav = () => {
             isMenuActive.value = !isMenuActive.value;
             if (isMenuActive.value) {
                 showUserDropdown.value = false;
                 showExploreDropdown.value = false;
+                showLanguageDropdown.value = false;
             }
         };
+
         const toggleUserDropdown = () => {
             showUserDropdown.value = !showUserDropdown.value;
             showExploreDropdown.value = false;
+            showLanguageDropdown.value = false;
         };
+
         const toggleExploreDropdown = () => {
             showExploreDropdown.value = !showExploreDropdown.value;
             showUserDropdown.value = false;
+            showLanguageDropdown.value = false;
         };
+
+        const toggleLanguageDropdown = () => {
+            showLanguageDropdown.value = !showLanguageDropdown.value;
+            showUserDropdown.value = false;
+            showExploreDropdown.value = false;
+        };
+
         const toggleMobileExplore = () => {
             showMobileExplore.value = !showMobileExplore.value;
         };
+
         const closeDropdownsOnClickOutside = (event) => {
             if (!event.target.closest('.user-menu')) {
                 showUserDropdown.value = false;
@@ -45,39 +61,49 @@ export default {
             if (!event.target.closest('.explore-menu')) {
                 showExploreDropdown.value = false;
             }
+            if (!event.target.closest('.language-switch')) {
+                showLanguageDropdown.value = false;
+            }
         };
+
         const redirectToExplore = (type) => {
             showExploreDropdown.value = false;
             router.visit(`/explore/${type}`);
         };
+
         const logout = () => {
             router.post('/logout', {}, {
                 onFinish: () => {
-                    // Reset user state after logout
                     isLoggedIn.value = false;
                     user.value = { name: 'User' };
                     showUserDropdown.value = false;
                 }
             });
         };
+
         const toggleMobileSearch = () => {
             isMobileSearchActive.value = !isMobileSearchActive.value;
         };
+
         const handleResize = () => {
-            isMobile.value = window.innerWidth <= 910;
+            isMobile.value = window.innerWidth <= 1220;
         };
+
         if (isDarkMode.value) {
             document.documentElement.classList.add("dark-mode");
         }
+
         onMounted(() => {
             window.addEventListener("resize", handleResize);
             window.addEventListener('click', closeDropdownsOnClickOutside);
-            handleResize(); // Check screen size on initial load
+            handleResize();
         });
+
         onUnmounted(() => {
             window.removeEventListener("resize", handleResize);
             window.removeEventListener('click', closeDropdownsOnClickOutside);
         });
+
         const searchQuery = ref('');
         const performSearch = () => {
             if (searchQuery.value.trim()) {
@@ -90,12 +116,23 @@ export default {
         const { locale, t } = useI18n()
 
         const changeLanguage = (lang) => {
-            locale.value = lang
-            localStorage.setItem('locale', lang)
+            locale.value = lang;
+            localStorage.setItem('locale', lang);
+            showLanguageDropdown.value = false;
         }
+
         watch(locale, (newLocale) => {
-            document.documentElement.lang = newLocale
-        })
+            document.documentElement.lang = newLocale;
+        });
+
+        const getLanguageName = (code) => {
+            const languages = {
+                'en': 'English',
+                'lv': 'Latviešu'
+            };
+            return languages[code] || code;
+        };
+
         return {
             isDarkMode,
             toggleDarkMode,
@@ -110,6 +147,8 @@ export default {
             toggleUserDropdown,
             showExploreDropdown,
             toggleExploreDropdown,
+            showLanguageDropdown,
+            toggleLanguageDropdown,
             showMobileExplore,
             toggleMobileExplore,
             redirectToExplore,
@@ -119,6 +158,7 @@ export default {
             locale,
             t,
             changeLanguage,
+            getLanguageName,
         };
     },
 };
@@ -166,12 +206,31 @@ export default {
                 </div>
             </li>
             <li><a href="/about">About</a></li>
+
+            <!-- Valodas slēdzis -->
             <li class="language-switch">
-                <select :value="locale" @change="changeLanguage($event.target.value)">
-                    <option value="en">English</option>
-                    <option value="lv">Latviešu</option>
-                </select>
+                <div class="language-selector" @click="toggleLanguageDropdown">
+                    <span class="language-code">{{ locale.toUpperCase() }}</span>
+                    <i class="fa fa-caret-down"></i>
+                </div>
+                <div v-show="showLanguageDropdown" class="language-dropdown">
+                    <a
+                        href="#"
+                        @click.prevent="changeLanguage('en')"
+                        :class="{ active: locale === 'en' }"
+                    >
+                        English
+                    </a>
+                    <a
+                        href="#"
+                        @click.prevent="changeLanguage('lv')"
+                        :class="{ active: locale === 'lv' }"
+                    >
+                        Latviešu
+                    </a>
+                </div>
             </li>
+
             <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
             <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
             <li v-if="isLoggedIn" class="user-menu">
@@ -186,18 +245,18 @@ export default {
                 </div>
             </li>
         </ul>
-        <!-- search button for mobile -->
+        <!-- meklēšanas poga mobilajās ierīcēs -->
         <button class="mobile-search-button" @click="toggleMobileSearch" v-show="isMobile">
             <i class="fa fa-search"></i>
         </button>
-        <!-- hamburger menu -->
+        <!-- hamburger izvēlne -->
         <div class="hamburger" @click="toggleNav">
             <span class="line"></span>
             <span class="line"></span>
             <span class="line"></span>
         </div>
     </nav>
-    <!-- menubar for mobiles -->
+    <!-- izvēlne mobilajās ierīcēs -->
     <div
         class="overlay"
         :class="{ active: isMenuActive }"
@@ -208,7 +267,26 @@ export default {
             <span>MENU</span>
         </div>
         <ul>
-            <!-- conditional rendering for mobile menu -->
+            <!-- Valodas slēdzis mobilajās ierīcēs -->
+            <li class="mobile-language-switch">
+                <div class="mobile-language-label">Language:</div>
+                <div class="mobile-language-options">
+                    <button
+                        @click="changeLanguage('en')"
+                        :class="{ active: locale === 'en' }"
+                    >
+                        English
+                    </button>
+                    <button
+                        @click="changeLanguage('lv')"
+                        :class="{ active: locale === 'lv' }"
+                    >
+                        Latviešu
+                    </button>
+                </div>
+            </li>
+
+            <!-- nosacījuma atveidošana mobilajai izvēlnei -->
             <li><a href="/">Home</a></li>
             <li class="mobile-explore-item">
                 <a href="#" @click.prevent="toggleMobileExplore">Explore <i class="fa fa-caret-down"></i></a>
@@ -227,7 +305,7 @@ export default {
             <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">Log Out</a></li>
         </ul>
     </div>
-    <!-- search bar for mobile -->
+    <!-- meklēšanas josla mobilajām ierīcēm -->
     <div v-show="isMobileSearchActive" class="mobile-search-container">
         <div class="search">
             <input
@@ -282,7 +360,7 @@ nav ul li a {
     font-weight: 400;
     padding: 12px 16px;
     border-radius: 5px;
-    display: block; /* takes up the full width of the li */
+    display: block; /* aizņem visu li platumu */
     font-size: 16px;
     transition: background-color 0.3s ease;
 }
@@ -295,7 +373,7 @@ nav ul li a:hover {
     height: 55px;
     display: flex;
     align-items: center;
-    text-decoration: none; /* remove underline from the link */
+    text-decoration: none; /* noņemt pasvītrojumu no saites */
     cursor: pointer;
     margin: 0;
     padding: 0;
@@ -320,14 +398,14 @@ nav ul li a:hover {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* adjust for true center */
+    transform: translate(-50%, -50%);
     z-index: 2;
 }
 
 .search {
     margin: 0 auto;
     width: 100%;
-    position: relative; /* ensure children are positioned relative to this */
+    position: relative;
     display: flex;
     z-index: 1;
 }
@@ -367,13 +445,13 @@ nav ul li a:hover {
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* change to music icon on hover */
+/* mainīt uz mūzikas ikonu, novietojot kursoru */
 .searchButton:hover i {
     opacity: 0;
     transform: scale(0.5);
 }
 
-/* add the music icon after hover */
+/* mūzikas ikonas pievienošana pēc kursora novietošanas */
 .searchButton:hover::after {
     content: "\f001";
     font-family: "FontAwesome";
@@ -445,6 +523,120 @@ nav ul li a:hover {
 
 .explore-dropdown a:hover {
     background-color: #f5f5f5;
+}
+
+.language-switch {
+    position: relative;
+    margin-left: 0.5rem;
+}
+
+.language-selector {
+    cursor: pointer;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    padding: 12px 16px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    min-height: 55px;
+    box-sizing: border-box;
+}
+
+.language-selector:hover {
+    background-color: #20c1f7;
+}
+
+.language-code {
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.language-selector i {
+    margin-left: 6px;
+    font-size: 14px;
+    color: #666;
+}
+
+.language-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 140px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.language-dropdown a {
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: background-color 0.2s;
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.language-dropdown a:hover {
+    background-color: #f5f5f5;
+}
+
+.language-dropdown a.active {
+    background-color: #e8f4fc;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.mobile-language-switch {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+.mobile-language-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.mobile-language-options {
+    display: flex;
+    gap: 10px;
+}
+
+.mobile-language-options button {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333;
+    flex: 1;
+}
+
+.mobile-language-options button:hover {
+    background-color: #f5f5f5;
+    border-color: #ccc;
+}
+
+.mobile-language-options button.active {
+    background-color: #20c1f7;
+    color: white;
+    border-color: #20c1f7;
 }
 
 .mobile-explore-dropdown {
@@ -550,7 +742,6 @@ nav ul li a:hover {
     min-width: fit-content;
 }
 
-/* mobile search container */
 .mobile-search-container {
     background-color: rgb(185, 225, 255);
     padding: 10px;
@@ -612,7 +803,7 @@ nav ul li a:hover {
 }
 
 .menubar-header {
-    position: absolute; /* fixed at the top of the menubar */
+    position: absolute; /* fiksēts izvēlnes augšdaļā */
     top: 0;
     left: 0;
     width: 100%;
@@ -622,13 +813,13 @@ nav ul li a:hover {
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
-    box-sizing: border-box; /* include padding in the element's width */
+    box-sizing: border-box;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 2;
     font-size: 1.3rem;
 }
 
-/* overlay to cover the screen when the menu is active */
+/* pārklājums, lai nosegtu ekrānu, kad izvēlne ir aktīva */
 .overlay {
     position: fixed;
     top: 0;
@@ -671,26 +862,7 @@ nav ul li a:hover {
     }
 }
 
-@media screen and (max-width: 1000px){
-    .search {
-        width: 80%;
-    }
-
-    .wrap {
-        top: 50%;
-        left: 50%;
-        transform: translate(-70%, -50%);
-    }
-
-}
-
-@media screen and (max-width: 768px) {
-    .username {
-        max-width: 100px;
-    }
-}
-
-@media screen and (max-width: 910px) {
+@media screen and (max-width: 1220px) {
     .hamburger {
         display: block;
     }
@@ -699,10 +871,8 @@ nav ul li a:hover {
         display: none;
     }
 
-    .mobile-search-button {
-        position: absolute;
-        right: 55px;
-        width: auto;
+    .language-switch {
+        margin-left: 0;
     }
 }
 
@@ -721,6 +891,10 @@ nav ul li a:hover {
 @media screen and (max-width: 370px) {
     .logo-container p {
         display: none;
+    }
+
+    .mobile-language-options {
+        flex-direction: column;
     }
 }
 

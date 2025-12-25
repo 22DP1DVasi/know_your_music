@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/locales/en.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/locales/lv.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/config/app.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/views/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/views/app.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -336,7 +327,7 @@
       <workItem from="1766493692193" duration="19944000" />
       <workItem from="1766564469782" duration="16648000" />
       <workItem from="1766606497358" duration="302000" />
-      <workItem from="1766650875122" duration="5952000" />
+      <workItem from="1766650875122" duration="8987000" />
     </task>
     <servers />
   </component>
