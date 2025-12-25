@@ -21,5 +21,30 @@
         "no_users_found_msg": "Netika atrasts neviens lietotājs, kas atbilstu meklēšanas kritērijiem.",
         "clear_filters_msg": "Notīriet filtrus, lai redzētu visus lietotājus",
         "no_users_found_sys": "Sistēmā nav atrasts neviens lietotājs."
+    },
+    "edit": {
+        "title": "Rediģēt lietotāju",
+        "reset_btn": "Atiestatīt",
+        "update_user_btn": "Atjaunināt lietotāju",
+        "back_to_users": "Atpakaļ pie lietotājiem",
+        "username": "Lietotājvārds",
+        "email": "E-pasta adrese",
+        "new_password": "Jauna parole (atstājiet tukšu, lai atjauninātu)",
+        "confirm_password": "Apstiprināt jaunu paroli",
+        "status": "Statuss",
+        "roles": "Lomas",
+        "add_roles": "+ Pievienot lomas",
+        "role_name": "Nosaukums",
+        "role_description": "Apraksts",
+        "role_assigned_at": "Piešķirts",
+        "role_actions": "Darbības",
+        "delete_role_btn": "Dzēst",
+        "no_roles_assigned": "Šim lietotājam nav piešķirta neviena loma",
+        "add_roles_header": "Pievienot lomas",
+        "search_roles_placeholder": "Meklēt lomas...",
+        "selected_roles": "Atlasītās lomas",
+        "no_roles_found": "Nav atrasta neviena loma",
+        "modal_cancel": "Atcelt",
+        "add_selected_roles": "Pievienot atlasītās lomas"
     }
 }

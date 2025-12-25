@@ -21,5 +21,30 @@
         "no_users_found_msg": "No users found matching your search criteria.",
         "clear_filters_msg": "Clear filters to see all users",
         "no_users_found_sys": "No users found in the system."
+    },
+    "edit": {
+        "title": "Edit User",
+        "reset_btn": "Reset",
+        "update_user_btn": "Update User",
+        "back_to_users": "Back to Users",
+        "username": "Username",
+        "email": "Email",
+        "new_password": "New Password (leave blank to keep current)",
+        "confirm_password": "Confirm New Password",
+        "status": "Status",
+        "roles": "Roles",
+        "add_roles": "+ Add Roles",
+        "role_name": "Name",
+        "role_description": "Description",
+        "role_assigned_at": "Assigned at",
+        "role_actions": "Actions",
+        "delete_role_btn": "Delete",
+        "no_roles_assigned": "No roles assigned to this user",
+        "add_roles_header": "Add Roles",
+        "search_roles_placeholder": "Search roles...",
+        "selected_roles": "Selected roles",
+        "no_roles_found": "No roles found",
+        "modal_cancel": "Cancel",
+        "add_selected_roles": "Add selected roles"
     }
 }
