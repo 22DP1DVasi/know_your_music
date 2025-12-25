@@ -1,21 +1,31 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3';
-import { ref, watchEffect } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3'
+import { ref, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
+import {route} from "ziggy-js";
 
-const page = usePage();
-const mobileMenuOpen = ref(false);
-const showFlash = ref(true);
+const page = usePage()
+const mobileMenuOpen = ref(false)
+const showFlash = ref(true)
+
+const { locale, t } = useI18n()
 
 const toggleMobileMenu = () => {
-    mobileMenuOpen.value = !mobileMenuOpen.value;
-};
+    mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+const changeLanguage = (lang) => {
+    locale.value = lang
+    localStorage.setItem('locale', lang)
+    document.documentElement.lang = lang
+}
 
 watchEffect(() => {
     if (page.props.flash?.success || page.props.flash?.error) {
-        showFlash.value = true;
-        setTimeout(() => showFlash.value = false, 5000);
+        showFlash.value = true
+        setTimeout(() => showFlash.value = false, 5000)
     }
-});
+})
 
 </script>
 
@@ -26,11 +36,26 @@ watchEffect(() => {
         </button>
 
         <aside class="sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
+            <div class="admin-language-switch">
+                <button
+                    :class="{ active: locale === 'en' }"
+                    @click="changeLanguage('en')"
+                >
+                    EN
+                </button>
+                <button
+                    :class="{ active: locale === 'lv' }"
+                    @click="changeLanguage('lv')"
+                >
+                    LV
+                </button>
+            </div>
+
             <nav>
                 <ul>
-                    <li><Link :href="route('admin-dashboard')">Dashboard</Link></li>
-                    <li><Link :href="route('admin-users-index')">Users</Link></li>
-                    <li><Link :href="route('admin-artists-index')">Artists</Link></li>
+                    <li><Link :href="route('admin-dashboard')">{{ t('adm_layout.dashboard') }}</Link></li>
+                    <li><Link :href="route('admin-users-index')">{{ t('adm_layout.users') }}</Link></li>
+                    <li><Link :href="route('admin-artists-index')">{{ t('adm_layout.artists') }}</Link></li>
                 </ul>
             </nav>
         </aside>
@@ -69,6 +94,34 @@ watchEffect(() => {
     padding: 1rem;
     transition: transform 0.3s ease;
     z-index: 1000;
+}
+
+.admin-language-switch {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-language-switch button {
+    background: transparent;
+    border: 1px solid #64748b;
+    color: #e5e7eb;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-language-switch button:hover {
+    background: #334155;
+}
+
+.admin-language-switch button.active {
+    background: #10b981;
+    border-color: #10b981;
+    color: #022c22;
 }
 
 .content {
