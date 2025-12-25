@@ -46,5 +46,16 @@
         "no_roles_found": "No roles found",
         "modal_cancel": "Cancel",
         "add_selected_roles": "Add selected roles"
+    },
+    "create": {
+        "title": "Create New User",
+        "back_to_users": "Back to Users",
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirm_password": "Confirm Password",
+        "status": "Status",
+        "reset_btn": "Reset",
+        "create_user_btn": "Create User"
     }
 }

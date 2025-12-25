@@ -46,5 +46,16 @@
         "no_roles_found": "Nav atrasta neviena loma",
         "modal_cancel": "Atcelt",
         "add_selected_roles": "Pievienot atlasītās lomas"
+    },
+    "create": {
+        "title": "Izveidot jaunu lietotāju",
+        "back_to_users": "Atpakaļ pie lietotājiem",
+        "username": "Lietotājvārds",
+        "email": "E-pasta adrese",
+        "password": "Parole",
+        "confirm_password": "Apstiprināt paroli",
+        "status": "Statuss",
+        "reset_btn": "Atiestatīt",
+        "create_user_btn": "Izveidot lietotāju"
     }
 }

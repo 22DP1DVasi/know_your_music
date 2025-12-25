@@ -1,6 +1,8 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import {route} from "ziggy-js";
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     statusOptions: Array
@@ -22,14 +24,16 @@ const resetForm = () => {
     form.reset();
 };
 
+const { t } = useI18n()
+
 </script>
 
 <template>
     <AdminLayout>
         <div class="header-container">
-            <h1>Create New User</h1>
+            <h1>{{ t('adm_users.create.title') }}</h1>
             <Link :href="route('admin-users-index')" class="btn-secondary">
-                Back to Users
+                {{ t('adm_users.create.back_to_users') }}
             </Link>
         </div>
 
@@ -37,7 +41,7 @@ const resetForm = () => {
             <form @submit.prevent="submit">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="name">Username</label>
+                        <label for="name">{{ t('adm_users.create.username') }}</label>
                         <input
                             v-model="form.name"
                             id="name"
@@ -51,7 +55,7 @@ const resetForm = () => {
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email">{{ t('adm_users.create.email') }}</label>
                         <input
                             v-model="form.email"
                             id="email"
@@ -65,7 +69,7 @@ const resetForm = () => {
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="password">{{ t('adm_users.create.password') }}</label>
                         <input
                             v-model="form.password"
                             id="password"
@@ -79,7 +83,7 @@ const resetForm = () => {
                     </div>
 
                     <div class="form-group">
-                        <label for="password_confirmation">Confirm Password</label>
+                        <label for="password_confirmation">{{ t('adm_users.create.confirm_password') }}</label>
                         <input
                             v-model="form.password_confirmation"
                             id="password_confirmation"
@@ -89,7 +93,7 @@ const resetForm = () => {
                     </div>
 
                     <div class="form-group">
-                        <label for="status">Status</label>
+                        <label for="status">{{ t('adm_users.create.status') }}</label>
                         <select
                             v-model="form.status"
                             id="status"
@@ -111,14 +115,14 @@ const resetForm = () => {
                             @click="resetForm"
                             class="btn-secondary"
                         >
-                            Reset
+                            {{ t('adm_users.create.reset_btn') }}
                         </button>
                         <button
                             type="submit"
                             class="btn-primary"
                             :disabled="form.processing"
                         >
-                            Create User
+                            {{ t('adm_users.create.create_user_btn') }}
                         </button>
                     </div>
                 </div>

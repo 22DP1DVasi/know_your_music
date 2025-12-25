@@ -132,14 +132,14 @@ const closeAddRolesModal = () => {
 <template>
     <AdminLayout>
         <div class="header-container">
-            <h1>{{ t('adm_artists.edit.title') }}</h1>
+            <h1>{{ t('adm_users.edit.title') }}</h1>
             <div class="form-actions">
                 <button
                     type="button"
                     @click="resetForm"
                     class="btn-secondary"
                 >
-                    {{ t('adm_artists.edit.reset_btn') }}
+                    {{ t('adm_users.edit.reset_btn') }}
                 </button>
                 <button
                     type="submit"
@@ -147,11 +147,11 @@ const closeAddRolesModal = () => {
                     :disabled="form.processing"
                     @click="submit"
                 >
-                    {{ t('adm_artists.edit.update_user_btn') }}
+                    {{ t('adm_users.edit.update_user_btn') }}
                 </button>
             </div>
             <Link :href="route('admin-users-index')" class="btn-secondary">
-                {{ t('adm_artists.edit.back_to_users') }}
+                {{ t('adm_users.edit.back_to_users') }}
             </Link>
         </div>
 
@@ -159,7 +159,7 @@ const closeAddRolesModal = () => {
             <form @submit.prevent="submit">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="name">{{ t('adm_artists.edit.username') }}</label>
+                        <label for="name">{{ t('adm_users.edit.username') }}</label>
                         <input
                             v-model="form.name"
                             id="name"
@@ -173,7 +173,7 @@ const closeAddRolesModal = () => {
                     </div>
 
                     <div class="form-group">
-                        <label for="email">{{ t('adm_artists.edit.email') }}</label>
+                        <label for="email">{{ t('adm_users.edit.email') }}</label>
                         <input
                             v-model="form.email"
                             id="email"
@@ -187,7 +187,7 @@ const closeAddRolesModal = () => {
                     </div>
 
                     <div class="form-group">
-                        <label for="password">{{ t('adm_artists.edit.new_password') }}</label>
+                        <label for="password">{{ t('adm_users.edit.new_password') }}</label>
                         <input
                             v-model="form.password"
                             id="password"
@@ -201,7 +201,7 @@ const closeAddRolesModal = () => {
                     </div>
 
                     <div class="form-group">
-                        <label for="password_confirmation">{{ t('adm_artists.edit.confirm_password') }}</label>
+                        <label for="password_confirmation">{{ t('adm_users.edit.confirm_password') }}</label>
                         <input
                             v-model="form.password_confirmation"
                             id="password_confirmation"
@@ -211,7 +211,7 @@ const closeAddRolesModal = () => {
                     </div>
 
                     <div class="form-group">
-                        <label for="status">{{ t('adm_artists.edit.status') }}</label>
+                        <label for="status">{{ t('adm_users.edit.status') }}</label>
                         <select
                             v-model="form.status"
                             id="status"
@@ -229,13 +229,13 @@ const closeAddRolesModal = () => {
 
                     <div class="form-group">
                         <div class="roles-header">
-                            <label>{{ t('adm_artists.edit.roles') }}</label>
+                            <label>{{ t('adm_users.edit.roles') }}</label>
                             <button
                                 type="button"
                                 class="btn-primary btn-sm"
                                 @click="openAddRolesModal"
                             >
-                                {{ t('adm_artists.edit.add_roles') }}
+                                {{ t('adm_users.edit.add_roles') }}
                             </button>
                         </div>
 
@@ -245,16 +245,16 @@ const closeAddRolesModal = () => {
                             <div class="roles-table-header">
                                 <div class="roles-table-row">
                                     <div class="roles-table-cell roles-table-cell-name">
-                                        {{ t('adm_artists.edit.role_name') }}
+                                        {{ t('adm_users.edit.role_name') }}
                                     </div>
                                     <div class="roles-table-cell roles-table-cell-description">
-                                        {{ t('adm_artists.edit.role_description') }}
+                                        {{ t('adm_users.edit.role_description') }}
                                     </div>
                                     <div class="roles-table-cell roles-table-cell-added">
-                                        {{ t('adm_artists.edit.role_assigned_at') }}
+                                        {{ t('adm_users.edit.role_assigned_at') }}
                                     </div>
                                     <div class="roles-table-cell roles-table-cell-actions">
-                                        {{ t('adm_artists.edit.role_actions') }}
+                                        {{ t('adm_users.edit.role_actions') }}
                                     </div>
                                 </div>
                             </div>
@@ -281,13 +281,13 @@ const closeAddRolesModal = () => {
                                             class="btn-danger"
                                             @click="deleteUserRole(props.user.id, role.id)"
                                         >
-                                            {{ t('adm_artists.edit.delete_role_btn') }}
+                                            {{ t('adm_users.edit.delete_role_btn') }}
                                         </button>
                                     </div>
                                 </div>
 
                                 <div v-if="!user.roles || user.roles.length === 0" class="roles-table-empty">
-                                    {{ t('adm_artists.edit.no_roles_assigned') }}
+                                    {{ t('adm_users.edit.no_roles_assigned') }}
                                 </div>
                             </div>
                         </div>
@@ -304,7 +304,7 @@ const closeAddRolesModal = () => {
         <div v-if="isAddRolesModalOpen" class="modal-overlay">
             <div class="modal">
                 <div class="modal-header">
-                    <h2>{{ t('adm_artists.edit.add_roles_header') }}</h2>
+                    <h2>{{ t('adm_users.edit.add_roles_header') }}</h2>
                     <button class="modal-close" @click="closeAddRolesModal">×</button>
                 </div>
 
@@ -313,13 +313,13 @@ const closeAddRolesModal = () => {
                     <input
                         v-model="roleSearch"
                         type="text"
-                        :placeholder="t('adm_artists.edit.search_roles_placeholder')"
+                        :placeholder="t('adm_users.edit.search_roles_placeholder')"
                         class="input-field"
                     />
 
                     <!-- Atlasītās lomas -->
                     <div v-if="selectedRoles.length" class="selected-roles">
-                        <h4>{{ t('adm_artists.edit.selected_roles') }}</h4>
+                        <h4>{{ t('adm_users.edit.selected_roles') }}</h4>
                         <div class="selected-roles-list">
                     <span
                         v-for="role in selectedRoles"
@@ -348,21 +348,21 @@ const closeAddRolesModal = () => {
                         </div>
 
                         <div v-if="!filteredRoles.length" class="roles-empty">
-                            {{ t('adm_artists.edit.no_roles_found') }}
+                            {{ t('adm_users.edit.no_roles_found') }}
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button class="btn-secondary" @click="closeAddRolesModal">
-                        {{ t('adm_artists.edit.modal_cancel') }}
+                        {{ t('adm_users.edit.modal_cancel') }}
                     </button>
                     <button
                         class="btn-primary"
                         :disabled="!selectedRoleIds.length"
                         @click="assignRolesToUser"
                     >
-                        {{ t('adm_artists.edit.add_selected_roles') }}
+                        {{ t('adm_users.edit.add_selected_roles') }}
                     </button>
                 </div>
             </div>
