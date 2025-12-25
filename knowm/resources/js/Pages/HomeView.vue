@@ -1,3 +1,13 @@
+<script setup>
+import Footer from '@/Components/Footer.vue';
+import Navbar from '@/Components/Navbar.vue';
+// import HomeRecomCards from '@/Components/HomeRecomCards.vue';
+import { Head, Link } from "@inertiajs/vue3";
+
+const ADMIN_ROLE_ID = 1;
+
+</script>
+
 <template>
     <Head title="Know Your Music" />
     <Navbar/>
@@ -12,7 +22,7 @@
             </Link>
         </div>
         <div class="home-title">
-            <p>Enhance your music experience.</p>
+            <p>{{ $t('home.enhance_experience') }}</p>
             <p>Make new discoveries, learn the background of your favorite music and share your tastes.</p>
         </div>
 
@@ -51,16 +61,6 @@
     </main>
     <Footer/>
 </template>
-
-<script setup>
-import Footer from '@/Components/Footer.vue';
-import Navbar from '@/Components/Navbar.vue';
-// import HomeRecomCards from '@/Components/HomeRecomCards.vue';
-import { Head, Link } from "@inertiajs/vue3";
-
-const ADMIN_ROLE_ID = 1;
-
-</script>
 
 <style scoped>
 .home-title {

@@ -1,123 +1,7 @@
-<template>
-    <!-- Navbar element provided by https://github.com/daniilsonufrijuks and modified to fit into website purpose -->
-    <nav>
-        <a href="/" class="logo-container">
-            <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
-            <p>Know Your Music</p>
-        </a>
-        <ul>
-            <li>
-                <div class="wrap">
-                    <div class="search">
-                        <input
-                            type="text"
-                            class="searchTerm"
-                            placeholder="Search..."
-                            v-model="searchQuery"
-                            @keyup.enter="performSearch"
-                        >
-                        <button
-                            type="submit"
-                            class="searchButton"
-                            @click="performSearch"
-                        >
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </li>
-            <li><a href="/">Home</a></li>
-            <li class="explore-menu">
-                <div class="explore-link" @click="toggleExploreDropdown">
-                    Explore <i class="fa fa-caret-down"></i>
-                </div>
-                <div v-show="showExploreDropdown" class="explore-dropdown">
-                    <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
-                    <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
-<!--                    <a href="#" @click.prevent="redirectToExplore('tracks')">Tracks</a>-->
-                    <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
-                </div>
-            </li>
-            <li><a href="/about">About</a></li>
-            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
-            <li v-if="isLoggedIn" class="user-menu">
-                <div class="user-avatar" @click="toggleUserDropdown">
-                    <i class="fa fa-user-circle"></i>
-                    <span class="username">{{ user.name }}</span>
-                    <div v-show="showUserDropdown" class="user-dropdown">
-                        <a href="/profile">Profile</a>
-                        <a href="/settings">Settings</a>
-                        <a href="#" @click.prevent="logout">Log Out</a>
-                    </div>
-                </div>
-            </li>
-        </ul>
-        <!-- search button for mobile -->
-        <button class="mobile-search-button" @click="toggleMobileSearch" v-show="isMobile">
-            <i class="fa fa-search"></i>
-        </button>
-        <!-- hamburger menu -->
-        <div class="hamburger" @click="toggleNav">
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-        </div>
-    </nav>
-    <!-- menubar for mobiles -->
-    <div
-        class="overlay"
-        :class="{ active: isMenuActive }"
-        @click="toggleNav"
-    ></div>
-    <div class="menubar" :class="{ active: isMenuActive }">
-        <div class="menubar-header">
-            <span>MENU</span>
-        </div>
-        <ul>
-            <!-- conditional rendering for mobile menu -->
-            <li><a href="/">Home</a></li>
-            <li class="mobile-explore-item">
-                <a href="#" @click.prevent="toggleMobileExplore">Explore <i class="fa fa-caret-down"></i></a>
-                <div v-show="showMobileExplore" class="mobile-explore-dropdown">
-                    <a href="/explore/artists">Artists</a>
-                    <a href="/explore/releases">Releases</a>
-<!--                    <a href="/explore/tracks">Tracks</a>-->
-                    <a href="/explore/genres">Genres</a>
-                </div>
-            </li>
-            <li><a href="/about">About</a></li>
-            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
-            <li v-if="isLoggedIn"><a href="/profile">Profile</a></li>
-            <li v-if="isLoggedIn"><a href="/settings">Settings</a></li>
-            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">Log Out</a></li>
-        </ul>
-    </div>
-    <!-- search bar for mobile -->
-    <div v-show="isMobileSearchActive" class="mobile-search-container">
-        <div class="search">
-            <input
-                type="text"
-                class="searchTerm"
-                placeholder="Search..."
-                v-model="searchQuery"
-                @keyup.enter="performSearch"
-            />
-            <button
-                type="submit"
-                class="searchButton"
-                @click="performSearch"
-            >
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
-    </div>
-</template>
-
 <script>
 import { ref, onMounted, onUnmounted, watch } from "vue";
 import { usePage, router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n'
 
 export default {
     setup() {
@@ -202,6 +86,16 @@ export default {
                 });
             }
         };
+
+        const { locale, t } = useI18n()
+
+        const changeLanguage = (lang) => {
+            locale.value = lang
+            localStorage.setItem('locale', lang)
+        }
+        watch(locale, (newLocale) => {
+            document.documentElement.lang = newLocale
+        })
         return {
             isDarkMode,
             toggleDarkMode,
@@ -221,14 +115,140 @@ export default {
             redirectToExplore,
             logout,
             searchQuery,
-            performSearch
+            performSearch,
+            locale,
+            t,
+            changeLanguage,
         };
     },
 };
+
 </script>
 
-<style scoped>
+<template>
+    <!-- Navbar element provided by https://github.com/daniilsonufrijuks and modified to fit into website purpose -->
+    <nav>
+        <a href="/" class="logo-container">
+            <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
+            <p>Know Your Music</p>
+        </a>
+        <ul>
+            <li>
+                <div class="wrap">
+                    <div class="search">
+                        <input
+                            type="text"
+                            class="searchTerm"
+                            placeholder="Search..."
+                            v-model="searchQuery"
+                            @keyup.enter="performSearch"
+                        >
+                        <button
+                            type="submit"
+                            class="searchButton"
+                            @click="performSearch"
+                        >
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </li>
+            <li><a href="/">Home</a></li>
+            <li class="explore-menu">
+                <div class="explore-link" @click="toggleExploreDropdown">
+                    Explore <i class="fa fa-caret-down"></i>
+                </div>
+                <div v-show="showExploreDropdown" class="explore-dropdown">
+                    <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
+                    <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
+<!--                    <a href="#" @click.prevent="redirectToExplore('tracks')">Tracks</a>-->
+                    <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                </div>
+            </li>
+            <li><a href="/about">About</a></li>
+            <li class="language-switch">
+                <select :value="locale" @change="changeLanguage($event.target.value)">
+                    <option value="en">English</option>
+                    <option value="lv">Latviešu</option>
+                </select>
+            </li>
+            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
+            <li v-if="isLoggedIn" class="user-menu">
+                <div class="user-avatar" @click="toggleUserDropdown">
+                    <i class="fa fa-user-circle"></i>
+                    <span class="username">{{ user.name }}</span>
+                    <div v-show="showUserDropdown" class="user-dropdown">
+                        <a href="/profile">Profile</a>
+                        <a href="/settings">Settings</a>
+                        <a href="#" @click.prevent="logout">Log Out</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <!-- search button for mobile -->
+        <button class="mobile-search-button" @click="toggleMobileSearch" v-show="isMobile">
+            <i class="fa fa-search"></i>
+        </button>
+        <!-- hamburger menu -->
+        <div class="hamburger" @click="toggleNav">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+        </div>
+    </nav>
+    <!-- menubar for mobiles -->
+    <div
+        class="overlay"
+        :class="{ active: isMenuActive }"
+        @click="toggleNav"
+    ></div>
+    <div class="menubar" :class="{ active: isMenuActive }">
+        <div class="menubar-header">
+            <span>MENU</span>
+        </div>
+        <ul>
+            <!-- conditional rendering for mobile menu -->
+            <li><a href="/">Home</a></li>
+            <li class="mobile-explore-item">
+                <a href="#" @click.prevent="toggleMobileExplore">Explore <i class="fa fa-caret-down"></i></a>
+                <div v-show="showMobileExplore" class="mobile-explore-dropdown">
+                    <a href="/explore/artists">Artists</a>
+                    <a href="/explore/releases">Releases</a>
+<!--                    <a href="/explore/tracks">Tracks</a>-->
+                    <a href="/explore/genres">Genres</a>
+                </div>
+            </li>
+            <li><a href="/about">About</a></li>
+            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
+            <li v-if="isLoggedIn"><a href="/profile">Profile</a></li>
+            <li v-if="isLoggedIn"><a href="/settings">Settings</a></li>
+            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">Log Out</a></li>
+        </ul>
+    </div>
+    <!-- search bar for mobile -->
+    <div v-show="isMobileSearchActive" class="mobile-search-container">
+        <div class="search">
+            <input
+                type="text"
+                class="searchTerm"
+                placeholder="Search..."
+                v-model="searchQuery"
+                @keyup.enter="performSearch"
+            />
+            <button
+                type="submit"
+                class="searchButton"
+                @click="performSearch"
+            >
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+</template>
 
+<style scoped>
 nav {
     background-color: rgb(185, 225, 255);
     padding: 5px 2%;
@@ -451,6 +471,14 @@ nav ul li a:hover {
 .mobile-explore-item i {
     margin-left: 5px;
     font-size: 14px;
+}
+
+.language-switch select {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 6px;
 }
 
 .user-avatar {
