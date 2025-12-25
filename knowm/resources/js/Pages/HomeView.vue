@@ -22,7 +22,7 @@ const ADMIN_ROLE_ID = 1;
             </Link>
         </div>
         <div class="home-title">
-            <p>{{ $t('home.enhance_experience') }}</p>
+            <p>Enhance your music experience.</p>
             <p>Make new discoveries, learn the background of your favorite music and share your tastes.</p>
         </div>
 

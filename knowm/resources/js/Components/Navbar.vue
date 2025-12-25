@@ -193,19 +193,19 @@ export default {
                     </div>
                 </div>
             </li>
-            <li><a href="/">Home</a></li>
+<!--            <li><a href="/">{{ t('navbar.home') }}</a></li>-->
             <li class="explore-menu">
                 <div class="explore-link" @click="toggleExploreDropdown">
-                    Explore <i class="fa fa-caret-down"></i>
+                    {{ t('navbar.explore') }} <i class="fa fa-caret-down"></i>
                 </div>
                 <div v-show="showExploreDropdown" class="explore-dropdown">
-                    <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
-                    <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
-<!--                    <a href="#" @click.prevent="redirectToExplore('tracks')">Tracks</a>-->
-                    <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                    <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
+                    <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
+<!--                    <a href="#" @click.prevent="redirectToExplore('tracks')">{{ t('navbar.explore_tracks') }}</a>-->
+                    <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
                 </div>
             </li>
-            <li><a href="/about">About</a></li>
+            <li><a href="/about">{{ t('navbar.about') }}</a></li>
 
             <!-- Valodas slēdzis -->
             <li class="language-switch">
@@ -231,16 +231,16 @@ export default {
                 </div>
             </li>
 
-            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
+            <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
             <li v-if="isLoggedIn" class="user-menu">
                 <div class="user-avatar" @click="toggleUserDropdown">
                     <i class="fa fa-user-circle"></i>
                     <span class="username">{{ user.name }}</span>
                     <div v-show="showUserDropdown" class="user-dropdown">
-                        <a href="/profile">Profile</a>
-                        <a href="/settings">Settings</a>
-                        <a href="#" @click.prevent="logout">Log Out</a>
+                        <a href="/profile">{{ t('navbar.account') }}</a>
+                        <a href="/settings">{{ t('navbar.profile_settings') }}</a>
+                        <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
                     </div>
                 </div>
             </li>
@@ -264,12 +264,12 @@ export default {
     ></div>
     <div class="menubar" :class="{ active: isMenuActive }">
         <div class="menubar-header">
-            <span>MENU</span>
+            <span>{{ t('navbar.menu') }}</span>
         </div>
         <ul>
             <!-- Valodas slēdzis mobilajās ierīcēs -->
             <li class="mobile-language-switch">
-                <div class="mobile-language-label">Language:</div>
+                <div class="mobile-language-label">{{ t('navbar.language') }}:</div>
                 <div class="mobile-language-options">
                     <button
                         @click="changeLanguage('en')"
@@ -287,22 +287,22 @@ export default {
             </li>
 
             <!-- nosacījuma atveidošana mobilajai izvēlnei -->
-            <li><a href="/">Home</a></li>
+<!--            <li><a href="/">{{ t('navbar.home') }}</a></li>-->
             <li class="mobile-explore-item">
-                <a href="#" @click.prevent="toggleMobileExplore">Explore <i class="fa fa-caret-down"></i></a>
+                <a href="#" @click.prevent="toggleMobileExplore">{{ t('navbar.explore') }} <i class="fa fa-caret-down"></i></a>
                 <div v-show="showMobileExplore" class="mobile-explore-dropdown">
-                    <a href="/explore/artists">Artists</a>
-                    <a href="/explore/releases">Releases</a>
-<!--                    <a href="/explore/tracks">Tracks</a>-->
-                    <a href="/explore/genres">Genres</a>
+                    <a href="/explore/artists">{{ t('navbar.explore_artists') }}</a>
+                    <a href="/explore/releases">{{ t('navbar.explore_releases') }}</a>
+<!--                    <a href="/explore/tracks">{{ t('navbar.explore_tracks') }}</a>-->
+                    <a href="/explore/genres">{{ t('navbar.explore_genres') }}</a>
                 </div>
             </li>
-            <li><a href="/about">About</a></li>
-            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
-            <li v-if="isLoggedIn"><a href="/profile">Profile</a></li>
-            <li v-if="isLoggedIn"><a href="/settings">Settings</a></li>
-            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">Log Out</a></li>
+            <li><a href="/about">{{ t('navbar.about') }}</a></li>
+            <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
+            <li v-if="isLoggedIn"><a href="/profile">{{ t('navbar.account') }}</a></li>
+            <li v-if="isLoggedIn"><a href="/settings">{{ t('navbar.profile_settings') }}</a></li>
+            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a></li>
         </ul>
     </div>
     <!-- meklēšanas josla mobilajām ierīcēm -->
