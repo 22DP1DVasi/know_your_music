@@ -5,12 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/lang/lv/pagination.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/lang/lv/auth.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/lang/lv/passwords.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Middleware/HandleInertiaRequests.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Middleware/HandleInertiaRequests.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/bootstrap/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/bootstrap/app.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Layouts/AdminLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Layouts/AdminLayout.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -339,7 +336,7 @@
       <workItem from="1766606497358" duration="302000" />
       <workItem from="1766650875122" duration="10737000" />
       <workItem from="1766688809186" duration="12531000" />
-      <workItem from="1766738164994" duration="3071000" />
+      <workItem from="1766738164994" duration="3851000" />
     </task>
     <servers />
   </component>
