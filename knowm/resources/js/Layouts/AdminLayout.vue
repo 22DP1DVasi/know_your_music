@@ -1,29 +1,34 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3'
+import {Link, router, usePage} from '@inertiajs/vue3'
 import { ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {route} from "ziggy-js";
+import axios from 'axios';
 
-const page = usePage()
-const mobileMenuOpen = ref(false)
-const showFlash = ref(true)
+const page = usePage();
+const mobileMenuOpen = ref(false);
+const showFlash = ref(true);
 
-const { locale, t } = useI18n()
+const { locale, t } = useI18n();
 
 const toggleMobileMenu = () => {
-    mobileMenuOpen.value = !mobileMenuOpen.value
+    mobileMenuOpen.value = !mobileMenuOpen.value;
 }
 
-const changeLanguage = (lang) => {
-    locale.value = lang
-    localStorage.setItem('locale', lang)
-    document.documentElement.lang = lang
-}
+const changeLanguage = async (lang) => {
+    locale.value = lang;
+    localStorage.setItem('locale', lang);
+    await axios.post('/locale', { locale: lang });
+    router.reload({
+        preserveScroll: true,
+        preserveState: true,
+    });
+};
 
 watchEffect(() => {
     if (page.props.flash?.success || page.props.flash?.error) {
-        showFlash.value = true
-        setTimeout(() => showFlash.value = false, 5000)
+        showFlash.value = true;
+        setTimeout(() => showFlash.value = false, 5000);
     }
 })
 

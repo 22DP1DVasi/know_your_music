@@ -15,7 +15,7 @@ use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ReleaseController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\GenreController;
-
+//use Illuminate\Support\Facades\App;
 
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -135,6 +135,16 @@ Route::get('/explore/releases', [ReleaseController::class, 'explore'])
 // page for genres explore
 Route::get('/explore/genres', [GenreController::class, 'explore'])
     ->name('explore.genres');
+
+Route::post('/locale', function (Request $request) {
+    $locale = $request->string('locale')->toString();
+    if (! in_array($locale, ['en', 'lv'])) {
+        abort(400);
+    }
+    session(['locale' => $locale]);
+    \Illuminate\Support\Facades\App::setLocale($locale);
+    return response()->noContent();
+});
 
 // user account settings
 Route::middleware('auth')->group(function () {
