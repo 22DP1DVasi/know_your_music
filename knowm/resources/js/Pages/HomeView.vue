@@ -4,6 +4,7 @@ import Navbar from '@/Components/Navbar.vue';
 // import HomeRecomCards from '@/Components/HomeRecomCards.vue';
 import { Head, Link } from "@inertiajs/vue3";
 import { useI18n } from 'vue-i18n'
+import {route} from "ziggy-js";
 
 const ADMIN_ROLE_ID = 1;
 const { t } = useI18n()
