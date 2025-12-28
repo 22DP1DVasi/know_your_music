@@ -1,3 +1,170 @@
+<script>
+import { ref, onMounted, onUnmounted, watch } from "vue";
+import { usePage, router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n'
+
+export default {
+    setup() {
+        const page = usePage();
+        const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
+        const isMenuActive = ref(false);
+        const isMobile = ref(false);
+        const isMobileSearchActive = ref(false);
+        const showUserDropdown = ref(false);
+        const showExploreDropdown = ref(false);
+        const showLanguageDropdown = ref(false);
+        const showMobileExplore = ref(false);
+        const isLoggedIn = ref(page.props.auth.user !== null);
+        const user = ref(page.props.auth.user || { name: 'User' });
+
+        const toggleDarkMode = () => {
+            isDarkMode.value = !isDarkMode.value;
+            document.documentElement.classList.toggle("dark-mode", isDarkMode.value);
+            localStorage.setItem("darkMode", isDarkMode.value);
+        };
+
+        const toggleNav = () => {
+            isMenuActive.value = !isMenuActive.value;
+            if (isMenuActive.value) {
+                showUserDropdown.value = false;
+                showExploreDropdown.value = false;
+                showLanguageDropdown.value = false;
+            }
+        };
+
+        const toggleUserDropdown = () => {
+            showUserDropdown.value = !showUserDropdown.value;
+            showExploreDropdown.value = false;
+            showLanguageDropdown.value = false;
+        };
+
+        const toggleExploreDropdown = () => {
+            showExploreDropdown.value = !showExploreDropdown.value;
+            showUserDropdown.value = false;
+            showLanguageDropdown.value = false;
+        };
+
+        const toggleLanguageDropdown = () => {
+            showLanguageDropdown.value = !showLanguageDropdown.value;
+            showUserDropdown.value = false;
+            showExploreDropdown.value = false;
+        };
+
+        const toggleMobileExplore = () => {
+            showMobileExplore.value = !showMobileExplore.value;
+        };
+
+        const closeDropdownsOnClickOutside = (event) => {
+            if (!event.target.closest('.user-menu')) {
+                showUserDropdown.value = false;
+            }
+            if (!event.target.closest('.explore-menu')) {
+                showExploreDropdown.value = false;
+            }
+            if (!event.target.closest('.language-switch')) {
+                showLanguageDropdown.value = false;
+            }
+        };
+
+        const redirectToExplore = (type) => {
+            showExploreDropdown.value = false;
+            router.visit(`/explore/${type}`);
+        };
+
+        const logout = () => {
+            router.post('/logout', {}, {
+                onFinish: () => {
+                    isLoggedIn.value = false;
+                    user.value = { name: 'User' };
+                    showUserDropdown.value = false;
+                }
+            });
+        };
+
+        const toggleMobileSearch = () => {
+            isMobileSearchActive.value = !isMobileSearchActive.value;
+        };
+
+        const handleResize = () => {
+            isMobile.value = window.innerWidth <= 1220;
+        };
+
+        if (isDarkMode.value) {
+            document.documentElement.classList.add("dark-mode");
+        }
+
+        onMounted(() => {
+            window.addEventListener("resize", handleResize);
+            window.addEventListener('click', closeDropdownsOnClickOutside);
+            handleResize();
+        });
+
+        onUnmounted(() => {
+            window.removeEventListener("resize", handleResize);
+            window.removeEventListener('click', closeDropdownsOnClickOutside);
+        });
+
+        const searchQuery = ref('');
+        const performSearch = () => {
+            if (searchQuery.value.trim()) {
+                router.get('/search', {
+                    q: searchQuery.value.trim()
+                });
+            }
+        };
+
+        const { locale, t } = useI18n()
+
+        const changeLanguage = (lang) => {
+            locale.value = lang;
+            localStorage.setItem('locale', lang);
+            showLanguageDropdown.value = false;
+        }
+
+        watch(locale, (newLocale) => {
+            document.documentElement.lang = newLocale;
+        });
+
+        const getLanguageName = (code) => {
+            const languages = {
+                'en': 'English',
+                'lv': 'Latviešu'
+            };
+            return languages[code] || code;
+        };
+
+        return {
+            isDarkMode,
+            toggleDarkMode,
+            isMenuActive,
+            toggleNav,
+            isMobile,
+            isMobileSearchActive,
+            toggleMobileSearch,
+            isLoggedIn,
+            user,
+            showUserDropdown,
+            toggleUserDropdown,
+            showExploreDropdown,
+            toggleExploreDropdown,
+            showLanguageDropdown,
+            toggleLanguageDropdown,
+            showMobileExplore,
+            toggleMobileExplore,
+            redirectToExplore,
+            logout,
+            searchQuery,
+            performSearch,
+            locale,
+            t,
+            changeLanguage,
+            getLanguageName,
+        };
+    },
+};
+
+</script>
+
 <template>
     <!-- Navbar element provided by https://github.com/daniilsonufrijuks and modified to fit into website purpose -->
     <nav>
@@ -26,45 +193,70 @@
                     </div>
                 </div>
             </li>
-            <li><a href="/">Home</a></li>
+<!--            <li><a href="/">{{ t('navbar.home') }}</a></li>-->
             <li class="explore-menu">
                 <div class="explore-link" @click="toggleExploreDropdown">
-                    Explore <i class="fa fa-caret-down"></i>
+                    {{ t('navbar.explore') }} <i class="fa fa-caret-down"></i>
                 </div>
                 <div v-show="showExploreDropdown" class="explore-dropdown">
-                    <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
-                    <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
-<!--                    <a href="#" @click.prevent="redirectToExplore('tracks')">Tracks</a>-->
-                    <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                    <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
+                    <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
+<!--                    <a href="#" @click.prevent="redirectToExplore('tracks')">{{ t('navbar.explore_tracks') }}</a>-->
+                    <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
                 </div>
             </li>
-            <li><a href="/about">About</a></li>
-            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
+            <li><a href="/about">{{ t('navbar.about') }}</a></li>
+
+            <!-- Valodas slēdzis -->
+            <li class="language-switch">
+                <div class="language-selector" @click="toggleLanguageDropdown">
+                    <span class="language-code">{{ locale.toUpperCase() }}</span>
+                    <i class="fa fa-caret-down"></i>
+                </div>
+                <div v-show="showLanguageDropdown" class="language-dropdown">
+                    <a
+                        href="#"
+                        @click.prevent="changeLanguage('en')"
+                        :class="{ active: locale === 'en' }"
+                    >
+                        English
+                    </a>
+                    <a
+                        href="#"
+                        @click.prevent="changeLanguage('lv')"
+                        :class="{ active: locale === 'lv' }"
+                    >
+                        Latviešu
+                    </a>
+                </div>
+            </li>
+
+            <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
             <li v-if="isLoggedIn" class="user-menu">
                 <div class="user-avatar" @click="toggleUserDropdown">
                     <i class="fa fa-user-circle"></i>
                     <span class="username">{{ user.name }}</span>
                     <div v-show="showUserDropdown" class="user-dropdown">
-                        <a href="/profile">Profile</a>
-                        <a href="/settings">Settings</a>
-                        <a href="#" @click.prevent="logout">Log Out</a>
+                        <a href="/profile">{{ t('navbar.account') }}</a>
+                        <a href="/settings">{{ t('navbar.profile_settings') }}</a>
+                        <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
                     </div>
                 </div>
             </li>
         </ul>
-        <!-- search button for mobile -->
+        <!-- meklēšanas poga mobilajās ierīcēs -->
         <button class="mobile-search-button" @click="toggleMobileSearch" v-show="isMobile">
             <i class="fa fa-search"></i>
         </button>
-        <!-- hamburger menu -->
+        <!-- hamburger izvēlne -->
         <div class="hamburger" @click="toggleNav">
             <span class="line"></span>
             <span class="line"></span>
             <span class="line"></span>
         </div>
     </nav>
-    <!-- menubar for mobiles -->
+    <!-- izvēlne mobilajās ierīcēs -->
     <div
         class="overlay"
         :class="{ active: isMenuActive }"
@@ -72,29 +264,48 @@
     ></div>
     <div class="menubar" :class="{ active: isMenuActive }">
         <div class="menubar-header">
-            <span>MENU</span>
+            <span>{{ t('navbar.menu') }}</span>
         </div>
         <ul>
-            <!-- conditional rendering for mobile menu -->
-            <li><a href="/">Home</a></li>
-            <li class="mobile-explore-item">
-                <a href="#" @click.prevent="toggleMobileExplore">Explore <i class="fa fa-caret-down"></i></a>
-                <div v-show="showMobileExplore" class="mobile-explore-dropdown">
-                    <a href="/explore/artists">Artists</a>
-                    <a href="/explore/releases">Releases</a>
-<!--                    <a href="/explore/tracks">Tracks</a>-->
-                    <a href="/explore/genres">Genres</a>
+            <!-- Valodas slēdzis mobilajās ierīcēs -->
+            <li class="mobile-language-switch">
+                <div class="mobile-language-label">{{ t('navbar.language') }}:</div>
+                <div class="mobile-language-options">
+                    <button
+                        @click="changeLanguage('en')"
+                        :class="{ active: locale === 'en' }"
+                    >
+                        English
+                    </button>
+                    <button
+                        @click="changeLanguage('lv')"
+                        :class="{ active: locale === 'lv' }"
+                    >
+                        Latviešu
+                    </button>
                 </div>
             </li>
-            <li><a href="/about">About</a></li>
-            <li v-if="!isLoggedIn"><a href="/login">Log In</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">Sign Up</a></li>
-            <li v-if="isLoggedIn"><a href="/profile">Profile</a></li>
-            <li v-if="isLoggedIn"><a href="/settings">Settings</a></li>
-            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">Log Out</a></li>
+
+            <!-- nosacījuma atveidošana mobilajai izvēlnei -->
+<!--            <li><a href="/">{{ t('navbar.home') }}</a></li>-->
+            <li class="mobile-explore-item">
+                <a href="#" @click.prevent="toggleMobileExplore">{{ t('navbar.explore') }} <i class="fa fa-caret-down"></i></a>
+                <div v-show="showMobileExplore" class="mobile-explore-dropdown">
+                    <a href="/explore/artists">{{ t('navbar.explore_artists') }}</a>
+                    <a href="/explore/releases">{{ t('navbar.explore_releases') }}</a>
+<!--                    <a href="/explore/tracks">{{ t('navbar.explore_tracks') }}</a>-->
+                    <a href="/explore/genres">{{ t('navbar.explore_genres') }}</a>
+                </div>
+            </li>
+            <li><a href="/about">{{ t('navbar.about') }}</a></li>
+            <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
+            <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
+            <li v-if="isLoggedIn"><a href="/profile">{{ t('navbar.account') }}</a></li>
+            <li v-if="isLoggedIn"><a href="/settings">{{ t('navbar.profile_settings') }}</a></li>
+            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a></li>
         </ul>
     </div>
-    <!-- search bar for mobile -->
+    <!-- meklēšanas josla mobilajām ierīcēm -->
     <div v-show="isMobileSearchActive" class="mobile-search-container">
         <div class="search">
             <input
@@ -115,120 +326,7 @@
     </div>
 </template>
 
-<script>
-import { ref, onMounted, onUnmounted, watch } from "vue";
-import { usePage, router } from '@inertiajs/vue3';
-
-export default {
-    setup() {
-        const page = usePage();
-        const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
-        const isMenuActive = ref(false);
-        const isMobile = ref(false);
-        const isMobileSearchActive = ref(false);
-        const showUserDropdown = ref(false);
-        const showExploreDropdown = ref(false);
-        const showMobileExplore = ref(false);
-        const isLoggedIn = ref(page.props.auth.user !== null);
-        const user = ref(page.props.auth.user || { name: 'User' });
-        const toggleDarkMode = () => {
-            isDarkMode.value = !isDarkMode.value;
-            document.documentElement.classList.toggle("dark-mode", isDarkMode.value);
-            localStorage.setItem("darkMode", isDarkMode.value);
-        };
-        const toggleNav = () => {
-            isMenuActive.value = !isMenuActive.value;
-            if (isMenuActive.value) {
-                showUserDropdown.value = false;
-                showExploreDropdown.value = false;
-            }
-        };
-        const toggleUserDropdown = () => {
-            showUserDropdown.value = !showUserDropdown.value;
-            showExploreDropdown.value = false;
-        };
-        const toggleExploreDropdown = () => {
-            showExploreDropdown.value = !showExploreDropdown.value;
-            showUserDropdown.value = false;
-        };
-        const toggleMobileExplore = () => {
-            showMobileExplore.value = !showMobileExplore.value;
-        };
-        const closeDropdownsOnClickOutside = (event) => {
-            if (!event.target.closest('.user-menu')) {
-                showUserDropdown.value = false;
-            }
-            if (!event.target.closest('.explore-menu')) {
-                showExploreDropdown.value = false;
-            }
-        };
-        const redirectToExplore = (type) => {
-            showExploreDropdown.value = false;
-            router.visit(`/explore/${type}`);
-        };
-        const logout = () => {
-            router.post('/logout', {}, {
-                onFinish: () => {
-                    // Reset user state after logout
-                    isLoggedIn.value = false;
-                    user.value = { name: 'User' };
-                    showUserDropdown.value = false;
-                }
-            });
-        };
-        const toggleMobileSearch = () => {
-            isMobileSearchActive.value = !isMobileSearchActive.value;
-        };
-        const handleResize = () => {
-            isMobile.value = window.innerWidth <= 910;
-        };
-        if (isDarkMode.value) {
-            document.documentElement.classList.add("dark-mode");
-        }
-        onMounted(() => {
-            window.addEventListener("resize", handleResize);
-            window.addEventListener('click', closeDropdownsOnClickOutside);
-            handleResize(); // Check screen size on initial load
-        });
-        onUnmounted(() => {
-            window.removeEventListener("resize", handleResize);
-            window.removeEventListener('click', closeDropdownsOnClickOutside);
-        });
-        const searchQuery = ref('');
-        const performSearch = () => {
-            if (searchQuery.value.trim()) {
-                router.get('/search', {
-                    q: searchQuery.value.trim()
-                });
-            }
-        };
-        return {
-            isDarkMode,
-            toggleDarkMode,
-            isMenuActive,
-            toggleNav,
-            isMobile,
-            isMobileSearchActive,
-            toggleMobileSearch,
-            isLoggedIn,
-            user,
-            showUserDropdown,
-            toggleUserDropdown,
-            showExploreDropdown,
-            toggleExploreDropdown,
-            showMobileExplore,
-            toggleMobileExplore,
-            redirectToExplore,
-            logout,
-            searchQuery,
-            performSearch
-        };
-    },
-};
-</script>
-
 <style scoped>
-
 nav {
     background-color: rgb(185, 225, 255);
     padding: 5px 2%;
@@ -262,7 +360,7 @@ nav ul li a {
     font-weight: 400;
     padding: 12px 16px;
     border-radius: 5px;
-    display: block; /* takes up the full width of the li */
+    display: block; /* aizņem visu li platumu */
     font-size: 16px;
     transition: background-color 0.3s ease;
 }
@@ -275,7 +373,7 @@ nav ul li a:hover {
     height: 55px;
     display: flex;
     align-items: center;
-    text-decoration: none; /* remove underline from the link */
+    text-decoration: none; /* noņemt pasvītrojumu no saites */
     cursor: pointer;
     margin: 0;
     padding: 0;
@@ -300,14 +398,14 @@ nav ul li a:hover {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* adjust for true center */
+    transform: translate(-50%, -50%);
     z-index: 2;
 }
 
 .search {
     margin: 0 auto;
     width: 100%;
-    position: relative; /* ensure children are positioned relative to this */
+    position: relative;
     display: flex;
     z-index: 1;
 }
@@ -347,13 +445,13 @@ nav ul li a:hover {
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* change to music icon on hover */
+/* mainīt uz mūzikas ikonu, novietojot kursoru */
 .searchButton:hover i {
     opacity: 0;
     transform: scale(0.5);
 }
 
-/* add the music icon after hover */
+/* mūzikas ikonas pievienošana pēc kursora novietošanas */
 .searchButton:hover::after {
     content: "\f001";
     font-family: "FontAwesome";
@@ -427,6 +525,120 @@ nav ul li a:hover {
     background-color: #f5f5f5;
 }
 
+.language-switch {
+    position: relative;
+    margin-left: 0.5rem;
+}
+
+.language-selector {
+    cursor: pointer;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    padding: 12px 16px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    min-height: 55px;
+    box-sizing: border-box;
+}
+
+.language-selector:hover {
+    background-color: #20c1f7;
+}
+
+.language-code {
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.language-selector i {
+    margin-left: 6px;
+    font-size: 14px;
+    color: #666;
+}
+
+.language-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 140px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.language-dropdown a {
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: background-color 0.2s;
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.language-dropdown a:hover {
+    background-color: #f5f5f5;
+}
+
+.language-dropdown a.active {
+    background-color: #e8f4fc;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.mobile-language-switch {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+.mobile-language-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.mobile-language-options {
+    display: flex;
+    gap: 10px;
+}
+
+.mobile-language-options button {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333;
+    flex: 1;
+}
+
+.mobile-language-options button:hover {
+    background-color: #f5f5f5;
+    border-color: #ccc;
+}
+
+.mobile-language-options button.active {
+    background-color: #20c1f7;
+    color: white;
+    border-color: #20c1f7;
+}
+
 .mobile-explore-dropdown {
     padding-left: 20px;
     display: flex;
@@ -451,6 +663,14 @@ nav ul li a:hover {
 .mobile-explore-item i {
     margin-left: 5px;
     font-size: 14px;
+}
+
+.language-switch select {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 6px;
 }
 
 .user-avatar {
@@ -522,7 +742,6 @@ nav ul li a:hover {
     min-width: fit-content;
 }
 
-/* mobile search container */
 .mobile-search-container {
     background-color: rgb(185, 225, 255);
     padding: 10px;
@@ -584,7 +803,7 @@ nav ul li a:hover {
 }
 
 .menubar-header {
-    position: absolute; /* fixed at the top of the menubar */
+    position: absolute; /* fiksēts izvēlnes augšdaļā */
     top: 0;
     left: 0;
     width: 100%;
@@ -594,13 +813,13 @@ nav ul li a:hover {
     align-items: center;
     justify-content: space-between;
     padding: 0 10px;
-    box-sizing: border-box; /* include padding in the element's width */
+    box-sizing: border-box;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 2;
     font-size: 1.3rem;
 }
 
-/* overlay to cover the screen when the menu is active */
+/* pārklājums, lai nosegtu ekrānu, kad izvēlne ir aktīva */
 .overlay {
     position: fixed;
     top: 0;
@@ -643,26 +862,7 @@ nav ul li a:hover {
     }
 }
 
-@media screen and (max-width: 1000px){
-    .search {
-        width: 80%;
-    }
-
-    .wrap {
-        top: 50%;
-        left: 50%;
-        transform: translate(-70%, -50%);
-    }
-
-}
-
-@media screen and (max-width: 768px) {
-    .username {
-        max-width: 100px;
-    }
-}
-
-@media screen and (max-width: 910px) {
+@media screen and (max-width: 1220px) {
     .hamburger {
         display: block;
     }
@@ -671,10 +871,8 @@ nav ul li a:hover {
         display: none;
     }
 
-    .mobile-search-button {
-        position: absolute;
-        right: 55px;
-        width: auto;
+    .language-switch {
+        margin-left: 0;
     }
 }
 
@@ -693,6 +891,10 @@ nav ul li a:hover {
 @media screen and (max-width: 370px) {
     .logo-container p {
         display: none;
+    }
+
+    .mobile-language-options {
+        flex-direction: column;
     }
 }
 

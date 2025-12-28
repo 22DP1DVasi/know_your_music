@@ -1,3 +1,16 @@
+<script setup>
+import Footer from '@/Components/Footer.vue';
+import Navbar from '@/Components/Navbar.vue';
+// import HomeRecomCards from '@/Components/HomeRecomCards.vue';
+import { Head, Link } from "@inertiajs/vue3";
+import { useI18n } from 'vue-i18n'
+import {route} from "ziggy-js";
+
+const ADMIN_ROLE_ID = 1;
+const { t } = useI18n()
+
+</script>
+
 <template>
     <Head title="Know Your Music" />
     <Navbar/>
@@ -8,12 +21,12 @@
                 :href="route('admin-dashboard')"
                 class="adm-button"
             >
-                Admin Panel
+                {{ t('home.admin_panel') }}
             </Link>
         </div>
         <div class="home-title">
-            <p>Enhance your music experience.</p>
-            <p>Make new discoveries, learn the background of your favorite music and share your tastes.</p>
+            <p>{{ t('home.page_title') }}</p>
+            <p>{{ t('home.page_subtitle') }}</p>
         </div>
 
         <section class="features-section">
@@ -51,16 +64,6 @@
     </main>
     <Footer/>
 </template>
-
-<script setup>
-import Footer from '@/Components/Footer.vue';
-import Navbar from '@/Components/Navbar.vue';
-// import HomeRecomCards from '@/Components/HomeRecomCards.vue';
-import { Head, Link } from "@inertiajs/vue3";
-
-const ADMIN_ROLE_ID = 1;
-
-</script>
 
 <style scoped>
 .home-title {

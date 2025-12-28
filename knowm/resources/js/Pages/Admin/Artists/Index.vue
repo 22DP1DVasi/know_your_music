@@ -5,6 +5,7 @@ import Pagination from "@/Components/Admin/Pagination.vue";
 import { route } from "ziggy-js";
 import { ref, watch, computed } from 'vue';
 import { debounce } from 'lodash';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     artists: Object,
@@ -18,6 +19,7 @@ const props = defineProps({
     }
 });
 
+const { t } = useI18n()
 // meklēšanas ievades, inicializēt no props
 const searchName = ref(props.filters.search_name || '');
 const filterType = ref(props.filters.filter_type || '');
@@ -91,13 +93,13 @@ const deleteArtist = (id) => {
 <template>
     <AdminLayout>
         <div class="header-container">
-            <h1>Artist Management</h1>
+            <h1>{{ t('adm_artists.index.title') }}</h1>
             <div class="header-actions">
                 <Link :href="route('home')" class="btn-secondary">
-                    Back to website
+                    {{ t('adm_artists.index.back_to_website') }}
                 </Link>
                 <Link :href="route('admin-artists-create')" class="btn-primary">
-                    Add New Artist
+                    {{ t('adm_artists.index.add_new_artist') }}
                 </Link>
             </div>
         </div>
@@ -105,7 +107,7 @@ const deleteArtist = (id) => {
         <div class="filters-container">
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="search-name">Search by Artist Name</label>
+                    <label for="search-name">{{ t('adm_artists.index.search_name') }}</label>
                     <div class="search-input-wrapper">
                         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -115,7 +117,7 @@ const deleteArtist = (id) => {
                             id="search-name"
                             v-model="searchName"
                             type="text"
-                            placeholder="Type artist name..."
+                            :placeholder="t('adm_artists.index.search_name_placeholder')"
                             class="input-field"
                         />
                         <button
@@ -130,28 +132,28 @@ const deleteArtist = (id) => {
                 </div>
 
                 <div class="filter-group">
-                    <label for="filter-type">Filter by Type</label>
+                    <label for="filter-type">{{ t('adm_artists.index.filter_type') }}</label>
                     <select
                         id="filter-type"
                         v-model="filterType"
                         class="input-field"
                     >
-                        <option value="">All Types</option>
-                        <option value="solo">Solo</option>
-                        <option value="band">Band</option>
+                        <option value="">{{ t('adm_artists.index.filter_all_types') }}</option>
+                        <option value="solo">{{ t('adm_artists.index.type_solo') }}</option>
+                        <option value="band">{{ t('adm_artists.index.type_band') }}</option>
                     </select>
                 </div>
 
                 <div class="filter-group">
-                    <label for="filter-status">Filter by Status</label>
+                    <label for="filter-status">{{ t('adm_artists.index.filter_status') }}</label>
                     <select
                         id="filter-status"
                         v-model="filterStatus"
                         class="input-field"
                     >
-                        <option value="">All Statuses</option>
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
+                        <option value="">{{ t('adm_artists.index.filter_all_statuses') }}</option>
+                        <option value="1">{{ t('adm_artists.index.status_active') }}</option>
+                        <option value="0">{{ t('adm_artists.index.status_inactive') }}</option>
                     </select>
                 </div>
 
@@ -162,7 +164,7 @@ const deleteArtist = (id) => {
                         class="btn-clear-filters"
                         type="button"
                     >
-                        Clear Filters
+                        {{ t('adm_artists.index.clear_filter_btn') }}
                     </button>
                 </div>
             </div>
@@ -173,14 +175,14 @@ const deleteArtist = (id) => {
                 <!-- Galvenes -->
                 <div class="artists-header">
                     <div class="id-cell">ID</div>
-                    <div class="name-cell">Name</div>
+                    <div class="name-cell">{{ t('adm_artists.index.header_name') }}</div>
                     <div class="slug-cell" style="font-size: 1em;">Slug</div>
-                    <div class="type-cell" style="font-size: 1em;">Type</div>
-                    <div class="years-cell">Years Active</div>
-                    <div class="status-cell">Status</div>
-                    <div class="created-updated-at-header">Created at</div>
-                    <div class="created-updated-at-header">Updated at</div>
-                    <div class="actions-cell-header">Actions</div>
+                    <div class="type-cell" style="font-size: 1em;">{{ t('adm_artists.index.header_type') }}</div>
+                    <div class="years-cell">{{ t('adm_artists.index.header_years') }}</div>
+                    <div class="status-cell">{{ t('adm_artists.index.header_status') }}</div>
+                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_created_at') }}</div>
+                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_updated_at') }}</div>
+                    <div class="actions-cell-header">{{ t('adm_artists.index.header_actions') }}</div>
                 </div>
 
                 <!-- Rindas -->
@@ -197,13 +199,13 @@ const deleteArtist = (id) => {
                         <span v-if="artist.formed_year">
                             {{ artist.formed_year }}
                             <span v-if="artist.disbanded_year">- {{ artist.disbanded_year }}</span>
-                            <span v-else>- Present</span>
+                            <span v-else>{{ t('adm_artists.index.years_present') }}</span>
                         </span>
                         <span v-else>-</span>
                     </div>
                     <div class="status-cell">
                         <span :class="artist.is_active ? 'status-active' : 'status-inactive'">
-                            {{ artist.is_active ? 'Active' : 'Inactive' }}
+                            {{ artist.is_active ? t('adm_artists.index.status_active') : t('adm_artists.index.status_inactive') }}
                         </span>
                     </div>
                     <div class="created-updated-at-table-data">{{ artist.created_at }}</div>
@@ -213,33 +215,33 @@ const deleteArtist = (id) => {
                             :href="route('admin-artists-edit', { id: artist.id })"
                             class="btn-edit"
                         >
-                            Edit
+                            {{ t('adm_artists.index.edit_btn') }}
                         </Link>
                         <button
                             @click="deleteArtist(artist.id)"
                             class="btn-danger"
                         >
-                            Delete
+                            {{ t('adm_artists.index.delete_btn') }}
                         </button>
                         <Link
                             :href="`/artists/${artist.slug}`"
                             target="_blank"
                             class="btn-view"
                         >
-                            View
+                            {{ t('adm_artists.index.view_btn') }}
                         </Link>
                     </div>
                 </div>
 
                 <div v-if="artists.data.length === 0" class="no-results">
                     <template v-if="hasActiveFilters">
-                        <p>No artists found matching your search criteria.</p>
+                        <p>{{ t('adm_artists.index.search_not_found') }}</p>
                         <button @click="clearFilters" class="text-link">
-                            Clear filters to see all artists
+                            {{ t('adm_artists.index.clear_filters_msg') }}
                         </button>
                     </template>
                     <template v-else>
-                        <p>No artists found in the system.</p>
+                        <p>{{ t('adm_artists.index.no_artists_found_sys') }}</p>
                     </template>
                 </div>
             </div>
