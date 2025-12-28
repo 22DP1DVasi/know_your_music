@@ -96,7 +96,7 @@ const deleteArtist = (id) => {
             <h1>{{ t('adm_artists.index.title') }}</h1>
             <div class="header-actions">
                 <Link :href="route('home')" class="btn-secondary">
-                    {{ t('adm_artists.index.title') }}
+                    {{ t('adm_artists.index.back_to_website') }}
                 </Link>
                 <Link :href="route('admin-artists-create')" class="btn-primary">
                     {{ t('adm_artists.index.add_new_artist') }}

@@ -66,7 +66,7 @@ class UserController extends Controller
 
         User::create($validated);
         return redirect()->route('admin-users-index')
-            ->with('success', 'User created successfully');
+            ->with('success', __('messages.user_created'));
     }
 
     public function edit($id)
@@ -114,7 +114,7 @@ class UserController extends Controller
             $user->roles()->sync($validated['roles']);
         }
         return redirect()->route('admin-users-index')
-            ->with('success', 'User updated successfully');
+            ->with('success', __('messages.user_updated'));
     }
 
     public function destroy($id)
@@ -122,11 +122,11 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         if ($user->id === auth()->id()) {
             return redirect()->back()
-                ->with('error', 'You cannot delete your own account');
+                ->with('error', __('messages.cannot_delete_yourself'));
         }
         $user->delete();
         return redirect()->route('admin-users-index')
-            ->with('success', 'User deleted successfully');
+            ->with('success', __('messages.user_deleted'));
     }
 
 
@@ -146,7 +146,7 @@ class UserController extends Controller
 
         // pievienot lomas, nenoņemot esošās lomas
         $user->roles()->syncWithoutDetaching($validated['roles']);
-        return redirect()->back()->with('success', 'Roles assigned successfully');
+        return redirect()->back()->with('success', __('messages.roles_assigned'));
     }
 
     /**
@@ -163,11 +163,11 @@ class UserController extends Controller
         // Neļaut dzēst administratora lomu no sevis
 //        if ($user->id === auth()->id() && $role->name === 'admin') {
 //            return redirect()->back()
-//                ->with('error', 'You cannot remove your own admin role.');
+//                ->with('error', __('messages.cannot_remove_admin_role'));
 //        }
         // lomas atvienošana no lietotāja (pivot tabula)
         $user->roles()->detach($roleId);
         return redirect()->route('admin-users-edit', ['id' => $userId])
-            ->with('success', 'Role removed successfully.');
+            ->with('success', __('messages.role_removed'));
     }
 }

@@ -71,7 +71,7 @@ class ArtistController extends Controller
         $artist->slug = $artist->generateUniqueSlug();
         $artist->save();
         return redirect()->route('admin-artists-index')
-            ->with('success', 'Artist created successfully');
+            ->with('success', __('messages.artist_created'));
     }
 
     public function edit($id)
@@ -102,7 +102,7 @@ class ArtistController extends Controller
         }
         $artist->update($validated);
         return redirect()->route('admin-artists-index')
-            ->with('success', 'Artist updated successfully');
+            ->with('success', __('messages.artist_updated'));
     }
 
     public function destroy($id)
@@ -110,6 +110,6 @@ class ArtistController extends Controller
         $artist = Artist::findOrFail($id);
         $artist->delete();
         return redirect()->route('admin-artists-index')
-            ->with('success', 'Artist deleted successfully');
+            ->with('success', __('messages.artist_deleted'));
     }
 }
