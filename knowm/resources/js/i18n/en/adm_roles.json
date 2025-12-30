@@ -1,0 +1,28 @@
+{
+    "index": {
+        "title": "Role Management",
+        "back_to_website": "Back to website",
+        "add_new_role": "Add New Role",
+        "search_name": "Search by Role Name",
+        "search_name_placeholder": "Type role name...",
+        "search_description": "Search by Description",
+        "search_description_placeholder": "Type description...",
+        "sort_order": "Sort Order",
+        "sort_ascending": "A-Z (Ascending)",
+        "sort_descending": "Z-A (Descending)",
+        "clear_filters": "Clear Filters",
+        "name_label": "Name",
+        "description_label": "Description",
+        "sort_label": "Sort",
+        "header_name": "Name",
+        "header_description": "Description",
+        "header_created_at": "Created at",
+        "header_updated_at": "Updated at",
+        "header_actions": "Actions",
+        "edit_btn": "Edit",
+        "delete_btn": "Delete",
+        "no_roles_found_msg": "No roles found matching your search criteria.",
+        "clear_filters_msg": "Clear filters to see all roles",
+        "no_roles_found_sys": "No roles found in the system."
+    }
+}

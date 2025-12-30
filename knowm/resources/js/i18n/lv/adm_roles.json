@@ -1,0 +1,28 @@
+{
+    "index": {
+        "title": "Lomu pārvaldība",
+        "back_to_website": "Atpakaļ uz vietni",
+        "add_new_role": "Pievienot jaunu lomu",
+        "search_name": "Meklēt pēc lomas nosaukuma",
+        "search_name_placeholder": "Ierakstiet lomas nosaukumu...",
+        "search_description": "Meklēt pēc apraksta",
+        "search_description_placeholder": "Ierakstiet aprakstu...",
+        "sort_order": "Kārtošanas secība",
+        "sort_ascending": "A-Z (augošā)",
+        "sort_descending": "Z-A (dilstošā)",
+        "clear_filters": "Notīrīt filtrus",
+        "name_label": "Nosaukums",
+        "description_label": "Apraksts",
+        "sort_label": "Kārtošana",
+        "header_name": "Nosaukums",
+        "header_description": "Apraksts",
+        "header_created_at": "Izveidots",
+        "header_updated_at": "Atjaunināts",
+        "header_actions": "Darbības",
+        "edit_btn": "Rediģēt",
+        "delete_btn": "Dzēst",
+        "no_roles_found_msg": "Nav atrasta neviena loma, kas atbilst jūsu meklēšanas kritērijiem.",
+        "clear_filters_msg": "Notīriet filtrus, lai redzētu visas lomas",
+        "no_roles_found_sys": "Sistēmā nav atrasta neviena loma."
+    }
+}

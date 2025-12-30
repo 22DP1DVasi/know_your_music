@@ -60,6 +60,7 @@ watchEffect(() => {
                 <ul>
                     <li><Link :href="route('admin-dashboard')">{{ t('adm_layout.dashboard') }}</Link></li>
                     <li><Link :href="route('admin-users-index')">{{ t('adm_layout.users') }}</Link></li>
+                    <li><Link :href="route('admin-roles-index')">{{ t('adm_layout.roles') }}</Link></li>
                     <li><Link :href="route('admin-artists-index')">{{ t('adm_layout.artists') }}</Link></li>
                 </ul>
             </nav>
