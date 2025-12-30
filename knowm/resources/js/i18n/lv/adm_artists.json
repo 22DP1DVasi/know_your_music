@@ -24,6 +24,7 @@
         "years_present": "- pašlaik",
         "edit_btn": "Rediģēt",
         "delete_btn": "Dzēst",
+        "confirm_delete": "Vai tiešām vēlaties dzēst šo izpildītāju?",
         "view_btn": "Skatīt",
         "search_not_found": "Netika atrasts neviens izpildītājs, kas atbilstu meklēšanas kritērijiem.",
         "clear_filters_msg": "Notīriet filtrus, lai skatītu visus izpildītājus",

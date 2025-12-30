@@ -91,4 +91,18 @@ class RoleController extends Controller
             ->with('success', __('messages.role_updated'));
     }
 
+    /***
+     * Metode, kas dzēš lomu.
+     *
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id)
+    {
+        $role = Role::findOrFail($id);
+        $role->delete();
+        return redirect()->route('admin-roles-index')
+            ->with('success', __('messages.role_deleted'));
+    }
+
 }

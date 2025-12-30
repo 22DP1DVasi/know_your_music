@@ -18,6 +18,7 @@
         "header_actions": "Darbības",
         "edit_btn": "Rediģēt",
         "delete_btn": "Dzēst",
+        "confirm_delete": "Vai tiešām vēlaties dzēst šo lietotāju?",
         "no_users_found_msg": "Netika atrasts neviens lietotājs, kas atbilstu meklēšanas kritērijiem.",
         "clear_filters_msg": "Notīriet filtrus, lai redzētu visus lietotājus",
         "no_users_found_sys": "Sistēmā nav atrasts neviens lietotājs."

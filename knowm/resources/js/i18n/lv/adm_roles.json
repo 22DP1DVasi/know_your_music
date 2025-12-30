@@ -21,6 +21,7 @@
         "header_actions": "Darbības",
         "edit_btn": "Rediģēt",
         "delete_btn": "Dzēst",
+        "confirm_delete": "Vai tiešām vēlaties dzēst šo lomu?",
         "no_roles_found_msg": "Nav atrasta neviena loma, kas atbilst jūsu meklēšanas kritērijiem.",
         "clear_filters_msg": "Notīriet filtrus, lai redzētu visas lomas",
         "no_roles_found_sys": "Sistēmā nav atrasta neviena loma."

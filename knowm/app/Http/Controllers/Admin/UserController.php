@@ -129,7 +129,6 @@ class UserController extends Controller
             ->with('success', __('messages.user_deleted'));
     }
 
-
     /***
      * Metode, kas saglabā visas piešķirtās lomas lietotājam.
      *

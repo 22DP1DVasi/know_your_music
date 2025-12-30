@@ -21,6 +21,7 @@
         "header_actions": "Actions",
         "edit_btn": "Edit",
         "delete_btn": "Delete",
+        "confirm_delete": "Are you sure you want to delete this role?",
         "no_roles_found_msg": "No roles found matching your search criteria.",
         "clear_filters_msg": "Clear filters to see all roles",
         "no_roles_found_sys": "No roles found in the system."

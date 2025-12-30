@@ -24,6 +24,7 @@
         "years_present": "- present",
         "edit_btn": "Edit",
         "delete_btn": "Delete",
+        "confirm_delete": "Are you sure you want to delete this artist?",
         "view_btn": "View",
         "search_not_found": "No artists found matching your search criteria.",
         "clear_filters_msg": "Clear filters to see all artists",

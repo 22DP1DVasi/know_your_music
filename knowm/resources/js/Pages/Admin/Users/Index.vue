@@ -85,7 +85,7 @@ const hasActiveFilters = computed(() => {
 });
 
 const deleteUser = (id) => {
-    if (confirm('Are you sure you want to delete this user?')) {
+    if (confirm(t('adm_users.index.confirm_delete'))) {
         router.delete(route('admin-users-destroy', { id: id }), {
             onSuccess: () => {
             },

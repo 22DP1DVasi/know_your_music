@@ -82,7 +82,7 @@ const hasActiveFilters = computed(() => {
 });
 
 const deleteRole = (id) => {
-    if (confirm('Are you sure you want to delete this role?')) {
+    if (confirm(t('adm_roles.index.confirm_delete'))) {
         router.delete(route('admin-roles-destroy', { id: id }), {
             onSuccess: () => {
             },
