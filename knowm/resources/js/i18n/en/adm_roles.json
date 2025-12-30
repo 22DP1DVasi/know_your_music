@@ -24,5 +24,13 @@
         "no_roles_found_msg": "No roles found matching your search criteria.",
         "clear_filters_msg": "Clear filters to see all roles",
         "no_roles_found_sys": "No roles found in the system."
+    },
+    "edit": {
+        "title": "Edit Role",
+        "reset_btn": "Reset",
+        "update_role_btn": "Update Role",
+        "back_to_roles": "Back to Roles",
+        "role_name": "Role Name",
+        "role_description": "Role Description"
     }
 }

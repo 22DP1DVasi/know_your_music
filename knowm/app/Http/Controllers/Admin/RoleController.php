@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
@@ -42,6 +43,52 @@ class RoleController extends Controller
                 'sort_order',
             ]),
         ]);
+    }
+
+    /***
+     * Metode priekš Edit.vue lapas.
+     * Šī metode ņēm datus par rediģējāmo lomu, lai attēlotu UI.
+     *
+     * @param int $id
+     * @return \Inertia\Response
+     */
+    public function edit(int $id): \Inertia\Response
+    {
+        $role = Role::select('id', 'name', 'description')
+            ->findOrFail($id);
+        return Inertia::render('Admin/Roles/Edit', [
+            'role' => $role,
+        ]);
+    }
+
+    /***
+     * Rediģētas lomas saglabāšanas metode.
+     * Veic validāciju un saglabā jaunus datus lomai.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, int $id): \Illuminate\Http\RedirectResponse
+    {
+        $role = Role::findOrFail($id);
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:80',
+                'unique:roles,name,' . $role->id,
+            ],
+            'description' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+        ]);
+        $role->update($validated);
+        return redirect()
+            ->route('admin-roles-index')
+            ->with('success', __('messages.role_updated'));
     }
 
 }

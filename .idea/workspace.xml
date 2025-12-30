@@ -5,16 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/RoleController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Roles/Index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_roles.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_roles.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Roles/Edit.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Layouts/AdminLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Layouts/AdminLayout.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_layout.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_layout.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_layout.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_layout.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/RoleController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/RoleController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/lang/en/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/en/messages.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/lang/lv/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/lv/messages.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_roles.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_roles.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_roles.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_roles.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -347,7 +344,7 @@
       <workItem from="1766953990949" duration="1787000" />
       <workItem from="1766991915758" duration="3511000" />
       <workItem from="1767026228561" duration="987000" />
-      <workItem from="1767076392201" duration="2046000" />
+      <workItem from="1767076392201" duration="6649000" />
     </task>
     <servers />
   </component>
