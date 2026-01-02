@@ -33,5 +33,16 @@
         "back_to_roles": "Back to Roles",
         "role_name": "Role Name",
         "role_description": "Role Description"
+    },
+    "create": {
+        "title": "Create New Role",
+        "back_to_roles": "Back to Roles",
+        "role_name": "Role Name",
+        "role_name_placeholder": "Enter role name",
+        "role_description": "Role Description",
+        "role_description_placeholder": "Enter role description (optional)",
+        "reset_btn": "Reset",
+        "create_role_btn": "Create Role",
+        "characters": "characters"
     }
 }

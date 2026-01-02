@@ -33,5 +33,16 @@
         "back_to_roles": "Atpakaļ uz lomām",
         "role_name": "Lomas nosaukums",
         "role_description": "Lomas apraksts"
+    },
+    "create": {
+        "title": "Izveidot jaunu lomu",
+        "back_to_roles": "Atpakaļ uz lomām",
+        "role_name": "Lomas nosaukums",
+        "role_name_placeholder": "Ievadiet lomas nosaukumu",
+        "role_description": "Lomas apraksts",
+        "role_description_placeholder": "Ievadiet lomas aprakstu (neobligāts)",
+        "reset_btn": "Atiestatīt",
+        "create_role_btn": "Izveidot lomu",
+        "characters": "rakstzīmes"
     }
 }

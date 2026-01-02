@@ -216,7 +216,7 @@ const deleteUser = (id) => {
                     class="users-row"
                 >
                     <div>{{ user.name }}</div>
-                    <div class="email-header">{{ user.email }}</div>
+                    <div class="email-cell">{{ user.email }}</div>
                     <div>
                         <span :class="`status-badge status-${user.status}`">
                             {{ user.status }}
@@ -551,14 +551,10 @@ select.input-field {
 }
 
 .users-row > div:first-child,
-.users-row > div.email-header {
+.users-row > div.email-cell {
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
-}
-
-.email-header {
-    overflow-wrap: anywhere;
 }
 
 .users-header > div:nth-child(3),

@@ -46,6 +46,44 @@ class RoleController extends Controller
     }
 
     /***
+     * Metode priekš Create.vue lapas.
+     * Atveido vue lapu.
+     *
+     * @return \Inertia\Response
+     */
+    public function create(): \Inertia\Response
+    {
+        return Inertia::render('Admin/Roles/Create');
+    }
+
+    /***
+     * Metode, kas saglabā jaunu lomu datubāzē.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        // validācija
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:80',
+                'unique:roles',
+            ],
+            'description' => [
+                'nullable',
+                'string',
+                'max:255'
+            ]
+        ]);
+        $role = Role::create($validated);
+        return redirect()->route('admin-roles-index', $role->id)
+            ->with('success', __('messages.role_created'));
+    }
+
+    /***
      * Metode priekš Edit.vue lapas.
      * Šī metode ņēm datus par rediģējāmo lomu, lai attēlotu UI.
      *

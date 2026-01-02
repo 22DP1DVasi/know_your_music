@@ -495,6 +495,9 @@ select.input-field {
     max-width: 250px;
     font-weight: 500;
     color: #1f2937;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .description-cell {
@@ -502,6 +505,9 @@ select.input-field {
     min-width: 250px;
     max-width: 400px;
     line-height: 1.4;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .role-description {
