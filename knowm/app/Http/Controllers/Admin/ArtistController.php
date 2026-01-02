@@ -92,7 +92,7 @@ class ArtistController extends Controller
             'biography' => 'nullable|string',
             'biography_lv' => 'nullable|string',
             'formed_year' => "nullable|integer|min:1900|max:{$nextYear}",
-            'disbanded_year' => "nullable|integer|min:1900|max:{$nextYear}|gte:formed_year",
+            'disbanded_year' => "nullable|integer|min:1900|max:{$nextYear}|gte:formed_year", // gte -> greater than or equal / lielāks vai vienāds
             'is_active' => 'required|boolean',
             'solo_or_band' => 'nullable|in:solo,band'
         ]);

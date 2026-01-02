@@ -29,5 +29,33 @@
         "search_not_found": "No artists found matching your search criteria.",
         "clear_filters_msg": "Clear filters to see all artists",
         "no_artists_found_sys": "No artists found in the system."
+    },
+    "edit": {
+        "title": "Edit Artist",
+        "reset_btn": "Reset",
+        "update_artist_btn": "Update Artist",
+        "back_to_artists": "Back to Artists",
+        "artist_name": "Artist Name",
+        "artist_name_placeholder": "Enter artist/band name",
+        "artist_type": "Artist Type",
+        "type_solo": "Solo Artist",
+        "type_band": "Band",
+        "formed_year": "Formed Year",
+        "disbanded_year": "Disbanded Year",
+        "disbanded_note": "Leave empty if still active",
+        "select_year": "Select year",
+        "activity_status": "Activity Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "biography_en": "Biography (English)",
+        "biography_lv": "Biography (Latvian)",
+        "biography_placeholder": "Enter biography text...",
+        "artist_info": "Artist Information",
+        "artist_id": "ID",
+        "slug": "URL Slug",
+        "popularity": "Popularity Score",
+        "created_at": "Created At",
+        "updated_at": "Updated At",
+        "characters": "characters"
     }
 }

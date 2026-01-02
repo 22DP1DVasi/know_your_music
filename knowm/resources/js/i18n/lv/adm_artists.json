@@ -29,5 +29,33 @@
         "search_not_found": "Netika atrasts neviens izpildītājs, kas atbilstu meklēšanas kritērijiem.",
         "clear_filters_msg": "Notīriet filtrus, lai skatītu visus izpildītājus",
         "no_artists_found_sys": "Sistēmā nav atrasts neviens izpildītājs."
+    },
+    "edit": {
+        "title": "Rediģēt izpildītāju",
+        "reset_btn": "Atiestatīt",
+        "update_artist_btn": "Atjaunināt izpildītāju",
+        "back_to_artists": "Atpakaļ pie izpildītājiem",
+        "artist_name": "Izpildītāja nosaukums",
+        "artist_name_placeholder": "Ievadiet izpildītāja/grupas nosaukumu",
+        "artist_type": "Izpildītāja tips",
+        "type_solo": "Solo izpildītājs",
+        "type_band": "Grupa",
+        "formed_year": "Karjeras sākuma gads",
+        "disbanded_year": "Karjeras beigu gads",
+        "disbanded_note": "Atstājiet tukšu, ja joprojām aktīvs",
+        "select_year": "Izvēlēties gadu",
+        "activity_status": "Aktivitātes statuss",
+        "active": "Aktīvs",
+        "inactive": "Neaktīvs",
+        "biography_en": "Biogrāfija (angļu valodā)",
+        "biography_lv": "Biogrāfija (latviešu valodā)",
+        "biography_placeholder": "Ievadiet biogrāfijas tekstu...",
+        "artist_info": "Izpildītāja informācija",
+        "artist_id": "ID",
+        "slug": "URL adreses daļa",
+        "popularity": "Popularitātes rādītājs",
+        "created_at": "Izveidots",
+        "updated_at": "Atjaunināts",
+        "characters": "rakstzīmes"
     }
 }
