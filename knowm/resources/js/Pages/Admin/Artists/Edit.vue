@@ -3,6 +3,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { useI18n } from 'vue-i18n';
+import { computed, watch } from 'vue';
 
 const props = defineProps({
     artist: Object,
@@ -15,7 +16,7 @@ const form = useForm({
     biography_lv: props.artist.biography_lv || '',
     formed_year: props.artist.formed_year || '',
     disbanded_year: props.artist.disbanded_year || '',
-    is_active: props.artist.is_active ? '1' : '0',
+    is_active: props.artist.is_active ? 1 : 0,
     solo_or_band: props.artist.solo_or_band || 'band',
 });
 
@@ -32,28 +33,49 @@ const resetForm = () => {
     form.biography_lv = props.artist.biography_lv || '';
     form.formed_year = props.artist.formed_year || '';
     form.disbanded_year = props.artist.disbanded_year || '';
-    form.is_active = props.artist.is_active ? '1' : '0';
+    form.is_active = props.artist.is_active ? 1 : 0;
     form.solo_or_band = props.artist.solo_or_band || 'band';
 };
 
-// Helper function to limit input length
-import { watch } from 'vue';
+// palīga (helper) funkcija ievades garuma ierobežošanai
 const limitInput = (field, maxLength) => {
     if (form[field].length > maxLength) {
         form[field] = form[field].substring(0, maxLength);
     }
 };
 
-// Watch for name length limit (255 chars)
+// skatīties vārda garuma ierobežojumu
 watch(() => form.name, () => {
     limitInput('name', 255);
 });
 
-// Generate year options for dropdowns (from 1900 to current year + 10)
+// ģenerēt gada opcijas nolaižamajiem sarakstiem (no 1900. gada līdz pašreizējam gadam + 10)
 const currentYear = new Date().getFullYear();
-const yearOptions = Array.from({ length: currentYear + 10 - 1900 + 1 }, (_, i) => 1900 + i).reverse();
+const yearOptions = Array.from({ length: currentYear + 10 - 1900 + 1 },
+    (_, i) => 1900 + i)
+    .reverse();
 
-// Format popularity for display
+const disbandedYearOptions = computed(() => {
+    if (!form.formed_year) {
+        return yearOptions;
+    }
+
+    return yearOptions.filter(
+        year => year >= Number(form.formed_year)
+    );
+});
+
+watch(() => form.formed_year, (newFormedYear) => {
+    if (
+        form.disbanded_year &&
+        newFormedYear &&
+        Number(form.disbanded_year) < Number(newFormedYear)
+    ) {
+        form.disbanded_year = '';
+    }
+});
+
+// formatēt popularitāti priekš UI
 const formattedPopularity = props.artist.popularity ?
     parseFloat(props.artist.popularity).toFixed(2) :
     '0.00';
@@ -89,7 +111,7 @@ const formattedPopularity = props.artist.popularity ?
         <div class="form-container">
             <form @submit.prevent="submit">
                 <div class="form-grid">
-                    <!-- Artist Name Field -->
+                    <!-- Izpildītāja vārds -->
                     <div class="form-group">
                         <label for="name">{{ t('adm_artists.edit.artist_name') }}</label>
                         <input
@@ -109,7 +131,7 @@ const formattedPopularity = props.artist.popularity ?
                         </div>
                     </div>
 
-                    <!-- Artist Type Field -->
+                    <!-- Tips -->
                     <div class="form-group">
                         <label for="solo_or_band">{{ t('adm_artists.edit.artist_type') }}</label>
                         <select
@@ -118,15 +140,20 @@ const formattedPopularity = props.artist.popularity ?
                             class="input-field"
                             :class="{ 'input-error': form.errors.solo_or_band }"
                         >
-                            <option value="solo">{{ t('adm_artists.edit.type_solo') }}</option>
-                            <option value="band">{{ t('adm_artists.edit.type_band') }}</option>
+                            <option
+                                v-for="option in soloOrBandOptions"
+                                :key="option"
+                                :value="option"
+                            >
+                                {{ t(`adm_artists.edit.type_${option}`) }}
+                            </option>
                         </select>
                         <div v-if="form.errors.solo_or_band" class="error-message">
                             {{ form.errors.solo_or_band }}
                         </div>
                     </div>
 
-                    <!-- Formed Year Field -->
+                    <!-- Karjeras sākšanas gads -->
                     <div class="form-group">
                         <label for="formed_year">{{ t('adm_artists.edit.formed_year') }}</label>
                         <select
@@ -136,7 +163,9 @@ const formattedPopularity = props.artist.popularity ?
                             :class="{ 'input-error': form.errors.formed_year }"
                         >
                             <option value="">{{ t('adm_artists.edit.select_year') }}</option>
-                            <option v-for="year in yearOptions" :value="year" :key="`formed-${year}`">
+                            <option v-for="year in yearOptions"
+                                    :value="year"
+                                    :key="`formed-${year}`">
                                 {{ year }}
                             </option>
                         </select>
@@ -145,7 +174,7 @@ const formattedPopularity = props.artist.popularity ?
                         </div>
                     </div>
 
-                    <!-- Disbanded Year Field -->
+                    <!-- Karjeras beigu gads -->
                     <div class="form-group">
                         <label for="disbanded_year">{{ t('adm_artists.edit.disbanded_year') }}</label>
                         <select
@@ -154,8 +183,14 @@ const formattedPopularity = props.artist.popularity ?
                             class="input-field"
                             :class="{ 'input-error': form.errors.disbanded_year }"
                         >
-                            <option value="">{{ t('adm_artists.edit.select_year') }}</option>
-                            <option v-for="year in yearOptions" :value="year" :key="`disbanded-${year}`">
+                            <option value="">
+                                {{ t('adm_artists.edit.select_year') }}
+                            </option>
+                            <option
+                                v-for="year in disbandedYearOptions"
+                                :key="`disbanded-${year}`"
+                                :value="year"
+                            >
                                 {{ year }}
                             </option>
                         </select>
@@ -167,7 +202,7 @@ const formattedPopularity = props.artist.popularity ?
                         </div>
                     </div>
 
-                    <!-- Activity Status Field -->
+                    <!-- Aktivitātes statuss -->
                     <div class="form-group">
                         <label for="is_active">{{ t('adm_artists.edit.activity_status') }}</label>
                         <select
@@ -176,15 +211,15 @@ const formattedPopularity = props.artist.popularity ?
                             class="input-field"
                             :class="{ 'input-error': form.errors.is_active }"
                         >
-                            <option value="1">{{ t('adm_artists.edit.active') }}</option>
-                            <option value="0">{{ t('adm_artists.edit.inactive') }}</option>
+                            <option :value="1">{{ t('adm_artists.edit.active') }}</option>
+                            <option :value="0">{{ t('adm_artists.edit.inactive') }}</option>
                         </select>
                         <div v-if="form.errors.is_active" class="error-message">
                             {{ form.errors.is_active }}
                         </div>
                     </div>
 
-                    <!-- English Biography Field -->
+                    <!-- Biogrāfija angļu valodā -->
                     <div class="form-group">
                         <label for="biography">{{ t('adm_artists.edit.biography_en') }}</label>
                         <textarea
@@ -200,7 +235,7 @@ const formattedPopularity = props.artist.popularity ?
                         </div>
                     </div>
 
-                    <!-- Latvian Biography Field -->
+                    <!-- Biogrāfija latviešu valodā -->
                     <div class="form-group">
                         <label for="biography_lv">{{ t('adm_artists.edit.biography_lv') }}</label>
                         <textarea
@@ -216,7 +251,7 @@ const formattedPopularity = props.artist.popularity ?
                         </div>
                     </div>
 
-                    <!-- Artist Info Display (Read-only) -->
+                    <!-- Informācija (tikai lasāma) -->
                     <div class="artist-info-section">
                         <h3 class="info-section-title">{{ t('adm_artists.edit.artist_info') }}</h3>
                         <div class="info-grid">
@@ -402,7 +437,6 @@ select.input-field {
     gap: 1rem;
 }
 
-/* Artist Info Section */
 .artist-info-section {
     background-color: #f9fafb;
     border: 1px solid #e5e7eb;
@@ -451,7 +485,7 @@ select.input-field {
     font-size: 1rem;
 }
 
-/* Responsive Design */
+/* Responsivitāte */
 @media (max-width: 768px) {
     .header-container {
         flex-direction: column;

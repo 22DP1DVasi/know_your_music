@@ -74,7 +74,14 @@ class ArtistController extends Controller
             ->with('success', __('messages.artist_created'));
     }
 
-    public function edit($id)
+    /***
+     * Metode priekš Edit.vue lapas.
+     * Vaicā informāciju par izvēlēto izpildītāju, lai attēlotu lapā.
+     *
+     * @param $id
+     * @return \Inertia\Response
+     */
+    public function edit($id): \Inertia\Response
     {
         $artist = Artist::findOrFail($id);
         return Inertia::render('Admin/Artists/Edit', [
@@ -83,25 +90,35 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    /***
+     * Rediģēta izpildītāja saglabāšanas metode.
+     * Veic validāciju un saglabā jaunus datus izpildītājam.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, int $id): \Illuminate\Http\RedirectResponse
     {
         $artist = Artist::findOrFail($id);
-        $nextYear = date('Y', strtotime('+1 year'));
+        $currentYear = (int) date('Y');
+        $maxYear = $currentYear + 10;
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
             'biography_lv' => 'nullable|string',
-            'formed_year' => "nullable|integer|min:1900|max:{$nextYear}",
-            'disbanded_year' => "nullable|integer|min:1900|max:{$nextYear}|gte:formed_year", // gte -> greater than or equal / lielāks vai vienāds
+            'formed_year' => "nullable|integer|min:1900|max:{$maxYear}",
+            'disbanded_year' => "nullable|integer|min:1900|max:{$maxYear}|gte:formed_year",
             'is_active' => 'required|boolean',
-            'solo_or_band' => 'nullable|in:solo,band'
+            'solo_or_band' => 'nullable|in:solo,band',
         ]);
-        // pārbaudiet, vai nosaukums ir mainīts
+        // automātiski atjaunināt slug'u tikai tad, ja ir mainīts nosaukums
         if ($artist->name !== $validated['name']) {
             $validated['slug'] = $artist->generateUniqueSlug($validated['name']);
         }
         $artist->update($validated);
-        return redirect()->route('admin-artists-index')
+        return redirect()
+            ->route('admin-artists-index')
             ->with('success', __('messages.artist_updated'));
     }
 

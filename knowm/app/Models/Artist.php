@@ -25,6 +25,7 @@ class Artist extends Model
         'formed_year',
         'disbanded_year',
         'image',
+        'is_active',
         'solo_or_band',
         'popularity'
     ];
