@@ -24,7 +24,23 @@ const resetForm = () => {
     form.reset();
 };
 
-const { t } = useI18n()
+const { t } = useI18n();
+
+// palīga funkcija ievades garuma ierobežošanai
+const limitInput = (field, maxLength) => {
+    if (form[field].length > maxLength) {
+        form[field] = form[field].substring(0, maxLength);
+    }
+};
+
+// skatīties, vai nav lietotājvārda un e-pasta garuma ierobežojumu
+import { watch } from 'vue';
+watch(() => form.name, () => {
+    limitInput('name', 32);
+});
+watch(() => form.email, () => {
+    limitInput('email', 255);
+});
 
 </script>
 
@@ -40,34 +56,47 @@ const { t } = useI18n()
         <div class="form-container">
             <form @submit.prevent="submit">
                 <div class="form-grid">
+                    <!-- Lietotājvārds -->
                     <div class="form-group">
                         <label for="name">{{ t('adm_users.create.username') }}</label>
                         <input
                             v-model="form.name"
                             id="name"
                             type="text"
+                            maxlength="32"
                             class="input-field"
                             :class="{ 'input-error': form.errors.name }"
+                            :placeholder="t('adm_users.create.username_placeholder')"
                         >
                         <div v-if="form.errors.name" class="error-message">
                             {{ form.errors.name }}
                         </div>
+                        <div class="character-count" :class="{ 'near-limit': form.name.length > 24 }">
+                            {{ form.name.length }}/32 {{ t('adm_users.create.characters') }}
+                        </div>
                     </div>
 
+                    <!-- E-pasts -->
                     <div class="form-group">
                         <label for="email">{{ t('adm_users.create.email') }}</label>
                         <input
                             v-model="form.email"
                             id="email"
                             type="email"
+                            maxlength="255"
                             class="input-field"
                             :class="{ 'input-error': form.errors.email }"
+                            :placeholder="t('adm_users.create.email_placeholder')"
                         >
                         <div v-if="form.errors.email" class="error-message">
                             {{ form.errors.email }}
                         </div>
+                        <div class="character-count" :class="{ 'near-limit': form.email.length > 200 }">
+                            {{ form.email.length }}/255 {{ t('adm_users.create.characters') }}
+                        </div>
                     </div>
 
+                    <!-- Parole -->
                     <div class="form-group">
                         <label for="password">{{ t('adm_users.create.password') }}</label>
                         <input
@@ -82,6 +111,7 @@ const { t } = useI18n()
                         </div>
                     </div>
 
+                    <!-- Paroles apstiprināšana -->
                     <div class="form-group">
                         <label for="password_confirmation">{{ t('adm_users.create.confirm_password') }}</label>
                         <input
@@ -92,6 +122,7 @@ const { t } = useI18n()
                         >
                     </div>
 
+                    <!-- Statuss -->
                     <div class="form-group">
                         <label for="status">{{ t('adm_users.create.status') }}</label>
                         <select
@@ -109,6 +140,7 @@ const { t } = useI18n()
                         </div>
                     </div>
 
+                    <!-- Darbības -->
                     <div class="form-actions">
                         <button
                             type="button"
@@ -203,6 +235,23 @@ select.input-field {
     background-repeat: no-repeat;
     background-size: 1.5em 1.5em;
     padding-right: 2.5rem;
+}
+
+.character-count {
+    color: #6b7280;
+    font-size: 0.75rem;
+    text-align: right;
+    margin-top: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.character-count.near-limit {
+    color: #f59e0b;
+}
+
+.character-count.at-limit {
+    color: #ef4444;
+    font-weight: 500;
 }
 
 .error-message {

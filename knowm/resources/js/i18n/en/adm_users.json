@@ -52,11 +52,14 @@
         "title": "Create New User",
         "back_to_users": "Back to Users",
         "username": "Username",
+        "username_placeholder": "Enter username (max 32 characters)",
         "email": "Email",
+        "email_placeholder": "Enter email address (max 255 characters)",
         "password": "Password",
         "confirm_password": "Confirm Password",
         "status": "Status",
         "reset_btn": "Reset",
-        "create_user_btn": "Create User"
+        "create_user_btn": "Create User",
+        "characters": "characters"
     }
 }

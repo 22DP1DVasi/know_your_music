@@ -52,11 +52,14 @@
         "title": "Izveidot jaunu lietotāju",
         "back_to_users": "Atpakaļ pie lietotājiem",
         "username": "Lietotājvārds",
+        "username_placeholder": "Ievadiet lietotājvārdu (maksimums 32 rakstzīmes)",
         "email": "E-pasta adrese",
+        "email_placeholder": "Ievadiet e-pasta adresi (maksimums 255 rakstzīmes)",
         "password": "Parole",
         "confirm_password": "Apstiprināt paroli",
         "status": "Statuss",
         "reset_btn": "Atiestatīt",
-        "create_user_btn": "Izveidot lietotāju"
+        "create_user_btn": "Izveidot lietotāju",
+        "characters": "rakstzīmes"
     }
 }
