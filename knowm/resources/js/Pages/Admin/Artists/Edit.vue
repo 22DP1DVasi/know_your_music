@@ -135,6 +135,15 @@ watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
     }
 });
 
+// apstrādāt attēla ielādes kļūdas
+const handleImageError = (event, type) => {
+    const defaultImages = {
+        banner: '/images/default-artist-banner.webp',
+        profile: '/images/default-artist-profile.webp'
+    };
+    event.target.src = defaultImages[type];
+};
+
 </script>
 
 <template>
@@ -366,6 +375,55 @@ watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
                             </div>
                         </div>
                     </div>
+
+                    <!-- Izpildītāju attēlu displejs -->
+                    <div class="images-display-group">
+                        <h3 class="images-display-title">{{ t('adm_artists.edit.artist_images') }}</h3>
+                        <div class="images-display-stack">
+                            <!-- Banera attēls -->
+                            <div class="image-container">
+                                <div class="image-header">
+                                    <div class="image-label">{{ t('adm_artists.edit.banner_image') }}</div>
+                                </div>
+                                <div class="image-content">
+                                    <div class="image-preview-square">
+                                        <img
+                                            :src="artist.banner_url"
+                                            :alt="t('adm_artists.edit.banner_alt', { name: artist.name })"
+                                            class="image-preview"
+                                            @error="handleImageError($event, 'banner')"
+                                        />
+                                    </div>
+
+                                    <div class="image-info">
+                                        <div class="image-name">{{ artist.banner_url }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Profila attēls -->
+                            <div class="image-container">
+                                <div class="image-header">
+                                    <div class="image-label">{{ t('adm_artists.edit.profile_image') }}</div>
+                                </div>
+                                <div class="image-content">
+                                    <div class="image-preview-horizontal">
+                                        <img
+                                            :src="artist.profile_url"
+                                            :alt="t('adm_artists.edit.profile_alt', { name: artist.name })"
+                                            class="image-preview"
+                                            @error="handleImageError($event, 'profile')"
+                                        />
+                                    </div>
+
+                                    <div class="image-info">
+                                        <div class="image-name">{{ artist.profile_url }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -811,6 +869,98 @@ select.input-field {
     font-size: 1rem;
 }
 
+.images-display-group {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    grid-column: 1 / -1;
+}
+
+.images-display-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.images-display-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.image-content {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.image-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.image-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.image-preview:hover {
+    transform: scale(1.02);
+}
+
+/* Banera kvadrātveida priekšskatījums */
+.image-preview-square {
+    flex-shrink: 0;
+    width: 250px;
+    height: 250px;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Profila horizontālais priekšskatījums */
+.image-preview-horizontal {
+    flex-shrink: 0;
+    width: 250px;
+    height: 166px;   /* 3:2 proporcijas */
+    border: 2px solid #e5e7eb;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.image-info {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+}
+
+.image-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
 /* Modālo logu stili */
 .modal-overlay {
     position: fixed;
@@ -1042,6 +1192,18 @@ select.input-field {
         grid-template-columns: 1fr;
     }
 
+    .image-preview-square,
+    .image-preview-horizontal {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    .image-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
     .content-buttons-grid {
         grid-template-columns: 1fr;
     }
@@ -1097,9 +1259,31 @@ select.input-field {
     }
 }
 
+@media (max-width: 625px) {
+    .image-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .image-info {
+        width: 100%;
+        margin-top: 0.75rem;
+    }
+}
+
 @media (max-width: 480px) {
     .header-container h1 {
         font-size: 1.25rem;
+    }
+
+    .image-preview-square {
+        max-width: 200px;
+        height: 200px;
+    }
+
+    .image-preview-horizontal {
+        max-width: 200px;
+        height: 133px;
     }
 }
 

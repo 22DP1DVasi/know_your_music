@@ -75,6 +75,11 @@
         "no_genres": "No genres assigned to this artist",
         "no_releases": "No releases for this artist",
         "no_tracks": "No tracks for this artist",
-        "modal_close": "Close"
+        "modal_close": "Close",
+        "artist_images": "Artist Images",
+        "banner_image": "Banner Image",
+        "profile_image": "Profile Image",
+        "banner_alt": "Banner image for {name}",
+        "profile_alt": "Profile image for {name}"
     }
 }

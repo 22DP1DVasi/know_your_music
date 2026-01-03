@@ -106,8 +106,11 @@ class ArtistController extends Controller
                 'popularity' => $artist->popularity,
                 'created_at' => $artist->created_at,
                 'updated_at' => $artist->updated_at,
+                'banner_url' => $artist->banner_url,
+                'profile_url' => $artist->profile_url,
                 // žanri
                 'genres' => $artist->genres->map(fn ($genre) => [
+                    'id' => $genre->id,
                     'name' => $genre->name,
                 ]),
                 // albumi + starptabula

@@ -75,6 +75,11 @@
         "no_genres": "Šim izpildītājam nav piešķirtu žanru",
         "no_releases": "Šim izpildītājam nav albumu",
         "no_tracks": "Šim izpildītājam nav dziesmu",
-        "modal_close": "Aizvērt"
+        "modal_close": "Aizvērt",
+        "artist_images": "Izpildītāja attēli",
+        "banner_image": "Banera attēls",
+        "profile_image": "Profila attēls",
+        "banner_alt": "Banera attēls priekš {name}",
+        "profile_alt": "Profila attēls priekš {name}"
     }
 }
