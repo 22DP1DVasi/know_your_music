@@ -59,10 +59,10 @@
         "characters": "rakstzīmes",
         "associated_content": "Saistītais saturs",
         "view_genres": "Skatīt žanrus",
-        "view_releases": "Skatīt izdevumus",
+        "view_releases": "Skatīt albumus",
         "view_tracks": "Skatīt dziesmas",
         "genres_modal_title": "Izpildītāja žanri",
-        "releases_modal_title": "Izpildītāja izdevumi",
+        "releases_modal_title": "Izpildītāja albumi",
         "tracks_modal_title": "Izpildītāja dziesmas",
         "genre_name": "Žanra nosaukums",
         "release_title": "Nosaukums",
@@ -73,7 +73,7 @@
         "release_role": "Loma",
         "track_role": "Loma",
         "no_genres": "Šim izpildītājam nav piešķirtu žanru",
-        "no_releases": "Šim izpildītājam nav izdevumu",
+        "no_releases": "Šim izpildītājam nav albumu",
         "no_tracks": "Šim izpildītājam nav dziesmu",
         "modal_close": "Aizvērt"
     }

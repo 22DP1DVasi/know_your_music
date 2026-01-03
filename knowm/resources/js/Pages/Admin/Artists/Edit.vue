@@ -26,7 +26,7 @@ const form = useForm({
 
 const { t } = useI18n();
 
-//modālie stāvokļi
+// modālie stāvokļi
 const isGenresModalOpen = ref(false);
 const isReleasesModalOpen = ref(false);
 const isTracksModalOpen = ref(false);
@@ -388,16 +388,18 @@ watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
                             </div>
                         </div>
 
+                        <!--  :href="route('admin-genres-edit', { id: genre.id })" -->
                         <div class="modal-table-body">
-                            <div
-                                v-for="(genre, index) in artist.genres"
-                                :key="index"
-                                class="modal-table-row"
+                            <Link
+                                v-for="genre in artist.genres"
+                                :key="genre.id"
+                                :href="route('admin-dashboard')"
+                                class="modal-table-row clickable-row"
                             >
                                 <div class="modal-table-cell modal-table-cell-name">
                                     {{ genre.name }}
                                 </div>
-                            </div>
+                            </Link>
 
                             <div v-if="!artist.genres || artist.genres.length === 0" class="modal-table-empty">
                                 {{ t('adm_artists.edit.no_genres') }}
@@ -441,11 +443,13 @@ watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
                             </div>
                         </div>
 
+                        <!--  :href="route('admin-releases-edit', { id: release.id })" -->
                         <div class="modal-table-body">
-                            <div
+                            <Link
                                 v-for="release in artist.releases"
                                 :key="release.id"
-                                class="modal-table-row"
+                                :href="route('admin-dashboard')"
+                                class="modal-table-row clickable-row"
                             >
                                 <div class="modal-table-cell modal-table-cell-name">
                                     {{ release.title }}
@@ -461,7 +465,7 @@ watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
                                         {{ t(`artists.global.${release.role}`) }}
                                     </span>
                                 </div>
-                            </div>
+                            </Link>
 
                             <div v-if="!artist.releases || artist.releases.length === 0" class="modal-table-empty">
                                 {{ t('adm_artists.edit.no_releases') }}
@@ -502,11 +506,13 @@ watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
                             </div>
                         </div>
 
+                        <!--  :href="route('admin-tracks-edit', { id: track.id })" -->
                         <div class="modal-table-body">
-                            <div
+                            <Link
                                 v-for="track in artist.tracks"
                                 :key="track.id"
-                                class="modal-table-row"
+                                :href="route('admin-dashboard')"
+                                class="modal-table-row clickable-row"
                             >
                                 <div class="modal-table-cell modal-table-cell-name">
                                     {{ track.title }}
@@ -519,7 +525,7 @@ watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
                                         {{ t(`artists.global.${track.role}`) }}
                                     </span>
                                 </div>
-                            </div>
+                            </Link>
 
                             <div v-if="!artist.tracks || artist.tracks.length === 0" class="modal-table-empty">
                                 {{ t('adm_artists.edit.no_tracks') }}
@@ -879,11 +885,17 @@ select.input-field {
     overflow: visible;
 }
 
+.modal-table-body a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .modal-table-row {
     display: flex;
     align-items: center;
     min-height: 3rem;
     border-bottom: 1px solid #f3f4f6;
+    position: relative;
 }
 
 .modal-table-row:last-child {
@@ -892,6 +904,21 @@ select.input-field {
 
 .modal-table-row:hover {
     background-color: #f9fafb;
+}
+
+.clickable-row {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+    background-color: #e0f2fe !important;
+}
+
+.clickable-row .modal-table-cell {
+    text-decoration: none;
 }
 
 .modal-table-cell {
