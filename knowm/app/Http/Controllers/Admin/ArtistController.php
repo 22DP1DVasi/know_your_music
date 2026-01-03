@@ -77,16 +77,58 @@ class ArtistController extends Controller
     /***
      * Metode priekš Edit.vue lapas.
      * Vaicā informāciju par izvēlēto izpildītāju, lai attēlotu lapā.
+     * Izpildītājs + viņa žanri + albumi + dziesmas.
      *
      * @param $id
      * @return \Inertia\Response
      */
     public function edit($id): \Inertia\Response
     {
-        $artist = Artist::findOrFail($id);
+        $artist = Artist::query()
+            ->with([
+                'genres:id,name',
+                'releases:id,title,release_date,release_type',
+                'tracks:id,title,duration',
+            ])
+            ->findOrFail($id);
+
         return Inertia::render('Admin/Artists/Edit', [
-            'artist' => $artist,
-            'soloOrBandOptions' => ['solo', 'band']
+            'artist' => [
+                'id' => $artist->id,
+                'name' => $artist->name,
+                'slug' => $artist->slug,
+                'biography' => $artist->biography,
+                'biography_lv' => $artist->biography_lv,
+                'formed_year' => $artist->formed_year,
+                'disbanded_year' => $artist->disbanded_year,
+                'is_active' => $artist->is_active,
+                'solo_or_band' => $artist->solo_or_band,
+                'popularity' => $artist->popularity,
+                'created_at' => $artist->created_at,
+                'updated_at' => $artist->updated_at,
+                // žanri
+                'genres' => $artist->genres->map(fn ($genre) => [
+                    'name' => $genre->name,
+                ]),
+                // albumi + starptabula
+                'releases' => $artist->releases->map(fn ($release) => [
+                    'id' => $release->id,
+                    'title' => $release->title,
+                    'release_date' => $release->release_date,
+                    'release_type' => $release->release_type,
+                    'role' => $release->pivot->role,
+                    'cover_url' => $release->cover_url,
+                ]),
+                // dziesmas + starptabula
+                'tracks' => $artist->tracks->map(fn ($track) => [
+                    'id' => $track->id,
+                    'title' => $track->title,
+                    'duration' => $track->duration,
+                    'role' => $track->pivot->role,
+                    'cover_url' => $track->cover_url,
+                ]),
+            ],
+            'soloOrBandOptions' => ['solo', 'band'],
         ]);
     }
 

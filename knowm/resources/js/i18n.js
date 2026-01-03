@@ -7,6 +7,8 @@ import enAdmUsers from './i18n/en/adm_users.json'
 import enAdmRoles from './i18n/en/adm_roles.json'
 import enAdmArtists from './i18n/en/adm_artists.json'
 
+import enArtists from './i18n/en/artists.json'
+
 import lvNavbar from './i18n/lv/navbar.json'
 import lvHome from './i18n/lv/home.json'
 import lvAdmDashboard from './i18n/lv/adm_dashboard.json'
@@ -14,6 +16,8 @@ import lvAdmLayout from './i18n/lv/adm_layout.json'
 import lvAdmAUsers from './i18n/lv/adm_users.json'
 import lvAdmRoles from './i18n/lv/adm_roles.json'
 import lvAdmArtists from './i18n/lv/adm_artists.json'
+
+import lvArtists from './i18n/lv/artists.json'
 
 const savedLocale = localStorage.getItem('locale') || 'lv'
 
@@ -26,6 +30,8 @@ const i18n = createI18n({
             navbar: enNavbar,
             home: enHome,
 
+            artists: enArtists,
+
             adm_dashboard: enAdmDashboard,
             adm_layout: enAdmLayout,
             adm_users: enAdmUsers,
@@ -35,6 +41,8 @@ const i18n = createI18n({
         lv: {
             navbar: lvNavbar,
             home: lvHome,
+
+            artists: lvArtists,
 
             adm_dashboard: lvAdmDashboard,
             adm_layout: lvAdmLayout,

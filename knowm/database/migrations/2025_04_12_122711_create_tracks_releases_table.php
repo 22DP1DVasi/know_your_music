@@ -35,7 +35,7 @@ return new class extends Migration
             $table->foreign('track_id')
                 ->references('id')
                 ->on('tracks')
-                ->onDelete('restrict');
+                ->onDelete('cascade');
         });
     }
 

@@ -3,7 +3,11 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { useI18n } from 'vue-i18n';
-import { computed, watch } from 'vue';
+import { computed, watch, ref } from 'vue';
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 const props = defineProps({
     artist: Object,
@@ -21,6 +25,11 @@ const form = useForm({
 });
 
 const { t } = useI18n();
+
+//modālie stāvokļi
+const isGenresModalOpen = ref(false);
+const isReleasesModalOpen = ref(false);
+const isTracksModalOpen = ref(false);
 
 const submit = () => {
     form.put(route('admin-artists-update', { id: props.artist.id }));
@@ -79,6 +88,52 @@ watch(() => form.formed_year, (newFormedYear) => {
 const formattedPopularity = props.artist.popularity ?
     parseFloat(props.artist.popularity).toFixed(2) :
     '0.00';
+
+// saskaņotais pasaules laiks (UTC), nevis lokāls laiks
+const formatDateTimeUTC = (dateString) => {
+    if (!dateString) return 'Unknown';
+    return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
+};
+
+// formatēt ilgumu kā MM: SS
+const formatDuration = (timeString) => {
+    if (!timeString) return '--:--';
+    const date = new Date(timeString);
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+    return `${minutes}:${seconds}`;
+};
+
+// formatēt rādīšanas datumu
+const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return dayjs(dateString).format('DD/MM/YYYY');
+};
+
+// iegūt CSS klasi lomas žetonam
+const getRoleClass = (role) => {
+    switch (role) {
+        case 'primary': return 'role-badge-primary';
+        case 'featured': return 'role-badge-featured';
+        case 'producer': return 'role-badge-producer';
+        default: return 'role-badge-default';
+    }
+};
+
+// notikums, lai novērstu ritināšanu, kad modāls ir atvērts (WIP)
+const handleWheel = (event) => {
+    event.stopPropagation();
+};
+
+// skatīties modālā stāvokļa izmaiņas, lai novērstu ķermeņa ritināšanu (WIP)
+watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
+    const isAnyModalOpen = isGenresModalOpen.value || isReleasesModalOpen.value || isTracksModalOpen.value;
+    if (isAnyModalOpen) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+});
 
 </script>
 
@@ -251,6 +306,40 @@ const formattedPopularity = props.artist.popularity ?
                         </div>
                     </div>
 
+                    <!-- Saistītā satura pogas -->
+                    <div class="content-buttons-group">
+                        <h3 class="content-buttons-title">{{ t('adm_artists.edit.associated_content') }}</h3>
+                        <div class="content-buttons-grid">
+                            <button
+                                type="button"
+                                class="btn-secondary content-button"
+                                @click="isGenresModalOpen = true"
+                            >
+                                <span class="button-icon">🎵</span>
+                                <span class="button-text">{{ t('adm_artists.edit.view_genres') }}</span>
+                                <span class="button-count">{{ artist.genres.length }}</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn-secondary content-button"
+                                @click="isReleasesModalOpen = true"
+                            >
+                                <span class="button-icon">💿</span>
+                                <span class="button-text">{{ t('adm_artists.edit.view_releases') }}</span>
+                                <span class="button-count">{{ artist.releases.length }}</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn-secondary content-button"
+                                @click="isTracksModalOpen = true"
+                            >
+                                <span class="button-icon">🎶</span>
+                                <span class="button-text">{{ t('adm_artists.edit.view_tracks') }}</span>
+                                <span class="button-count">{{ artist.tracks.length }}</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Informācija (tikai lasāma) -->
                     <div class="artist-info-section">
                         <h3 class="info-section-title">{{ t('adm_artists.edit.artist_info') }}</h3>
@@ -269,16 +358,182 @@ const formattedPopularity = props.artist.popularity ?
                             </div>
                             <div class="info-item">
                                 <span class="info-label">{{ t('adm_artists.edit.created_at') }}:</span>
-                                <span class="info-value">{{ artist.created_at }}</span>
+                                <span class="info-value">{{ formatDateTimeUTC(artist.created_at) }}</span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">{{ t('adm_artists.edit.updated_at') }}:</span>
-                                <span class="info-value">{{ artist.updated_at }}</span>
+                                <span class="info-value">{{ formatDateTimeUTC(artist.updated_at) }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
+        </div>
+
+        <!-- Modālais logs žanriem -->
+        <div v-if="isGenresModalOpen" class="modal-overlay" @wheel="handleWheel" @touchmove.prevent @scroll.prevent>
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>{{ t('adm_artists.edit.genres_modal_title') }}</h2>
+                    <button class="modal-close" @click="isGenresModalOpen = false">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-table-container">
+                        <div class="modal-table-header">
+                            <div class="modal-table-row">
+                                <div class="modal-table-cell modal-table-cell-name">
+                                    {{ t('adm_artists.edit.genre_name') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-table-body">
+                            <div
+                                v-for="(genre, index) in artist.genres"
+                                :key="index"
+                                class="modal-table-row"
+                            >
+                                <div class="modal-table-cell modal-table-cell-name">
+                                    {{ genre.name }}
+                                </div>
+                            </div>
+
+                            <div v-if="!artist.genres || artist.genres.length === 0" class="modal-table-empty">
+                                {{ t('adm_artists.edit.no_genres') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" @click="isGenresModalOpen = false">
+                        {{ t('adm_artists.edit.modal_close') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modālais logs albumiem (releases) -->
+        <div v-if="isReleasesModalOpen" class="modal-overlay" @wheel="handleWheel" @touchmove.prevent @scroll.prevent>
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>{{ t('adm_artists.edit.releases_modal_title') }}</h2>
+                    <button class="modal-close" @click="isReleasesModalOpen = false">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-table-container">
+                        <div class="modal-table-header">
+                            <div class="modal-table-row">
+                                <div class="modal-table-cell modal-table-cell-name">
+                                    {{ t('adm_artists.edit.release_title') }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-type">
+                                    {{ t('adm_artists.edit.release_type') }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-date">
+                                    {{ t('adm_artists.edit.release_date') }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-role">
+                                    {{ t('adm_artists.edit.release_role') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-table-body">
+                            <div
+                                v-for="release in artist.releases"
+                                :key="release.id"
+                                class="modal-table-row"
+                            >
+                                <div class="modal-table-cell modal-table-cell-name">
+                                    {{ release.title }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-type">
+                                    {{ release.release_type }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-date">
+                                    {{ formatDate(release.release_date) }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-role">
+                                    <span :class="['role-badge', getRoleClass(release.role)]">
+                                        {{ t(`artists.global.${release.role}`) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div v-if="!artist.releases || artist.releases.length === 0" class="modal-table-empty">
+                                {{ t('adm_artists.edit.no_releases') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" @click="isReleasesModalOpen = false">
+                        {{ t('adm_artists.edit.modal_close') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modālais logs dziesmām -->
+        <div v-if="isTracksModalOpen" class="modal-overlay" @wheel="handleWheel" @touchmove.prevent @scroll.prevent>
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>{{ t('adm_artists.edit.tracks_modal_title') }}</h2>
+                    <button class="modal-close" @click="isTracksModalOpen = false">×</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-table-container">
+                        <div class="modal-table-header">
+                            <div class="modal-table-row">
+                                <div class="modal-table-cell modal-table-cell-name">
+                                    {{ t('adm_artists.edit.track_title') }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-duration">
+                                    {{ t('adm_artists.edit.track_duration') }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-role">
+                                    {{ t('adm_artists.edit.track_role') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-table-body">
+                            <div
+                                v-for="track in artist.tracks"
+                                :key="track.id"
+                                class="modal-table-row"
+                            >
+                                <div class="modal-table-cell modal-table-cell-name">
+                                    {{ track.title }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-duration">
+                                    {{ formatDuration(track.duration) }}
+                                </div>
+                                <div class="modal-table-cell modal-table-cell-role">
+                                    <span :class="['role-badge', getRoleClass(track.role)]">
+                                        {{ t(`artists.global.${track.role}`) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div v-if="!artist.tracks || artist.tracks.length === 0" class="modal-table-empty">
+                                {{ t('adm_artists.edit.no_tracks') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-secondary" @click="isTracksModalOpen = false">
+                        {{ t('adm_artists.edit.modal_close') }}
+                    </button>
+                </div>
+            </div>
         </div>
     </AdminLayout>
 </template>
@@ -437,6 +692,71 @@ select.input-field {
     gap: 1rem;
 }
 
+.content-buttons-group {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    grid-column: 1 / -1;
+}
+
+.content-buttons-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.content-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.content-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background-color: white;
+    color: #374151;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+}
+
+.content-button:hover {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateY(-2px);
+}
+
+.button-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.button-text {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.button-count {
+    font-size: 0.875rem;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+}
+
 .artist-info-section {
     background-color: #f9fafb;
     border: 1px solid #e5e7eb;
@@ -485,6 +805,183 @@ select.input-field {
     font-size: 1rem;
 }
 
+/* Modālo logu stili */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+}
+
+.modal {
+    background: white;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.modal-header,
+.modal-footer {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    border-bottom: none;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.modal-body {
+    padding: 1rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.modal-close:hover {
+    color: #374151;
+}
+
+/* Modālu logu tabula */
+.modal-table-container {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    background-color: white;
+}
+
+.modal-table-header {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-table-body {
+    overflow: visible;
+}
+
+.modal-table-row {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-table-row:last-child {
+    border-bottom: none;
+}
+
+.modal-table-row:hover {
+    background-color: #f9fafb;
+}
+
+.modal-table-cell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    overflow: hidden;
+}
+
+.modal-table-cell-name {
+    flex: 3;
+    min-width: 250px;
+    max-width: 400px;
+    word-break: break-word;
+}
+
+.modal-table-cell-type {
+    flex: 1;
+    min-width: 100px;
+    max-width: 150px;
+}
+
+.modal-table-cell-date {
+    flex: 1;
+    min-width: 100px;
+    max-width: 120px;
+    font-family: monospace;
+    font-size: 0.8125rem;
+}
+
+.modal-table-cell-role {
+    flex: 1;
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.role-badge-primary {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.role-badge-featured {
+    background-color: #f0f9ff;
+    color: #0c4a6e;
+    border: 1px solid #bae6fd;
+}
+
+.role-badge-producer {
+    background-color: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.role-badge-default {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+}
+
+.modal-table-cell-duration {
+    flex: 1;
+    min-width: 80px;
+    max-width: 100px;
+    font-family: monospace;
+    font-size: 0.8125rem;
+}
+
+.modal-table-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: #9ca3af;
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
 /* Responsivitāte */
 @media (max-width: 768px) {
     .header-container {
@@ -516,6 +1013,60 @@ select.input-field {
 
     .info-grid {
         grid-template-columns: 1fr;
+    }
+
+    .content-buttons-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-table-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+        gap: 0.5rem;
+    }
+
+    .modal-table-cell {
+        padding: 0.25rem 0;
+        border-bottom: 1px solid #f3f4f6;
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        flex: none;
+        justify-content: flex-start;
+    }
+
+    .modal-table-cell:last-child {
+        border-bottom: none;
+    }
+
+    .modal-table-cell-name {
+        font-weight: 600;
+        order: 1;
+    }
+
+    .modal-table-cell-type,
+    .modal-table-cell-date,
+    .modal-table-cell-duration {
+        color: #4b5563;
+        order: 2;
+        font-size: 0.75rem;
+    }
+
+    .modal-table-cell-role {
+        min-width: 80px;
+        max-width: 100px;
+        font-size: 0.75rem;
+    }
+
+    .role-badge {
+        padding: 0.125rem 0.375rem;
+        font-size: 0.7rem;
     }
 }
 

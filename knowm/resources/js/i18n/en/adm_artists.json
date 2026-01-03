@@ -56,6 +56,25 @@
         "popularity": "Popularity Score",
         "created_at": "Created At",
         "updated_at": "Updated At",
-        "characters": "characters"
+        "characters": "characters",
+        "associated_content": "Associated Content",
+        "view_genres": "View Genres",
+        "view_releases": "View Releases",
+        "view_tracks": "View Tracks",
+        "genres_modal_title": "Artist Genres",
+        "releases_modal_title": "Artist Releases",
+        "tracks_modal_title": "Artist Tracks",
+        "genre_name": "Genre Name",
+        "release_title": "Title",
+        "release_type": "Type",
+        "release_date": "Release Date",
+        "track_title": "Track Title",
+        "track_duration": "Duration",
+        "release_role": "Role",
+        "track_role": "Role",
+        "no_genres": "No genres assigned to this artist",
+        "no_releases": "No releases for this artist",
+        "no_tracks": "No tracks for this artist",
+        "modal_close": "Close"
     }
 }

@@ -80,7 +80,7 @@ const capitalize = (value) => {
 
 const formatDate = (dateString) => {
     if (!dateString) return 'Unknown';
-    return dayjs(dateString).format('MMMM D, YYYY');
+    return dayjs(dateString).format('DD/MM/YYYY');
 };
 
 const formatDuration = (timeString) => {

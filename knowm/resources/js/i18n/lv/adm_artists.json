@@ -56,6 +56,25 @@
         "popularity": "Popularitātes rādītājs",
         "created_at": "Izveidots",
         "updated_at": "Atjaunināts",
-        "characters": "rakstzīmes"
+        "characters": "rakstzīmes",
+        "associated_content": "Saistītais saturs",
+        "view_genres": "Skatīt žanrus",
+        "view_releases": "Skatīt izdevumus",
+        "view_tracks": "Skatīt dziesmas",
+        "genres_modal_title": "Izpildītāja žanri",
+        "releases_modal_title": "Izpildītāja izdevumi",
+        "tracks_modal_title": "Izpildītāja dziesmas",
+        "genre_name": "Žanra nosaukums",
+        "release_title": "Nosaukums",
+        "release_type": "Tips",
+        "release_date": "Izdošanas datums",
+        "track_title": "Dziesmas nosaukums",
+        "track_duration": "Ilgums",
+        "release_role": "Loma",
+        "track_role": "Loma",
+        "no_genres": "Šim izpildītājam nav piešķirtu žanru",
+        "no_releases": "Šim izpildītājam nav izdevumu",
+        "no_tracks": "Šim izpildītājam nav dziesmu",
+        "modal_close": "Aizvērt"
     }
 }
