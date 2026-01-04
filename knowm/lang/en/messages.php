@@ -25,5 +25,6 @@ return [
     'role_deleted' => 'Role deleted successfully.',
     'artist_created' => 'Artist created successfully.',
     'artist_updated' => 'Artist updated successfully.',
-    'artist_deleted' => 'Artist deleted successfully'
+    'artist_deleted' => 'Artist deleted successfully',
+    'artist_image_updated' => ' image updated successfully.',
 ];

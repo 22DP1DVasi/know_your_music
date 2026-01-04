@@ -198,6 +198,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin-artists-edit/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'edit'])->name('admin-artists-edit');
     Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
     Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
+    Route::put('/admin/artists/{id}/update-image', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
 
 
 

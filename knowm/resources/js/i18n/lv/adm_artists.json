@@ -79,7 +79,18 @@
         "artist_images": "Izpildītāja attēli",
         "banner_image": "Banera attēls",
         "profile_image": "Profila attēls",
+        "banner_size": "Ieteicams: 1000x1000px (Kvadrāts)",
+        "profile_size": "Ieteicams: 1000x667px (3:2)",
         "banner_alt": "Banera attēls priekš {name}",
-        "profile_alt": "Profila attēls priekš {name}"
+        "profile_alt": "Profila attēls priekš {name}",
+        "choose_file": "Izvēlēties .webp failu",
+        "upload": "Augšupielādēt attēlu",
+        "uploading": "Augšupielādē...",
+        "cancel": "Atcelt",
+        "image_error_webp": "Atļauti tikai .webp faili",
+        "image_error_no_file": "Vispirms izvēlieties failu",
+        "image_error_upload": "Kļūda augšupielādējot attēlu",
+        "image_success_banner": "Banera attēls veiksmīgi atjaunināts",
+        "image_success_profile": "Profila attēls veiksmīgi atjaunināts"
     }
 }

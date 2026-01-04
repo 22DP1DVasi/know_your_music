@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n';
 import { computed, watch, ref } from 'vue';
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
+import axios from 'axios';
 
 dayjs.extend(utc);
 
@@ -135,6 +136,15 @@ watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
     }
 });
 
+// attēlu augšupielādes stāvokļi
+const bannerFile = ref(null);
+const profileFile = ref(null);
+const isUploadingBanner = ref(false);
+const isUploadingProfile = ref(false);
+// refs oriģinālo attēlu URL glabāšanai
+const originalBannerUrl = ref(props.artist.banner_url);
+const originalProfileUrl = ref(props.artist.profile_url);
+
 // apstrādāt attēla ielādes kļūdas
 const handleImageError = (event, type) => {
     const defaultImages = {
@@ -142,6 +152,174 @@ const handleImageError = (event, type) => {
         profile: '/images/default-artist-profile.webp'
     };
     event.target.src = defaultImages[type];
+};
+
+// apstrādāt banera faila atlasi
+const handleBannerFileChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    // pārbaudīt, vai fails ir .webp
+    if (!file.name.toLowerCase().endsWith('.webp')) {
+        alert(t('adm_artists.edit.image_error_webp'));
+        event.target.value = '';
+        return;
+    }
+    bannerFile.value = file;
+    // pirms priekšskatījuma maiņas saglabāt sākotnējo URL
+    if (!originalBannerUrl.value) {
+        originalBannerUrl.value = props.artist.banner_url;
+    }
+    // priekšskatīt attēlu
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('banner-preview');
+        if (preview) {
+            preview.src = e.target.result;
+        }
+    };
+    reader.readAsDataURL(file);
+};
+
+// apstrādāt profila faila atlasi
+const handleProfileFileChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    // pārbaudīt, vai fails ir .webp
+    if (!file.name.toLowerCase().endsWith('.webp')) {
+        alert(t('adm_artists.edit.image_error_webp'));
+        event.target.value = '';
+        return;
+    }
+    profileFile.value = file;
+    // pirms priekšskatījuma maiņas saglabāt sākotnējo URL
+    if (!originalProfileUrl.value) {
+        originalProfileUrl.value = props.artist.profile_url;
+    }
+    // priekšskatīt attēlu
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('profile-preview');
+        if (preview) {
+            preview.src = e.target.result;
+        }
+    };
+    reader.readAsDataURL(file);
+};
+
+// augšupielādēt banera attēlu
+const uploadBanner = async () => {
+    if (!bannerFile.value) {
+        alert(t('adm_artists.edit.image_error_no_file'));
+        return;
+    }
+    isUploadingBanner.value = true;
+    const formData = new FormData();
+    formData.append('banner', bannerFile.value);
+    formData.append('type', 'banner');
+    formData.append('_method', 'PUT');
+    try {
+        const response = await axios.post(route('admin-artists-update-image', { id: props.artist.id }), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        if (response.data.success) {
+            // atjaunināt parādīto attēlu
+            const bannerPreview = document.getElementById('banner-preview');
+            if (bannerPreview) {
+                bannerPreview.src = response.data.image_url;
+            }
+            // atjaunināt sākotnējo URL turpmākai atcelšanai
+            originalBannerUrl.value = response.data.image_url.replace(/\?t=.*$/, ''); // noņemt timestamp'u
+            bannerFile.value = null;
+            // notīrīt faila ievadi
+            const fileInput = document.getElementById('banner-file-input');
+            if (fileInput) fileInput.value = '';
+            alert(response.data.message || t('adm_artists.edit.image_success_banner'));
+        } else {
+            alert(response.data.message || t('adm_artists.edit.image_error_upload'));
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert(error.response?.data?.message || error.response?.data?.errors?.banner?.[0] || t('adm_artists.edit.image_error_upload'));
+    } finally {
+        isUploadingBanner.value = false;
+    }
+};
+
+// augšupielādēt profila attēlu
+const uploadProfile = async () => {
+    if (!profileFile.value) {
+        alert(t('adm_artists.edit.image_error_no_file'));
+        return;
+    }
+    isUploadingProfile.value = true;
+    const formData = new FormData();
+    formData.append('profile', profileFile.value);
+    formData.append('type', 'profile');
+    formData.append('_method', 'PUT');
+    try {
+        const response = await axios.post(route('admin-artists-update-image', { id: props.artist.id }), formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        if (response.data.success) {
+            // atjaunināt parādīto attēlu
+            const profilePreview = document.getElementById('profile-preview');
+            if (profilePreview) {
+                profilePreview.src = response.data.image_url;
+            }
+            // atjaunināt sākotnējo URL turpmākai atcelšanai
+            originalProfileUrl.value = response.data.image_url.replace(/\?t=.*$/, ''); // Remove timestamp
+            profileFile.value = null;
+            // notīrīt faila ievadi
+            const fileInput = document.getElementById('profile-file-input');
+            if (fileInput) fileInput.value = '';
+            alert(response.data.message || t('adm_artists.edit.image_success_profile'));
+        } else {
+            alert(response.data.message || t('adm_artists.edit.image_error_upload'));
+        }
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert(error.response?.data?.message || error.response?.data?.errors?.profile?.[0] || t('adm_artists.edit.image_error_upload'));
+    } finally {
+        isUploadingProfile.value = false;
+    }
+};
+
+// atcelt banera augšupielādi
+const cancelBannerUpload = () => {
+    bannerFile.value = null;
+    // atiestatīt uz sākotnējo attēlu
+    const preview = document.getElementById('banner-preview');
+    if (preview && originalBannerUrl.value) {
+        preview.src = originalBannerUrl.value + '?t=' + Date.now(); // oievienot timestamp'u, lai novērstu kešdarbi
+    }
+    // notīrīt faila ievadi
+    const fileInput = document.getElementById('banner-file-input');
+    if (fileInput) {
+        fileInput.value = '';
+        // aktivizēt change event, lai atiestatītu visus listener'us
+        fileInput.dispatchEvent(new Event('change'));
+    }
+};
+
+// atcelt profila augšupielādi
+const cancelProfileUpload = () => {
+    profileFile.value = null;
+    // atiestatīt uz sākotnējo attēlu
+    const preview = document.getElementById('profile-preview');
+    if (preview && originalProfileUrl.value) {
+        preview.src = originalProfileUrl.value + '?t=' + Date.now(); // Add timestamp to prevent caching
+    }
+    // notīrīt faila ievadi
+    const fileInput = document.getElementById('profile-file-input');
+    if (fileInput) {
+        fileInput.value = '';
+        // aktivizēt change event, lai atiestatītu visus listener'us
+        fileInput.dispatchEvent(new Event('change'));
+    }
 };
 
 </script>
@@ -376,7 +554,7 @@ const handleImageError = (event, type) => {
                         </div>
                     </div>
 
-                    <!-- Izpildītāju attēlu displejs -->
+                    <!-- Izpildītāju attēlu attēlojums -->
                     <div class="images-display-group">
                         <h3 class="images-display-title">{{ t('adm_artists.edit.artist_images') }}</h3>
                         <div class="images-display-stack">
@@ -384,19 +562,57 @@ const handleImageError = (event, type) => {
                             <div class="image-container">
                                 <div class="image-header">
                                     <div class="image-label">{{ t('adm_artists.edit.banner_image') }}</div>
+                                    <div class="image-size-info">{{ t('adm_artists.edit.banner_size') }}</div>
                                 </div>
                                 <div class="image-content">
                                     <div class="image-preview-square">
                                         <img
-                                            :src="artist.banner_url"
+                                            :src="originalBannerUrl"
                                             :alt="t('adm_artists.edit.banner_alt', { name: artist.name })"
                                             class="image-preview"
+                                            id="banner-preview"
                                             @error="handleImageError($event, 'banner')"
                                         />
                                     </div>
 
-                                    <div class="image-info">
-                                        <div class="image-name">{{ artist.banner_url }}</div>
+                                    <div class="image-upload-section">
+                                        <div class="image-upload-controls">
+                                            <div class="file-input-wrapper">
+                                                <input
+                                                    type="file"
+                                                    id="banner-file-input"
+                                                    accept=".webp"
+                                                    class="file-input"
+                                                    @change="handleBannerFileChange"
+                                                />
+                                                <label for="banner-file-input" class="btn-secondary btn-file">
+                                                    {{ t('adm_artists.edit.choose_file') }}
+                                                </label>
+                                                <span v-if="bannerFile" class="file-name">
+                                    {{ bannerFile.name }}
+                                </span>
+                                            </div>
+
+                                            <div class="upload-buttons" v-if="bannerFile">
+                                                <button
+                                                    @click="uploadBanner"
+                                                    :disabled="isUploadingBanner"
+                                                    class="btn-primary btn-sm"
+                                                >
+                                                    {{ isUploadingBanner ? t('adm_artists.edit.uploading') : t('adm_artists.edit.upload') }}
+                                                </button>
+                                                <button
+                                                    @click="cancelBannerUpload"
+                                                    class="btn-secondary btn-sm"
+                                                >
+                                                    {{ t('adm_artists.edit.cancel') }}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="image-info">
+                                            <div class="image-name">{{ artist.banner_url }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -405,19 +621,57 @@ const handleImageError = (event, type) => {
                             <div class="image-container">
                                 <div class="image-header">
                                     <div class="image-label">{{ t('adm_artists.edit.profile_image') }}</div>
+                                    <div class="image-size-info">{{ t('adm_artists.edit.profile_size') }}</div>
                                 </div>
                                 <div class="image-content">
                                     <div class="image-preview-horizontal">
                                         <img
-                                            :src="artist.profile_url"
+                                            :src="originalProfileUrl"
                                             :alt="t('adm_artists.edit.profile_alt', { name: artist.name })"
                                             class="image-preview"
+                                            id="profile-preview"
                                             @error="handleImageError($event, 'profile')"
                                         />
                                     </div>
 
-                                    <div class="image-info">
-                                        <div class="image-name">{{ artist.profile_url }}</div>
+                                    <div class="image-upload-section">
+                                        <div class="image-upload-controls">
+                                            <div class="file-input-wrapper">
+                                                <input
+                                                    type="file"
+                                                    id="profile-file-input"
+                                                    accept=".webp"
+                                                    class="file-input"
+                                                    @change="handleProfileFileChange"
+                                                />
+                                                <label for="profile-file-input" class="btn-secondary btn-file">
+                                                    {{ t('adm_artists.edit.choose_file') }}
+                                                </label>
+                                                <span v-if="profileFile" class="file-name">
+                                    {{ profileFile.name }}
+                                </span>
+                                            </div>
+
+                                            <div class="upload-buttons" v-if="profileFile">
+                                                <button
+                                                    @click="uploadProfile"
+                                                    :disabled="isUploadingProfile"
+                                                    class="btn-primary btn-sm"
+                                                >
+                                                    {{ isUploadingProfile ? t('adm_artists.edit.uploading') : t('adm_artists.edit.upload') }}
+                                                </button>
+                                                <button
+                                                    @click="cancelProfileUpload"
+                                                    class="btn-secondary btn-sm"
+                                                >
+                                                    {{ t('adm_artists.edit.cancel') }}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="image-info">
+                                            <div class="image-name">{{ artist.profile_url }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -959,6 +1213,60 @@ select.input-field {
     font-weight: 500;
     color: #374151;
     margin-bottom: 0.25rem;
+}
+
+/* Attēlu augšupielādes stili */
+.image-upload-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.image-upload-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.file-input {
+    display: none;
+}
+
+.btn-file {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+}
+
+.file-name {
+    font-size: 0.875rem;
+    color: #374151;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.upload-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.image-size-info {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-style: italic;
 }
 
 /* Modālo logu stili */

@@ -9,6 +9,7 @@ use App\Services\ReleaseService;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Storage;
 
 class ArtistController extends Controller
 {
@@ -173,5 +174,43 @@ class ArtistController extends Controller
         $artist->delete();
         return redirect()->route('admin-artists-index')
             ->with('success', __('messages.artist_deleted'));
+    }
+
+    /***
+     * Atjaunināt izpildītāja attēlu (baners vai profils).
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateImage(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $artist = Artist::findOrFail($id);
+        // validācija
+        $request->validate([
+            'type' => 'required|in:banner,profile',
+            'banner' => 'required_if:type,banner|file|mimes:webp|max:2048',
+            'profile' => 'required_if:type,profile|file|mimes:webp|max:2048',
+        ]);
+        $type = $request->type;
+        // iegūt failu no pieprasījuma
+        $fileField = $type;    // 'banner' vai 'profile'
+        $file = $request->file($fileField);
+        // Storage ceļa definēšana ar fiksētu faila nosaukumu
+        $filename = $type . '.webp';    // banner.webp or profile.webp
+        $directory = 'artists/' . $artist->id . '/' . $type;
+        $path = $directory . '/' . $filename;
+
+        // pārliecināties, vai direktorija pastāv
+        Storage::disk('public')->makeDirectory($directory);
+        // saglabāt failu ar fiksētu nosaukumu (pārraksta, ja pastāv)
+        Storage::disk('public')->put($path, file_get_contents($file));
+        // kešatmiņas tīrīšana
+        // Artisan::call('cache:clear'); // Optional
+        return response()->json([
+            'success' => true,
+            'message' => ucfirst($type) . __('messages.artist_image_updated'),
+            'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
+        ]);
     }
 }

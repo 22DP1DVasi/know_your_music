@@ -25,5 +25,6 @@ return [
     'role_deleted' => 'Loma veiksmīgi izdzēsta.',
     'artist_created' => 'Izpildītājs veiksmīgi izveidots.',
     'artist_updated' => 'Izpildītājs veiksmīgi atjaunināts.',
-    'artist_deleted' => 'Izpildītājs veiksmīgi izdzēsts.'
+    'artist_deleted' => 'Izpildītājs veiksmīgi izdzēsts.',
+    'artist_image_updated' => ' attēls veiksmīgi atjaunināts.',
 ];

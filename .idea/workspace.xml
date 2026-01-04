@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/ArtistController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Artists/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Artists/Edit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_artists.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_artists.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_artists.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_artists.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -349,7 +345,7 @@
       <workItem from="1767444423922" duration="7680000" />
       <workItem from="1767457259869" duration="233000" />
       <workItem from="1767457543836" duration="186000" />
-      <workItem from="1767464341580" duration="5981000" />
+      <workItem from="1767464341580" duration="6896000" />
     </task>
     <servers />
   </component>

@@ -79,7 +79,18 @@
         "artist_images": "Artist Images",
         "banner_image": "Banner Image",
         "profile_image": "Profile Image",
+        "banner_size": "Recommended: 1000x1000px (Square)",
+        "profile_size": "Recommended: 1000x667px (3:2)",
         "banner_alt": "Banner image for {name}",
-        "profile_alt": "Profile image for {name}"
+        "profile_alt": "Profile image for {name}",
+        "choose_file": "Choose .webp file",
+        "upload": "Upload Image",
+        "uploading": "Uploading...",
+        "cancel": "Cancel",
+        "image_error_webp": "Only .webp files are allowed",
+        "image_error_no_file": "Please select a file first",
+        "image_error_upload": "Error uploading image",
+        "image_success_banner": "Banner image updated successfully",
+        "image_success_profile": "Profile image updated successfully"
     }
 }
