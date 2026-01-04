@@ -185,12 +185,20 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/users/{user}/roles/{role}', [App\Http\Controllers\Admin\UserController::class, 'destroyUserRole'])->name('admin-users-roles-destroy');
     Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin-users-destroy');
 
+    Route::get('/admin-roles-index', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin-roles-index');
+    Route::get('/admin-roles-create', [App\Http\Controllers\Admin\RoleController::class, 'create'])->name('admin-roles-create');
+    Route::post('/admin-roles-store', [App\Http\Controllers\Admin\RoleController::class, 'store'])->name('admin-roles-store');
+    Route::get('/admin-roles-edit/{id}', [App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('admin-roles-edit');
+    Route::put('/admin-roles-update/{id}', [App\Http\Controllers\Admin\RoleController::class, 'update'])->name('admin-roles-update');
+    Route::delete('/roles/{id}', [App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('admin-roles-destroy');
+
     Route::get('/admin-artists-index', [App\Http\Controllers\Admin\ArtistController::class, 'index'])->name('admin-artists-index');
     Route::get('/admin-artists-create', [App\Http\Controllers\Admin\ArtistController::class, 'create'])->name('admin-artists-create');
     Route::post('/admin-artists-store', [App\Http\Controllers\Admin\ArtistController::class, 'store'])->name('admin-artists-store');
     Route::get('/admin-artists-edit/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'edit'])->name('admin-artists-edit');
     Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
     Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
+    Route::put('/admin/artists/{id}/update-image', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
 
 
 

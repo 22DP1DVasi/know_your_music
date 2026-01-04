@@ -1,5 +1,6 @@
 {
     "dashboard": "Dashboard",
     "users": "Users",
+    "roles": "Roles",
     "artists": "Artists"
 }

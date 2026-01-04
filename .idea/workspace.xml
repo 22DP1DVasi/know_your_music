@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="" />
+    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,8 +24,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Vue Composition API Component" />
         <option value="JavaScript File" />
+        <option value="Vue Composition API Component" />
       </list>
     </option>
   </component>
@@ -167,8 +169,8 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/language-switch&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/know_your_music/knowm/lang/lv&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/admin-panel&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/lv&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -186,9 +188,9 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\know_your_music\knowm\lang\lv" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\lv" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\en" />
+      <recent name="C:\xampp\htdocs\know_your_music\knowm\lang\lv" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\Pages\Tracks" />
@@ -334,6 +336,16 @@
       <workItem from="1766688809186" duration="12531000" />
       <workItem from="1766738164994" duration="6506000" />
       <workItem from="1766953990949" duration="1787000" />
+      <workItem from="1766991915758" duration="3511000" />
+      <workItem from="1767026228561" duration="987000" />
+      <workItem from="1767076392201" duration="9146000" />
+      <workItem from="1767293111548" duration="748000" />
+      <workItem from="1767348684398" duration="18148000" />
+      <workItem from="1767427513392" duration="2078000" />
+      <workItem from="1767444423922" duration="7680000" />
+      <workItem from="1767457259869" duration="233000" />
+      <workItem from="1767457543836" duration="186000" />
+      <workItem from="1767464341580" duration="6896000" />
     </task>
     <servers />
   </component>

@@ -20,7 +20,11 @@ return [
     'roles_assigned' => 'Lomas ir veiksmīgi piešķirtas.',
     'cannot_remove_admin_role' => 'Jūs nevarat noņemt savu administratora lomu.',
     'role_removed' => 'Loma veiksmīgi noņemta.',
+    'role_created' => 'Loma veiksmīgi izveidota.',
+    'role_updated' => 'Loma veiksmīgi atjaunināta.',
+    'role_deleted' => 'Loma veiksmīgi izdzēsta.',
     'artist_created' => 'Izpildītājs veiksmīgi izveidots.',
     'artist_updated' => 'Izpildītājs veiksmīgi atjaunināts.',
-    'artist_deleted' => 'Izpildītājs veiksmīgi izdzēsts.'
+    'artist_deleted' => 'Izpildītājs veiksmīgi izdzēsts.',
+    'artist_image_updated' => ' attēls veiksmīgi atjaunināts.',
 ];

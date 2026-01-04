@@ -38,6 +38,7 @@ const resetForm = () => {
     form.roles = props.user.roles.map(r => r.id);
 };
 
+// saskaņotais pasaules laiks (UTC), nevis lokāls laiks
 const formatDateTimeUTC = (dateString) => {
     if (!dateString) return 'Unknown';
     return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');

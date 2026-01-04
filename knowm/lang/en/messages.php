@@ -20,7 +20,11 @@ return [
     'roles_assigned' => 'Roles assigned successfully.',
     'cannot_remove_admin_role' => 'You cannot remove your own admin role.',
     'role_removed' => 'Role removed successfully.',
+    'role_created' => 'Role created successfully.',
+    'role_updated' => 'Role updated successfully.',
+    'role_deleted' => 'Role deleted successfully.',
     'artist_created' => 'Artist created successfully.',
     'artist_updated' => 'Artist updated successfully.',
-    'artist_deleted' => 'Artist deleted successfully'
+    'artist_deleted' => 'Artist deleted successfully',
+    'artist_image_updated' => ' image updated successfully.',
 ];

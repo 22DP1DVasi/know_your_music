@@ -8,44 +8,41 @@ import { debounce } from 'lodash';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
-    artists: Object,
+    roles: Object,
     filters: {
         type: Object,
         default: () => ({
             search_name: '',
-            filter_type: '',
-            filter_status: ''
+            search_description: '',
+            sort_order: 'asc'
         })
     }
 });
 
-const { t } = useI18n()
+const { t } = useI18n();
+
 // meklēšanas ievades, inicializēt no props
 const searchName = ref(props.filters.search_name || '');
-const filterType = ref(props.filters.filter_type || '');
-const filterStatus = ref(props.filters.filter_status || '');
+const searchDescription = ref(props.filters.search_description || '');
+const sortOrder = ref(props.filters.sort_order || 'asc');
 
 // filtru atjaunināšanas funkcija
 const updateFilters = () => {
     const filters = {};
-
     if (searchName.value) {
         filters.search_name = searchName.value;
     }
-
-    if (filterType.value) {
-        filters.filter_type = filterType.value;
+    if (searchDescription.value) {
+        filters.search_description = searchDescription.value;
     }
-
-    if (filterStatus.value !== '') {
-        filters.filter_status = filterStatus.value;
+    if (sortOrder.value) {
+        filters.sort_order = sortOrder.value;
     }
-
-    router.get(route('admin-artists-index'), filters, {
+    router.get(route('admin-roles-index'), filters, {
         preserveState: true,
         replace: true,
         preserveScroll: true,
-        only: ['artists', 'filters']
+        only: ['roles', 'filters']
     });
 };
 
@@ -54,34 +51,43 @@ const updateFilters = () => {
 * līdz ir pagājis norādītais gaidīšanas laiks kopš pēdējās izsaukšanas
 * */
 const debouncedSearchName = debounce(updateFilters, 500);
+const debouncedSearchDescription = debounce(updateFilters, 500);
 
+// izmaiņu skatīšana un meklēšanas aktivizēšana
 watch(searchName, (newValue) => {
     if (newValue === '' || newValue.length >= 1) {
         debouncedSearchName();
     }
 });
 
-watch(filterType, updateFilters);
-watch(filterStatus, updateFilters);
+watch(searchDescription, (newValue) => {
+    if (newValue === '' || newValue.length >= 1) {
+        debouncedSearchDescription();
+    }
+});
+
+watch(sortOrder, () => {
+    updateFilters();
+});
 
 const clearFilters = () => {
     searchName.value = '';
-    filterType.value = '';
-    filterStatus.value = '';
+    searchDescription.value = '';
+    sortOrder.value = 'asc';
     updateFilters();
 };
 
 const hasActiveFilters = computed(() => {
-    return searchName.value || filterType.value || filterStatus.value !== '';
+    return searchName.value || searchDescription.value || sortOrder.value !== 'asc';
 });
 
-const deleteArtist = (id) => {
-    if (confirm(t('amd_artists.index.confirm_delete'))) {
-        router.delete(route('admin-artists-destroy', { id: id }), {
+const deleteRole = (id) => {
+    if (confirm(t('adm_roles.index.confirm_delete'))) {
+        router.delete(route('admin-roles-destroy', { id: id }), {
             onSuccess: () => {
             },
             onError: (errors) => {
-                alert(errors.response.data.message || "Could not delete artist");
+                alert(errors.response.data.message || "");
             },
             preserveScroll: true
         });
@@ -93,21 +99,22 @@ const deleteArtist = (id) => {
 <template>
     <AdminLayout>
         <div class="header-container">
-            <h1>{{ t('adm_artists.index.title') }}</h1>
+            <h1>{{ t('adm_roles.index.title') }}</h1>
             <div class="header-actions">
                 <Link :href="route('home')" class="btn-secondary">
-                    {{ t('adm_artists.index.back_to_website') }}
+                    {{ t('adm_roles.index.back_to_website') }}
                 </Link>
-                <Link :href="route('admin-artists-create')" class="btn-primary">
-                    {{ t('adm_artists.index.add_new_artist') }}
+                <Link :href="route('admin-roles-create')" class="btn-primary">
+                    {{ t('adm_roles.index.add_new_role') }}
                 </Link>
             </div>
         </div>
 
         <div class="filters-container">
             <div class="filters-grid">
+                <!-- Meklēt pēc lomas nosaukuma -->
                 <div class="filter-group">
-                    <label for="search-name">{{ t('adm_artists.index.search_name') }}</label>
+                    <label for="search-name">{{ t('adm_roles.index.search_name') }}</label>
                     <div class="search-input-wrapper">
                         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -117,7 +124,7 @@ const deleteArtist = (id) => {
                             id="search-name"
                             v-model="searchName"
                             type="text"
-                            :placeholder="t('adm_artists.index.search_name_placeholder')"
+                            :placeholder="t('adm_roles.index.search_name_placeholder')"
                             class="input-field"
                         />
                         <button
@@ -131,29 +138,42 @@ const deleteArtist = (id) => {
                     </div>
                 </div>
 
+                <!-- Meklēt pēc apraksta -->
                 <div class="filter-group">
-                    <label for="filter-type">{{ t('adm_artists.index.filter_type') }}</label>
-                    <select
-                        id="filter-type"
-                        v-model="filterType"
-                        class="input-field"
-                    >
-                        <option value="">{{ t('adm_artists.index.filter_all_types') }}</option>
-                        <option value="solo">{{ t('adm_artists.index.type_solo') }}</option>
-                        <option value="band">{{ t('adm_artists.index.type_band') }}</option>
-                    </select>
+                    <label for="search-description">{{ t('adm_roles.index.search_description') }}</label>
+                    <div class="search-input-wrapper">
+                        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input
+                            id="search-description"
+                            v-model="searchDescription"
+                            type="text"
+                            :placeholder="t('adm_roles.index.search_description_placeholder')"
+                            class="input-field"
+                        />
+                        <button
+                            v-if="searchDescription"
+                            @click="searchDescription = ''"
+                            class="clear-search-btn"
+                            type="button"
+                        >
+                            ×
+                        </button>
+                    </div>
                 </div>
 
+                <!-- Kārtošanas secība -->
                 <div class="filter-group">
-                    <label for="filter-status">{{ t('adm_artists.index.filter_status') }}</label>
+                    <label for="sort-order">{{ t('adm_roles.index.sort_order') }}</label>
                     <select
-                        id="filter-status"
-                        v-model="filterStatus"
+                        id="sort-order"
+                        v-model="sortOrder"
                         class="input-field"
                     >
-                        <option value="">{{ t('adm_artists.index.filter_all_statuses') }}</option>
-                        <option value="1">{{ t('adm_artists.index.status_active') }}</option>
-                        <option value="0">{{ t('adm_artists.index.status_inactive') }}</option>
+                        <option value="asc">{{ t('adm_roles.index.sort_ascending') }}</option>
+                        <option value="desc">{{ t('adm_roles.index.sort_descending') }}</option>
                     </select>
                 </div>
 
@@ -164,7 +184,7 @@ const deleteArtist = (id) => {
                         class="btn-clear-filters"
                         type="button"
                     >
-                        {{ t('adm_artists.index.clear_filter_btn') }}
+                        {{ t('adm_roles.index.clear_filters') }}
                     </button>
                 </div>
             </div>
@@ -173,84 +193,64 @@ const deleteArtist = (id) => {
         <div class="table-container">
             <div class="table-inner">
                 <!-- Galvenes -->
-                <div class="artists-header">
-                    <div class="id-cell">ID</div>
-                    <div class="name-cell">{{ t('adm_artists.index.header_name') }}</div>
-                    <div class="slug-cell" style="font-size: 1em;">Slug</div>
-                    <div class="type-cell" style="font-size: 1em;">{{ t('adm_artists.index.header_type') }}</div>
-                    <div class="years-cell">{{ t('adm_artists.index.header_years') }}</div>
-                    <div class="status-cell">{{ t('adm_artists.index.header_status') }}</div>
-                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_created_at') }}</div>
-                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_updated_at') }}</div>
-                    <div class="actions-cell-header">{{ t('adm_artists.index.header_actions') }}</div>
+                <div class="roles-header">
+                    <div class="name-cell">{{ t('adm_roles.index.header_name') }}</div>
+                    <div class="description-cell">{{ t('adm_roles.index.header_description') }}</div>
+                    <div class="created-at-cell">{{ t('adm_roles.index.header_created_at') }}</div>
+                    <div class="updated-at-cell">{{ t('adm_roles.index.header_updated_at') }}</div>
+                    <div class="actions-cell-header">{{ t('adm_roles.index.header_actions') }}</div>
                 </div>
 
                 <!-- Rindas -->
                 <div
-                    v-for="artist in artists.data"
-                    :key="artist.id"
-                    class="artists-row"
+                    v-for="role in roles.data"
+                    :key="role.id"
+                    class="roles-row"
                 >
-                    <div class="id-cell">{{ artist.id }}</div>
-                    <div class="name-cell">{{ artist.name }}</div>
-                    <div class="slug-cell">{{ artist.slug }}</div>
-                    <div class="type-cell">{{ artist.solo_or_band || '-' }}</div>
-                    <div class="years-cell">
-                        <span v-if="artist.formed_year">
-                            {{ artist.formed_year }}
-                            <span v-if="artist.disbanded_year">- {{ artist.disbanded_year }}</span>
-                            <span v-else>{{ t('adm_artists.index.years_present') }}</span>
-                        </span>
-                        <span v-else>-</span>
+                    <div class="name-cell">
+                        <span class="role-name">{{ role.name }}</span>
                     </div>
-                    <div class="status-cell">
-                        <span :class="artist.is_active ? 'status-active' : 'status-inactive'">
-                            {{ artist.is_active ? t('adm_artists.index.status_active') : t('adm_artists.index.status_inactive') }}
-                        </span>
+                    <div class="description-cell">
+                        <span class="role-description">{{ role.description || '-' }}</span>
                     </div>
-                    <div class="created-updated-at-table-data">{{ artist.created_at }}</div>
-                    <div class="created-updated-at-table-data">{{ artist.updated_at }}</div>
+                    <div class="created-at-cell">
+                        {{ role.created_at }}
+                    </div>
+                    <div class="updated-at-cell">
+                        {{ role.updated_at }}
+                    </div>
                     <div class="actions-cell">
                         <Link
-                            :href="route('admin-artists-edit', { id: artist.id })"
+                            :href="route('admin-roles-edit', { id: role.id })"
                             class="btn-edit"
                         >
-                            {{ t('adm_artists.index.edit_btn') }}
+                            {{ t('adm_roles.index.edit_btn') }}
                         </Link>
                         <button
-                            @click="deleteArtist(artist.id)"
+                            @click="deleteRole(role.id)"
                             class="btn-danger"
                         >
-                            {{ t('adm_artists.index.delete_btn') }}
+                            {{ t('adm_roles.index.delete_btn') }}
                         </button>
-                        <Link
-                            :href="`/artists/${artist.slug}`"
-                            target="_blank"
-                            class="btn-view"
-                        >
-                            {{ t('adm_artists.index.view_btn') }}
-                        </Link>
                     </div>
                 </div>
 
-                <div v-if="artists.data.length === 0" class="no-results">
+                <!-- "Nav rezultātu" ziņojums -->
+                <div v-if="roles.data.length === 0" class="no-results">
                     <template v-if="hasActiveFilters">
-                        <p>{{ t('adm_artists.index.search_not_found') }}</p>
-                        <button @click="clearFilters" class="text-link">
-                            {{ t('adm_artists.index.clear_filters_msg') }}
-                        </button>
+                        <p>{{ t('adm_roles.index.no_roles_found_msg') }}</p>
+                        <button @click="clearFilters" class="text-link">{{ t('adm_roles.index.clear_filters_msg') }}</button>
                     </template>
                     <template v-else>
-                        <p>{{ t('adm_artists.index.no_artists_found_sys') }}</p>
+                        <p>{{ t('adm_roles.index.no_roles_found_sys') }}</p>
                     </template>
                 </div>
             </div>
 
-            <Pagination :links="artists.links" />
+            <Pagination :links="roles.links" />
         </div>
     </AdminLayout>
 </template>
-
 
 <style scoped>
 .header-container {
@@ -278,8 +278,7 @@ const deleteArtist = (id) => {
 .btn-secondary,
 .btn-primary,
 .btn-edit,
-.btn-danger,
-.btn-view {
+.btn-danger {
     display: inline-block;
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
@@ -308,33 +307,6 @@ const deleteArtist = (id) => {
 
 .btn-primary:hover {
     background-color: #2563eb;
-}
-
-.btn-edit {
-    background-color: #10b981;
-    color: white;
-}
-
-.btn-edit:hover {
-    background-color: #059669;
-}
-
-.btn-danger {
-    background-color: #ef4444;
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #dc2626;
-}
-
-.btn-view {
-    background-color: #8b5cf6;
-    color: white;
-}
-
-.btn-view:hover {
-    background-color: #7c3aed;
 }
 
 .filters-container {
@@ -427,18 +399,11 @@ select.input-field {
     justify-content: center;
     border-radius: 50%;
     transition: all 0.2s;
-    opacity: 0;
-    pointer-events: none;
 }
 
 .clear-search-btn:hover {
     background-color: #e5e7eb;
     color: #374151;
-}
-
-.input-field:not(:placeholder-shown) + .clear-search-btn {
-    opacity: 1;
-    pointer-events: auto;
 }
 
 .filter-actions {
@@ -463,6 +428,24 @@ select.input-field {
     background-color: #dc2626;
 }
 
+.btn-edit {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #059669;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+}
+
 .table-container {
     background-color: white;
     border-radius: 0.5rem;
@@ -476,124 +459,84 @@ select.input-field {
     min-width: 1100px;
 }
 
-.artists-header,
-.artists-row {
+.roles-header,
+.roles-row {
     display: flex;
     align-items: center;
     min-width: 100%;
 }
 
-.artists-header {
+.roles-header {
     background-color: #f3f4f6;
     font-weight: 600;
     color: #374151;
     border-bottom: 2px solid #d1d5db;
 }
 
-.artists-row {
+.roles-row {
     border-bottom: 1px solid #e5e7eb;
 }
 
-.artists-row:hover {
+.roles-row:hover {
     background-color: #f9fafb;
 }
 
-.artists-header > div,
-.artists-row > div {
+.roles-header > div,
+.roles-row > div {
     padding: 0.75rem 1.5rem;
     min-width: 0;
     display: flex;
     align-items: center;
 }
 
-.id-cell {
-    flex: 0 0 50px;
-    max-width: 70px;
-    font-family: monospace;
-    font-size: 0.85rem;
-}
-
 .name-cell {
     flex: 2;
-    min-width: 150px;
-    max-width: 150px;
+    min-width: 180px;
+    max-width: 250px;
+    font-weight: 500;
+    color: #1f2937;
+    white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
-.slug-header {
-    font-size: 1em;
-}
-
-.slug-cell {
-    flex: 2 0 150px;
-    min-width: 150px;
-    max-width: 150px;
-    font-size: 0.85rem;
+.description-cell {
+    flex: 3;
+    min-width: 250px;
+    max-width: 400px;
+    line-height: 1.4;
+    white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
-.type-cell {
-    flex: 0 0 80px;
-    max-width: 100px;
-    font-size: 0.9rem;
+.role-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.years-cell {
-    flex: 0 0 120px;
+.created-at-cell,
+.updated-at-cell {
+    flex: 1;
+    min-width: 120px;
     max-width: 140px;
     font-size: 0.85rem;
 }
 
-.status-cell {
-    flex: 0 0 90px;
-    max-width: 110px;
-}
-
-.created-updated-at-header {
-    flex: 0 0 120px;
-    max-width: 130px;
-    font-size: 0.9rem;
-}
-
-.created-updated-at-table-data {
-    flex: 0 0 120px;
-    max-width: 130px;
-    font-size: 0.8rem;
-}
-
 .actions-cell-header {
-    flex: 0 0 200px;
-    max-width: 220px;
+    flex: 0 0 160px;
+    max-width: 180px;
 }
 
 .actions-cell {
-    flex: 0 0 200px;
-    max-width: 220px;
+    flex: 0 0 160px;
+    max-width: 180px;
     display: flex;
     gap: 0.5rem;
     align-items: center;
-}
-
-.status-active,
-.status-inactive {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.8rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.status-active {
-    background-color: #d1fae5;
-    color: #065f46;
-}
-
-.status-inactive {
-    background-color: #fee2e2;
-    color: #991b1b;
 }
 
 .no-results {
