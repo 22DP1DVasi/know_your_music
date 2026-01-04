@@ -88,7 +88,7 @@ class Release extends Model
     /**
      * Relationship with ReleaseComment model
      */
-    public function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(ReleaseComment::class);
     }

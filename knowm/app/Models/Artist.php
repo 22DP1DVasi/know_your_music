@@ -96,11 +96,9 @@ class Artist extends Model
     /**
      * Relationship with ArtistComment model
      */
-    public function comments()
+    public function comments(): HasMany
     {
-        return $this->hasMany(ArtistComment::class)
-            ->visible() // default to only visible comments
-            ->latest();
+        return $this->hasMany(ArtistComment::class);
     }
 
     /**

@@ -95,11 +95,9 @@ class Track extends Model
     /**
      * Get all comments associated with this track
      */
-    public function comments()
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(TrackComment::class)
-            ->visible()
-            ->latest();
+        return $this->hasMany(TrackComment::class);
     }
 
     /**

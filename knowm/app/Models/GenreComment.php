@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasThreadedComments;
 
-class ArtistComment extends Model
+class GenreComment extends Model
 {
     use HasFactory, HasThreadedComments;
-    protected $table = 'comments_artists';
+    protected $table = 'comments_genres';
 
     /**
      * The attributes that are mass assignable.

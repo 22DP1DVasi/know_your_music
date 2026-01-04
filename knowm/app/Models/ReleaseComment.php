@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
+use App\Traits\HasThreadedComments;
 
 class ReleaseComment extends Model
 {
-    use HasFactory;
-
+    use HasFactory, HasThreadedComments;
     protected $table = 'comments_releases';
 
     /**
@@ -49,7 +49,7 @@ class ReleaseComment extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
 //            ->withGlobalScope('notDeleted', function (Builder $builder) {
 //                $builder->where('status', '!=', 'deleted');
 //            });

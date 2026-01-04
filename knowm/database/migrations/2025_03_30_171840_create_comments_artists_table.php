@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('comments_artists', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('artist_id');
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('set null');
+                ->onDelete('restrict');
 
             $table->foreign('artist_id')
                 ->references('id')
