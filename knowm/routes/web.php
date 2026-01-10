@@ -88,7 +88,9 @@ Route::get('/search/tracks', [SearchController::class, 'tracks'])
 Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
     ->name('search.lyrics');
 
-// show pages (profiles)
+// information pages (artists, genres, releases, tracks)
+
+// artist page
 Route::get('/artists/{artist}', [ArtistController::class, 'show'])
     ->name('artists.show');
 
@@ -103,6 +105,8 @@ Route::get('/artists/{artist}/tracks', [ArtistController::class, 'showAllTracks'
 // page for all releases for artist
 Route::get('/artists/{artist}/releases', [ArtistController::class, 'showAllReleases'])
     ->name('artists.releases');
+
+Route::get('/artists/{artist}/comments', [ArtistController::class, 'getComments']);
 
 // release page
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
@@ -136,6 +140,7 @@ Route::get('/explore/releases', [ReleaseController::class, 'explore'])
 Route::get('/explore/genres', [GenreController::class, 'explore'])
     ->name('explore.genres');
 
+// locale for localization
 Route::post('/locale', function (Request $request) {
     $locale = $request->string('locale')->toString();
     if (! in_array($locale, ['en', 'lv'])) {

@@ -1,10 +1,12 @@
 <script setup>
-import { Head } from '@inertiajs/vue3'
+import { Head, router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import ColorThief from 'colorthief'
+import axios from 'axios'
+import { useDate } from '@/composables/useDate'
 
 const props = defineProps({
     artist: {
@@ -180,6 +182,71 @@ const formatDuration = (timeString) => {
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
 };
 
+// komentāru reaktīvie rekvizīti
+const comments = ref(props.artist.comments || []);
+const commentsPagination = ref(props.artist.comments_pagination || {
+    current_page: 1,
+    last_page: 1,
+    total: 0,
+    per_page: 10
+});
+const loadingComments = ref(false);
+const showLoadMore = computed(() => {
+    return commentsPagination.value.current_page < commentsPagination.value.last_page;
+});
+
+const { formatDateLL, fromNow } = useDate()
+
+const loadMoreComments = async () => {
+    if (loadingComments.value || !showLoadMore.value) return;
+    loadingComments.value = true;
+    const nextPage = commentsPagination.value.current_page + 1;
+    try {
+        const response = await axios.get(`/artists/${props.artist.artist.slug}/comments`, {
+            params: { page: nextPage }
+        });
+        comments.value = [...comments.value, ...response.data.comments];
+        commentsPagination.value = {
+            ...commentsPagination.value,
+            current_page: response.data.pagination.current_page,
+            last_page: response.data.pagination.last_page
+        };
+    } catch (error) {
+        console.error('Error loading comments:', error);
+    } finally {
+        loadingComments.value = false;
+    }
+};
+
+// helper, lai rekursīvi atveidotu ligzdotos komentārus
+const renderComment = (comment, depth = 0) => {
+    // ierobežot dziļumu līdz 2 atkāpes līmeņiem
+    const maxDepth = 2;
+    const actualDepth = Math.min(depth, maxDepth);
+    return {
+        comment,
+        depth: actualDepth,
+        hasReplies: comment.replies && comment.replies.length > 0
+    };
+};
+
+// saplacināt komentārus ar to atbildēm parādīšanai
+const displayComments = computed(() => {
+    const flattenComments = (commentList, depth = 0) => {
+        let result = [];
+        commentList.forEach(comment => {
+            result.push(renderComment(comment, depth));
+            if (comment.replies && comment.replies.length > 0) {
+                // apstrādāt atbildes ar palielinātu dziļumu
+                const replies = flattenComments(comment.replies, depth + 1);
+                result = [...result, ...replies];
+            }
+        });
+        return result;
+    };
+    return flattenComments(comments.value);
+});
+
 </script>
 
 <template>
@@ -325,9 +392,55 @@ const formatDuration = (timeString) => {
                 </section>
 
                 <section class="artist-comments">
-                    <h2 class="section-title">Comments</h2>
+                    <h2 class="section-title">Comments ({{ commentsPagination.total }})</h2>
                     <div class="comments-section">
-                        <!-- Comment components would go here -->
+                        <div v-if="displayComments.length === 0" class="no-comments">
+                            <p>No comments yet. Be the first to comment!</p>
+                        </div>
+
+                        <div v-else class="comments-list">
+                            <div
+                                v-for="(commentData, index) in displayComments"
+                                :key="commentData.comment.id"
+                                :class="['comment-item', `depth-${commentData.depth}`]"
+                                :style="{ marginLeft: `${commentData.depth * 40}px` }"
+                            >
+                                <div class="comment-header">
+                                    <div class="comment-user">
+                                        <i class="fa-regular fa-user"></i>
+                                        <span class="user-name">{{ commentData.comment.user?.name || 'Anonymous' }}</span>
+                                    </div>
+                                    <span class="comment-time"
+                                          :title="formatDateLL(commentData.comment.created_at)">
+                                        {{ fromNow(commentData.comment.created_at) }}
+                                    </span>
+                                </div>
+                                <div class="comment-text" v-html="commentData.comment.text"></div>
+
+                                <!-- poga atbildēt (demo) -->
+                                <!--
+                                <button
+                                    v-if="commentData.depth < 2"
+                                    class="reply-button"
+                                    @click="showReplyForm(commentData.comment.id)"
+                                >
+                                    Reply
+                                </button>
+                                -->
+                            </div>
+                        </div>
+
+                        <!-- Poga Ielādēt vairāk -->
+                        <div v-if="showLoadMore" class="load-more-container">
+                            <button
+                                @click="loadMoreComments"
+                                :disabled="loadingComments"
+                                class="load-more-button"
+                            >
+                                <span v-if="loadingComments">Loading...</span>
+                                <span v-else>Show more comments</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -747,12 +860,154 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
 }
 
+.artist-comments {
+    margin-bottom: 3rem;
+}
+
+/* komentāri */
 .comments-section {
     background: white;
     border-radius: 8px;
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 3rem;
+}
+
+.no-comments {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-style: italic;
+}
+
+.comments-list {
+    margin-bottom: 1.5rem;
+}
+
+.comment-item {
+    border-bottom: 1px solid #eee;
+    padding: 1rem 1rem;
+    transition: background-color 0.2s;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+}
+
+.comment-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* komentāru dziļuma indikatori */
+.comment-item.depth-1 {
+    border-left: 3px solid #e0e8ff;
+    padding-left: 1rem;
+    margin-left: 0 !important;
+    background-color: #f8faff;
+}
+
+.comment-item.depth-2 {
+    border-left: 3px solid #c9d7ff;
+    padding-left: 1rem;
+    margin-left: 0 !important;
+    background-color: #f0f4ff;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.comment-user {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.comment-user i {
+    color: #0c4baa;
+    font-size: 1.1rem;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.comment-time {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.comment-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 0.75rem;
+    white-space: pre-wrap;
+}
+
+.comment-text p {
+    margin: 0.5rem 0;
+}
+
+.comment-text p:first-child {
+    margin-top: 0;
+}
+
+.comment-text p:last-child {
+    margin-bottom: 0;
+}
+
+.reply-button {
+    background: none;
+    border: 1px solid #ddd;
+    color: #0c4baa;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reply-button:hover {
+    background: #f0f4ff;
+    border-color: #0c4baa;
+}
+
+.load-more-container {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.load-more-button {
+    background: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-width: 180px;
+}
+
+.load-more-button:hover:not(:disabled) {
+    background: #1a5fc9;
+}
+
+.load-more-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
 }
 
 @media (max-width: 1455px) {
@@ -864,7 +1119,26 @@ const formatDuration = (timeString) => {
         flex: 0 0 50px;
     }
 
+    .comment-item {
+        margin-left: 0 !important;
+        padding-left: 0.5rem;
+    }
 
+    .comment-item.depth-1,
+    .comment-item.depth-2 {
+        margin-left: 0 !important;
+        padding-left: 0.75rem;
+    }
+
+    .comment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .comment-time {
+        font-size: 0.8rem;
+    }
 }
 
 @media (max-width: 480px) {

@@ -12,6 +12,7 @@ use App\Models\Artist;
 use App\Models\Release;
 use App\Models\Track;
 use App\Models\Genre;
+use App\Models\ArtistComment;
 
 class ArtistController extends Controller
 {
@@ -69,7 +70,10 @@ class ArtistController extends Controller
 
     public function show(Artist $artist)
     {
-        $data = $this->artistService->getArtistWithDetails($artist->id);
+        // Get current page for comments from request, default to 1
+        $commentsPage = request()->input('comments_page', 1);
+
+        $data = $this->artistService->getArtistWithDetailsAndComments($artist->id, $commentsPage);
         return Inertia::render('Artists/ArtistShow', [
             'artist' => $data
         ]);
@@ -149,6 +153,30 @@ class ArtistController extends Controller
             'allGenres' => $genres,
             'selectedGenres' => $genreIds,
             'sortOrder' => $sortOrder
+        ]);
+    }
+
+    public function getComments(Artist $artist)
+    {
+        $page = request()->input('page', 1);
+
+        $comments = ArtistComment::where('artist_id', $artist->id)
+            ->whereNull('parent_id')
+            ->with(['user', 'replies' => function($query) {
+                $query->with('user');
+            }, 'replies.replies' => function($query) {
+                $query->with('user');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'page', $page);
+
+        return response()->json([
+            'comments' => $comments->items(),
+            'pagination' => [
+                'current_page' => $comments->currentPage(),
+                'last_page' => $comments->lastPage(),
+                'total' => $comments->total(),
+            ]
         ]);
     }
 
