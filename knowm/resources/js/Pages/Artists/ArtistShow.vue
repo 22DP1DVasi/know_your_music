@@ -194,6 +194,8 @@ const loadingComments = ref(false);
 const showLoadMore = computed(() => {
     return commentsPagination.value.current_page < commentsPagination.value.last_page;
 });
+const expandedComments = ref(new Set()); // izseko, kuri komentāri tiek izvērsti
+const commentMaxLength = 400; // komentāru maksimālais garums saīsināšanai
 
 const { formatDateLL, fromNow } = useDate()
 
@@ -246,6 +248,69 @@ const displayComments = computed(() => {
     };
     return flattenComments(comments.value);
 });
+
+// pārbaudīt, vai komentārs ir jāsaīsina
+const needsTruncation = (comment) => {
+    if (!comment?.text) return false;
+    // noņemt HTML tagus, lai saskaitītu tikai teksta rakstzīmes
+    const plainText = comment.text.replace(/<[^>]*>/g, '');
+    return plainText.length > commentMaxLength;
+};
+
+const getTruncatedText = (comment) => {
+    if (!comment?.text) return '';
+    // noņemt HTML tagus, lai saskaitītu tikai teksta rakstzīmes
+    const plainText = comment.text.replace(/<[^>]*>/g, '');
+    if (plainText.length <= commentMaxLength) return comment.text;
+
+    let truncated = plainText.substring(0, commentMaxLength);
+    // mēģināt saīsināt teikuma beigās
+    const lastPeriod = truncated.lastIndexOf('.');
+    const lastExclamation = truncated.lastIndexOf('!');
+    const lastQuestion = truncated.lastIndexOf('?');
+    const breakPoints = [lastPeriod, lastExclamation, lastQuestion].filter(pos => pos > 0);
+
+    if (breakPoints.length > 0) {
+        const lastBreak = Math.max(...breakPoints);
+        if (lastBreak > commentMaxLength * 0.7) { // saīsināt tikai tad, ja tas nav pārāk tālu atpakaļ
+            truncated = truncated.substring(0, lastBreak + 1);
+        }
+    } else {
+        // saīsināt pēdējā atstarpē
+        const lastSpace = truncated.lastIndexOf(' ');
+        if (lastSpace > commentMaxLength * 0.8) {
+            truncated = truncated.substring(0, lastSpace);
+        }
+    }
+    return truncated.trim() + '...';
+};
+
+// iegūt pilnu tekstu ar HTML
+const getFullText = (comment) => {
+    return comment?.text || '';
+};
+
+// pārslēgt komentāru paplašināšanu
+const toggleCommentExpansion = (commentId) => {
+    if (expandedComments.value.has(commentId)) {
+        expandedComments.value.delete(commentId);
+    } else {
+        expandedComments.value.add(commentId);
+    }
+};
+
+const isCommentExpanded = (commentId) => {
+    return expandedComments.value.has(commentId);
+};
+
+const getDisplayText = (comment) => {
+    if (!comment?.id) return '';
+    if (isCommentExpanded(comment.id) || !needsTruncation(comment)) {
+        return getFullText(comment);
+    } else {
+        return getTruncatedText(comment);
+    }
+};
 
 </script>
 
@@ -415,18 +480,19 @@ const displayComments = computed(() => {
                                         {{ fromNow(commentData.comment.created_at) }}
                                     </span>
                                 </div>
-                                <div class="comment-text" v-html="commentData.comment.text"></div>
+                                <div
+                                    :class="['comment-text', { 'truncated': !isCommentExpanded(commentData.comment.id) && needsTruncation(commentData.comment) }]"
+                                    v-html="getDisplayText(commentData.comment)"
+                                ></div>
 
-                                <!-- poga atbildēt (demo) -->
-                                <!--
+                                <!-- Poga Lasīt vairāk/mazāk -->
                                 <button
-                                    v-if="commentData.depth < 2"
-                                    class="reply-button"
-                                    @click="showReplyForm(commentData.comment.id)"
+                                    v-if="needsTruncation(commentData.comment)"
+                                    @click="toggleCommentExpansion(commentData.comment.id)"
+                                    class="read-more-less-button"
                                 >
-                                    Reply
+                                    {{ isCommentExpanded(commentData.comment.id) ? 'Read less' : 'Read more' }}
                                 </button>
-                                -->
                             </div>
                         </div>
 
@@ -951,8 +1017,11 @@ const displayComments = computed(() => {
     font-size: 0.95rem;
     line-height: 1.5;
     color: #333;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .comment-text p {
@@ -965,6 +1034,62 @@ const displayComments = computed(() => {
 
 .comment-text p:last-child {
     margin-bottom: 0;
+}
+
+/* saīsināta teksta izbalēšanas efekts */
+.comment-text.truncated {
+    position: relative;
+    max-height: 6em;   /* Aptuveni 4 teksta rindiņas */
+    overflow: hidden;
+}
+
+.comment-text.truncated::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(to bottom, transparent, white);
+    pointer-events: none;
+}
+
+.comment-text:not(.truncated) {
+    max-height: none;
+}
+
+/* Noņemt izbalēšanu izvēršanas laikā */
+.comment-text:not(.truncated)::after {
+    display: none;
+}
+
+.read-more-less-button {
+    background: none;
+    border: none;
+    color: rgba(12, 75, 170, 0.7);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    margin: 0.25rem 0 0.5rem 0;
+    transition: color 0.2s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.read-more-less-button:hover {
+    color: rgba(12, 75, 170, 1);
+}
+
+/* pārliecināties, vai komentāriem ar dziļumu ir pareizas atstarpes pogai */
+.comment-item.depth-1 .read-more-less-button,
+.comment-item.depth-2 .read-more-less-button {
+    margin-left: 1rem;
+}
+
+/* pārliecināties, vai poga nepārmanto stilus no vecākelementa */
+.read-more-less-button:focus {
+    outline: none;
 }
 
 .reply-button {
@@ -1138,6 +1263,16 @@ const displayComments = computed(() => {
 
     .comment-time {
         font-size: 0.8rem;
+    }
+
+    .comment-item.depth-1 .read-more-less-button,
+    .comment-item.depth-2 .read-more-less-button {
+        margin-left: 0.75rem;
+    }
+
+    .read-more-less-button {
+        font-size: 0.8rem;
+        padding: 0.2rem 0;
     }
 }
 
