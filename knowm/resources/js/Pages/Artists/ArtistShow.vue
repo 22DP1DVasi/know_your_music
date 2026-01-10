@@ -1,166 +1,3 @@
-<template>
-    <Head :title="artist.artist.name" />
-    <link rel="preload" :href="artist.artist.profile_url" as="image">
-    <Navbar />
-    <main class="artist-page flex-1">
-        <div class="artist-hero" :style="heroStyle">
-            <div class="hero-gradient" v-if="!isLandscape"></div>
-            <div class="hero-image-container">
-                <img
-                    :src="artist.artist.profile_url"
-                    :alt="artist.artist.name"
-                    class="hero-image"
-                    ref="heroImage"
-                    @load="handleImageLoad"
-                    :style="imageStyle"
-                    loading="eager"
-                >
-            </div>
-            <h1 class="artist-name">{{ artist.artist.name }}</h1>
-        </div>
-
-        <div class="artist-content">
-            <div class="main-content">
-                <section class="artist-description">
-                    <h2 class="section-title">About</h2>
-                    <div class="bio-text" v-html="truncatedBio"></div>
-                    <button
-                        v-if="showReadMore"
-                        @click="redirectToFullBio(props.artist.artist.slug)"
-                        class="read-more-button"
-                    >
-                        Read more
-                    </button>
-                </section>
-
-                <div class="artist-side-info">
-                    <div class="info-card">
-                        <h3 class="info-title">Details</h3>
-                        <div class="info-flex">
-                            <div class="info-item">
-                                <span class="info-value">
-                                  <b>{{ capitalize(artist.artist.solo_or_band) || 'Unknown' }}</b>
-                                </span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.artist.formed_year || 'Not specified' }} - {{ artist.artist.disbanded_year || (artist.artist.is_active ? 'present' : 'not specified') }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="info-card genres-card">
-                        <div class="genres-header">
-                            <h3 class="info-title">Genres</h3>
-<!--                            <button-->
-<!--                                v-if="artist.genres.length > 5"-->
-<!--                                class="see-all-button"-->
-<!--                                @click="redirectToAllGenres"-->
-<!--                            >-->
-<!--                                See all genres-->
-<!--                            </button>-->
-                        </div>
-                        <div v-if="!artist.genres.length">No genres related to this artist.</div>
-                        <div v-else class="genre-tags">
-                            <button
-                                v-for="(genre, index) in artist.genres.slice(0, 5)"
-                                :key="genre"
-                                class="genre-tag"
-                                :title="genre.name.length > 16 ? genre.name : ''"
-                                @click="redirectToGenre(genre.slug)"
-                            >
-                                {{ genre.name }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <section class="artist-tracks">
-                    <div class="tracks-header">
-                        <h2 class="section-title">Tracks</h2>
-                        <button
-                            v-if="artist.total_tracks > artist.tracks.length"
-                            class="see-all-button"
-                            @click="redirectToAllTracks(props.artist.artist.slug)"
-                        >
-                            See all {{ artist.total_tracks }} tracks
-                        </button>
-                    </div>
-                    <div v-if="!artist.tracks.length" style="margin-bottom: 2rem;">No tracks found from this artist.</div>
-                    <div v-else class="track-list">
-                        <div v-for="(track, index) in artist.tracks" :key="track.id" class="track-card">
-                            <span class="track-number">{{ index + 1 }}</span>
-                            <img :src="track.cover_url" class="track-image" :alt="track.title">
-                            <div class="track-info">
-                                <h3>
-                                    <a @click="redirectToTrack(track.slug)" class="track-title">
-                                        {{ track.title }}
-                                    </a>
-                                </h3>
-                            </div>
-                            <button
-                                v-if="track.audio_source"
-                                @click="playTrack(track.audio_source)"
-                                class="play-button"
-                            >
-                                <i class="fa-regular fa-circle-play"></i>
-                            </button>
-                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="artist-releases">
-                    <div class="releases-header">
-                        <h2 class="section-title">Releases</h2>
-                        <button
-                            v-if="artist.total_releases > artist.releases.length"
-                            class="see-all-button"
-                            @click="redirectToAllReleases(props.artist.artist.slug)"
-                        >
-                            See all {{ artist.total_releases }} releases
-                        </button>
-                    </div>
-                    <div v-if="!artist.releases.length">No releases found for this artist.</div>
-                    <div v-else class="release-results">
-                        <div
-                            v-for="release in props.artist.releases"
-                            :key="release.id"
-                            class="release-card"
-                            @click="redirectToRelease(release.slug)"
-                        >
-                            <div class="image-wrapper">
-                                <img :src="release.cover_url" :alt="release.title">
-                            </div>
-                            <div class="release-info">
-                                <h3>{{ release.title }}</h3>
-                                <p class="release-year">{{ release.year }}</p>
-                                <p class="release-type">{{ release.type }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="artist-comments">
-                    <h2 class="section-title">Comments</h2>
-                    <div class="comments-section">
-                        <!-- Comment components would go here -->
-                    </div>
-                </section>
-            </div>
-
-            <div class="sidebar-space">
-                <!-- Future content like "Similar Artists" will go here -->
-            </div>
-        </div>
-        <AudioPlayer
-            :source="currentAudioSource"
-            :show="showPlayer"
-            @close="closePlayer"
-        />
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
@@ -344,6 +181,169 @@ const formatDuration = (timeString) => {
 };
 
 </script>
+
+<template>
+    <Head :title="artist.artist.name" />
+    <link rel="preload" :href="artist.artist.profile_url" as="image">
+    <Navbar />
+    <main class="artist-page flex-1">
+        <div class="artist-hero" :style="heroStyle">
+            <div class="hero-gradient" v-if="!isLandscape"></div>
+            <div class="hero-image-container">
+                <img
+                    :src="artist.artist.profile_url"
+                    :alt="artist.artist.name"
+                    class="hero-image"
+                    ref="heroImage"
+                    @load="handleImageLoad"
+                    :style="imageStyle"
+                    loading="eager"
+                >
+            </div>
+            <h1 class="artist-name">{{ artist.artist.name }}</h1>
+        </div>
+
+        <div class="artist-content">
+            <div class="main-content">
+                <section class="artist-description">
+                    <h2 class="section-title">About</h2>
+                    <div class="bio-text" v-html="truncatedBio"></div>
+                    <button
+                        v-if="showReadMore"
+                        @click="redirectToFullBio(props.artist.artist.slug)"
+                        class="read-more-button"
+                    >
+                        Read more
+                    </button>
+                </section>
+
+                <div class="artist-side-info">
+                    <div class="info-card">
+                        <h3 class="info-title">Details</h3>
+                        <div class="info-flex">
+                            <div class="info-item">
+                                <span class="info-value">
+                                  <b>{{ capitalize(artist.artist.solo_or_band) || 'Unknown' }}</b>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-value"><b>Years Active:</b> {{ artist.artist.formed_year || 'Not specified' }} - {{ artist.artist.disbanded_year || (artist.artist.is_active ? 'present' : 'not specified') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card genres-card">
+                        <div class="genres-header">
+                            <h3 class="info-title">Genres</h3>
+<!--                            <button-->
+<!--                                v-if="artist.genres.length > 5"-->
+<!--                                class="see-all-button"-->
+<!--                                @click="redirectToAllGenres"-->
+<!--                            >-->
+<!--                                See all genres-->
+<!--                            </button>-->
+                        </div>
+                        <div v-if="!artist.genres.length">No genres related to this artist.</div>
+                        <div v-else class="genre-tags">
+                            <button
+                                v-for="(genre, index) in artist.genres.slice(0, 5)"
+                                :key="genre"
+                                class="genre-tag"
+                                :title="genre.name.length > 16 ? genre.name : ''"
+                                @click="redirectToGenre(genre.slug)"
+                            >
+                                {{ genre.name }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="artist-tracks">
+                    <div class="tracks-header">
+                        <h2 class="section-title">Tracks</h2>
+                        <button
+                            v-if="artist.total_tracks > artist.tracks.length"
+                            class="see-all-button"
+                            @click="redirectToAllTracks(props.artist.artist.slug)"
+                        >
+                            See all {{ artist.total_tracks }} tracks
+                        </button>
+                    </div>
+                    <div v-if="!artist.tracks.length" style="margin-bottom: 2rem;">No tracks found from this artist.</div>
+                    <div v-else class="track-list">
+                        <div v-for="(track, index) in artist.tracks" :key="track.id" class="track-card">
+                            <span class="track-number">{{ index + 1 }}</span>
+                            <img :src="track.cover_url" class="track-image" :alt="track.title">
+                            <div class="track-info">
+                                <h3>
+                                    <a @click="redirectToTrack(track.slug)" class="track-title">
+                                        {{ track.title }}
+                                    </a>
+                                </h3>
+                            </div>
+                            <button
+                                v-if="track.audio_source"
+                                @click="playTrack(track.audio_source)"
+                                class="play-button"
+                            >
+                                <i class="fa-regular fa-circle-play"></i>
+                            </button>
+                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="artist-releases">
+                    <div class="releases-header">
+                        <h2 class="section-title">Releases</h2>
+                        <button
+                            v-if="artist.total_releases > artist.releases.length"
+                            class="see-all-button"
+                            @click="redirectToAllReleases(props.artist.artist.slug)"
+                        >
+                            See all {{ artist.total_releases }} releases
+                        </button>
+                    </div>
+                    <div v-if="!artist.releases.length">No releases found for this artist.</div>
+                    <div v-else class="release-results">
+                        <div
+                            v-for="release in props.artist.releases"
+                            :key="release.id"
+                            class="release-card"
+                            @click="redirectToRelease(release.slug)"
+                        >
+                            <div class="image-wrapper">
+                                <img :src="release.cover_url" :alt="release.title">
+                            </div>
+                            <div class="release-info">
+                                <h3>{{ release.title }}</h3>
+                                <p class="release-year">{{ release.year }}</p>
+                                <p class="release-type">{{ release.type }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="artist-comments">
+                    <h2 class="section-title">Comments</h2>
+                    <div class="comments-section">
+                        <!-- Comment components would go here -->
+                    </div>
+                </section>
+            </div>
+
+            <div class="sidebar-space">
+                <!-- Future content like "Similar Artists" will go here -->
+            </div>
+        </div>
+        <AudioPlayer
+            :source="currentAudioSource"
+            :show="showPlayer"
+            @close="closePlayer"
+        />
+    </main>
+    <Footer />
+</template>
 
 <style scoped>
 .artist-page {
