@@ -972,15 +972,13 @@ const getDisplayText = (comment) => {
 .comment-item.depth-1 {
     border-left: 3px solid #e0e8ff;
     padding-left: 1rem;
-    margin-left: 0 !important;
-    background-color: #f8faff;
+    margin-left: 40px;
 }
 
 .comment-item.depth-2 {
     border-left: 3px solid #c9d7ff;
     padding-left: 1rem;
-    margin-left: 0 !important;
-    background-color: #f0f4ff;
+    margin-left: 80px;
 }
 
 .comment-header {
@@ -1249,9 +1247,13 @@ const getDisplayText = (comment) => {
         padding-left: 0.5rem;
     }
 
-    .comment-item.depth-1,
+    .comment-item.depth-1 {
+        margin-left: 30px !important;
+        padding-left: 0.75rem;
+    }
+
     .comment-item.depth-2 {
-        margin-left: 0 !important;
+        margin-left: 60px !important;
         padding-left: 0.75rem;
     }
 

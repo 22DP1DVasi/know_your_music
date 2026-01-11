@@ -55,11 +55,11 @@ class ArtistController extends Controller
     public function uploadProfileImage(Request $request, Artist $artist)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048'
+            'image' => 'required|image|mimes:webp|max:2048'
         ]);
         $path = $request->file('image')->storeAs(
             "artists/{$artist->id}/profile",
-            'profile.jpg',
+            'profile.webp',
             'public'
         );
         return response()->json([
