@@ -69,7 +69,7 @@ class ArtistController extends Controller
         // izveidot izpildītāju ar validētiem datiem
         $artist = Artist::create($validated);
         // ģenerēt un saglabāt slug'u
-        $artist->slug = $artist->generateUniqueSlug();
+//        $artist->slug = $artist->generateUniqueSlug();
         $artist->save();
         return redirect()->route('admin-artists-index')
             ->with('success', __('messages.artist_created'));
@@ -159,9 +159,9 @@ class ArtistController extends Controller
             'solo_or_band' => 'nullable|in:solo,band',
         ]);
         // automātiski atjaunināt slug'u tikai tad, ja ir mainīts nosaukums
-        if ($artist->name !== $validated['name']) {
-            $validated['slug'] = $artist->generateUniqueSlug($validated['name']);
-        }
+//        if ($artist->name !== $validated['name']) {
+//            $validated['slug'] = $artist->generateUniqueSlug($validated['name']);
+//        }
         $artist->update($validated);
         return redirect()
             ->route('admin-artists-index')

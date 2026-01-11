@@ -56,6 +56,11 @@ class Artist extends Model
         static::creating(function ($artist) {
             $artist->slug = $artist->generateUniqueSlug();
         });
+        static::updating(function ($artist) {
+            if ($artist->isDirty('name')) {
+                $artist->slug = $artist->generateUniqueSlug($artist->name);
+            }
+        });
         // create folder for images when this artist is created
         static::created(function ($artist) {
             Storage::makeDirectory("public/artists/{$artist->id}/profile");
@@ -149,7 +154,7 @@ class Artist extends Model
     }
 
     /**
-     * Generate a slug
+     * Pielāgot nosaukumu tekstveida identifikatoram
     */
     private function customSlugify(string $name): string
     {

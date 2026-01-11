@@ -23,6 +23,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'slug',
         'email',
         'password',
         'status'
@@ -55,14 +56,13 @@ class User extends Authenticatable
      */
     protected static function booted()
     {
-        static::deleting(function ($user) {
-            // update all comments where this user is the author
-            ArtistComment::where('user_id', $user->id)
-                ->update(['deleted_username' => $user->name]);
-            ReleaseComment::where('user_id', $user->id)
-                ->update(['deleted_username' => $user->name]);
-            TrackComment::where('user_id', $user->id)
-                ->update(['deleted_username' => $user->name]);
+        static::creating(function ($user) {
+            $user->slug = $user->generateUniqueSlug($user->name);
+        });
+        static::updating(function ($user) {
+            if ($user->isDirty('name')) {
+                $user->slug = $user->generateUniqueSlug($user->name);
+            }
         });
     }
 
@@ -133,6 +133,43 @@ class User extends Authenticatable
     public function hasAnyRole(array $roles): bool
     {
         return $this->roles()->whereIn('name', $roles)->isNotEmpty();
+    }
+
+    /**
+     * Iegūt tekstveida identifikatora vērtību (tiek izmantota kā maršruta atslēga lietotāju lapai)
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
+     * Ģenerēt unikālu tekstveida identifikatoru.
+     */
+    public function generateUniqueSlug($name = null)
+    {
+        $nameToUse = $name ?? $this->name;
+        $slug = $this->customSlugify($nameToUse);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (static::where('slug', $slug)
+            ->where('id', '!=', $this->id) // atjaunināšanas laikā izslēgt pašreizējo izpildītāju
+            ->exists()) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+        return $slug;
+    }
+
+    /**
+     * Pielāgot vārdu tekstveida identifikatoram
+     */
+    private function customSlugify(string $name): string
+    {
+        $slug = mb_strtolower($name);
+        $slug = preg_replace('/\s+/u', '-', $slug);
+        $slug = preg_replace('/[^\p{L}\p{N}]+/u', '-', $slug);
+        return trim($slug, '-');
     }
 
     /**
