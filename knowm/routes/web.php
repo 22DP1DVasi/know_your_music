@@ -106,7 +106,10 @@ Route::get('/artists/{artist}/tracks', [ArtistController::class, 'showAllTracks'
 Route::get('/artists/{artist}/releases', [ArtistController::class, 'showAllReleases'])
     ->name('artists.releases');
 
+// comments under artist page
 Route::get('/artists/{artist}/comments', [ArtistController::class, 'getComments']);
+Route::post('/artists/{artist}/comments', [ArtistController::class, 'storeComment'])
+    ->middleware('auth');
 
 // release page
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])

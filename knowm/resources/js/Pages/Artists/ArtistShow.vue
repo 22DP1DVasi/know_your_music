@@ -1,5 +1,6 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
+import {Head, Link, router} from '@inertiajs/vue3'
+import { route } from 'ziggy-js'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
@@ -199,6 +200,11 @@ const commentMaxLength = 400; // komentāru maksimālais garums saīsināšanai
 
 const { formatDateLL, fromNow } = useDate()
 
+const isAuthenticated = ref(!!props.artist?.current_user);
+const isAddingComment = ref(false);
+const newCommentText = ref('');
+const isSubmittingComment = ref(false);
+
 const loadMoreComments = async () => {
     if (loadingComments.value || !showLoadMore.value) return;
     loadingComments.value = true;
@@ -311,6 +317,62 @@ const getDisplayText = (comment) => {
         return getTruncatedText(comment);
     }
 };
+
+const startAddingComment = () => {
+    if (!isAuthenticated.value) return;
+    isAddingComment.value = true;
+    // fokusēt teksta lauku pēc nelielas aizkaves, lai nodrošinātu tās atveidošanu
+    setTimeout(() => {
+        const textarea = document.querySelector('.comment-textarea');
+        if (textarea) textarea.focus();
+    }, 50);
+};
+
+const cancelAddingComment = () => {
+    isAddingComment.value = false;
+    newCommentText.value = '';
+    isSubmittingComment.value = false;
+};
+
+const submitComment = async () => {
+    if (!newCommentText.value.trim() || !isAuthenticated.value || isSubmittingComment.value) {
+        return;
+    }
+    isSubmittingComment.value = true;
+    try {
+        const response = await axios.post(`/artists/${props.artist.artist.slug}/comments`, {
+            text: newCommentText.value.trim(),
+            artist_id: props.artist.artist.id,
+            parent_id: null // null priekš vecākkomentāriem
+        });
+        // veidlapas atiestatīšana
+        isAddingComment.value = false;
+        newCommentText.value = '';
+        // pievienot jaunu komentāru komentāru masīva sākumam
+        const newComment = response.data.comment;
+        comments.value = [newComment, ...comments.value];
+        // atjaunināt lapdales skaitu
+        commentsPagination.value.total += 1;
+        // ritināt līdz jaunajam komentāram
+        setTimeout(() => {
+            const firstComment = document.querySelector('.comment-item:first-child');
+            if (firstComment) {
+                firstComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }, 100);
+
+    } catch (error) {
+        console.error('Error submitting comment:', error);
+        alert('Failed to submit comment. Please try again.');
+    } finally {
+        isSubmittingComment.value = false;
+    }
+};
+
+// computed vērtība, lai pārbaudītu, vai ir jāiespējo komentāra poga
+const canSubmitComment = computed(() => {
+    return newCommentText.value.trim().length > 0 && !isSubmittingComment.value;
+});
 
 </script>
 
@@ -458,6 +520,73 @@ const getDisplayText = (comment) => {
 
                 <section class="artist-comments">
                     <h2 class="section-title">Comments ({{ commentsPagination.total }})</h2>
+
+                    <!-- Pievienot komentāru sadaļu -->
+                    <div class="add-comment-section">
+                        <!-- Ja lietotājs nav autentificēts -->
+                        <div v-if="!isAuthenticated" class="auth-prompt">
+                            <p class="auth-text">
+                                <Link :href="route('login')" class="auth-link">
+                                    Log in
+                                </Link> or
+                                <Link :href="route('signup')" class="auth-link">
+                                    Sign up
+                                </Link> to add a comment.
+                            </p>
+                        </div>
+
+                        <!-- Ja lietotājs ir autentificēts, bet nav komentāru režīmā -->
+                        <div
+                            v-else-if="!isAddingComment"
+                            class="add-comment-placeholder"
+                            @click="startAddingComment"
+                        >
+                            <div class="placeholder-content">
+                                <i class="fa-regular fa-comment"></i>
+                                <span>Add a comment...</span>
+                            </div>
+                            <div class="placeholder-underline"></div>
+                        </div>
+
+                        <!-- Ja lietotājs ir komentāru režīmā -->
+                        <div v-else class="comment-input-container">
+                            <div class="comment-input-wrapper">
+                                <textarea
+                                    v-model="newCommentText"
+                                    class="comment-textarea"
+                                    placeholder="Add a comment..."
+                                    rows="3"
+                                    maxlength="2000"
+                                ></textarea>
+                                <div class="comment-char-count" :class="{ 'near-limit': newCommentText.length > 1800 }">
+                                    {{ newCommentText.length }}/2000
+                                </div>
+                            </div>
+
+                            <div class="comment-actions">
+                                <button
+                                    @click="cancelAddingComment"
+                                    class="comment-action-button cancel-button"
+                                    :disabled="isSubmittingComment"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    @click="submitComment"
+                                    class="comment-action-button submit-button"
+                                    :disabled="!canSubmitComment"
+                                    :class="{ 'loading': isSubmittingComment }"
+                                >
+                                    <span v-if="isSubmittingComment">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Posting...
+                                    </span>
+                                    <span v-else>Comment</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Esošo komentāru sadaļa -->
                     <div class="comments-section">
                         <div v-if="displayComments.length === 0" class="no-comments">
                             <p>No comments yet. Be the first to comment!</p>
@@ -931,6 +1060,194 @@ const getDisplayText = (comment) => {
 }
 
 /* komentāri */
+.add-comment-section {
+    margin-bottom: 2rem;
+    background: white;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #eaeaea;
+}
+
+.auth-prompt {
+    padding: 0.75rem 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.auth-text {
+    text-align: center;
+}
+
+.auth-link {
+    color: #0c4baa;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.auth-link:hover {
+    color: #1a5fc9;
+    text-decoration: underline;
+}
+
+.add-comment-placeholder {
+    cursor: pointer;
+    padding: 0.5rem 0;
+    transition: all 0.2s ease;
+}
+
+.add-comment-placeholder:hover {
+    opacity: 0.8;
+}
+
+.placeholder-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #666;
+    font-size: 1rem;
+    padding-bottom: 0.5rem;
+}
+
+.placeholder-content i {
+    font-size: 1.1rem;
+    color: #888;
+}
+
+.placeholder-underline {
+    height: 2px;
+    background: linear-gradient(90deg, #0c4baa 0%, transparent 100%);
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.add-comment-placeholder:hover .placeholder-underline {
+    background: linear-gradient(90deg, #1a5fc9 0%, transparent 100%);
+}
+
+/* komentāru ievades konteiners */
+.comment-input-container {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.comment-input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.comment-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.comment-textarea:focus {
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 3px rgba(12, 75, 170, 0.1);
+}
+
+.comment-textarea::placeholder {
+    color: #999;
+}
+
+.comment-char-count {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.75rem;
+    font-size: 0.8rem;
+    color: #999;
+    background: white;
+    padding: 0 0.25rem;
+    transition: color 0.2s;
+}
+
+.comment-char-count.near-limit {
+    color: #ff6b6b;
+    font-weight: 500;
+}
+
+.comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.comment-action-button {
+    padding: 0.5rem 1.25rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 90px;
+    text-align: center;
+}
+
+.cancel-button {
+    background: #f5f5f5;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.cancel-button:hover:not(:disabled) {
+    background: #eaeaea;
+    color: #333;
+}
+
+.cancel-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.submit-button {
+    background: #0c4baa;
+    color: white;
+    border: 1px solid #0c4baa;
+}
+
+.submit-button:hover:not(:disabled) {
+    background: #1a5fc9;
+    border-color: #1a5fc9;
+}
+
+.submit-button:disabled {
+    background: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    color: #999;
+}
+
+.submit-button.loading {
+    background: #0c4baa;
+    border-color: #0c4baa;
+    opacity: 0.8;
+}
+
+.submit-button.loading i {
+    margin-right: 0.5rem;
+}
+
 .comments-section {
     background: white;
     border-radius: 8px;
@@ -1242,6 +1559,35 @@ const getDisplayText = (comment) => {
         flex: 0 0 50px;
     }
 
+    .add-comment-section {
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .placeholder-content {
+        font-size: 0.95rem;
+    }
+
+    .placeholder-content i {
+        font-size: 1rem;
+    }
+
+    .comment-textarea {
+        font-size: 0.9rem;
+        padding: 0.625rem;
+    }
+
+    .comment-action-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        min-width: 80px;
+    }
+
+    .auth-prompt {
+        font-size: 0.9rem;
+        padding: 0.5rem 0;
+    }
+
     .comment-item {
         margin-left: 0 !important;
         padding-left: 0.5rem;
@@ -1320,6 +1666,21 @@ const getDisplayText = (comment) => {
 
     .release-year, .release-type {
         font-size: 0.85rem;
+    }
+
+    .comment-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .comment-action-button {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .add-comment-section {
+        padding: 0.625rem;
+        margin-bottom: 1rem;
     }
 }
 </style>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\ArtistService;
 use App\Services\ReleaseService;
 use App\Services\TrackService;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -68,12 +69,25 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function show(Artist $artist)
+    /***
+     * Metode priekš ArtistShow.vue lapas.
+     * Iegūst datus par izpildītāju no datubāzes, kā arī
+     * autentificēta lietotāja informāciju, un nodod tos lapai.
+     *
+     * @param Artist $artist
+     * @return \Inertia\Response
+     */
+    public function show(Artist $artist): \Inertia\Response
     {
-        // Get current page for comments from request, default to 1
+        // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
         $commentsPage = request()->input('comments_page', 1);
 
         $data = $this->artistService->getArtistWithDetailsAndComments($artist->id, $commentsPage);
+        // pievienot pašreizējo lietotāja informāciju, ja tā ir autentificēta
+        $data['current_user'] = Auth::check() ? [
+            'id' => Auth::id(),
+            'name' => Auth::user()->name
+        ] : null;
         return Inertia::render('Artists/ArtistShow', [
             'artist' => $data
         ]);
@@ -177,6 +191,37 @@ class ArtistController extends Controller
                 'last_page' => $comments->lastPage(),
                 'total' => $comments->total(),
             ]
+        ]);
+    }
+
+    /***
+     * Saglabā jaunu komentāru ArtistShow lapā.
+     *
+     * @param Artist $artist
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function storeComment(Artist $artist, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'text' => 'required|string|min:1|max:2000',
+            'parent_id' => 'nullable|exists:comments_artists,id'
+        ]);
+        $comment = ArtistComment::create([
+            'user_id' => Auth::id(),
+            'artist_id' => $artist->id,
+            'text' => $request->input('text'),
+            'status' => 'visible',
+            'parent_id' => $request->input('parent_id', null)
+        ]);
+        // ielādēt lietotāja relāciju atbildei
+        $comment->load('user');
+        // tā kā nav nepieciešams rādīt kādu paziņojumu par veiksmīgu operāciju,
+        // vienkārši atgriež to pašu lapu ar kādu default paziņojumu
+        return response()->json([
+            'success' => true,
+            'message' => 'Comment added successfully',
+            'comment' => $comment
         ]);
     }
 
