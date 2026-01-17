@@ -1,10 +1,10 @@
 <script setup>
-import {Head, Link, router} from '@inertiajs/vue3'
+import {Head, Link } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import ColorThief from 'colorthief'
 import axios from 'axios'
 import { useDate } from '@/composables/useDate'
@@ -44,7 +44,7 @@ const bioMaxLength = 500;
 const showPlayer = ref(false);
 const currentAudioSource = ref('');
 
-// image handling
+// attēlu apstrāde
 const handleImageLoad = () => {
     const img = heroImage.value;
     if (!img) return;
@@ -60,7 +60,7 @@ const analyzeImage = () => {
         'height': '400px',
         'position': 'relative',
         'overflow': 'hidden',
-        'background-color': '#f0f0f0' // fallback
+        'background-color': '#f0f0f0' // atkāpšanās / fallback
     };
     imageStyle.value = {
         'opacity': '0',
@@ -145,7 +145,6 @@ const closePlayer = () => {
 };
 
 const redirectToFullBio = (slug) => {
-    //const url = `/artists/${props.artist.artist.slug}/bio`;
     window.location.href = `/artists/${slug}/bio`;
 };
 
@@ -204,6 +203,20 @@ const isAuthenticated = ref(!!props.artist?.current_user);
 const isAddingComment = ref(false);
 const newCommentText = ref('');
 const isSubmittingComment = ref(false);
+const replyingToCommentId = ref(null);
+const replyText = ref('');
+const isSubmittingReply = ref(false);
+const showAuthPopup = ref(false);
+const authPopupCommentId = ref(null);
+
+// automātiski maina textarea augstumu, lai iekļautu visu tekstu kamēr tas tiek rakstīts
+const autoResizeTextarea = async (event) => {
+    await nextTick();  // nextTick ļauj izpildīt kodu pēc tam, kad vietnē ir mainīti kādi dati
+    const el = event.target;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
 
 const loadMoreComments = async () => {
     if (loadingComments.value || !showLoadMore.value) return;
@@ -373,6 +386,103 @@ const submitComment = async () => {
 const canSubmitComment = computed(() => {
     return newCommentText.value.trim().length > 0 && !isSubmittingComment.value;
 });
+
+// metode, lai sākt atbildēt uz komentāru
+const startReply = (commentId) => {
+    if (!isAuthenticated.value) {
+        authPopupCommentId.value = commentId;
+        showAuthPopup.value = true;
+        return;
+    }
+    replyingToCommentId.value = commentId;
+    replyText.value = '';
+    // fokusēties textarea pēc nelielas aizkaves
+    setTimeout(() => {
+        const textarea = document.querySelector(`.reply-textarea-${commentId}`);
+        if (textarea) textarea.focus();
+        // ja nepieciešams, ritināt atbildes veidlapu skatā
+        const replyForm = document.querySelector(`.reply-form-${commentId}`);
+        if (replyForm) {
+            replyForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }, 50);
+};
+
+const cancelReply = () => {
+    replyingToCommentId.value = null;
+    replyText.value = '';
+    isSubmittingReply.value = false;
+};
+
+const submitReply = async (parentCommentId) => {
+    if (!replyText.value.trim() || !isAuthenticated.value || isSubmittingReply.value) {
+        return;
+    }
+    isSubmittingReply.value = true;
+    try {
+        const response = await axios.post(`/artists/${props.artist.artist.slug}/comments`, {
+            text: replyText.value.trim(),
+            artist_id: props.artist.artist.id,
+            parent_id: parentCommentId
+        });
+        // atrast vecākkomentāru un pievienojiet atbildi
+        const addReplyToComment = (commentList, parentId, newReply) => {
+            for (let comment of commentList) {
+                if (comment.id === parentId) {
+                    if (!comment.replies) {
+                        comment.replies = [];
+                    }
+                    comment.replies.unshift(newReply);
+                    return true;
+                }
+                if (comment.replies && comment.replies.length > 0) {
+                    if (addReplyToComment(comment.replies, parentId, newReply)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+
+        // pievienot atbildi atbilstošajam komentāram
+        const newReply = response.data.comment;
+        addReplyToComment(comments.value, parentCommentId, newReply);
+        // atbildes veidlapas atiestatīšana
+        replyingToCommentId.value = null;
+        replyText.value = '';
+        // atjaunināt komentāru skaitu
+        commentsPagination.value.total += 1;
+    } catch (error) {
+        console.error('Error submitting reply:', error);
+        alert('Failed to submit reply. Please try again.');
+    } finally {
+        isSubmittingReply.value = false;
+    }
+};
+
+const closeAuthPopup = () => {
+    showAuthPopup.value = false;
+    authPopupCommentId.value = null;
+};
+
+// computed property, lai pārbaudītu, vai ir jāiespējo reply poga
+const canSubmitReply = (commentId) => {
+    return replyingToCommentId.value === commentId &&
+        replyText.value.trim().length > 0 &&
+        !isSubmittingReply.value;
+};
+
+// helper, lai atrastu komentāru pēc ID
+const findCommentById = (commentList, commentId) => {
+    for (let comment of commentList) {
+        if (comment.id === commentId) return comment;
+        if (comment.replies && comment.replies.length > 0) {
+            const found = findCommentById(comment.replies, commentId);
+            if (found) return found;
+        }
+    }
+    return null;
+};
 
 </script>
 
@@ -555,9 +665,10 @@ const canSubmitComment = computed(() => {
                                     v-model="newCommentText"
                                     class="comment-textarea"
                                     placeholder="Add a comment..."
-                                    rows="3"
+                                    rows="1"
                                     maxlength="2000"
-                                ></textarea>
+                                    @input="autoResizeTextarea"
+                                />
                                 <div class="comment-char-count" :class="{ 'near-limit': newCommentText.length > 1800 }">
                                     {{ newCommentText.length }}/2000
                                 </div>
@@ -622,6 +733,56 @@ const canSubmitComment = computed(() => {
                                 >
                                     {{ isCommentExpanded(commentData.comment.id) ? 'Read less' : 'Read more' }}
                                 </button>
+
+                                <!-- Reply poga -->
+                                <button
+                                    v-if="commentData.depth < 2"
+                                    @click="startReply(commentData.comment.id)"
+                                    class="reply-button"
+                                >
+                                    <i class="fa-regular fa-comment-dots"></i> Reply
+                                </button>
+
+                                <!-- Atbildes veidlapa (rādīt tikai atbildot uz šo komentāru) -->
+                                <div
+                                    v-if="replyingToCommentId === commentData.comment.id"
+                                    :class="['reply-form', `reply-form-${commentData.comment.id}`]"
+                                >
+                                    <div class="reply-input-wrapper">
+                                        <textarea
+                                            v-model="replyText"
+                                            class="reply-textarea"
+                                            placeholder="Write a reply..."
+                                            rows="2"
+                                            maxlength="2000"
+                                            @input="autoResizeTextarea"
+                                        />
+                                        <div class="reply-char-count" :class="{ 'near-limit': replyText.length > 1800 }">
+                                            {{ replyText.length }}/2000
+                                        </div>
+                                    </div>
+
+                                    <div class="reply-actions">
+                                        <button
+                                            @click="cancelReply"
+                                            class="reply-action-button cancel-reply-button"
+                                            :disabled="isSubmittingReply"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            @click="submitReply(commentData.comment.id)"
+                                            class="reply-action-button submit-reply-button"
+                                            :disabled="!canSubmitReply(commentData.comment.id)"
+                                            :class="{ 'loading': isSubmittingReply }"
+                                        >
+                                            <span v-if="isSubmittingReply">
+                                                <i class="fa-solid fa-spinner fa-spin"></i> Replying...
+                                            </span>
+                                            <span v-else>Reply</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -651,6 +812,29 @@ const canSubmitComment = computed(() => {
         />
     </main>
     <Footer />
+
+    <!-- Authentication Popup -->
+    <div v-if="showAuthPopup" class="auth-popup-overlay" @click="closeAuthPopup">
+        <div class="auth-popup" @click.stop>
+            <div class="auth-popup-header">
+                <h3>Sign in to reply</h3>
+                <button @click="closeAuthPopup" class="close-popup-button">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="auth-popup-content">
+                <p>You need to be signed in to reply to comments.</p>
+                <div class="auth-popup-actions">
+                    <router-link :to="{ name: 'login' }" class="auth-popup-button login-button">
+                        <i class="fa-solid fa-right-to-bracket"></i> Log in
+                    </router-link>
+                    <router-link :to="{ name: 'signup' }" class="auth-popup-button signup-button">
+                        <i class="fa-solid fa-user-plus"></i> Sign up
+                    </router-link>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
@@ -1155,9 +1339,9 @@ const canSubmitComment = computed(() => {
     font-family: inherit;
     font-size: 0.95rem;
     line-height: 1.5;
-    resize: vertical;
+    resize: none;
+    overflow-y: hidden;
     min-height: 80px;
-    max-height: 200px;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -1407,22 +1591,6 @@ const canSubmitComment = computed(() => {
     outline: none;
 }
 
-.reply-button {
-    background: none;
-    border: 1px solid #ddd;
-    color: #0c4baa;
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.reply-button:hover {
-    background: #f0f4ff;
-    border-color: #0c4baa;
-}
-
 .load-more-container {
     text-align: center;
     padding-top: 1rem;
@@ -1448,6 +1616,301 @@ const canSubmitComment = computed(() => {
 .load-more-button:disabled {
     background: #ccc;
     cursor: not-allowed;
+}
+
+/* Reply pogas stili */
+.reply-button {
+    background: none;
+    border: none;
+    color: #0c4baa;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    margin-top: 0.25rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.reply-button:hover {
+    background: rgba(12, 75, 170, 0.08);
+    color: #1a5fc9;
+}
+
+.reply-button i {
+    font-size: 0.9rem;
+}
+
+/* nodrošināt atbilstošu atstarpi atbildes pogai ligzdotajos komentāros */
+.comment-item.depth-1 .reply-button,
+.comment-item.depth-2 .reply-button {
+    margin-left: 1rem;
+}
+
+/* Reply veidlapas stili */
+.reply-form {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    padding: 0.75rem;
+    background: #f8faff;
+    border-radius: 6px;
+    border: 1px solid #e0e8ff;
+    animation: slideDown 0.3s ease;
+}
+
+.reply-input-wrapper {
+    position: relative;
+    margin-bottom: 0.75rem;
+}
+
+.reply-textarea {
+    width: 100%;
+    padding: 0.625rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    resize: none;
+    overflow-y: hidden;
+    min-height: 60px;
+    max-height: 400px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: white;
+}
+
+.reply-textarea::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.reply-textarea:focus {
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 2px rgba(12, 75, 170, 0.1);
+}
+
+.reply-textarea::placeholder {
+    color: #999;
+}
+
+.reply-char-count {
+    position: absolute;
+    bottom: 0.375rem;
+    right: 0.625rem;
+    font-size: 0.75rem;
+    color: #999;
+    background: white;
+    padding: 0 0.25rem;
+    transition: color 0.2s;
+}
+
+.reply-char-count.near-limit {
+    color: #ff6b6b;
+    font-weight: 500;
+}
+
+.reply-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.625rem;
+}
+
+.reply-action-button {
+    padding: 0.375rem 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    min-width: 70px;
+    text-align: center;
+}
+
+.cancel-reply-button {
+    background: #f5f5f5;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.cancel-reply-button:hover:not(:disabled) {
+    background: #eaeaea;
+    color: #333;
+}
+
+.cancel-reply-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.submit-reply-button {
+    background: #0c4baa;
+    color: white;
+    border: 1px solid #0c4baa;
+}
+
+.submit-reply-button:hover:not(:disabled) {
+    background: #1a5fc9;
+    border-color: #1a5fc9;
+}
+
+.submit-reply-button:disabled {
+    background: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    color: #999;
+}
+
+.submit-reply-button.loading {
+    background: #0c4baa;
+    border-color: #0c4baa;
+    opacity: 0.8;
+}
+
+.submit-reply-button.loading i {
+    margin-right: 0.375rem;
+}
+
+/* Autentifikācijas uznirstošo logu stili */
+.auth-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.auth-popup {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.auth-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.auth-popup-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.close-popup-button {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-popup-button:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.auth-popup-content {
+    padding: 1.5rem;
+}
+
+.auth-popup-content p {
+    margin: 0 0 1.5rem 0;
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.auth-popup-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.auth-popup-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 120px;
+    border: none;
+}
+
+.auth-popup-button i {
+    font-size: 0.9rem;
+}
+
+.login-button {
+    background: #0c4baa;
+    color: white;
+    border: 1px solid #0c4baa;
+}
+
+.login-button:hover {
+    background: #1a5fc9;
+    border-color: #1a5fc9;
+    transform: translateY(-1px);
+}
+
+.signup-button {
+    background: white;
+    color: #0c4baa;
+    border: 1px solid #0c4baa;
+}
+
+.signup-button:hover {
+    background: #f0f4ff;
+    border-color: #1a5fc9;
+    transform: translateY(-1px);
 }
 
 @media (max-width: 1455px) {
@@ -1622,6 +2085,66 @@ const canSubmitComment = computed(() => {
         font-size: 0.8rem;
         padding: 0.2rem 0;
     }
+
+    .reply-button {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.625rem;
+        gap: 0.25rem;
+    }
+
+    .reply-button i {
+        font-size: 0.85rem;
+    }
+
+    .reply-form {
+        margin-left: 0.5rem;
+        padding: 0.625rem;
+        margin-top: 0.75rem;
+    }
+
+    .reply-textarea {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+        min-height: 55px;
+    }
+
+    .reply-action-button {
+        padding: 0.3rem 0.875rem;
+        font-size: 0.85rem;
+        min-width: 65px;
+    }
+
+    .reply-actions {
+        gap: 0.5rem;
+    }
+
+    .auth-popup {
+        width: 95%;
+        max-width: 350px;
+    }
+
+    .auth-popup-header {
+        padding: 1rem;
+    }
+
+    .auth-popup-content {
+        padding: 1.25rem;
+    }
+
+    .auth-popup-button {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.9rem;
+        min-width: 100px;
+    }
+
+    .auth-popup-actions {
+        gap: 0.75rem;
+    }
+
+    .comment-item.depth-1 .reply-button,
+    .comment-item.depth-2 .reply-button {
+        margin-left: 0.75rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1682,5 +2205,25 @@ const canSubmitComment = computed(() => {
         padding: 0.625rem;
         margin-bottom: 1rem;
     }
+
+    .reply-actions {
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+
+    .reply-action-button {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .auth-popup-actions {
+        flex-direction: column;
+    }
+
+    .auth-popup-button {
+        width: 100%;
+        min-width: unset;
+    }
 }
+
 </style>
