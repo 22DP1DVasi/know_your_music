@@ -211,6 +211,7 @@ const authPopupCommentId = ref(null);
 
 // automātiski maina textarea augstumu, lai iekļautu visu tekstu kamēr tas tiek rakstīts
 const autoResizeTextarea = async (event) => {
+    // gaidīt, līdz DOM atjauninās
     await nextTick();  // nextTick ļauj izpildīt kodu pēc tam, kad vietnē ir mainīti kādi dati
     const el = event.target;
     if (!el) return;
@@ -331,14 +332,12 @@ const getDisplayText = (comment) => {
     }
 };
 
-const startAddingComment = () => {
+const startAddingComment = async () => {
     if (!isAuthenticated.value) return;
     isAddingComment.value = true;
-    // fokusēt teksta lauku pēc nelielas aizkaves, lai nodrošinātu tās atveidošanu
-    setTimeout(() => {
-        const textarea = document.querySelector('.comment-textarea');
-        if (textarea) textarea.focus();
-    }, 50);
+    // gaidīt, līdz DOM atjauninās
+    await nextTick();
+    document.querySelector('.comment-textarea')?.focus();
 };
 
 const cancelAddingComment = () => {
@@ -366,13 +365,10 @@ const submitComment = async () => {
         comments.value = [newComment, ...comments.value];
         // atjaunināt lapdales skaitu
         commentsPagination.value.total += 1;
-        // ritināt līdz jaunajam komentāram
-        setTimeout(() => {
-            const firstComment = document.querySelector('.comment-item:first-child');
-            if (firstComment) {
-                firstComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        }, 100);
+        // gaidīt, līdz DOM atjauninās
+        await nextTick();
+        const firstComment = document.querySelector('.comment-item:first-child');
+        firstComment?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 
     } catch (error) {
         console.error('Error submitting comment:', error);
@@ -388,7 +384,7 @@ const canSubmitComment = computed(() => {
 });
 
 // metode, lai sākt atbildēt uz komentāru
-const startReply = (commentId) => {
+const startAddingReply = async (commentId) => {
     if (!isAuthenticated.value) {
         authPopupCommentId.value = commentId;
         showAuthPopup.value = true;
@@ -396,16 +392,13 @@ const startReply = (commentId) => {
     }
     replyingToCommentId.value = commentId;
     replyText.value = '';
-    // fokusēties textarea pēc nelielas aizkaves
-    setTimeout(() => {
-        const textarea = document.querySelector(`.reply-textarea-${commentId}`);
-        if (textarea) textarea.focus();
-        // ja nepieciešams, ritināt atbildes veidlapu skatā
-        const replyForm = document.querySelector(`.reply-form-${commentId}`);
-        if (replyForm) {
-            replyForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-    }, 50);
+    // gaidīt, līdz DOM atjauninās
+    await nextTick();
+    const textarea = document.querySelector(`.reply-textarea`);
+    textarea?.focus();
+    // papildu ritināšana
+    const replyForm = document.querySelector(`.reply-form-${commentId}`);
+    replyForm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 };
 
 const cancelReply = () => {
@@ -432,7 +425,7 @@ const submitReply = async (parentCommentId) => {
                     if (!comment.replies) {
                         comment.replies = [];
                     }
-                    comment.replies.unshift(newReply);
+                    comment.replies.push(newReply); // pievieno atbildi pedējā pozicijā
                     return true;
                 }
                 if (comment.replies && comment.replies.length > 0) {
@@ -736,8 +729,7 @@ const findCommentById = (commentList, commentId) => {
 
                                 <!-- Reply poga -->
                                 <button
-                                    v-if="commentData.depth < 2"
-                                    @click="startReply(commentData.comment.id)"
+                                    @click="startAddingReply(commentData.comment.id)"
                                     class="reply-button"
                                 >
                                     <i class="fa-regular fa-comment-dots"></i> Reply

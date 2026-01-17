@@ -5,22 +5,25 @@ definē un atgriež dažas metodes darbam ar laiku
 
 import { useI18n } from 'vue-i18n'
 import dayjs from '@/utils/dayjs'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(utc);
 
 export function useDate() {
-    const { locale } = useI18n()
+    const { locale } = useI18n();
 
     const formatDateLL = (date, format = 'LL') => {
-        locale.value
-        return dayjs(date).format(format)
+        locale.value;
+        return dayjs(date).format(format);
     }
 
     const fromNow = (date) => {
-        locale.value
-        return dayjs(date).fromNow()
+        locale.value;
+        return dayjs.utc(date).local().fromNow();
     }
 
     return {
         formatDateLL,
         fromNow
-    }
+    };
 }
