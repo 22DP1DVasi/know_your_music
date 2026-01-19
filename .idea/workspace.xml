@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Middleware/HandleInertiaRequests.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Middleware/HandleInertiaRequests.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/composables/useDate.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/composables/useDate.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -354,11 +354,24 @@
       <workItem from="1768054543076" duration="11542000" />
       <workItem from="1768138554957" duration="8842000" />
       <workItem from="1768330040681" duration="1295000" />
-      <workItem from="1768646716474" duration="9363000" />
+      <workItem from="1768646716474" duration="9641000" />
+      <workItem from="1768761423433" duration="766000" />
+      <workItem from="1768847444001" duration="5396000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

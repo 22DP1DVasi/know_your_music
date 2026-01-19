@@ -1,10 +1,10 @@
 <script setup>
-import {Head, Link } from '@inertiajs/vue3'
+import {Head, Link, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
-import { ref, computed, nextTick } from 'vue'
+import {ref, computed, nextTick, onMounted, onBeforeUnmount} from 'vue'
 import ColorThief from 'colorthief'
 import axios from 'axios'
 import { useDate } from '@/composables/useDate'
@@ -23,6 +23,9 @@ const props = defineProps({
         })
     }
 });
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
 
 const heroImage = ref(null);
 const heroStyle = ref({
@@ -199,7 +202,8 @@ const commentMaxLength = 400; // komentāru maksimālais garums saīsināšanai
 
 const { formatDateLL, fromNow } = useDate()
 
-const isAuthenticated = ref(!!props.artist?.current_user);
+const isAuthenticated = computed(() => !!page.props.auth?.user)
+const currentUser = page.props.auth.user;
 const isAddingComment = ref(false);
 const newCommentText = ref('');
 const isSubmittingComment = ref(false);
@@ -208,6 +212,7 @@ const replyText = ref('');
 const isSubmittingReply = ref(false);
 const showAuthPopup = ref(false);
 const authPopupCommentId = ref(null);
+const activeCommentMenu = ref(null);
 
 // automātiski maina textarea augstumu, lai iekļautu visu tekstu kamēr tas tiek rakstīts
 const autoResizeTextarea = async (event) => {
@@ -477,6 +482,60 @@ const findCommentById = (commentList, commentId) => {
     return null;
 };
 
+// komentāru izvēlnes pārslēgšanas metode
+const toggleCommentMenu = (commentId, event) => {
+    if (event) {
+        event.stopPropagation(); // novērst  event bubbling - vecākelementi nedrīkst būt aktivizēti
+    }
+    if (activeCommentMenu.value === commentId) {
+        activeCommentMenu.value = null;
+    } else {
+        activeCommentMenu.value = commentId;
+    }
+};
+
+const closeCommentMenu = () => {
+    activeCommentMenu.value = null;
+};
+
+// metode, lai pārbaudītu, vai komentārs pieder pašreizējam lietotājam
+const isUserComment = (comment) => {
+    if (!isAuthenticated.value || !comment.user) return false;
+    return comment.user.id === currentUser?.id;
+};
+
+// rediģēšanas darbības apstrādes metode
+const handleEditComment = (comment) => {
+    closeCommentMenu();
+    console.log('Edit comment:', comment.id);
+    // TODO: Implement edit functionality
+    alert('Edit functionality will be implemented soon');
+};
+
+// dzēšanas darbības apstrādes metode
+const handleDeleteComment = (comment) => {
+    closeCommentMenu();
+    console.log('Delete comment:', comment.id);
+    // TODO: Implement delete functionality
+    alert('Delete functionality will be implemented soon');
+};
+
+// aizvērt izvēlni, noklikšķinot ārpus elementa
+const handleClickOutside = (event) => {
+    if (!event.target.closest('.comment-menu-button') && !event.target.closest('.comment-dropdown-menu')) {
+        closeCommentMenu();
+    }
+};
+
+// iestatīt klikšķi ārpus klausītāja
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside);
+});
+
 </script>
 
 <template>
@@ -708,10 +767,47 @@ const findCommentById = (commentList, commentId) => {
                                         <i class="fa-regular fa-user"></i>
                                         <span class="user-name">{{ commentData.comment.user?.name || 'Anonymous' }}</span>
                                     </div>
-                                    <span class="comment-time"
-                                          :title="formatDateLL(commentData.comment.created_at)">
-                                        {{ fromNow(commentData.comment.created_at) }}
-                                    </span>
+
+                                    <div class="comment-header-right">
+                                        <span class="comment-time"
+                                              :title="formatDateLL(commentData.comment.created_at)">
+                                            {{ fromNow(commentData.comment.created_at) }}
+                                        </span>
+
+                                        <!-- Izvēlnes poga priekš komentāru darbībām (tikai pašreizēja lietotāja komentāriem) -->
+                                        <div v-if="isUserComment(commentData.comment)" class="comment-menu-container">
+                                            <button
+                                                class="comment-menu-button"
+                                                @click="toggleCommentMenu(commentData.comment.id, $event)"
+                                                :aria-expanded="activeCommentMenu === commentData.comment.id"
+                                                :title="activeCommentMenu === commentData.comment.id ? 'Close menu' : 'Open menu'"
+                                            >
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+
+                                            <!-- Nolaižamā Izvēlne -->
+                                            <div
+                                                v-if="activeCommentMenu === commentData.comment.id"
+                                                class="comment-dropdown-menu"
+                                                @click.stop=""
+                                            >
+                                                <button
+                                                    class="dropdown-item edit-item"
+                                                    @click="handleEditComment(commentData.comment)"
+                                                >
+                                                    <i class="fa-regular fa-pen-to-square"></i>
+                                                    <span>Edit</span>
+                                                </button>
+                                                <button
+                                                    class="dropdown-item delete-item"
+                                                    @click="handleDeleteComment(commentData.comment)"
+                                                >
+                                                    <i class="fa-regular fa-trash-can"></i>
+                                                    <span>Delete</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div
                                     :class="['comment-text', { 'truncated': !isCommentExpanded(commentData.comment.id) && needsTruncation(commentData.comment) }]"
@@ -805,7 +901,7 @@ const findCommentById = (commentList, commentId) => {
     </main>
     <Footer />
 
-    <!-- Authentication Popup -->
+    <!-- Autentifikācijas uznirstošais logs -->
     <div v-if="showAuthPopup" class="auth-popup-overlay" @click="closeAuthPopup">
         <div class="auth-popup" @click.stop>
             <div class="auth-popup-header">
@@ -817,12 +913,12 @@ const findCommentById = (commentList, commentId) => {
             <div class="auth-popup-content">
                 <p>You need to be signed in to reply to comments.</p>
                 <div class="auth-popup-actions">
-                    <router-link :to="{ name: 'login' }" class="auth-popup-button login-button">
+                    <Link :href="route('login')" class="auth-popup-button login-button">
                         <i class="fa-solid fa-right-to-bracket"></i> Log in
-                    </router-link>
-                    <router-link :to="{ name: 'signup' }" class="auth-popup-button signup-button">
+                    </Link>
+                    <Link :href="route('signup')" class="auth-popup-button signup-button">
                         <i class="fa-solid fa-user-plus"></i> Sign up
-                    </router-link>
+                    </Link>
                 </div>
             </div>
         </div>
@@ -1499,9 +1595,121 @@ const findCommentById = (commentList, commentId) => {
     color: #333;
 }
 
+.comment-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 .comment-time {
     font-size: 0.85rem;
     color: #666;
+}
+
+.comment-menu-container {
+    position: relative;
+}
+
+.comment-menu-button {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.comment-menu-button:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.comment-menu-button[aria-expanded="true"] {
+    background: #f0f4ff;
+    color: #0c4baa;
+}
+
+.comment-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 140px;
+    z-index: 1000;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.edit-item {
+    color: #0c4baa;
+}
+
+.dropdown-item.edit-item:hover {
+    background-color: #f0f4ff;
+}
+
+.dropdown-item.delete-item {
+    color: #dc3545;
+}
+
+.dropdown-item.delete-item:hover {
+    background-color: #fff5f5;
+}
+
+.dropdown-item i {
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+}
+
+/* komentāru laika atstarpju pielāgošana, ja ir pieejama izvēlne */
+.comment-header-right .comment-time {
+    margin-right: 0;
 }
 
 .comment-text {
@@ -1570,6 +1778,11 @@ const findCommentById = (commentList, commentId) => {
 
 .read-more-less-button:hover {
     color: rgba(12, 75, 170, 1);
+}
+
+.comment-item.depth-1 .comment-header-right,
+.comment-item.depth-2 .comment-header-right {
+    flex-wrap: nowrap;
 }
 
 /* pārliecināties, vai komentāriem ar dziļumu ir pareizas atstarpes pogai */
@@ -1874,6 +2087,7 @@ const findCommentById = (commentList, commentId) => {
     justify-content: center;
     gap: 0.5rem;
     min-width: 120px;
+    max-width: 140px;
     border: none;
 }
 
@@ -2068,6 +2282,31 @@ const findCommentById = (commentList, commentId) => {
         font-size: 0.8rem;
     }
 
+    .comment-header-right {
+        gap: 0.5rem;
+    }
+
+    .comment-menu-button {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+        padding: 0.25rem;
+    }
+
+    .comment-dropdown-menu {
+        min-width: 130px;
+    }
+
+    .dropdown-item {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.85rem;
+        gap: 0.625rem;
+    }
+
+    .dropdown-item i {
+        font-size: 0.85rem;
+    }
+
     .comment-item.depth-1 .read-more-less-button,
     .comment-item.depth-2 .read-more-less-button {
         margin-left: 0.75rem;
@@ -2198,6 +2437,30 @@ const findCommentById = (commentList, commentId) => {
         margin-bottom: 1rem;
     }
 
+    .comment-header {
+        flex-wrap: nowrap;
+    }
+
+    .comment-header-right {
+        flex-shrink: 0;
+    }
+
+    .comment-time {
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .comment-menu-button {
+        width: 24px;
+        height: 24px;
+        font-size: 0.8rem;
+    }
+
+    .comment-dropdown-menu {
+        right: -8px;
+        min-width: 120px;
+    }
+
     .reply-actions {
         flex-direction: column;
         gap: 0.375rem;
@@ -2209,6 +2472,9 @@ const findCommentById = (commentList, commentId) => {
     }
 
     .auth-popup-actions {
+        margin: auto;
+        justify-content: center;
+        align-items: center;
         flex-direction: column;
     }
 
