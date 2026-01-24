@@ -28,7 +28,7 @@ class ArtistController extends Controller
         $this->trackService = $trackService;
     }
 
-    public function index()
+    public function index(): \Inertia\Response
     {
         return Inertia::render('Admin/Artists/Index', [
             'artists' => Artist::query()
@@ -37,7 +37,7 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function uploadBannerImage(Request $request, Artist $artist)
+    public function uploadBannerImage(Request $request, Artist $artist): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'image' => 'required|image|mimes:webp|max:5120'
@@ -53,7 +53,7 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function uploadProfileImage(Request $request, Artist $artist)
+    public function uploadProfileImage(Request $request, Artist $artist): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'image' => 'required|image|mimes:webp|max:2048'
@@ -71,7 +71,7 @@ class ArtistController extends Controller
 
     /***
      * Metode priekš ArtistShow.vue lapas.
-     * Iegūst datus par izpildītāju no datubāzes, kā arī
+     * Iegūst datus par izpildītāju no datubāzes un daļu no komentāriem, kā arī
      * autentificēta lietotāja informāciju, un nodod tos lapai.
      *
      * @param Artist $artist
@@ -93,7 +93,7 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function showBio($artistSlug)
+    public function showBio($artistSlug): \Inertia\Response
     {
         $artist = Artist::where('slug', $artistSlug)->firstOrFail();
         return Inertia::render('Artists/ArtistBio', [
@@ -101,7 +101,7 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function showAllReleases($slug)
+    public function showAllReleases($slug): \Inertia\Response
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
         $releases = $this->releaseService->getPaginatedReleases(
@@ -116,7 +116,7 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function showAllTracks($slug)
+    public function showAllTracks($slug): \Inertia\Response
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
         $tracks = $this->trackService->getPaginatedTracks(
@@ -131,7 +131,7 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function explore(Request $request)
+    public function explore(Request $request): \Inertia\Response
     {
         $searchQuery = $request->input('q', '');
         $perPage = $request->input('perPage', 24);
@@ -170,17 +170,19 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function getComments(Artist $artist)
+    /***
+     * Atgriež komentārus ar lapdales formātēšanu.
+     *
+     * @param Artist $artist
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getComments(Artist $artist): \Illuminate\Http\JsonResponse
     {
         $page = request()->input('page', 1);
-
-        $comments = ArtistComment::where('artist_id', $artist->id)
+        $comments = ArtistComment::withTrashed()
+            ->where('artist_id', $artist->id)
             ->whereNull('parent_id')
-            ->with(['user', 'replies' => function($query) {
-                $query->with('user');
-            }, 'replies.replies' => function($query) {
-                $query->with('user');
-            }])
+            ->with(['user', 'replies'])
             ->orderBy('created_at', 'desc')
             ->paginate(10, ['*'], 'page', $page);
 
@@ -222,6 +224,40 @@ class ArtistController extends Controller
             'success' => true,
             'message' => 'Comment added successfully',
             'comment' => $comment
+        ]);
+    }
+
+    /***
+     * Izdzēš komentāru.
+     * Ja komentārs ir vecākkomentārs un tam nav atbilžu vēstures - forceDelete.
+     * Ja komentāram ir atbilžu vēsture vai tas ir atbilde - softDelete.
+     *
+     * @param Artist $artist
+     * @param ArtistComment $comment
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteComment(Artist $artist, ArtistComment $comment): \Illuminate\Http\JsonResponse
+    {
+        if ($comment->artist_id !== $artist->id) {
+            abort(403, 'Comment does not belong to this artist.');
+        }
+        if ($comment->user_id !== Auth::id()) {
+            abort(403, 'You are not authorized to delete this comment.');
+        }
+        $deleteType = '';
+        // If it's a top-level comment with no replies → hard delete
+        if ($comment->isParentComment() && !$comment->replies()->exists()) {
+            $comment->forceDelete();
+            $deleteType = 'hard';
+        } else {
+            // Otherwise → soft delete
+            $comment->delete();
+            $deleteType = 'soft';
+        }
+        return response()->json([
+            'success' => true,
+            'delete_type' => $deleteType,
+            'message' => 'Comment deleted successfully.'
         ]);
     }
 

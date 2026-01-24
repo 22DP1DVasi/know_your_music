@@ -110,6 +110,8 @@ Route::get('/artists/{artist}/releases', [ArtistController::class, 'showAllRelea
 Route::get('/artists/{artist}/comments', [ArtistController::class, 'getComments']);
 Route::post('/artists/{artist}/comments', [ArtistController::class, 'storeComment'])
     ->middleware('auth');
+Route::delete('/artists/{artist}/comments/{comment}', [ArtistController::class, 'deleteComment'])
+    ->middleware('auth');
 
 // release page
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])

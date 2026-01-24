@@ -7,10 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasThreadedComments;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ArtistComment extends Model
 {
-    use HasFactory, HasThreadedComments;
+    use HasFactory, HasThreadedComments, SoftDeletes;
     protected $table = 'comments_artists';
 
     /**
@@ -21,7 +25,7 @@ class ArtistComment extends Model
     protected $fillable = [
         'text',
         'status',
-        'deleted_username',
+//        'deleted_username',
         'user_id',
         'artist_id',
         'parent_id'
@@ -35,6 +39,7 @@ class ArtistComment extends Model
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
+        'deleted_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     /**
@@ -64,6 +69,52 @@ class ArtistComment extends Model
     }
 
     /**
+     * Saistība ar citiem komentāriem/atbildēm.
+     * Saņemt atbildes rekursīvi.
+     *
+     * @return HasOneOrMany
+     */
+    public function replies(): HasOneOrMany
+    {
+        return $this->hasMany(self::class, 'parent_id')
+            ->withTrashed()
+            ->with('replies', 'user');
+    }
+
+    /***
+     * Saistība ar vecākkomentāru.
+     * Komentārs var būt kā atbilde uz citu komentāru.
+     *
+     * @return HasOne
+     */
+    public function parentComment(): HasOne
+    {
+        return $this->hasOne(self::class, 'id', 'parent_id');
+    }
+
+    /**
+     * Pārbauda, vai komentārs ir atbilde.
+     *
+     * @return bool
+     */
+    public function isReply(): bool
+    {
+        return !is_null($this->parent_id);
+    }
+
+    /**
+     * Pārbauda, vai komentārs ir vecākkomentārs.
+     *
+     * @return bool
+     */
+    public function isParentComment(): bool
+    {
+        return is_null($this->parent_id);
+    }
+
+//    public function hasReplies()
+
+    /**
      * Get the display name for the comment author.
      */
     public function getAuthorNameAttribute(): string
@@ -72,16 +123,6 @@ class ArtistComment extends Model
             return $this->deleted_username;
         }
         return $this->user?->name ?? '[Deleted User]';
-    }
-
-    /**
-     * Mark comment as deleted while preserving metadata.
-     */
-    public function softDelete(): bool
-    {
-        return $this->update([
-            'deleted_username' => $this->user?->name    // preserve username before deletion
-        ]);
     }
 
     /**

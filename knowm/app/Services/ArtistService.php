@@ -10,18 +10,22 @@ use Illuminate\Support\Facades\DB;
 
 class ArtistService
 {
+    /***
+     * Atgriež informāciju par izpildītāju kopā ar noteiktu komentāru lapu.
+     *
+     * @param int $artistId
+     * @param int $commentsPage
+     * @return array
+     */
     public function getArtistWithDetailsAndComments(int $artistId, int $commentsPage = 1): array
     {
+        // informācijua
         $artist = $this->getArtistInfo($artistId);
-
-        // Get top-level comments with pagination
-        $comments = ArtistComment::where('artist_id', $artistId)
+        // komentāri
+        $comments = ArtistComment::withTrashed()
+            ->where('artist_id', $artistId)
             ->whereNull('parent_id')
-            ->with(['user', 'replies' => function($query) {
-                $query->with('user');
-            }, 'replies.replies' => function($query) {
-                $query->with('user');
-            }])
+            ->with(['user', 'replies'])
             ->orderBy('created_at', 'desc')
             ->paginate(10, ['*'], 'page', $commentsPage);
 
@@ -42,6 +46,12 @@ class ArtistService
         ];
     }
 
+    /***
+     * Atgriež informāciju/laukus par izpildītāju.
+     *
+     * @param int $artistId
+     * @return array
+     */
     public function getArtistInfo(int $artistId): array
     {
         $artist = Artist::findOrFail($artistId);

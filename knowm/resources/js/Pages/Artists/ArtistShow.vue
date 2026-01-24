@@ -200,9 +200,9 @@ const showLoadMore = computed(() => {
 const expandedComments = ref(new Set()); // izseko, kuri komentāri tiek izvērsti
 const commentMaxLength = 400; // komentāru maksimālais garums saīsināšanai
 
-const { formatDateLL, fromNow } = useDate()
+const { formatDateLL, fromNow } = useDate();
 
-const isAuthenticated = computed(() => !!page.props.auth?.user)
+const isAuthenticated = computed(() => !!page.props.auth?.user);
 const currentUser = page.props.auth.user;
 const isAddingComment = ref(false);
 const newCommentText = ref('');
@@ -213,6 +213,9 @@ const isSubmittingReply = ref(false);
 const showAuthPopup = ref(false);
 const authPopupCommentId = ref(null);
 const activeCommentMenu = ref(null);
+const showDeletePopup = ref(false);
+const commentToDelete = ref(null);
+const isDeletingComment = ref(false);
 
 // automātiski maina textarea augstumu, lai iekļautu visu tekstu kamēr tas tiek rakstīts
 const autoResizeTextarea = async (event) => {
@@ -514,10 +517,7 @@ const handleEditComment = (comment) => {
 
 // dzēšanas darbības apstrādes metode
 const handleDeleteComment = (comment) => {
-    closeCommentMenu();
-    console.log('Delete comment:', comment.id);
-    // TODO: Implement delete functionality
-    alert('Delete functionality will be implemented soon');
+    initiateDeleteComment(comment);
 };
 
 // aizvērt izvēlni, noklikšķinot ārpus elementa
@@ -535,6 +535,113 @@ onMounted(() => {
 onBeforeUnmount(() => {
     document.removeEventListener('click', handleClickOutside);
 });
+
+// komentāra dzēšanas sākšanas metode
+const initiateDeleteComment = (comment) => {
+    closeCommentMenu();
+    commentToDelete.value = comment;
+    showDeletePopup.value = true;
+};
+
+const cancelDelete = () => {
+    showDeletePopup.value = false;
+    commentToDelete.value = null;
+    isDeletingComment.value = false;
+};
+
+const markCommentAsDeleted = (commentList, commentId, deletedAt) => {
+    // meklē komentāru komentāru sarakstā
+    for (let comment of commentList) {
+        if (comment.id === commentId) {
+            // atjauno statusu pēc dzēšanas, ievieto vietturi
+            comment.deleted_at = deletedAt;
+            comment.text = null;
+            return true;
+        }
+        // tas pats atbildēm
+        if (comment.replies?.length) {
+            if (markCommentAsDeleted(comment.replies, commentId, deletedAt)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+// dzēš komentāru no saraksta, uzreiz atjauno lapā
+const removeCommentFromTree = (commentList, commentId) => {
+    const index = commentList.findIndex(c => c.id === commentId);
+    if (index !== -1) {
+        commentList.splice(index, 1);
+        return true;
+    }
+    for (let comment of commentList) {
+        if (comment.replies?.length) {
+            if (removeCommentFromTree(comment.replies, commentId)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+// dzēšanas apstiprināšanas un izpildes metode
+const confirmDeleteComment = async () => {
+    if (!commentToDelete.value || isDeletingComment.value) return;
+    isDeletingComment.value = true;
+    try {
+        const response = await axios.delete(
+            `/artists/${props.artist.artist.slug}/comments/${commentToDelete.value.id}`
+        );
+        if (response.data.success) {
+            const { delete_type, deleted_at } = response.data;
+            // ja komentārs tika forceDeleted
+            if (delete_type === 'hard') {
+                // pilnībā noņemt komentāru
+                removeCommentFromTree(comments.value, commentToDelete.value.id);
+            } else {
+                // ja softDelete -> vietturis
+                markCommentAsDeleted(
+                    comments.value,
+                    commentToDelete.value.id,
+                    deleted_at ?? new Date().toISOString()
+                );
+            }
+        }
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        if (error.response?.status === 403) {
+            alert('You are not authorized to delete this comment.');
+        } else {
+            alert('Failed to delete comment. Please try again.');
+        }
+    } finally {
+        showDeletePopup.value = false;
+        commentToDelete.value = null;
+        isDeletingComment.value = false;
+    }
+};
+
+// metode, lai pārbaudītu, vai komentārs ir izdzēsts
+const isCommentDeleted = (comment) => {
+    return comment.deleted_at !== null && comment.deleted_at !== undefined;
+};
+
+// metode, kas iegūst parādāmo tekstu, kurā ņemti vērā dzēstie komentāri
+const getDisplayTextConsideringDeletion = (comment) => {
+    if (isCommentDeleted(comment)) {
+        return '<em class="deleted-comment-text">This comment has been deleted.</em>';
+    }
+    return getDisplayText(comment);
+};
+
+// metode, lai pārbaudītu, vai komentārs ir jāsaīsina (apsverot dzēšanu)
+const needsTruncationWithDeletion = (comment) => {
+    if (isCommentDeleted(comment)) {
+        return false;
+    }
+    return needsTruncation(comment);
+};
 
 </script>
 
@@ -774,8 +881,8 @@ onBeforeUnmount(() => {
                                             {{ fromNow(commentData.comment.created_at) }}
                                         </span>
 
-                                        <!-- Izvēlnes poga priekš komentāru darbībām (tikai pašreizēja lietotāja komentāriem) -->
-                                        <div v-if="isUserComment(commentData.comment)" class="comment-menu-container">
+                                        <!-- Izvēlnes poga priekš komentāru darbībām (tikai pašreizēja lietotāja komentāriem un ja komentārs nav dzēsts) -->
+                                        <div v-if="!isCommentDeleted(commentData.comment) && isUserComment(commentData.comment)" class="comment-menu-container">
                                             <button
                                                 class="comment-menu-button"
                                                 @click="toggleCommentMenu(commentData.comment.id, $event)"
@@ -809,14 +916,18 @@ onBeforeUnmount(() => {
                                         </div>
                                     </div>
                                 </div>
+
                                 <div
-                                    :class="['comment-text', { 'truncated': !isCommentExpanded(commentData.comment.id) && needsTruncation(commentData.comment) }]"
-                                    v-html="getDisplayText(commentData.comment)"
+                                    :class="['comment-text', {
+                                        'truncated': !isCommentExpanded(commentData.comment.id) && needsTruncationWithDeletion(commentData.comment),
+                                        'deleted-comment': isCommentDeleted(commentData.comment)
+                                    }]"
+                                    v-html="getDisplayTextConsideringDeletion(commentData.comment)"
                                 ></div>
 
                                 <!-- Poga Lasīt vairāk/mazāk -->
                                 <button
-                                    v-if="needsTruncation(commentData.comment)"
+                                    v-if="!isCommentDeleted(commentData.comment) && needsTruncationWithDeletion(commentData.comment)"
                                     @click="toggleCommentExpansion(commentData.comment.id)"
                                     class="read-more-less-button"
                                 >
@@ -825,6 +936,7 @@ onBeforeUnmount(() => {
 
                                 <!-- Reply poga -->
                                 <button
+                                    v-if="!isCommentDeleted(commentData.comment)"
                                     @click="startAddingReply(commentData.comment.id)"
                                     class="reply-button"
                                 >
@@ -833,7 +945,7 @@ onBeforeUnmount(() => {
 
                                 <!-- Atbildes veidlapa (rādīt tikai atbildot uz šo komentāru) -->
                                 <div
-                                    v-if="replyingToCommentId === commentData.comment.id"
+                                    v-if="!isCommentDeleted(commentData.comment) && replyingToCommentId === commentData.comment.id"
                                     :class="['reply-form', `reply-form-${commentData.comment.id}`]"
                                 >
                                     <div class="reply-input-wrapper">
@@ -920,6 +1032,54 @@ onBeforeUnmount(() => {
                         <i class="fa-solid fa-user-plus"></i> Sign up
                     </Link>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dzēšanas apstiprinājuma uznirstošā izvēlne -->
+    <div v-if="showDeletePopup" class="delete-popup-overlay" @click="cancelDelete">
+        <div class="delete-popup" @click.stop>
+            <div class="delete-popup-header">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> Delete Comment</h3>
+                <button @click="cancelDelete" class="close-popup-button">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="delete-popup-content">
+                <p>Are you sure you want to delete this comment?</p>
+                <p class="warning-text">This action cannot be undone.</p>
+
+                <!-- Rādīt komentāru priekšskatījumu, ja tas vēl nav izdzēsts -->
+                <div v-if="commentToDelete && !isCommentDeleted(commentToDelete)" class="comment-preview">
+                    <div class="preview-header">
+                        <strong>{{ commentToDelete.user?.name || 'Anonymous' }}</strong>
+                    </div>
+                    <div class="preview-text">
+                        {{ commentToDelete.text ? (commentToDelete.text.substring(0, 150) + (commentToDelete.text.length > 150 ? '...' : '')) : '' }}
+                    </div>
+                </div>
+            </div>
+            <div class="delete-popup-actions">
+                <button
+                    @click="cancelDelete"
+                    class="delete-popup-button cancel-delete-button"
+                    :disabled="isDeletingComment"
+                >
+                    Cancel
+                </button>
+                <button
+                    @click="confirmDeleteComment"
+                    class="delete-popup-button confirm-delete-button"
+                    :disabled="isDeletingComment"
+                    :class="{ 'loading': isDeletingComment }"
+                >
+                <span v-if="isDeletingComment">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Deleting...
+                </span>
+                    <span v-else>
+                    <i class="fa-solid fa-trash-can"></i> Delete
+                </span>
+                </button>
             </div>
         </div>
     </div>
@@ -1981,6 +2141,205 @@ onBeforeUnmount(() => {
     margin-right: 0.375rem;
 }
 
+/* Izdzēsto komentāru stili */
+.deleted-comment-text {
+    color: #6c757d;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.comment-text.deleted-comment {
+    color: #6c757d;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+/* Dzēstā apstiprinājuma uznirstošā loga stili */
+.delete-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.delete-popup {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+}
+
+.delete-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    background: #fff5f5;
+}
+
+.delete-popup-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #dc3545;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.delete-popup-header h3 i {
+    font-size: 1.1rem;
+}
+
+.close-popup-button {
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.close-popup-button:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.delete-popup-content {
+    padding: 1.5rem;
+}
+
+.delete-popup-content p {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    color: #212529;
+}
+
+.warning-text {
+    color: #dc3545 !important;
+    font-weight: 500;
+    margin-bottom: 1.25rem !important;
+}
+
+.comment-preview {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-top: 1rem;
+}
+
+.preview-header {
+    margin-bottom: 0.5rem;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.preview-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.delete-popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+}
+
+.delete-popup-button {
+    padding: 0.625rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    min-width: 100px;
+    text-align: center;
+}
+
+.cancel-delete-button {
+    background: #6c757d;
+    color: white;
+    border-color: #6c757d;
+}
+
+.cancel-delete-button:hover:not(:disabled) {
+    background: #5a6268;
+    border-color: #545b62;
+}
+
+.confirm-delete-button {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.confirm-delete-button:hover:not(:disabled) {
+    background: #c82333;
+    border-color: #bd2130;
+}
+
+.delete-popup-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.confirm-delete-button.loading {
+    background: #dc3545;
+    border-color: #dc3545;
+    opacity: 0.8;
+}
+
+.confirm-delete-button.loading i {
+    margin-right: 0.5rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Autentifikācijas uznirstošo logu stili */
 .auth-popup-overlay {
     position: fixed;
@@ -2376,6 +2735,33 @@ onBeforeUnmount(() => {
     .comment-item.depth-2 .reply-button {
         margin-left: 0.75rem;
     }
+
+    .delete-popup {
+        width: 95%;
+        margin: 0 1rem;
+    }
+
+    .delete-popup-header {
+        padding: 1rem 1.25rem;
+    }
+
+    .delete-popup-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .delete-popup-content {
+        padding: 1.25rem;
+    }
+
+    .delete-popup-actions {
+        padding: 0.75rem 1.25rem;
+    }
+
+    .delete-popup-button {
+        padding: 0.5rem 1rem;
+        min-width: 80px;
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2479,6 +2865,15 @@ onBeforeUnmount(() => {
     }
 
     .auth-popup-button {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .delete-popup-actions {
+        flex-direction: column;
+    }
+
+    .delete-popup-button {
         width: 100%;
         min-width: unset;
     }
