@@ -133,7 +133,33 @@ class User extends Authenticatable
      */
     public function hasAnyRole(array $roles): bool
     {
-        return $this->roles()->whereIn('name', $roles)->isNotEmpty();
+        return $this->roles()
+            ->whereIn('name', $roles)
+            ->exists();
+    }
+
+    /***
+     * Pārbauda, vai lietotājam ir superadministratora loma.
+     *
+     * @return bool
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->roles()
+            ->where('name', 'super_admin')
+            ->exists();
+    }
+
+    /***
+     * Pārbauda, vai lietotājam ir komentāru regulētāja loma.
+     *
+     * @return bool
+     */
+    public function hasCommentAdminRole(): bool
+    {
+        return $this->roles()
+            ->where('name', 'comments_moderator')
+            ->exists();
     }
 
     /**

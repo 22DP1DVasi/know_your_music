@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\CommentDeletedBy;
+use App\Enums\CommentDeleteReason;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,6 +28,8 @@ class ArtistComment extends Model
         'text',
         'status',
 //        'deleted_username',
+        'deleted_by',
+        'delete_reason',
         'user_id',
         'artist_id',
         'parent_id'
@@ -37,6 +41,8 @@ class ArtistComment extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'deleted_by' => CommentDeletedBy::class,
+        'delete_reason' => CommentDeleteReason::class,
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
         'deleted_at' => 'datetime:Y-m-d H:i:s',

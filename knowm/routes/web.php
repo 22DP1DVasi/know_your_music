@@ -177,9 +177,9 @@ Route::middleware('auth')->group(function () {
 
 // artist and release cover images routes
 //Route::middleware(['auth'])->group(function () {
-    Route::post('/artists/{artist}/profile-image', [ArtistController::class, 'uploadProfileImage']);
-    Route::post('/artists/{artist}/banner-image', [ArtistController::class, 'uploadBannerImage']);
-    Route::post('/releases/{release}/cover-image', [ReleaseController::class, 'uploadCoverImage']);
+//    Route::post('/artists/{artist}/profile-image', [ArtistController::class, 'uploadProfileImage']);
+//    Route::post('/artists/{artist}/banner-image', [ArtistController::class, 'uploadBannerImage']);
+//    Route::post('/releases/{release}/cover-image', [ReleaseController::class, 'uploadCoverImage']);
 //});
 
 // admin routes

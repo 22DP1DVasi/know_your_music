@@ -18,12 +18,18 @@ return new class extends Migration
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
             $table->string('deleted_username', 100)->nullable(); // saglabāt lietotājvārdu pirms lietotāja dzēšanas kā metadatus
+            $table->enum('deleted_by', ['author', 'moderator', 'system'])
+                ->nullable();
+            $table->enum('delete_reason', ['self_deleted', 'spam', 'abuse', 'off_topic', 'other'])
+                ->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
 
             $table->index('user_id');
             $table->index('artist_id');
             $table->index('parent_id');
+            $table->index('deleted_by');
+            $table->index('delete_reason');
 
             $table->foreign('user_id')
                 ->references('id')

@@ -1,5 +1,5 @@
 <script setup>
-import {Head, Link, usePage } from '@inertiajs/vue3'
+import { Head, Link, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
@@ -203,7 +203,12 @@ const commentMaxLength = 400; // komentāru maksimālais garums saīsināšanai
 const { formatDateLL, fromNow } = useDate();
 
 const isAuthenticated = computed(() => !!page.props.auth?.user);
-const currentUser = page.props.auth.user;
+const currentUser = page.props.auth?.user;
+const roles = computed(() => currentUser?.roles ?? [])
+// const isCommentsModerator = computed(() => roles.value.includes('comments_moderator'))
+
+const isCommentsModerator = computed(() => ['comments_moderator', 'super_admin']
+    .some(role => roles.value.includes(role)));
 const isAddingComment = ref(false);
 const newCommentText = ref('');
 const isSubmittingComment = ref(false);
@@ -507,6 +512,68 @@ const isUserComment = (comment) => {
     return comment.user.id === currentUser?.id;
 };
 
+const canSeeActionMenu = (comment) => {
+    if (!isAuthenticated.value) return false;
+    // Lietotājs var skatīt darbību izvēlni, ja:
+    // 1. Tas ir viņu komentārs, vai
+    // 2. Viņš ir komentāru regulētājs
+    return isUserComment(comment) || isCommentsModerator.value;
+};
+
+const canEditComment = (comment) => {
+    if (!isAuthenticated.value) return false;
+    // lietotājs var rediģēt tikai savus komentārus
+    return isUserComment(comment);
+};
+
+const canDeleteComment = (comment) => {
+    if (!isAuthenticated.value) return false;
+    // Lietotājs var dzēst komentāru, ja:
+    // 1. Tas ir viņu komentārs, vai
+    // 2. Viņš ir komentāru regulētājs
+    return isUserComment(comment) || isCommentsModerator.value;
+};
+
+// helper metode dzēšanas pogas etiķetes un ikonas iegūšanai
+const getDeleteButtonInfo = (comment) => {
+    if (isCommentsModerator.value && !isUserComment(comment)) {
+        return {
+            label: 'Delete (Admin)',
+            icon: 'fa-solid fa-shield',
+            isAdmin: true
+        };
+    } else {
+        return {
+            label: 'Delete',
+            icon: 'fa-regular fa-trash-can',
+            isAdmin: false
+        };
+    }
+};
+
+const canBeHardDeleted = (comment) => {
+    // vai komentārā nav atbilžu
+    const hasReplies = comment.replies && comment.replies.length > 0;
+    // vai komentārs nav atbilde
+    const isReply = comment.parent_id !== null;
+    return !hasReplies && !isReply;
+};
+
+// helper metode dzēšanas apstiprinājuma ziņojuma iegūšanai
+const getDeleteConfirmationMessage = () => {
+    if (!commentToDelete.value) return '';
+    const isAdminDelete = commentToDelete.value.isAdminDelete;
+    if (isAdminDelete) {
+        if (canBeHardDeleted(commentToDelete.value)) {
+            return 'This comment will be permanently deleted as an administrator action.';
+        } else {
+            return 'This comment will be deleted (admin action) but kept for thread continuity.';
+        }
+    } else {
+        return 'Are you sure you want to delete this comment permanently?';
+    }
+};
+
 // rediģēšanas darbības apstrādes metode
 const handleEditComment = (comment) => {
     closeCommentMenu();
@@ -539,7 +606,11 @@ onBeforeUnmount(() => {
 // komentāra dzēšanas sākšanas metode
 const initiateDeleteComment = (comment) => {
     closeCommentMenu();
-    commentToDelete.value = comment;
+    // uznirstošā loga papildinformācijas saglabāšana
+    commentToDelete.value = {
+        ...comment,     // izkliedes operators (spread operator) kopē visus esošos komentāru rekvizītus
+        isAdminDelete: isCommentsModerator.value && !isUserComment(comment)  // Būla karodziņš dažādiem dzēšanas uznirstošā loga stiliem
+    };
     showDeletePopup.value = true;
 };
 
@@ -881,13 +952,15 @@ const needsTruncationWithDeletion = (comment) => {
                                             {{ fromNow(commentData.comment.created_at) }}
                                         </span>
 
-                                        <!-- Izvēlnes poga priekš komentāru darbībām (tikai pašreizēja lietotāja komentāriem un ja komentārs nav dzēsts) -->
-                                        <div v-if="!isCommentDeleted(commentData.comment) && isUserComment(commentData.comment)" class="comment-menu-container">
+                                        <!-- Rādīt izvēlnes pogu, ja lietotājs var redzēt darbību izvēlni un komentārs netiek izdzēsts -->
+                                        <div v-if="!isCommentDeleted(commentData.comment) && canSeeActionMenu(commentData.comment)"
+                                             class="comment-menu-container">
                                             <button
                                                 class="comment-menu-button"
                                                 @click="toggleCommentMenu(commentData.comment.id, $event)"
                                                 :aria-expanded="activeCommentMenu === commentData.comment.id"
                                                 :title="activeCommentMenu === commentData.comment.id ? 'Close menu' : 'Open menu'"
+                                                :class="{ 'admin-menu': isCommentsModerator && !isUserComment(commentData.comment) }"
                                             >
                                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                                             </button>
@@ -897,20 +970,27 @@ const needsTruncationWithDeletion = (comment) => {
                                                 v-if="activeCommentMenu === commentData.comment.id"
                                                 class="comment-dropdown-menu"
                                                 @click.stop=""
+                                                :class="{ 'admin-dropdown': isCommentsModerator && !isUserComment(commentData.comment) }"
                                             >
+                                                <!-- Poga Rediģēt — rādīt tikai lietotāja paša komentāriem -->
                                                 <button
+                                                    v-if="canEditComment(commentData.comment)"
                                                     class="dropdown-item edit-item"
                                                     @click="handleEditComment(commentData.comment)"
                                                 >
                                                     <i class="fa-regular fa-pen-to-square"></i>
                                                     <span>Edit</span>
                                                 </button>
+
+                                                <!-- Poga Dzēst - rādīt visiem komentāriem, kurus lietotājs var dzēst -->
                                                 <button
+                                                    v-if="canDeleteComment(commentData.comment)"
                                                     class="dropdown-item delete-item"
+                                                    :class="{ 'admin-delete': isCommentsModerator && !isUserComment(commentData.comment) }"
                                                     @click="handleDeleteComment(commentData.comment)"
                                                 >
-                                                    <i class="fa-regular fa-trash-can"></i>
-                                                    <span>Delete</span>
+                                                    <i :class="getDeleteButtonInfo(commentData.comment).icon"></i>
+                                                    <span>{{ getDeleteButtonInfo(commentData.comment).label }}</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -1039,15 +1119,20 @@ const needsTruncationWithDeletion = (comment) => {
     <!-- Dzēšanas apstiprinājuma uznirstošā izvēlne -->
     <div v-if="showDeletePopup" class="delete-popup-overlay" @click="cancelDelete">
         <div class="delete-popup" @click.stop>
-            <div class="delete-popup-header">
-                <h3><i class="fa-solid fa-triangle-exclamation"></i> Delete Comment</h3>
+            <div class="delete-popup-header" :class="{ 'admin-header': commentToDelete?.isAdminDelete }">
+                <h3>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    {{ commentToDelete?.isAdminDelete ? 'Admin: Delete Comment' : 'Delete Comment' }}
+                    <span v-if="commentToDelete?.isAdminDelete" class="admin-badge">
+                    <i class="fa-solid fa-shield"></i> Admin Action
+                </span>
+                </h3>
                 <button @click="cancelDelete" class="close-popup-button">
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
             <div class="delete-popup-content">
-                <p>Are you sure you want to delete this comment?</p>
-                <p class="warning-text">This action cannot be undone.</p>
+                <p>{{ getDeleteConfirmationMessage() }}</p>
 
                 <!-- Rādīt komentāru priekšskatījumu, ja tas vēl nav izdzēsts -->
                 <div v-if="commentToDelete && !isCommentDeleted(commentToDelete)" class="comment-preview">
@@ -1071,13 +1156,18 @@ const needsTruncationWithDeletion = (comment) => {
                     @click="confirmDeleteComment"
                     class="delete-popup-button confirm-delete-button"
                     :disabled="isDeletingComment"
-                    :class="{ 'loading': isDeletingComment }"
+                    :class="{
+                    'loading': isDeletingComment,
+                    'hard-delete': canBeHardDeleted(commentToDelete),
+                    'admin-delete': commentToDelete?.isAdminDelete
+                }"
                 >
                 <span v-if="isDeletingComment">
                     <i class="fa-solid fa-spinner fa-spin"></i> Deleting...
                 </span>
                     <span v-else>
-                    <i class="fa-solid fa-trash-can"></i> Delete
+                    <i :class="commentToDelete?.isAdminDelete ? 'fa-solid fa-shield' : 'fa-solid fa-trash-can'"></i>
+                    {{ commentToDelete?.isAdminDelete ? 'Delete as Admin' : (canBeHardDeleted(commentToDelete) ? 'Delete Permanently' : 'Delete') }}
                 </span>
                 </button>
             </div>
@@ -1105,7 +1195,7 @@ const needsTruncationWithDeletion = (comment) => {
     margin-bottom: 1rem;
     margin-top: 1rem;
     border-radius: 8px;
-    background-color: #f0f0f0; /* fallback color */
+    background-color: #f0f0f0; /* atkāpšanās krāsa */
     --gradient-color-left: rgba(0,0,0,0.3);
     --gradient-color-right: rgba(0,0,0,0.3);
 }
@@ -1796,6 +1886,62 @@ const needsTruncationWithDeletion = (comment) => {
     color: #0c4baa;
 }
 
+/* administratoram raksturīgie darbību izvēlnes stili */
+.comment-menu-button.admin-menu {
+    color: #4a5568;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.comment-menu-button.admin-menu:hover {
+    background: #edf2f7;
+    border-color: #cbd5e0;
+}
+
+.comment-dropdown-menu.admin-dropdown {
+    border: 1px solid #4299e1;
+    box-shadow: 0 2px 10px rgba(66, 153, 225, 0.15);
+}
+
+.comment-dropdown-menu.admin-dropdown::before {
+    border-bottom-color: #4299e1;
+}
+
+.dropdown-item.admin-delete {
+    color: #3182ce;
+}
+
+.dropdown-item.admin-delete:hover {
+    background: #ebf8ff;
+    color: #2c5282;
+}
+
+.dropdown-item.admin-delete i {
+    color: #4299e1;
+}
+
+/* administratora dzēšanas uznirstošā loga stili */
+.delete-popup-header.admin-header {
+    background: #ebf8ff;
+    border-bottom: 2px solid #4299e1;
+}
+
+.admin-badge {
+    background: #4299e1;
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    margin-left: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.admin-badge i {
+    font-size: 0.6rem;
+}
+
 .comment-dropdown-menu {
     position: absolute;
     top: 100%;
@@ -2232,12 +2378,6 @@ const needsTruncationWithDeletion = (comment) => {
     color: #212529;
 }
 
-.warning-text {
-    color: #dc3545 !important;
-    font-weight: 500;
-    margin-bottom: 1.25rem !important;
-}
-
 .comment-preview {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
@@ -2338,6 +2478,26 @@ const needsTruncationWithDeletion = (comment) => {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.confirm-delete-button.admin-delete {
+    background: #3182ce;
+    border-color: #3182ce;
+}
+
+.confirm-delete-button.admin-delete:hover:not(:disabled) {
+    background: #2c5282;
+    border-color: #2a4365;
+}
+
+.confirm-delete-button.admin-delete.hard-delete {
+    background: #2b6cb0;
+    border-color: #2b6cb0;
+}
+
+.confirm-delete-button.admin-delete.hard-delete:hover:not(:disabled) {
+    background: #2c5282;
+    border-color: #2a4365;
 }
 
 /* Autentifikācijas uznirstošo logu stili */
@@ -2762,6 +2922,12 @@ const needsTruncationWithDeletion = (comment) => {
         min-width: 80px;
         font-size: 0.9rem;
     }
+
+    .admin-badge {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.4rem;
+        margin-left: 0.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -2876,6 +3042,10 @@ const needsTruncationWithDeletion = (comment) => {
     .delete-popup-button {
         width: 100%;
         min-width: unset;
+    }
+
+    .admin-badge {
+        display: none;
     }
 }
 

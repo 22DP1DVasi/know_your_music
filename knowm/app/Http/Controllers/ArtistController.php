@@ -83,11 +83,6 @@ class ArtistController extends Controller
         $commentsPage = request()->input('comments_page', 1);
 
         $data = $this->artistService->getArtistWithDetailsAndComments($artist->id, $commentsPage);
-        // pievienot pašreizējo lietotāja informāciju, ja tā ir autentificēta
-        $data['current_user'] = Auth::check() ? [
-            'id' => Auth::id(),
-            'name' => Auth::user()->name
-        ] : null;
         return Inertia::render('Artists/ArtistShow', [
             'artist' => $data
         ]);
@@ -241,16 +236,16 @@ class ArtistController extends Controller
         if ($comment->artist_id !== $artist->id) {
             abort(403, 'Comment does not belong to this artist.');
         }
-        if ($comment->user_id !== Auth::id()) {
+        if ($comment->user_id !== Auth::id() && !Auth::user()->hasAnyRole(['comments_moderator', 'super_admin'])) {
             abort(403, 'You are not authorized to delete this comment.');
         }
         $deleteType = '';
-        // If it's a top-level comment with no replies → hard delete
+        // ja tas ir augstākā līmeņa komentārs bez atbildēm → hard delete
         if ($comment->isParentComment() && !$comment->replies()->exists()) {
             $comment->forceDelete();
             $deleteType = 'hard';
         } else {
-            // Otherwise → soft delete
+            // citādi → soft delete
             $comment->delete();
             $deleteType = 'soft';
         }

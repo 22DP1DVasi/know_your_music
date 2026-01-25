@@ -2,12 +2,17 @@
 import Footer from '@/Components/Footer.vue';
 import Navbar from '@/Components/Navbar.vue';
 // import HomeRecomCards from '@/Components/HomeRecomCards.vue';
-import { Head, Link } from "@inertiajs/vue3";
-import { useI18n } from 'vue-i18n'
+import { Head, Link, usePage } from "@inertiajs/vue3";
+import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 import {route} from "ziggy-js";
 
-const ADMIN_ROLE_ID = 1;
 const { t } = useI18n()
+
+const page = usePage()
+
+const roles = computed(() => page.props.auth?.user?.roles ?? [])
+const isAdmin = computed(() => roles.value.includes('super_admin'))
 
 </script>
 
@@ -17,7 +22,7 @@ const { t } = useI18n()
     <main class="flex-1">
         <div class="adm-button-container">
             <Link
-                v-if="$page.props.isAdmin"
+                v-if="isAdmin"
                 :href="route('admin-dashboard')"
                 class="adm-button"
             >
