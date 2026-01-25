@@ -24,12 +24,14 @@ return new class extends Migration
                 ->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
+            $table->timestamp('edited_at')->nullable();
 
             $table->index('user_id');
             $table->index('artist_id');
             $table->index('parent_id');
             $table->index('deleted_by');
             $table->index('delete_reason');
+            $table->index('edited_at');
 
             $table->foreign('user_id')
                 ->references('id')

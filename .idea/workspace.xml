@@ -6,15 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/HomeController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Middleware/HandleInertiaRequests.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Middleware/HandleInertiaRequests.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_171840_create_comments_artists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_171840_create_comments_artists_table.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/composables/useDate.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/composables/useDate.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -368,7 +361,7 @@
       <workItem from="1769194317813" duration="743000" />
       <workItem from="1769245704213" duration="3995000" />
       <workItem from="1769265914905" duration="12984000" />
-      <workItem from="1769345346362" duration="17135000" />
+      <workItem from="1769345346362" duration="19790000" />
     </task>
     <servers />
   </component>

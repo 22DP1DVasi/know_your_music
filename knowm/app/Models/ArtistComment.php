@@ -46,6 +46,7 @@ class ArtistComment extends Model
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
         'deleted_at' => 'datetime:Y-m-d H:i:s',
+        'edited_at' => 'datetime:Y-m-d H:i:s'
     ];
 
     /**

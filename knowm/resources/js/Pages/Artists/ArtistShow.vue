@@ -200,7 +200,7 @@ const showLoadMore = computed(() => {
 const expandedComments = ref(new Set()); // izseko, kuri komentāri tiek izvērsti
 const commentMaxLength = 400; // komentāru maksimālais garums saīsināšanai
 
-const { formatDateLL, fromNow } = useDate();
+const { formatDateLL, fromNow, diffInMinutes } = useDate();
 
 const isAuthenticated = computed(() => !!page.props.auth?.user);
 const currentUser = page.props.auth?.user;
@@ -221,6 +221,9 @@ const activeCommentMenu = ref(null);
 const showDeletePopup = ref(false);
 const commentToDelete = ref(null);
 const isDeletingComment = ref(false);
+const editingCommentId = ref(null);
+const editText = ref('');
+const isSubmittingEdit = ref(false);
 
 // automātiski maina textarea augstumu, lai iekļautu visu tekstu kamēr tas tiek rakstīts
 const autoResizeTextarea = async (event) => {
