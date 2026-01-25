@@ -222,7 +222,7 @@ const showDeletePopup = ref(false);
 const commentToDelete = ref(null);
 const isDeletingComment = ref(false);
 const editingCommentId = ref(null);
-const editText = ref('');
+const editingCommentText = ref('');
 const isSubmittingEdit = ref(false);
 
 // automātiski maina textarea augstumu, lai iekļautu visu tekstu kamēr tas tiek rakstīts
@@ -525,8 +525,15 @@ const canSeeActionMenu = (comment) => {
 
 const canEditComment = (comment) => {
     if (!isAuthenticated.value) return false;
-    // lietotājs var rediģēt tikai savus komentārus
-    return isUserComment(comment);
+    // lietotājs var rediģēt tikai savus komentārus 15 minūšu laikā
+    if (!isUserComment(comment)) return false;
+    // pārbaudīt, vai 15 minūšu laikā pēc izveides
+    const minutesSinceCreation = diffInMinutes(comment.created_at);
+    return minutesSinceCreation <= 15;
+};
+
+const isCommentEdited = (comment) => {
+    return comment.edited_at !== null && comment.edited_at !== undefined;
 };
 
 const canDeleteComment = (comment) => {
@@ -579,10 +586,11 @@ const getDeleteConfirmationMessage = () => {
 
 // rediģēšanas darbības apstrādes metode
 const handleEditComment = (comment) => {
-    closeCommentMenu();
-    console.log('Edit comment:', comment.id);
-    // TODO: Implement edit functionality
-    alert('Edit functionality will be implemented soon');
+    if (!canEditComment(comment)) {
+        alert('You can only edit your own comments within 15 minutes of posting.');
+        return;
+    }
+    startEditingComment(comment);
 };
 
 // dzēšanas darbības apstrādes metode
@@ -715,6 +723,90 @@ const needsTruncationWithDeletion = (comment) => {
         return false;
     }
     return needsTruncation(comment);
+};
+
+const startEditingComment = (comment) => {
+    closeCommentMenu();
+    editingCommentId.value = comment.id;
+    editingCommentText.value = comment.text || '';
+    // Fokusēt teksta lauku pēc nelielas aizkaves
+    nextTick(() => {
+        const textarea = document.querySelector(`.edit-textarea-${comment.id}`);
+        if (textarea) {
+            textarea.focus();
+            // pārvietot kursoru uz beigām
+            textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+            // ritināt skatā
+            const editForm = document.querySelector(`.edit-form-${comment.id}`);
+            editForm?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+};
+
+const cancelEditingComment = () => {
+    editingCommentId.value = null;
+    editingCommentText.value = '';
+    isSubmittingEdit.value = false;
+};
+
+const submitEditedComment = async (commentId) => {
+    if (!editingCommentText.value.trim() || isSubmittingEdit.value) {
+        return;
+    }
+    isSubmittingEdit.value = true;
+    try {
+        const response = await axios.put(`/artists/${props.artist.artist.slug}/comments/${commentId}`, {
+            text: editingCommentText.value.trim()
+        });
+        if (response.data.success) {
+            // atjaunināt komentāru komentāru sarakstā
+            const updateCommentText = (commentList, targetCommentId, newText, editedAt) => {
+                for (let comment of commentList) {
+                    if (comment.id === targetCommentId) {
+                        comment.text = newText;
+                        comment.edited_at = editedAt;
+                        comment.updated_at = new Date().toISOString();
+                        return true;
+                    }
+                    if (comment.replies && comment.replies.length > 0) {
+                        if (updateCommentText(comment.replies, targetCommentId, newText, editedAt)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+
+            // atjaunināt komentāru
+            updateCommentText(
+                comments.value,
+                commentId,
+                response.data.comment.text,
+                response.data.comment.edited_at
+            );
+            // atiestatīt rediģēšanas stāvokli
+            cancelEditingComment();
+        }
+    } catch (error) {
+        console.error('Error updating comment:', error);
+
+        if (error.response?.status === 403) {
+            alert('You are not authorized to edit this comment or the edit time limit has expired.');
+        } else if (error.response?.status === 422) {
+            alert('Please provide valid comment text.');
+        } else {
+            alert('Failed to update comment. Please try again.');
+        }
+    } finally {
+        isSubmittingEdit.value = false;
+    }
+};
+
+// computed rekvizīts, lai pārbaudītu, vai var iesniegt rediģēšanu
+const canSubmitEdit = (commentId) => {
+    return editingCommentId.value === commentId &&
+        editingCommentText.value.trim().length > 0 &&
+        !isSubmittingEdit.value;
 };
 
 </script>
@@ -936,70 +1028,119 @@ const needsTruncationWithDeletion = (comment) => {
                             <p>No comments yet. Be the first to comment!</p>
                         </div>
 
-                        <div v-else class="comments-list">
-                            <div
-                                v-for="(commentData, index) in displayComments"
-                                :key="commentData.comment.id"
-                                :class="['comment-item', `depth-${commentData.depth}`]"
-                                :style="{ marginLeft: `${commentData.depth * 40}px` }"
-                            >
-                                <div class="comment-header">
-                                    <div class="comment-user">
-                                        <i class="fa-regular fa-user"></i>
-                                        <span class="user-name">{{ commentData.comment.user?.name || 'Anonymous' }}</span>
-                                    </div>
+                        <div
+                            v-for="(commentData, index) in displayComments"
+                            :key="commentData.comment.id"
+                            :class="['comment-item', `depth-${commentData.depth}`]"
+                            :style="{ marginLeft: `${commentData.depth * 40}px` }"
+                        >
+                            <div class="comment-header">
+                                <div class="comment-user">
+                                    <i class="fa-regular fa-user"></i>
+                                    <span class="user-name">{{ commentData.comment.user?.name || 'Anonymous' }}</span>
+                                </div>
 
-                                    <div class="comment-header-right">
+                                <div class="comment-header-right">
+                                    <div class="comment-time-container">
                                         <span class="comment-time"
                                               :title="formatDateLL(commentData.comment.created_at)">
                                             {{ fromNow(commentData.comment.created_at) }}
                                         </span>
+                                        <!-- Rādīt rediģētā komentāra emblēmu, ja komentārs tika rediģēts-->
+                                        <span v-if="!isCommentDeleted(commentData.comment) && isCommentEdited(commentData.comment)"
+                                              class="edited-badge"
+                                              :title="'Edited at ' + formatDateLL(commentData.comment.edited_at)">
+                                            <i class="fa-regular fa-pen-to-square"></i> edited
+                                        </span>
+                                    </div>
 
-                                        <!-- Rādīt izvēlnes pogu, ja lietotājs var redzēt darbību izvēlni un komentārs netiek izdzēsts -->
-                                        <div v-if="!isCommentDeleted(commentData.comment) && canSeeActionMenu(commentData.comment)"
-                                             class="comment-menu-container">
+                                    <!-- Rādīt izvēlnes pogu, ja lietotājs var redzēt darbību izvēlni un komentārs netiek izdzēsts -->
+                                    <div v-if="!isCommentDeleted(commentData.comment) && canSeeActionMenu(commentData.comment)"
+                                         class="comment-menu-container">
+                                        <button
+                                            class="comment-menu-button"
+                                            @click="toggleCommentMenu(commentData.comment.id, $event)"
+                                            :aria-expanded="activeCommentMenu === commentData.comment.id"
+                                            :title="activeCommentMenu === commentData.comment.id ? 'Close menu' : 'Open menu'"
+                                            :class="{ 'admin-menu': isCommentsModerator && !isUserComment(commentData.comment) }"
+                                        >
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+
+                                        <!-- Nolaižamā Izvēlne -->
+                                        <div
+                                            v-if="activeCommentMenu === commentData.comment.id"
+                                            class="comment-dropdown-menu"
+                                            @click.stop=""
+                                            :class="{ 'admin-dropdown': isCommentsModerator && !isUserComment(commentData.comment) }"
+                                        >
+                                            <!-- Poga Rediģēt - rādīt tikai lietotāja paša komentāriem noteiktajā termiņā -->
                                             <button
-                                                class="comment-menu-button"
-                                                @click="toggleCommentMenu(commentData.comment.id, $event)"
-                                                :aria-expanded="activeCommentMenu === commentData.comment.id"
-                                                :title="activeCommentMenu === commentData.comment.id ? 'Close menu' : 'Open menu'"
-                                                :class="{ 'admin-menu': isCommentsModerator && !isUserComment(commentData.comment) }"
+                                                v-if="canEditComment(commentData.comment)"
+                                                class="dropdown-item edit-item"
+                                                @click="handleEditComment(commentData.comment)"
                                             >
-                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                                <span>Edit</span>
                                             </button>
 
-                                            <!-- Nolaižamā Izvēlne -->
-                                            <div
-                                                v-if="activeCommentMenu === commentData.comment.id"
-                                                class="comment-dropdown-menu"
-                                                @click.stop=""
-                                                :class="{ 'admin-dropdown': isCommentsModerator && !isUserComment(commentData.comment) }"
+                                            <!-- Poga Dzēst - rādīt visiem komentāriem, kurus lietotājs var dzēst -->
+                                            <button
+                                                v-if="canDeleteComment(commentData.comment)"
+                                                class="dropdown-item delete-item"
+                                                :class="{ 'admin-delete': isCommentsModerator && !isUserComment(commentData.comment) }"
+                                                @click="handleDeleteComment(commentData.comment)"
                                             >
-                                                <!-- Poga Rediģēt — rādīt tikai lietotāja paša komentāriem -->
-                                                <button
-                                                    v-if="canEditComment(commentData.comment)"
-                                                    class="dropdown-item edit-item"
-                                                    @click="handleEditComment(commentData.comment)"
-                                                >
-                                                    <i class="fa-regular fa-pen-to-square"></i>
-                                                    <span>Edit</span>
-                                                </button>
-
-                                                <!-- Poga Dzēst - rādīt visiem komentāriem, kurus lietotājs var dzēst -->
-                                                <button
-                                                    v-if="canDeleteComment(commentData.comment)"
-                                                    class="dropdown-item delete-item"
-                                                    :class="{ 'admin-delete': isCommentsModerator && !isUserComment(commentData.comment) }"
-                                                    @click="handleDeleteComment(commentData.comment)"
-                                                >
-                                                    <i :class="getDeleteButtonInfo(commentData.comment).icon"></i>
-                                                    <span>{{ getDeleteButtonInfo(commentData.comment).label }}</span>
-                                                </button>
-                                            </div>
+                                                <i :class="getDeleteButtonInfo(commentData.comment).icon"></i>
+                                                <span>{{ getDeleteButtonInfo(commentData.comment).label }}</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
+                            <!-- Rādīt rediģēšanas veidlapu, ja šis komentārs tiek rediģēts -->
+                            <div v-if="!isCommentDeleted(commentData.comment) && editingCommentId === commentData.comment.id"
+                                 :class="['edit-comment-form', `edit-form-${commentData.comment.id}`]">
+                                <div class="edit-input-wrapper">
+                                    <textarea
+                                        v-model="editingCommentText"
+                                        :class="['edit-textarea', `edit-textarea-${commentData.comment.id}`]"
+                                        placeholder="Edit your comment..."
+                                        rows="3"
+                                        maxlength="2000"
+                                        @input="autoResizeTextarea"
+                                    />
+                                    <div class="edit-char-count" :class="{ 'near-limit': editingCommentText.length > 1800 }">
+                                        {{ editingCommentText.length }}/2000
+                                    </div>
+                                </div>
+
+                                <div class="edit-actions">
+                                    <button
+                                        @click="cancelEditingComment"
+                                        class="edit-action-button cancel-edit-button"
+                                        :disabled="isSubmittingEdit"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        @click="submitEditedComment(commentData.comment.id)"
+                                        class="edit-action-button submit-edit-button"
+                                        :disabled="!canSubmitEdit(commentData.comment.id)"
+                                        :class="{ 'loading': isSubmittingEdit }"
+                                    >
+                                    <span v-if="isSubmittingEdit">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Saving...
+                                    </span>
+                                        <span v-else>Save changes</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Rādīt normālu komentāru skati, ja tie netiek rediģēti -->
+                            <div v-else>
+                                <!-- Komentāra teksts — rādīt ziņojumu “izdzēsts” tikai viegli izdzēstiem komentāriem -->
                                 <div
                                     :class="['comment-text', {
                                         'truncated': !isCommentExpanded(commentData.comment.id) && needsTruncationWithDeletion(commentData.comment),
@@ -1059,9 +1200,9 @@ const needsTruncationWithDeletion = (comment) => {
                                             :disabled="!canSubmitReply(commentData.comment.id)"
                                             :class="{ 'loading': isSubmittingReply }"
                                         >
-                                            <span v-if="isSubmittingReply">
-                                                <i class="fa-solid fa-spinner fa-spin"></i> Replying...
-                                            </span>
+                                        <span v-if="isSubmittingReply">
+                                            <i class="fa-solid fa-spinner fa-spin"></i> Replying...
+                                        </span>
                                             <span v-else>Reply</span>
                                         </button>
                                     </div>
@@ -1921,6 +2062,143 @@ const needsTruncationWithDeletion = (comment) => {
 
 .dropdown-item.admin-delete i {
     color: #4299e1;
+}
+
+/* rediģēt komentāru stili */
+.edit-comment-form {
+    margin: 0.75rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    animation: slideDown 0.2s ease;
+}
+
+.edit-input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.edit-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.edit-textarea:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+}
+
+.edit-char-count {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.75rem;
+    font-size: 0.8rem;
+    color: #999;
+    background: white;
+    padding: 0 0.25rem;
+    transition: color 0.2s;
+}
+
+.edit-char-count.near-limit {
+    color: #ff6b6b;
+    font-weight: 500;
+}
+
+.edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.edit-action-button {
+    padding: 0.5rem 1.25rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    min-width: 90px;
+    text-align: center;
+}
+
+.cancel-edit-button {
+    background: #f5f5f5;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.cancel-edit-button:hover:not(:disabled) {
+    background: #eaeaea;
+    color: #333;
+}
+
+.cancel-edit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.submit-edit-button {
+    background: #4dabf7;
+    color: white;
+    border: 1px solid #4dabf7;
+}
+
+.submit-edit-button:hover:not(:disabled) {
+    background: #339af0;
+    border-color: #339af0;
+}
+
+.submit-edit-button:disabled {
+    background: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    color: #999;
+}
+
+.submit-edit-button.loading {
+    background: #4dabf7;
+    border-color: #4dabf7;
+    opacity: 0.8;
+}
+
+.submit-edit-button.loading i {
+    margin-right: 0.5rem;
+}
+
+/* rediģētas emblēmas stili */
+.comment-time-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.edited-badge {
+    background: #e7f5ff;
+    color: #1971c2;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: help;
+    border: 1px solid #a5d8ff;
+}
+
+.edited-badge i {
+    font-size: 0.7rem;
 }
 
 /* administratora dzēšanas uznirstošā loga stili */
@@ -2931,6 +3209,28 @@ const needsTruncationWithDeletion = (comment) => {
         padding: 0.15rem 0.4rem;
         margin-left: 0.5rem;
     }
+
+    .edit-comment-form {
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+    }
+
+    .edit-textarea {
+        font-size: 0.9rem;
+        padding: 0.625rem;
+    }
+
+    .edit-action-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        min-width: 80px;
+    }
+
+    .edited-badge {
+        font-size: 0.7rem;
+        padding: 0.1rem 0.4rem;
+        gap: 0.15rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -3049,6 +3349,25 @@ const needsTruncationWithDeletion = (comment) => {
 
     .admin-badge {
         display: none;
+    }
+
+    .edit-actions {
+        flex-direction: column;
+    }
+
+    .edit-action-button {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .comment-time-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .edited-badge {
+        align-self: flex-start;
     }
 }
 

@@ -9,6 +9,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Carbon\Carbon;
 use App\Models\Artist;
 use App\Models\Release;
 use App\Models\Track;
@@ -218,6 +219,38 @@ class ArtistController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Comment added successfully',
+            'comment' => $comment
+        ]);
+    }
+
+    public function updateComment(Artist $artist, ArtistComment $comment, Request $request)
+    {
+        if ($comment->artist_id !== $artist->id) {
+            abort(403, 'Comment does not belong to this artist.');
+        }
+        if ($comment->user_id !== Auth::id()) {
+            abort(403, 'You are not authorized to edit this comment.');
+        }
+        // pārbaudīt, vai 15 minūšu laikā pēc izveides
+        $createdAt = Carbon::parse($comment->created_at);
+        $now = Carbon::now();
+        $minutesDiff = $createdAt->diffInMinutes($now, false);
+        if ($minutesDiff > 15) {
+            abort(403, 'You can only edit comments within 15 minutes of posting.');
+        }
+        // validācija
+        $request->validate([
+            'text' => 'required|string|min:1|max:2000',
+        ]);
+        // atjaunināt komentāru
+        $comment->text = $request->input('text');
+        $comment->edited_at = now();
+        $comment->save();
+        // ielādēt lietotāja relāciju atbildei
+        $comment->load('user');
+        return response()->json([
+            'success' => true,
+            'message' => 'Comment updated successfully',
             'comment' => $comment
         ]);
     }

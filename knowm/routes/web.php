@@ -110,6 +110,8 @@ Route::get('/artists/{artist}/releases', [ArtistController::class, 'showAllRelea
 Route::get('/artists/{artist}/comments', [ArtistController::class, 'getComments']);
 Route::post('/artists/{artist}/comments', [ArtistController::class, 'storeComment'])
     ->middleware('auth');
+Route::put('/artists/{artist}/comments/{comment}', [ArtistController::class, 'updateComment'])
+    ->middleware('auth');
 Route::delete('/artists/{artist}/comments/{comment}', [ArtistController::class, 'deleteComment'])
     ->middleware('auth');
 
