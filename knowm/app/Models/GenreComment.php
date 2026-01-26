@@ -4,13 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Genre;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasThreadedComments;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class GenreComment extends Model
 {
-    use HasFactory, HasThreadedComments;
+    use HasFactory, HasThreadedComments, SoftDeletes;
     protected $table = 'comments_genres';
 
     /**
@@ -21,7 +25,7 @@ class GenreComment extends Model
     protected $fillable = [
         'text',
         'status',
-        'deleted_username',
+//        'deleted_username',
         'user_id',
         'artist_id',
         'parent_id'
@@ -35,6 +39,8 @@ class GenreComment extends Model
     protected $casts = [
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
+        'deleted_at' => 'datetime:Y-m-d H:i:s',
+        'edited_at' => 'datetime:Y-m-d H:i:s'
     ];
 
     /**
@@ -56,32 +62,55 @@ class GenreComment extends Model
     }
 
     /**
-     * Get the artist this comment belongs to.
+     * Get the genre this comment belongs to.
      */
-    public function artist(): BelongsTo
+    public function genre(): BelongsTo
     {
-        return $this->belongsTo(Artist::class);
+        return $this->belongsTo(Genre::class);
     }
 
     /**
-     * Get the display name for the comment author.
+     * Saistība ar citiem komentāriem/atbildēm.
+     * Saņemt atbildes rekursīvi.
+     *
+     * @return HasOneOrMany
      */
-    public function getAuthorNameAttribute(): string
+    public function replies(): HasOneOrMany
     {
-        if ($this->deleted_username) {
-            return $this->deleted_username;
-        }
-        return $this->user?->name ?? '[Deleted User]';
+        return $this->hasMany(self::class, 'parent_id')
+            ->withTrashed()
+            ->with('replies', 'user');
+    }
+
+    /***
+     * Saistība ar vecākkomentāru.
+     * Komentārs var būt kā atbilde uz citu komentāru.
+     *
+     * @return HasOne
+     */
+    public function parentComment(): HasOne
+    {
+        return $this->hasOne(self::class, 'id', 'parent_id');
     }
 
     /**
-     * Mark comment as deleted while preserving metadata.
+     * Pārbauda, vai komentārs ir atbilde.
+     *
+     * @return bool
      */
-    public function softDelete(): bool
+    public function isReply(): bool
     {
-        return $this->update([
-            'deleted_username' => $this->user?->name    // preserve username before deletion
-        ]);
+        return !is_null($this->parent_id);
+    }
+
+    /**
+     * Pārbauda, vai komentārs ir vecākkomentārs.
+     *
+     * @return bool
+     */
+    public function isParentComment(): bool
+    {
+        return is_null($this->parent_id);
     }
 
     /**

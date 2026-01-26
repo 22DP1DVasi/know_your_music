@@ -6,10 +6,10 @@ use App\Enums\CommentDeletedBy;
 use App\Enums\CommentDeleteReason;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Artist;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasThreadedComments;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -117,19 +117,6 @@ class ArtistComment extends Model
     public function isParentComment(): bool
     {
         return is_null($this->parent_id);
-    }
-
-//    public function hasReplies()
-
-    /**
-     * Get the display name for the comment author.
-     */
-    public function getAuthorNameAttribute(): string
-    {
-        if ($this->deleted_username) {
-            return $this->deleted_username;
-        }
-        return $this->user?->name ?? '[Deleted User]';
     }
 
     /**
