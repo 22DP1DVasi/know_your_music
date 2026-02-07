@@ -1,4 +1,7 @@
 import { createI18n } from 'vue-i18n'
+import dayjs from '@/utils/dayjs'
+import { watch } from 'vue';
+
 import enNavbar from './i18n/en/navbar.json'
 import enHome from './i18n/en/home.json'
 import enAdmDashboard from './i18n/en/adm_dashboard.json'
@@ -20,6 +23,7 @@ import lvAdmArtists from './i18n/lv/adm_artists.json'
 import lvArtists from './i18n/lv/artists.json'
 
 const savedLocale = localStorage.getItem('locale') || 'lv'
+dayjs.locale(savedLocale)
 
 const i18n = createI18n({
     legacy: false,
@@ -52,5 +56,15 @@ const i18n = createI18n({
         }
     }
 })
+
+// skatīties lokalizācijas izmaiņas un sinhronizēt dayjs
+watch(
+    () => i18n.global.locale.value,
+    (newLocale) => {
+        dayjs.locale(newLocale)
+        localStorage.setItem('locale', newLocale)
+    },
+    { immediate: true }
+)
 
 export default i18n

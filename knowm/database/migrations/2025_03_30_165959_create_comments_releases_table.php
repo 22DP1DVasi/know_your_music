@@ -13,22 +13,26 @@ return new class extends Migration
     {
         Schema::create('comments_releases', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('release_id');
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
             $table->string('deleted_username', 100)->nullable(); // saglabāt lietotājvārdu pirms lietotāja dzēšanas kā metadatus
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
+            $table->timestamp('edited_at')->nullable();
+
+            $table->softDeletes();
 
             $table->index('user_id');
             $table->index('release_id');
             $table->index('parent_id');
+            $table->index('edited_at');
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('set null');
+                ->onDelete('restrict');
 
             $table->foreign('release_id')
                 ->references('id')

@@ -85,6 +85,14 @@ class Genre extends Model
     }
 
     /**
+     * Relationship with GenreComment model
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(GenreComment::class);
+    }
+
+    /**
      * Get all recommendations packages this genre is in
      */
     public function recommendedIn(): HasMany

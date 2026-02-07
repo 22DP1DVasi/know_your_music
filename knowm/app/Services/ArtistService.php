@@ -5,13 +5,30 @@ namespace App\Services;
 use App\Models\Artist;
 use App\Models\Release;
 use App\Models\Track;
+use App\Models\ArtistComment;
 use Illuminate\Support\Facades\DB;
 
 class ArtistService
 {
-    public function getArtistWithDetails(int $artistId): array
+    /***
+     * Atgriež informāciju par izpildītāju kopā ar noteiktu komentāru lapu.
+     *
+     * @param int $artistId
+     * @param int $commentsPage
+     * @return array
+     */
+    public function getArtistWithDetailsAndComments(int $artistId, int $commentsPage = 1): array
     {
+        // informācija
         $artist = $this->getArtistInfo($artistId);
+        // komentāri
+        $comments = ArtistComment::withTrashed()
+            ->where('artist_id', $artistId)
+            ->whereNull('parent_id')
+            ->with(['user', 'replies'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'page', $commentsPage);
+
         return [
             'artist' => $artist,
             'genres' => $this->getArtistGenres($artistId),
@@ -19,9 +36,22 @@ class ArtistService
             'releases' => $this->getArtistReleasesWithDetails($artistId),
             'total_tracks' => $this->getArtistTracksCount($artistId),
             'total_releases' => $this->getArtistReleasesCount($artistId),
+            'comments' => $comments->items(),
+            'comments_pagination' => [
+                'current_page' => $comments->currentPage(),
+                'last_page' => $comments->lastPage(),
+                'total' => $comments->total(),
+                'per_page' => $comments->perPage(),
+            ]
         ];
     }
 
+    /***
+     * Atgriež informāciju/laukus par izpildītāju.
+     *
+     * @param int $artistId
+     * @return array
+     */
     public function getArtistInfo(int $artistId): array
     {
         $artist = Artist::findOrFail($artistId);

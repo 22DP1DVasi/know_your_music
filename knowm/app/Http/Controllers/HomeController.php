@@ -10,12 +10,7 @@ class HomeController
 {
     public function index()
     {
-        return Inertia::render('HomeView', [
-            'auth' => [
-                'user' => auth()->check() ? auth()->user()->load('roles') : null
-            ],
-            'isAdmin' => auth()->check() && auth()->user()->roles()->where('role_id', 1)->exists()
-        ]);
+        return Inertia::render('HomeView');
     }
 
 }

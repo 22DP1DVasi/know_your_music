@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArtistCommentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -36,7 +37,7 @@ use App\Http\Controllers\GenreController;
 //    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 //});
 
-// pages routes
+// lapas ceļi
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
@@ -72,7 +73,7 @@ Route::get('/community-guidelines', function () {
     return Inertia::render('CommunityGuidelines');
 })->name('community-guidelines');
 
-// searches routes
+// meklēšanas ceļi
 Route::get('/search', [SearchController::class, 'index'])
     ->name('search');
 
@@ -88,54 +89,68 @@ Route::get('/search/tracks', [SearchController::class, 'tracks'])
 Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
     ->name('search.lyrics');
 
-// show pages (profiles)
+// informācijas lapas (izpildītāji, žanri, albumi, dziesmas)
+
+// izpildītāja inf. lapa
 Route::get('/artists/{artist}', [ArtistController::class, 'show'])
     ->name('artists.show');
 
-// page for artist's bio
+// lapa izpildītāja biogrāfijai
 Route::get('/artists/{artist}/bio', [ArtistController::class, 'showBio'])
     ->name('artist.bio');
 
-// page for all tracks for artist
+// izpildītāja visu dziesmu lapa
 Route::get('/artists/{artist}/tracks', [ArtistController::class, 'showAllTracks'])
     ->name('artists.tracks');
 
-// page for all releases for artist
+// izpildītāja visu albumu lapa
 Route::get('/artists/{artist}/releases', [ArtistController::class, 'showAllReleases'])
     ->name('artists.releases');
 
-// release page
+// komentāri izpildītāja lapai
+Route::prefix('artists/{artist}')->group(function () {
+    Route::get('/comments', [ArtistCommentController::class, 'get']);
+    Route::post('/comments', [ArtistCommentController::class, 'store'])
+        ->middleware('auth');
+    Route::put('/comments/{comment}', [ArtistCommentController::class, 'update'])
+        ->middleware('auth');
+    Route::delete('/comments/{comment}', [ArtistCommentController::class, 'destroy'])
+        ->middleware('auth');
+});
+
+// albuma inf. lapa
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
     ->name('releases.show');
 
-// track page
+// dziesmas inf. lapa
 Route::get('/tracks/{track}', [TrackController::class, 'show'])
     ->name('tracks.show');
 
-// genre page
+// žanra inf. lapa
 Route::get('/genres/{genre}', [GenreController::class, 'show'])
     ->name('genres.show');
 
-// page for genre's full description
+// žanra pilna apraksta lapa
 Route::get('/genres/{genre}/description', [GenreController::class, 'showDescription'])
     ->name('genre.description');
 
-// page for all artists associated with a genre
+// lapa priekš visiem izpildītājiem, kuri ir saistīti ar šo žanru
 Route::get('/genres/{slug}/artists', [GenreController::class, 'showAllArtists'])
     ->name('genres.artists');
 
-// page for artists explore
+// lapa izpildītāju izpētīšanai
 Route::get('/explore/artists', [ArtistController::class, 'explore'])
     ->name('explore.artists');
 
-// page for releases explore
+// lapa albumu izpētīšanai
 Route::get('/explore/releases', [ReleaseController::class, 'explore'])
     ->name('explore.releases');
 
-// page for genres explore
+// lapa žanru izpētīšanai
 Route::get('/explore/genres', [GenreController::class, 'explore'])
     ->name('explore.genres');
 
+// lokalizācija / locale
 Route::post('/locale', function (Request $request) {
     $locale = $request->string('locale')->toString();
     if (! in_array($locale, ['en', 'lv'])) {
@@ -167,9 +182,9 @@ Route::middleware('auth')->group(function () {
 
 // artist and release cover images routes
 //Route::middleware(['auth'])->group(function () {
-    Route::post('/artists/{artist}/profile-image', [ArtistController::class, 'uploadProfileImage']);
-    Route::post('/artists/{artist}/banner-image', [ArtistController::class, 'uploadBannerImage']);
-    Route::post('/releases/{release}/cover-image', [ReleaseController::class, 'uploadCoverImage']);
+//    Route::post('/artists/{artist}/profile-image', [ArtistController::class, 'uploadProfileImage']);
+//    Route::post('/artists/{artist}/banner-image', [ArtistController::class, 'uploadBannerImage']);
+//    Route::post('/releases/{release}/cover-image', [ReleaseController::class, 'uploadCoverImage']);
 //});
 
 // admin routes

@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\CommentDeletedBy;
-use App\Enums\CommentDeleteReason;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Artist;
+use App\Models\Genre;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HasThreadedComments;
@@ -14,10 +12,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ArtistComment extends Model
+class GenreComment extends Model
 {
     use HasFactory, HasThreadedComments, SoftDeletes;
-    protected $table = 'comments_artists';
+    protected $table = 'comments_genres';
 
     /**
      * The attributes that are mass assignable.
@@ -28,12 +26,9 @@ class ArtistComment extends Model
         'text',
         'status',
 //        'deleted_username',
-        'deleted_by',
-        'delete_reason',
         'user_id',
         'artist_id',
-        'parent_id',
-        'edited_at'
+        'parent_id'
     ];
 
     /**
@@ -42,8 +37,6 @@ class ArtistComment extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'deleted_by' => CommentDeletedBy::class,
-        'delete_reason' => CommentDeleteReason::class,
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
         'deleted_at' => 'datetime:Y-m-d H:i:s',
@@ -69,11 +62,11 @@ class ArtistComment extends Model
     }
 
     /**
-     * Get the artist this comment belongs to.
+     * Get the genre this comment belongs to.
      */
-    public function artist(): BelongsTo
+    public function genre(): BelongsTo
     {
-        return $this->belongsTo(Artist::class);
+        return $this->belongsTo(Genre::class);
     }
 
     /**
@@ -118,17 +111,6 @@ class ArtistComment extends Model
     public function isParentComment(): bool
     {
         return is_null($this->parent_id);
-    }
-
-    /**
-     * Get the display name for the comment author.
-     */
-    public function getAuthorNameAttribute(): string
-    {
-        if ($this->deleted_username) {
-            return $this->deleted_username;
-        }
-        return $this->user?->name ?? '[Deleted User]';
     }
 
     /**

@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Services\ArtistService;
 use App\Services\ReleaseService;
 use App\Services\TrackService;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Carbon\Carbon;
 use App\Models\Artist;
 use App\Models\Release;
 use App\Models\Track;
 use App\Models\Genre;
+use App\Models\ArtistComment;
 
 class ArtistController extends Controller
 {
@@ -19,6 +22,13 @@ class ArtistController extends Controller
     protected ReleaseService $releaseService;
     protected TrackService $trackService;
 
+    /**
+     * Konstruktors.
+     *
+     * @param ArtistService $artistService
+     * @param ReleaseService $releaseService
+     * @param TrackService $trackService
+     */
     public function __construct(ArtistService $artistService, ReleaseService $releaseService, TrackService $trackService)
     {
         $this->artistService = $artistService;
@@ -26,7 +36,12 @@ class ArtistController extends Controller
         $this->trackService = $trackService;
     }
 
-    public function index()
+    /**
+     * Izpildītāja lapas atveidošana.
+     *
+     * @return \Inertia\Response
+     */
+    public function index(): \Inertia\Response
     {
         return Inertia::render('Admin/Artists/Index', [
             'artists' => Artist::query()
@@ -35,7 +50,12 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function uploadBannerImage(Request $request, Artist $artist)
+    /**
+     * @param Request $request
+     * @param Artist $artist
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadBannerImage(Request $request, Artist $artist): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'image' => 'required|image|mimes:webp|max:5120'
@@ -51,14 +71,19 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function uploadProfileImage(Request $request, Artist $artist)
+    /**
+     * @param Request $request
+     * @param Artist $artist
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function uploadProfileImage(Request $request, Artist $artist): \Illuminate\Http\JsonResponse
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048'
+            'image' => 'required|image|mimes:webp|max:2048'
         ]);
         $path = $request->file('image')->storeAs(
             "artists/{$artist->id}/profile",
-            'profile.jpg',
+            'profile.webp',
             'public'
         );
         return response()->json([
@@ -67,15 +92,32 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function show(Artist $artist)
+    /***
+     * Metode priekš ArtistShow.vue lapas.
+     * Iegūst datus par izpildītāju no datubāzes un daļu no komentāriem, kā arī
+     * autentificēta lietotāja informāciju, un nodod tos lapai.
+     *
+     * @param Artist $artist
+     * @return \Inertia\Response
+     */
+    public function show(Artist $artist): \Inertia\Response
     {
-        $data = $this->artistService->getArtistWithDetails($artist->id);
+        // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
+        $commentsPage = request()->input('comments_page', 1);
+
+        $data = $this->artistService->getArtistWithDetailsAndComments($artist->id, $commentsPage);
         return Inertia::render('Artists/ArtistShow', [
             'artist' => $data
         ]);
     }
 
-    public function showBio($artistSlug)
+    /**
+     * Atveido izpildītāja biogrāfijas lapu.
+     *
+     * @param $artistSlug
+     * @return \Inertia\Response
+     */
+    public function showBio($artistSlug): \Inertia\Response
     {
         $artist = Artist::where('slug', $artistSlug)->firstOrFail();
         return Inertia::render('Artists/ArtistBio', [
@@ -83,7 +125,13 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function showAllReleases($slug)
+    /**
+     * Atveido izpildītāja visu albumu lapu.
+     *
+     * @param $slug
+     * @return \Inertia\Response
+     */
+    public function showAllReleases($slug): \Inertia\Response
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
         $releases = $this->releaseService->getPaginatedReleases(
@@ -98,7 +146,13 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function showAllTracks($slug)
+    /**
+     * Atveido izpildītāja visu dziesmu lapu.
+     *
+     * @param $slug
+     * @return \Inertia\Response
+     */
+    public function showAllTracks($slug): \Inertia\Response
     {
         $artist = Artist::where('slug', $slug)->firstOrFail();
         $tracks = $this->trackService->getPaginatedTracks(
@@ -113,7 +167,11 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function explore(Request $request)
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function explore(Request $request): \Inertia\Response
     {
         $searchQuery = $request->input('q', '');
         $perPage = $request->input('perPage', 24);

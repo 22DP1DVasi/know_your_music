@@ -4,6 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { route } from 'ziggy-js'
 
 /* VUE 3 properties for status message (e.g. success message after resetting password */
 defineProps({
@@ -75,7 +76,7 @@ const goBack = () => {
 
             <div class="signup-text">
                 Remember your password?
-                <Link href="/login" class="signup-link">Log in</Link>
+                <Link :href="route('login')" class="signup-link">Log in</Link>
             </div>
         </div>
     </div>

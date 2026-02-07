@@ -13,22 +13,26 @@ return new class extends Migration
     {
         Schema::create('comments_tracks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('track_id');
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
             $table->string('deleted_username', 100)->nullable(); // saglabāt lietotājvārdu pirms lietotāja dzēšanas kā metadatus
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
+            $table->timestamp('edited_at')->nullable();
 
             $table->index('user_id');
             $table->index('track_id');
             $table->index('parent_id');
+            $table->index('edited_at');
+
+            $table->softDeletes();
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('set null');
+                ->onDelete('restrict');
 
             $table->foreign('track_id')
                 ->references('id')

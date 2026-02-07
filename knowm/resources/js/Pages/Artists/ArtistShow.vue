@@ -1,3 +1,190 @@
+<script setup>
+import { Head, usePage } from '@inertiajs/vue3'
+import Navbar from '@/Components/Navbar.vue'
+import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
+import Footer from '@/Components/Footer.vue'
+import Comments from '@/Components/Comments/Comments.vue'
+import {ref, computed } from 'vue'
+import ColorThief from 'colorthief'
+
+const props = defineProps({
+    artist: {
+        type: Object,
+        required: true,
+        default: () => ({
+            artist: Object,
+            tracks: Array,
+            total_tracks: Number,
+            genres: Array,
+            releases: Array,
+            total_releases: Number,
+        })
+    }
+});
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+
+const heroImage = ref(null);
+const heroStyle = ref({
+    height: '400px',
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0'
+});
+const imageStyle = ref({
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover'
+});
+const isLandscape = ref(false);
+const colorThief = new ColorThief();
+const bioMaxLength = 500;
+const showPlayer = ref(false);
+const currentAudioSource = ref('');
+
+// attēlu apstrāde
+const handleImageLoad = () => {
+    const img = heroImage.value;
+    if (!img) return;
+
+    imageStyle.value.opacity = 1;
+    analyzeImage();
+};
+
+const analyzeImage = () => {
+    const img = heroImage.value;
+    if (!img) return;
+    heroStyle.value = {
+        'height': '400px',
+        'position': 'relative',
+        'overflow': 'hidden',
+        'background-color': '#f0f0f0' // atkāpšanās / fallback
+    };
+    imageStyle.value = {
+        'opacity': '0',
+        'transition': 'opacity 0.3s ease'
+    };
+    isLandscape.value = img.naturalWidth > img.naturalHeight;
+    if (isLandscape.value) {
+        Object.assign(heroStyle.value, {
+            'height': '400px',
+            'position': 'relative',
+            'overflow': 'hidden'
+        });
+        Object.assign(imageStyle.value, {
+            'width': '100%',
+            'height': '100%',
+            'object-fit': 'cover',
+            'object-position': 'center 13%',
+        });
+    } else {
+        try {
+            const dominantColor = colorThief.getColor(img);
+            const bgColor = `rgb(${dominantColor.join(',')})`;
+            const darkerColor = dominantColor.map(c => Math.max(0, c - 30)).join(',');
+            Object.assign(heroStyle.value, {
+                '--gradient-color-left': `rgba(${darkerColor},0.8)`,
+                '--gradient-color-right': `rgba(${darkerColor},0.8)`,
+                'background-color': bgColor,
+                'height': '400px',
+                'position': 'relative',
+                'display': 'flex',
+                'justify-content': 'center',
+                'align-items': 'center'
+            });
+            Object.assign(imageStyle.value, {
+                'max-height': '100%',
+                'max-width': '100%',
+                'object-fit': 'contain',
+                'position': 'relative',
+                'z-index': '2'
+            });
+        } catch (e) {
+            console.error('Error extracting color:', e);
+            Object.assign(heroStyle.value, {
+                '--gradient-color-left': 'rgba(0,0,0,0.3)',
+                '--gradient-color-right': 'rgba(0,0,0,0.3)',
+                'background-color': '#f0f0f0',
+                'height': '400px',
+                'position': 'relative'
+            });
+            Object.assign(imageStyle.value, {
+                'max-height': '100%',
+                'max-width': '100%',
+                'object-fit': 'contain'
+            });
+        }
+    }
+
+    imageStyle.value.opacity = '1';
+};
+
+const truncatedBio = computed(() => {
+    if (!props.artist.artist.biography) return 'There is no background for this artist.';
+    if (props.artist.artist.biography.length <= bioMaxLength) return props.artist.artist.biography;
+    return props.artist.artist.biography.substring(0, bioMaxLength) + '...';
+});
+
+const showReadMore = computed(() => {
+    return props.artist.artist.biography && props.artist.artist.biography.length > bioMaxLength;
+});
+
+const playTrack = (source) => {
+    currentAudioSource.value = source;
+    showPlayer.value = true;
+    setTimeout(() => {
+        document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+};
+
+const closePlayer = () => {
+    showPlayer.value = false;
+    currentAudioSource.value = '';
+};
+
+const redirectToFullBio = (slug) => {
+    window.location.href = `/artists/${slug}/bio`;
+};
+
+const redirectToAllGenres = () => {
+    window.location.href = '#';
+};
+
+const redirectToGenre = (slug) => {
+    window.location.href = `/genres/${slug}`;
+};
+
+const redirectToAllTracks = (slug) => {
+    window.location.href = `/artists/${slug}/tracks`;
+};
+
+const redirectToTrack = (slug) => {
+    window.location.href = `/tracks/${slug}`;
+};
+
+const redirectToRelease = (slug) => {
+    window.location.href = `/releases/${slug}`;
+};
+
+const redirectToAllReleases = (slug) => {
+    window.location.href = `/artists/${slug}/releases`;
+};
+const capitalize = (value) => {
+    if (!value) return 'Unknown';
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+};
+
+const formatDuration = (timeString) => {
+    if (!timeString) return '--:--';
+    const [hours, minutes, seconds] = timeString.split(':');
+    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
+</script>
+
 <template>
     <Head :title="artist.artist.name" />
     <link rel="preload" :href="artist.artist.profile_url" as="image">
@@ -140,12 +327,15 @@
                     </div>
                 </section>
 
-                <section class="artist-comments">
-                    <h2 class="section-title">Comments</h2>
-                    <div class="comments-section">
-                        <!-- Comment components would go here -->
-                    </div>
-                </section>
+                <!-- Komentāru sekcija -->
+                <Comments
+                    :entity-type="'artist'"
+                    :entity-slug="artist.artist.slug"
+                    :entity-id="artist.artist.id"
+                    :parent-key="'artist_id'"
+                    :initial-comments="artist.comments || []"
+                    :initial-pagination="artist.comments_pagination"
+                />
             </div>
 
             <div class="sidebar-space">
@@ -160,190 +350,6 @@
     </main>
     <Footer />
 </template>
-
-<script setup>
-import { Head } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
-import Footer from '@/Components/Footer.vue'
-import { ref, computed } from 'vue'
-import ColorThief from 'colorthief'
-
-const props = defineProps({
-    artist: {
-        type: Object,
-        required: true,
-        default: () => ({
-            artist: Object,
-            tracks: Array,
-            total_tracks: Number,
-            genres: Array,
-            releases: Array,
-            total_releases: Number,
-        })
-    }
-});
-
-const heroImage = ref(null);
-const heroStyle = ref({
-    height: '400px',
-    position: 'relative',
-    overflow: 'hidden',
-    backgroundColor: '#f0f0f0'
-});
-const imageStyle = ref({
-    opacity: 0,
-    transition: 'opacity 0.3s ease',
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover'
-});
-const isLandscape = ref(false);
-const colorThief = new ColorThief();
-const bioMaxLength = 500;
-const showPlayer = ref(false);
-const currentAudioSource = ref('');
-
-// image handling
-const handleImageLoad = () => {
-    const img = heroImage.value;
-    if (!img) return;
-
-    imageStyle.value.opacity = 1;
-    analyzeImage();
-};
-
-const analyzeImage = () => {
-    const img = heroImage.value;
-    if (!img) return;
-    heroStyle.value = {
-        'height': '400px',
-        'position': 'relative',
-        'overflow': 'hidden',
-        'background-color': '#f0f0f0' // fallback
-    };
-    imageStyle.value = {
-        'opacity': '0',
-        'transition': 'opacity 0.3s ease'
-    };
-    isLandscape.value = img.naturalWidth > img.naturalHeight;
-    if (isLandscape.value) {
-        Object.assign(heroStyle.value, {
-            'height': '400px',
-            'position': 'relative',
-            'overflow': 'hidden'
-        });
-        Object.assign(imageStyle.value, {
-            'width': '100%',
-            'height': '100%',
-            'object-fit': 'cover',
-            'object-position': 'center 13%',
-        });
-    } else {
-        try {
-            const dominantColor = colorThief.getColor(img);
-            const bgColor = `rgb(${dominantColor.join(',')})`;
-            const darkerColor = dominantColor.map(c => Math.max(0, c - 30)).join(',');
-            Object.assign(heroStyle.value, {
-                '--gradient-color-left': `rgba(${darkerColor},0.8)`,
-                '--gradient-color-right': `rgba(${darkerColor},0.8)`,
-                'background-color': bgColor,
-                'height': '400px',
-                'position': 'relative',
-                'display': 'flex',
-                'justify-content': 'center',
-                'align-items': 'center'
-            });
-            Object.assign(imageStyle.value, {
-                'max-height': '100%',
-                'max-width': '100%',
-                'object-fit': 'contain',
-                'position': 'relative',
-                'z-index': '2'
-            });
-        } catch (e) {
-            console.error('Error extracting color:', e);
-            Object.assign(heroStyle.value, {
-                '--gradient-color-left': 'rgba(0,0,0,0.3)',
-                '--gradient-color-right': 'rgba(0,0,0,0.3)',
-                'background-color': '#f0f0f0',
-                'height': '400px',
-                'position': 'relative'
-            });
-            Object.assign(imageStyle.value, {
-                'max-height': '100%',
-                'max-width': '100%',
-                'object-fit': 'contain'
-            });
-        }
-    }
-
-    imageStyle.value.opacity = '1';
-};
-
-const truncatedBio = computed(() => {
-    if (!props.artist.artist.biography) return 'There is no background for this artist.';
-    if (props.artist.artist.biography.length <= bioMaxLength) return props.artist.artist.biography;
-    return props.artist.artist.biography.substring(0, bioMaxLength) + '...';
-});
-
-const showReadMore = computed(() => {
-    return props.artist.artist.biography && props.artist.artist.biography.length > bioMaxLength;
-});
-
-const playTrack = (source) => {
-    currentAudioSource.value = source;
-    showPlayer.value = true;
-    setTimeout(() => {
-        document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-};
-
-const closePlayer = () => {
-    showPlayer.value = false;
-    currentAudioSource.value = '';
-};
-
-const redirectToFullBio = (slug) => {
-    //const url = `/artists/${props.artist.artist.slug}/bio`;
-    window.location.href = `/artists/${slug}/bio`;
-};
-
-const redirectToAllGenres = () => {
-    window.location.href = '#';
-};
-
-const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
-};
-
-const redirectToAllTracks = (slug) => {
-    window.location.href = `/artists/${slug}/tracks`;
-};
-
-const redirectToTrack = (slug) => {
-    window.location.href = `/tracks/${slug}`;
-};
-
-const redirectToRelease = (slug) => {
-    window.location.href = `/releases/${slug}`;
-};
-
-const redirectToAllReleases = (slug) => {
-    window.location.href = `/artists/${slug}/releases`;
-};
-const capitalize = (value) => {
-    if (!value) return 'Unknown';
-    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-};
-
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const [hours, minutes, seconds] = timeString.split(':');
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
-};
-
-</script>
 
 <style scoped>
 .artist-page {
@@ -365,7 +371,7 @@ const formatDuration = (timeString) => {
     margin-bottom: 1rem;
     margin-top: 1rem;
     border-radius: 8px;
-    background-color: #f0f0f0; /* fallback color */
+    background-color: #f0f0f0; /* atkāpšanās krāsa */
     --gradient-color-left: rgba(0,0,0,0.3);
     --gradient-color-right: rgba(0,0,0,0.3);
 }
@@ -747,14 +753,6 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
 }
 
-.comments-section {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 3rem;
-}
-
 @media (max-width: 1455px) {
     .artist-page {
         width: 90%;
@@ -863,8 +861,6 @@ const formatDuration = (timeString) => {
     .track-duration {
         flex: 0 0 50px;
     }
-
-
 }
 
 @media (max-width: 480px) {
@@ -911,4 +907,5 @@ const formatDuration = (timeString) => {
         font-size: 0.85rem;
     }
 }
+
 </style>

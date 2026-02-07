@@ -5,7 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistCommentController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/BaseCommentController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Comments/Comments.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Services/ArtistService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/ArtistService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_165959_create_comments_releases_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_165959_create_comments_releases_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_171840_create_comments_artists_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_171840_create_comments_artists_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_172446_create_comments_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_172446_create_comments_tracks_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_12_04_190510_create_comments_genres_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_12_04_190510_create_comments_genres_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/storage/app/public/artists/1/banner/banner.webp" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/storage/app/public/artists/1/banner/banner.webp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,7 +182,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/admin-panel&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/comments&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/lv&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -346,10 +359,44 @@
       <workItem from="1767457259869" duration="233000" />
       <workItem from="1767457543836" duration="186000" />
       <workItem from="1767464341580" duration="6896000" />
+      <workItem from="1767725519759" duration="2286000" />
+      <workItem from="1768044250271" duration="4233000" />
+      <workItem from="1768054011926" duration="167000" />
+      <workItem from="1768054543076" duration="11542000" />
+      <workItem from="1768138554957" duration="8842000" />
+      <workItem from="1768330040681" duration="1295000" />
+      <workItem from="1768646716474" duration="9641000" />
+      <workItem from="1768761423433" duration="766000" />
+      <workItem from="1768847444001" duration="5532000" />
+      <workItem from="1769022306338" duration="4702000" />
+      <workItem from="1769194317813" duration="743000" />
+      <workItem from="1769245704213" duration="3995000" />
+      <workItem from="1769265914905" duration="12984000" />
+      <workItem from="1769345346362" duration="23119000" />
+      <workItem from="1769450968291" duration="4916000" />
+      <workItem from="1769539536380" duration="6248000" />
+      <workItem from="1769546638043" duration="4312000" />
+      <workItem from="1769618186711" duration="765000" />
+      <workItem from="1769855808109" duration="4354000" />
+      <workItem from="1770059391916" duration="2029000" />
+      <workItem from="1770143040529" duration="4584000" />
+      <workItem from="1770232459756" duration="1796000" />
+      <workItem from="1770474538315" duration="8898000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

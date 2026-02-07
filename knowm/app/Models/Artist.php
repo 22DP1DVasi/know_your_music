@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Release;
+use App\Models\Track;
+use App\Models\ArtistComment;
 
 class Artist extends Model
 {
@@ -53,6 +56,11 @@ class Artist extends Model
         static::creating(function ($artist) {
             $artist->slug = $artist->generateUniqueSlug();
         });
+        static::updating(function ($artist) {
+            if ($artist->isDirty('name')) {
+                $artist->slug = $artist->generateUniqueSlug($artist->name);
+            }
+        });
         // create folder for images when this artist is created
         static::created(function ($artist) {
             Storage::makeDirectory("public/artists/{$artist->id}/profile");
@@ -96,11 +104,9 @@ class Artist extends Model
     /**
      * Relationship with ArtistComment model
      */
-    public function comments()
+    public function comments(): HasMany
     {
-        return $this->hasMany(ArtistComment::class)
-            ->visible() // default to only visible comments
-            ->latest();
+        return $this->hasMany(ArtistComment::class);
     }
 
     /**
@@ -148,7 +154,7 @@ class Artist extends Model
     }
 
     /**
-     * Generate a slug
+     * Pielāgot nosaukumu tekstveida identifikatoram
     */
     private function customSlugify(string $name): string
     {
