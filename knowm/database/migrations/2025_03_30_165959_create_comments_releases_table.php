@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('comments_releases', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('release_id');
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
@@ -21,6 +21,8 @@ return new class extends Migration
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
             $table->timestamp('edited_at')->nullable();
+
+            $table->softDeletes();
 
             $table->index('user_id');
             $table->index('release_id');

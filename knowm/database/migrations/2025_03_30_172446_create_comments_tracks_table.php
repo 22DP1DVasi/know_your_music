@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('comments_tracks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('track_id');
             $table->text('text');
             $table->enum('status', ['visible', 'hidden', 'deleted'])->default('visible');
@@ -26,6 +26,8 @@ return new class extends Migration
             $table->index('track_id');
             $table->index('parent_id');
             $table->index('edited_at');
+
+            $table->softDeletes();
 
             $table->foreign('user_id')
                 ->references('id')

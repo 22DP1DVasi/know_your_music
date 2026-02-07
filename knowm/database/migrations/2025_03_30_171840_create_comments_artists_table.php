@@ -26,6 +26,8 @@ return new class extends Migration
             $table->timestamps();
             $table->timestamp('edited_at')->nullable();
 
+            $table->softDeletes();
+
             $table->index('user_id');
             $table->index('artist_id');
             $table->index('parent_id');

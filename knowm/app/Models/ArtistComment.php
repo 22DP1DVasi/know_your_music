@@ -32,7 +32,8 @@ class ArtistComment extends Model
         'delete_reason',
         'user_id',
         'artist_id',
-        'parent_id'
+        'parent_id',
+        'edited_at'
     ];
 
     /**
@@ -117,6 +118,17 @@ class ArtistComment extends Model
     public function isParentComment(): bool
     {
         return is_null($this->parent_id);
+    }
+
+    /**
+     * Get the display name for the comment author.
+     */
+    public function getAuthorNameAttribute(): string
+    {
+        if ($this->deleted_username) {
+            return $this->deleted_username;
+        }
+        return $this->user?->name ?? '[Deleted User]';
     }
 
     /**

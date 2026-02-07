@@ -19,7 +19,7 @@ class ArtistService
      */
     public function getArtistWithDetailsAndComments(int $artistId, int $commentsPage = 1): array
     {
-        // informācijua
+        // informācija
         $artist = $this->getArtistInfo($artistId);
         // komentāri
         $comments = ArtistComment::withTrashed()
