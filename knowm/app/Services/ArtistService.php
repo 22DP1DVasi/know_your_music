@@ -10,51 +10,57 @@ use Illuminate\Support\Facades\DB;
 
 class ArtistService
 {
-    /***
+    /**
      * Atgriež informāciju par izpildītāju kopā ar noteiktu komentāru lapu.
      *
-     * @param int $artistId
+     * @param Artist $artist
      * @param int $commentsPage
      * @return array
      */
-    public function getArtistWithDetailsAndComments(int $artistId, int $commentsPage = 1): array
+    public function getArtistWithDetailsAndComments(Artist $artist, int $commentsPage = 1): array
     {
-        // informācija
-        $artist = $this->getArtistInfo($artistId);
+        // informācija par izpildītāju
+        $artistInfo = $this->getArtistInfo($artist);
         // komentāri
         $comments = ArtistComment::withTrashed()
-            ->where('artist_id', $artistId)
+            ->where('artist_id', $artist->id)
             ->whereNull('parent_id')
             ->with(['user', 'replies'])
             ->orderBy('created_at', 'desc')
             ->paginate(10, ['*'], 'page', $commentsPage);
 
-        return [
-            'artist' => $artist,
-            'genres' => $this->getArtistGenres($artistId),
-            'tracks' => $this->getArtistTracksWithDetails($artistId),
-            'releases' => $this->getArtistReleasesWithDetails($artistId),
-            'total_tracks' => $this->getArtistTracksCount($artistId),
-            'total_releases' => $this->getArtistReleasesCount($artistId),
-            'comments' => $comments->items(),
-            'comments_pagination' => [
-                'current_page' => $comments->currentPage(),
-                'last_page' => $comments->lastPage(),
-                'total' => $comments->total(),
-                'per_page' => $comments->perPage(),
+        // iegūt kopējo komentāru skaitu
+        $totalCommentsCount = ArtistComment::withTrashed()
+            ->where('artist_id', $artist->id)
+            ->count();
+
+        return array_merge(
+            $artistInfo,
+            [
+                'genres' => $this->getArtistGenres($artist),
+                'tracks' => $this->getArtistTracksWithDetails($artist),
+                'releases' => $this->getArtistReleasesWithDetails($artist),
+                'total_tracks' => $this->getArtistTracksCount($artist),
+                'total_releases' => $this->getArtistReleasesCount($artist),
+                'comments' => $comments->items(),
+                'comments_pagination' => [
+                    'current_page' => $comments->currentPage(),
+                    'last_page' => $comments->lastPage(),
+                    'total' => $totalCommentsCount,
+                    'per_page' => $comments->perPage(),
+                ]
             ]
-        ];
+        );
     }
 
     /***
      * Atgriež informāciju/laukus par izpildītāju.
      *
-     * @param int $artistId
+     * @param Artist $artist
      * @return array
      */
-    public function getArtistInfo(int $artistId): array
+    public function getArtistInfo(Artist $artist): array
     {
-        $artist = Artist::findOrFail($artistId);
         return [
             'id' => $artist->id,
             'name' => $artist->name,
@@ -68,20 +74,32 @@ class ArtistService
         ];
     }
 
-    public function getArtistGenres(int $artistId): array
+    /**
+     * Iegūst izpildītāja formatētu žanru sarakstu.
+     *
+     * @param Artist $artist
+     * @return array
+     */
+    public function getArtistGenres(Artist $artist): array
     {
-        return DB::table('artists_genres')
-            ->join('genres', 'artists_genres.genre_id', '=', 'genres.id')
-            ->where('artist_id', $artistId)
-            ->select('genres.name', 'genres.slug')
-            ->get()
+        return $artist->genres
+            ->map(fn ($genre) => [
+                'name' => $genre->name,
+                'slug' => $genre->slug,
+            ])
             ->toArray();
     }
 
-    public function getArtistTracksWithDetails(int $artistId, int $limit = 10): array
+    /**
+     * Iegūst izpildītāja dziesmas ar informāciju par tām.
+     *
+     * @param Artist $artist
+     * @param int $limit
+     * @return array
+     */
+    public function getArtistTracksWithDetails(Artist $artist, int $limit = 10): array
     {
-        /*$artist = Artist::findOrFail($artistId);*/
-        $tracks = $this->getTracksByArtist($artistId, $limit);
+        $tracks = $this->getTracksByArtist($artist, $limit);
         return $tracks->map(function ($track) {
             return [
                 'id' => $track->id,
@@ -96,10 +114,16 @@ class ArtistService
         })->toArray();
     }
 
-    public function getArtistReleasesWithDetails(int $artistId, int $limit = 4): array
+    /**
+     * Iegūst izpildītāja albumus ar informāciju par tiem.
+     *
+     * @param Artist $artist
+     * @param int $limit
+     * @return array
+     */
+    public function getArtistReleasesWithDetails(Artist $artist, int $limit = 4): array
     {
-        return Artist::findOrFail($artistId)
-            ->releases()
+        return $artist->releases()
             ->with(['artists'])
             ->orderBy('release_date', 'desc')
             ->limit($limit)
@@ -109,36 +133,53 @@ class ArtistService
                     'id' => $release->id,
                     'title' => $release->title,
                     'slug' => $release->slug,
-                    'year' => $release->release_date ? date('Y', strtotime($release->release_date)) : null,
+                    'year' => $release->release_date?->format('Y'),
                     'type' => $release->release_type,
                     'cover_url' => $release->cover_url ?? '/images/default-release-cover.webp',
-                    'artists' => $release->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
+                    'artists' => $release->artists->map(fn ($a) => [
+                        'id' => $a->id,
+                        'name' => $a->name,
+                    ]),
                 ];
             })
             ->toArray();
     }
 
-    public function getTracksByArtist(int $artistId, int $limit = 10)
+    /**
+     * @param Artist $artist
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getTracksByArtist(Artist $artist, int $limit = 10):
+    \Illuminate\Database\Eloquent\Collection
     {
-        return Track::whereHas('artists', function($query) use ($artistId) {
-            $query->where('artists.id', $artistId);
+        return Track::whereHas('artists', function($query) use ($artist) {
+            $query->where('artists.id', $artist->id);
         })
             ->with(['artists', 'releases'])
             ->limit($limit)
             ->get();
     }
 
-    public function getArtistTracksCount(int $artistId): int
+    /**
+     * @param Artist $artist
+     * @return int
+     */
+    public function getArtistTracksCount(Artist $artist): int
     {
-        return Track::whereHas('artists', function($query) use ($artistId) {
-            $query->where('artists.id', $artistId);
+        return Track::whereHas('artists', function($query) use ($artist) {
+            $query->where('artists.id', $artist->id);
         })->count();
     }
 
-    public function getArtistReleasesCount(int $artistId): int
+    /**
+     * @param Artist $artist
+     * @return int
+     */
+    public function getArtistReleasesCount(Artist $artist): int
     {
-        return Release::whereHas('artists', function($query) use ($artistId) {
-            $query->where('artists.id', $artistId);
+        return Release::whereHas('artists', function($query) use ($artist) {
+            $query->where('artists.id', $artist->id);
         })->count();
     }
 }

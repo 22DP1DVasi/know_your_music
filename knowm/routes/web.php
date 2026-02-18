@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ArtistCommentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -16,6 +15,8 @@ use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ReleaseController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\ArtistCommentController;
+use App\Http\Controllers\ReleaseCommentController;
 //use Illuminate\Support\Facades\App;
 
 //Route::get('/', function () {
@@ -121,6 +122,17 @@ Route::prefix('artists/{artist}')->group(function () {
 // albuma inf. lapa
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
     ->name('releases.show');
+
+// komentāri albuma lapai
+Route::prefix('releases/{release}')->group(function () {
+    Route::get('/comments', [ReleaseCommentController::class, 'get']);
+    Route::post('/comments', [ReleaseCommentController::class, 'store'])
+        ->middleware('auth');
+    Route::put('/comments/{comment}', [ReleaseCommentController::class, 'update'])
+        ->middleware('auth');
+    Route::delete('/comments/{comment}', [ReleaseCommentController::class, 'destroy'])
+        ->middleware('auth');
+});
 
 // dziesmas inf. lapa
 Route::get('/tracks/{track}', [TrackController::class, 'show'])

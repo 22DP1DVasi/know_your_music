@@ -3,67 +3,123 @@
 namespace App\Services;
 
 use App\Models\Artist;
-use App\Models\Genre;
 use App\Models\Release;
-use App\Models\Track;
-use Illuminate\Support\Facades\DB;
+use App\Models\ReleaseComment;
 
 class ReleaseService
 {
-    public function getReleaseWithDetails($slug)
+    /**
+     * Iegūst informāciju par albumu kopā ar noteiktu komentāru lapu.
+     *
+     * @param Release $release
+     * @param int $commentsPage
+     * @return array
+     */
+    public function getReleaseWithDetailsAndComments(Release $release, int $commentsPage = 1): array
     {
-        return Release::with([
-            'artists' => function($query) {
-                $query->select('artists.id', 'artists.name', 'artists.slug');
-            },
-            'genres' => function($query) {
-                $query->select('genres.id', 'genres.name', 'genres.slug');
-            },
-            'tracks' => function($query) {
-                $query->with(['artists' => function($q) {
-                    $q->select('artists.id', 'artists.name', 'artists.slug');
-                }])
-                    ->select('tracks.*')
-                    ->orderBy('tracks_releases.track_position');
-            }
-        ])
-            ->withCount('tracks')
-            ->where('slug', $slug)
-            ->firstOrFail();
+        // informācija par albumu
+        $releaseData = $this->getReleaseWithDetails($release);
+        // komentāri
+        $comments = ReleaseComment::withTrashed()
+            ->where('release_id', $releaseData->id)
+            ->whereNull('parent_id')
+            ->with(['user', 'replies'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'page', $commentsPage);
+
+        // iegūt visu komentāru skaitu, ieskaitot atbildes
+        $totalCommentsCount = ReleaseComment::withTrashed()
+            ->where('release_id', $releaseData->id)
+            ->count();
+
+        return [
+            // Main release data
+            'id' => $releaseData->id,
+            'title' => $releaseData->title,
+            'slug' => $releaseData->slug,
+            'cover_url' => $releaseData->cover_url,
+            'type' => $releaseData->type,
+            'year' => $releaseData->year,
+            'description' => $releaseData->description,
+            'release_date' => $releaseData->release_date,
+            'release_type' => $releaseData->release_type,
+
+            'artists' => $releaseData->artists,
+            'genres' => $releaseData->genres,
+            'tracks' => $releaseData->tracks,
+            'comments' => $comments->items(),
+            'similar_releases' => $this->getSimilarReleases($release),
+
+            'comments_pagination' => [
+                'current_page' => $comments->currentPage(),
+                'last_page' => $comments->lastPage(),
+                'total' => $totalCommentsCount,
+                'per_page' => $comments->perPage(),
+            ]
+        ];
     }
 
-    public function getSimilarReleases($releaseId, $limit = 5)
+    /**
+     * @param Release $release
+     * @return Release
+     */
+    public function getReleaseWithDetails(Release $release): Release
     {
-        $release = Release::findOrFail($releaseId);
-        // get releases with the same primary genre
-        return Release::with(['artists'])
-            ->whereHas('genres', function($query) use ($release) {
-                $query->whereIn('genres.id', $release->genres->pluck('id'));
+        return $release->load([
+            'artists:id,name,slug',
+            'genres:id,name,slug',
+            'tracks' => function ($query) {
+                $query->orderBy('tracks_releases.track_position')
+                    ->with('artists:id,name,slug');
+            }
+        ])->loadCount('tracks');
+    }
+
+    /**
+     * @param Release $release
+     * @param int $limit
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
+    public function getSimilarReleases(Release $release, int $limit = 5)
+    {
+        // Eager ielādēt relācijas modelī, ja tās vēl nav Eager ielādētas
+        $release->loadMissing('genres');
+        $genreIds = $release->genres->pluck('id');
+        return Release::with('artists:id,name,slug')
+            ->whereHas('genres', function ($query) use ($genreIds) {
+                $query->whereIn('genres.id', $genreIds);
             })
-            ->where('id', '!=', $releaseId)
+            ->where('id', '!=', $release->id)
             ->where('release_type', $release->release_type)
             ->orderBy('release_date', 'desc')
             ->limit($limit)
             ->get()
-            ->map(function($release) {
+            ->map(function ($similarRelease) {
                 return [
-                    'id' => $release->id,
-                    'title' => $release->title,
-                    'slug' => $release->slug,
-                    'cover_url' => $release->cover_url,
-                    'release_type' => $release->release_type
+                    'id' => $similarRelease->id,
+                    'title' => $similarRelease->title,
+                    'slug' => $similarRelease->slug,
+                    'cover_url' => $similarRelease->cover_url,
+                    'release_type' => $similarRelease->release_type,
                 ];
             });
     }
 
-    public function getPaginatedReleases($artistSlug, $perPage = 20, $search = null)
+    /**
+     * @param Artist $artist
+     * @param int $perPage
+     * @param string|null $search
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getPaginatedReleases(Artist $artist, int $perPage = 20, ?string $search = null):
+    \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        $artist = Artist::where('slug', $artistSlug)->firstOrFail();
-        return Release::with(['artists', 'tracks'])
-            ->whereHas('artists', function($query) use ($artist) {
-                $query->where('artist_id', $artist->id);
-            })
-            ->when($search, function($query, $search) {
+        return $artist->releases()
+            ->with([
+                'artists:id,name,slug',
+                'tracks'
+            ])
+            ->when($search, function ($query, $search) {
                 $query->where('title', 'like', "%{$search}%");
             })
             ->withCount('tracks')
@@ -71,7 +127,7 @@ class ReleaseService
             ->paginate($perPage);
     }
 
-    public function formatForView($paginator)
+    public function formatForView($paginator): array
     {
         return [
             'releases' => $paginator->items(),

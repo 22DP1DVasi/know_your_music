@@ -588,6 +588,7 @@ const confirmDeleteComment = async () => {
             const { delete_type, deleted_at } = response.data
             if (delete_type === 'hard') {
                 removeCommentFromTree(comments.value, commentToDelete.value.id)
+                commentsPagination.value.total -= 1
             } else {
                 markCommentAsDeleted(
                     comments.value,

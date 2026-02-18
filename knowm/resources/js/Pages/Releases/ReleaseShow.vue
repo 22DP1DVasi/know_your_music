@@ -2,25 +2,39 @@
 import { Head, router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import Footer from '@/Components/Footer.vue'
+import Comments from '@/Components/Comments/Comments.vue'
 import { ref, computed } from 'vue'
 import ColorThief from 'colorthief'
 import dayjs from 'dayjs';
 
+// plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
     release: {
         type: Object,
         required: true,
         default: () => ({
-            id: Number,
-            title: String,
-            cover_url: String,
-            release_date: String,
-            description: String,
-            release_type: String,
-            artists: Array,
-            genres: Array,
-            tracks: Array,
-            similar_releases: Array
+            id: null,
+            title: '',
+            slug: '',
+            cover_url: '',
+            type: '',
+            year: null,
+            description: '',
+            release_date: null,
+            release_type: '',
+
+            artists: [],
+            genres: [],
+            tracks: [],
+            comments: [],
+            similar_releases: [],
+
+            comments_pagination: {
+                current_page: 1,
+                last_page: 1,
+                total: 0,
+                per_page: 10
+            }
         })
     }
 });
@@ -224,12 +238,15 @@ const redirectToTrack = (slug) => {
                         </div>
                     </section>
 
-                    <section class="release-comments">
-                        <h2 class="section-title">Comments</h2>
-                        <div class="comments-section">
-                            <!-- Comment components would go here -->
-                        </div>
-                    </section>
+                    <!-- Komentāru sekcija -->
+                    <Comments
+                        :entity-type="'release'"
+                        :entity-slug="release.slug"
+                        :entity-id="release.id"
+                        :parent-key="'artist_id'"
+                        :initial-comments="release.comments || []"
+                        :initial-pagination="release.comments_pagination"
+                    />
                 </div>
             </div>
 

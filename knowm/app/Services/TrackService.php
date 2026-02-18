@@ -77,9 +77,9 @@ class TrackService
         ];
     }
 
-    public function getPaginatedTracks($artistSlug, $perPage = 40, $search = null)
+    public function getPaginatedTracks(Artist $artist, $perPage = 40, $search = null)
     {
-        $artist = Artist::where('slug', $artistSlug)->firstOrFail();
+//        $artist = Artist::where('slug', $artistSlug)->firstOrFail();
         return Track::with(['releases', 'artists'])
             ->whereHas('artists', function($query) use ($artist) {
                 $query->where('artist_id', $artist->id);
