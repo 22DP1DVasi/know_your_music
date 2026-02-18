@@ -33,8 +33,7 @@ class ArtistController extends Controller
 
     /***
      * Metode priekš ArtistShow.vue lapas.
-     * Iegūst datus par izpildītāju no datubāzes un daļu no komentāriem, kā arī
-     * autentificēta lietotāja informāciju, un nodod tos lapai.
+     * Iegūst datus par izpildītāju no datubāzes un daļu no komentāriem un nodod tos lapai.
      *
      * @param Artist $artist
      * @return \Inertia\Response

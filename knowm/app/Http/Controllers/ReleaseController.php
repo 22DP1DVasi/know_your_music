@@ -14,12 +14,24 @@ class ReleaseController extends Controller
 {
     protected ReleaseService $releaseService;
 
+    /**
+     * Konstruktors.
+     *
+     * @param ReleaseService $releaseService
+     */
     public function __construct(ReleaseService $releaseService)
     {
         $this->releaseService = $releaseService;
     }
 
-    public function show(Release $release)
+    /**
+     * Metode priekš ReleaseShow.vue lapas.
+     * Iegūst datus par albumu no datubāzes un daļu no komentāriem un nodod tos lapai.
+     *
+     * @param Release $release
+     * @return \Inertia\Response
+     */
+    public function show(Release $release): \Inertia\Response
     {
         // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
         $commentsPage = request()->input('comments_page', 1);
@@ -29,7 +41,11 @@ class ReleaseController extends Controller
         ]);
     }
 
-    public function explore(Request $request)
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function explore(Request $request): \Inertia\Response
     {
         $searchQuery = $request->input('q', '');
         $perPage = $request->input('perPage', 24);

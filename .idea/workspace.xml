@@ -5,20 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseCommentController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/TrackCommentController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistCommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistCommentController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/BaseCommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/BaseCommentController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/ArtistComment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/ReleaseComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/ReleaseComment.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/ArtistService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/ArtistService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/ReleaseService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/ReleaseService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/TrackController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/TrackController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Track.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Track.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Models/TrackComment.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/TrackComment.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Services/TrackService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/TrackService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Comments/Comments.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Comments/Comments.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/composables/useDate.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/composables/useDate.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -393,7 +389,7 @@
       <workItem from="1771355173093" duration="238000" />
       <workItem from="1771355555321" duration="5769000" />
       <workItem from="1771362415431" duration="49000" />
-      <workItem from="1771405177229" duration="4140000" />
+      <workItem from="1771405177229" duration="11189000" />
     </task>
     <servers />
   </component>

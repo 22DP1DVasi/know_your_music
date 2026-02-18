@@ -6,68 +6,78 @@ use App\Models\Artist;
 use App\Models\Release;
 use App\Models\Track;
 use App\Models\Lyric;
+use App\Models\TrackComment;
 
 class TrackService
 {
-    public function getTrackWithDetails(Track $track)
+    /**
+     * Iegūst informāciju par dziesmu kopā ar noteiktu komentāru lapu.
+     *
+     * @param Track $track
+     * @param int $commentsPage
+     * @return array
+     */
+    public function getTrackWithDetailsAndComments(Track $track, int $commentsPage = 1): array
     {
+        // informācija par dziesmu
         $track->load([
-            'artists',
-            'genres',
-            'releases' => function($query) {
+            'artists:id,name,slug',
+            'genres:id,name,slug',
+            'releases' => function ($query) {
                 $query->select('releases.id', 'title', 'slug', 'release_date')
                     ->orderBy('release_date');
             }
         ]);
+        // saistīto albumu saraksts kopā ar attēliem
         $track->releases->each->append('cover_url');
+        // dziesmas teksts
         $lyrics = $track->lyrics()->firstOrNew([]);
-        return [
-            'track' => $this->formatTrackData($track),
-            'lyrics' => $this->formatLyricsData($lyrics)
-        ];
-    }
+        // komentāri
+        $comments = TrackComment::withTrashed()
+            ->where('track_id', $track->id)
+            ->whereNull('parent_id')
+            ->with(['user', 'replies'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'page', $commentsPage);
 
-    protected function formatTrackData(Track $track)
-    {
-        // format duration from TIME to H:i:s
-        $duration = $track->duration ? $track->duration->format('H:i:s') : null;
+        // iegūt visu komentāru skaitu, ieskaitot atbildes
+        $totalCommentsCount = TrackComment::withTrashed()
+            ->where('track_id', $track->id)
+            ->count();
+
         return [
             'id' => $track->id,
             'title' => $track->title,
             'slug' => $track->slug,
-            'duration' => $duration,
-            'description' => $track->description,
             'cover_url' => $track->cover_url,
+            'duration' => $track->duration,
+            'description' => $track->description,
             'release_date' => $track->release_date,
-            'artists' => $track->artists->map(function($artist) {
-                return [
-                    'id' => $artist->id,
-                    'name' => $artist->name,
-                    'slug' => $artist->slug,
-                    'role' => $artist->pivot->role ?? null
-                ];
-            }),
-            'genres' => $track->genres->map(function($genre) {
-                return [
-                    'id' => $genre->id,
-                    'name' => $genre->name,
-                    'slug' => $genre->slug
-                ];
-            }),
-            'releases' => $track->releases->map(function($release) {
-                return [
-                    'id' => $release->id,
-                    'title' => $release->title,
-                    'slug' => $release->slug,
-                    'cover_url' => $release->cover_url,
-                    'release_date' => $release->release_date,
-                    'track_position' => $release->pivot->track_position
-                ];
-            })
+
+            'artists' => $track->artists,
+            'genres' => $track->genres,
+            'releases' => $track->releases,
+
+            'lyrics' => $this->formatLyricsData($lyrics),
+
+            'comments' => $comments->items(),
+
+            'comments_pagination' => [
+                'current_page' => $comments->currentPage(),
+                'last_page' => $comments->lastPage(),
+                'total' => $totalCommentsCount,
+                'per_page' => $comments->perPage(),
+            ]
         ];
     }
 
-    protected function formatLyricsData(Lyric $lyrics)
+    /**
+     * Formatē dziesmas teksta datus.
+     *
+     * @param Lyric $lyrics
+     * @return array
+     */
+    protected function formatLyricsData(Lyric $lyrics): array
     {
         return [
             'id' => $lyrics->id ?? null,
@@ -77,7 +87,13 @@ class TrackService
         ];
     }
 
-    public function getPaginatedTracks(Artist $artist, $perPage = 40, $search = null)
+    /**
+     * @param Artist $artist
+     * @param $perPage
+     * @param $search
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getPaginatedTracks(Artist $artist, $perPage = 40, $search = null): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
 //        $artist = Artist::where('slug', $artistSlug)->firstOrFail();
         return Track::with(['releases', 'artists'])
@@ -91,7 +107,11 @@ class TrackService
             ->paginate($perPage);
     }
 
-    public function formatForView($paginator)
+    /**
+     * @param $paginator
+     * @return array
+     */
+    public function formatForView($paginator): array
     {
         return [
             'tracks' => $paginator->items(),

@@ -110,11 +110,11 @@ class Track extends Model
     }
 
     /**
-     * Get the formated duration (mm:ss)
+     * Get the formated duration (H:i:s)
      */
-    public function getFormattedDurationAttribute(): string
+    public function getDurationHmsAttribute()
     {
-        return $this->duration->format('i:s');
+        return gmdate('H:i:s', $this->duration);
     }
 
     /**
@@ -149,7 +149,7 @@ class Track extends Model
     /**
      * Get a slug value (used as route key)
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }

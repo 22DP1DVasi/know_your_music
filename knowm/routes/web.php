@@ -17,6 +17,7 @@ use App\Http\Controllers\TrackController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ArtistCommentController;
 use App\Http\Controllers\ReleaseCommentController;
+use App\Http\Controllers\TrackCommentController;
 //use Illuminate\Support\Facades\App;
 
 //Route::get('/', function () {
@@ -137,6 +138,17 @@ Route::prefix('releases/{release}')->group(function () {
 // dziesmas inf. lapa
 Route::get('/tracks/{track}', [TrackController::class, 'show'])
     ->name('tracks.show');
+
+// komentāri dziesmas lapai
+Route::prefix('tracks/{track}')->group(function () {
+    Route::get('/comments', [TrackCommentController::class, 'get']);
+    Route::post('/comments', [TrackCommentController::class, 'store'])
+        ->middleware('auth');
+    Route::put('/comments/{comment}', [TrackCommentController::class, 'update'])
+        ->middleware('auth');
+    Route::delete('/comments/{comment}', [TrackCommentController::class, 'destroy'])
+        ->middleware('auth');
+});
 
 // žanra inf. lapa
 Route::get('/genres/{genre}', [GenreController::class, 'show'])

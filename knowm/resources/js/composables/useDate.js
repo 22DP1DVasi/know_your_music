@@ -54,9 +54,23 @@ export function useDate() {
         return diff < 0 ? 0 : diff;
     };
 
+    const formatDuration = (time) => {
+        if (!time) return '';
+        // parsēt kā UTC, lai izvairītos no laika joslas maiņām
+        const parsed = dayjs.utc(time);
+        const hours = parsed.hour();
+        const minutes = parsed.minute().toString().padStart(2, '0');
+        const seconds = parsed.second().toString().padStart(2, '0');
+        if (hours === 0) {
+            return `${minutes}:${seconds}`;
+        }
+        return `${hours.toString().padStart(2, '0')}:${minutes}:${seconds}`;
+    };
+
     return {
         formatDateLL,
         fromNow,
         diffInMinutes,
+        formatDuration
     };
 }

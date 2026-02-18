@@ -44,13 +44,6 @@ class TrackComment extends Model
     ];
 
     /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['author_name'];
-
-    /**
      * Get the user who made the comment.
      */
     public function user(): BelongsTo
