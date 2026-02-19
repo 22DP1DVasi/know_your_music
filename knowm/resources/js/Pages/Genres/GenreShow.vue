@@ -1,202 +1,42 @@
-<template>
-    <Head :title="genre.name" />
-    <Navbar />
-    <main class="genre-page flex-1">
-        <div class="genre-hero" :style="heroStyle">
-            <div class="hero-gradient" v-if="!isLandscape"></div>
-            <div class="hero-image-container">
-                <img
-                    :src="genre.profile_url"
-                    :alt="genre.name"
-                    class="hero-image"
-                    ref="heroImage"
-                    @load="handleImageLoad"
-                    :style="imageStyle"
-                    loading="eager"
-                >
-            </div>
-            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>
-        </div>
-
-        <div class="genre-content">
-            <div class="main-content">
-<!--                <section class="genre-description">-->
-<!--                    <h2 class="section-title">About</h2>-->
-<!--                    <div class="description-text">-->
-<!--                        <p v-if="genre.description">{{ genre.description }}</p>-->
-<!--                        <p v-else>No description available for this genre.</p>-->
-
-<!--                        <div class="origin-info">-->
-<!--                            <p><strong>Origin Year:</strong> {{ genre.origin_year || "Not specified" }}</p>-->
-<!--                            <p><strong>Origin Country:</strong> {{ genre.origin_country || "Not specified" }}</p>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </section>-->
-
-                <section class="genre-description">
-                    <h2 class="section-title">About</h2>
-                    <div class="description-text" v-html="truncatedDescription"></div>
-                        <button
-                            v-if="showReadMore"
-                            @click="redirectToFullDescription(genre.slug)"
-                            class="read-more-button"
-                        >
-                            Read more
-                        </button>
-                </section>
-
-                <section class="genre-artists">
-                    <div class="genre-artists-header">
-                        <h2 class="section-title">Representative Artists</h2>
-                        <button
-                            v-if="totalArtists > artists.length"
-                            class="see-all-button"
-                            @click="redirectToAllArtists(genre.slug)"
-                        >
-                            See all {{ totalArtists }} artists
-                        </button>
-                    </div>
-                    <div class="artist-list">
-                        <div v-for="artist in artists" :key="artist.id" class="artist-card" @click="redirectToArtist(artist.slug)">
-                            <img :src="artist.profile_url" class="artist-image" :alt="artist.name">
-                            <div class="artist-info">
-                                <h3>{{ artist.name }}</h3>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="genre-tracks">
-                    <div class="genre-tracks-header">
-                        <h2 class="section-title">Popular Tracks</h2>
-                        <button
-                            v-if="totalTracks > tracks.length"
-                            class="see-all-button"
-                            @click="redirectToAllTracks(genre.slug)"
-                        >
-                            See all {{ totalTracks }} tracks
-                        </button>
-                    </div>
-                    <div class="track-list">
-                        <div v-for="(track, index) in tracks" :key="track.id" class="track-card">
-                            <span class="track-number">{{ index + 1 }}</span>
-                            <img :src="track.cover_url" class="track-image" :alt="track.title">
-                            <div class="track-info">
-                                <h3>
-                                    <a @click="redirectToTrack(track.slug)" class="track-title">
-                                        {{ track.title }}
-                                    </a>
-                                </h3>
-                                <p class="track-artist" @click="redirectToArtist(track.artist_slug)">{{ track.artist_name }}</p>
-                            </div>
-                            <button
-                                v-if="track.audio_source"
-                                @click="playTrack(track.audio_source)"
-                                class="play-button"
-                            >
-                                <i class="fa-regular fa-circle-play"></i>
-                            </button>
-                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="genre-releases">
-                    <div class="genre-releases-header">
-                        <h2 class="section-title">Notable Releases</h2>
-                        <button
-                            v-if="totalReleases > releases.length"
-                            class="see-all-button"
-                            @click="redirectToAllReleases(genre.slug)"
-                        >
-                            See all {{ totalReleases }} releases
-                        </button>
-                    </div>
-                    <div class="release-results">
-                        <div
-                            v-for="release in releases"
-                            :key="release.id"
-                            class="release-card"
-                            @click="redirectToRelease(release.slug)"
-                        >
-                            <div class="image-wrapper">
-                                <img :src="release.cover_url" :alt="release.title">
-                            </div>
-                            <div class="release-info">
-                                <h3>{{ release.title }}</h3>
-                                <p class="release-artist" @click="redirectToArtist(release.artist_slug)">{{ release.artist_name }}</p>
-                                <p class="release-year">{{ release.year }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="genre-comments">
-                    <h2 class="section-title">Comments</h2>
-                    <div class="comments-section">
-                        <!-- Comment components would go here -->
-                    </div>
-                </section>
-            </div>
-
-            <div class="sidebar-space">
-                <!-- Future content like "Similar Artists" will go here -->
-            </div>
-        </div>
-        <AudioPlayer
-            :source="currentAudioSource"
-            :show="showPlayer"
-            @close="closePlayer"
-        />
-    </main>
-    <Footer />
-</template>
-
 <script setup>
-import { Head } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
+import { Head } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
-import Footer from '@/Components/Footer.vue'
-import { ref, computed } from 'vue'
-import ColorThief from 'colorthief'
+import Footer from '@/Components/Footer.vue';
+import Comments from '@/Components/Comments/Comments.vue';
+import { ref, computed } from 'vue';
+import ColorThief from 'colorthief';
 
+// plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
     genre: {
         type: Object,
         required: true,
         default: () => ({
-            id: Number,
-            name: String,
-            slug: String,
-            description: String,
-            origin_year: String,
-            origin_country: String,
-            profile_url: String
+            id: null,
+            name: '',
+            slug: '',
+            description: '',
+            origin_year: '',
+            origin_country: '',
+            profile_url: '',
+
+            artists: [],
+            tracks: [],
+            releases: [],
+            comments: [],
+
+            total_artists: 0,
+            total_tracks: 0,
+            total_releases: 0,
+
+            comments_pagination: {
+                current_page: 1,
+                last_page: 1,
+                total: 0,
+                per_page: 10
+            }
         })
-    },
-    artists: {
-        type: Array,
-        default: () => []
-    },
-    totalArtists: {
-        type: Number,
-        default: 0
-    },
-    tracks: {
-        type: Array,
-        default: () => []
-    },
-    totalTracks: {
-        type: Number,
-        default: 0
-    },
-    releases: {
-        type: Array,
-        default: () => []
-    },
-    totalReleases: {
-        type: Number,
-        default: 0
     }
 });
 
@@ -359,6 +199,163 @@ const formatDuration = (timeString) => {
 
 </script>
 
+<template>
+    <Head :title="genre.name" />
+    <Navbar />
+    <main class="genre-page flex-1">
+        <div class="genre-hero" :style="heroStyle">
+            <div class="hero-gradient" v-if="!isLandscape"></div>
+            <div class="hero-image-container">
+                <img
+                    :src="genre.profile_url"
+                    :alt="genre.name"
+                    class="hero-image"
+                    ref="heroImage"
+                    @load="handleImageLoad"
+                    :style="imageStyle"
+                    loading="eager"
+                >
+            </div>
+            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>
+        </div>
+
+        <div class="genre-content">
+            <div class="main-content">
+<!--                <section class="genre-description">-->
+<!--                    <h2 class="section-title">About</h2>-->
+<!--                    <div class="description-text">-->
+<!--                        <p v-if="genre.description">{{ genre.description }}</p>-->
+<!--                        <p v-else>No description available for this genre.</p>-->
+
+<!--                        <div class="origin-info">-->
+<!--                            <p><strong>Origin Year:</strong> {{ genre.origin_year || "Not specified" }}</p>-->
+<!--                            <p><strong>Origin Country:</strong> {{ genre.origin_country || "Not specified" }}</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </section>-->
+
+                <section class="genre-description">
+                    <h2 class="section-title">About</h2>
+                    <div class="description-text" v-html="truncatedDescription"></div>
+                        <button
+                            v-if="showReadMore"
+                            @click="redirectToFullDescription(genre.slug)"
+                            class="read-more-button"
+                        >
+                            Read more
+                        </button>
+                </section>
+
+                <section class="genre-artists">
+                    <div class="genre-artists-header">
+                        <h2 class="section-title">Representative Artists</h2>
+                        <button
+                            v-if="genre.total_artists > genre.artists.length"
+                            class="see-all-button"
+                            @click="redirectToAllArtists(genre.slug)"
+                        >
+                            See all {{ genre.total_artists }} artists
+                        </button>
+                    </div>
+                    <div class="artist-list">
+                        <div v-for="artist in genre.artists" :key="artist.id" class="artist-card" @click="redirectToArtist(artist.slug)">
+                            <img :src="artist.profile_url" class="artist-image" :alt="artist.name">
+                            <div class="artist-info">
+                                <h3>{{ artist.name }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="genre-tracks">
+                    <div class="genre-tracks-header">
+                        <h2 class="section-title">Popular Tracks</h2>
+                        <button
+                            v-if="genre.total_tracks > genre.tracks.length"
+                            class="see-all-button"
+                            @click="redirectToAllTracks(genre.slug)"
+                        >
+                            See all {{ genre.total_tracks }} tracks
+                        </button>
+                    </div>
+                    <div class="track-list">
+                        <div v-for="(track, index) in genre.tracks" :key="track.id" class="track-card">
+                            <span class="track-number">{{ index + 1 }}</span>
+                            <img :src="track.cover_url" class="track-image" :alt="track.title">
+                            <div class="track-info">
+                                <h3>
+                                    <a @click="redirectToTrack(track.slug)" class="track-title">
+                                        {{ track.title }}
+                                    </a>
+                                </h3>
+                                <p class="track-artist" @click="redirectToArtist(track.artist_slug)">{{ track.artist_name }}</p>
+                            </div>
+                            <button
+                                v-if="track.audio_source"
+                                @click="playTrack(track.audio_source)"
+                                class="play-button"
+                            >
+                                <i class="fa-regular fa-circle-play"></i>
+                            </button>
+                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="genre-releases">
+                    <div class="genre-releases-header">
+                        <h2 class="section-title">Notable Releases</h2>
+                        <button
+                            v-if="genre.total_releases > genre.releases.length"
+                            class="see-all-button"
+                            @click="redirectToAllReleases(genre.slug)"
+                        >
+                            See all {{ genre.total_releases }} releases
+                        </button>
+                    </div>
+                    <div class="release-results">
+                        <div
+                            v-for="release in genre.releases"
+                            :key="release.id"
+                            class="release-card"
+                            @click="redirectToRelease(release.slug)"
+                        >
+                            <div class="image-wrapper">
+                                <img :src="release.cover_url" :alt="release.title">
+                            </div>
+                            <div class="release-info">
+                                <h3>{{ release.title }}</h3>
+                                <p class="release-artist" @click="redirectToArtist(release.artist_slug)">{{ release.artist_name }}</p>
+                                <p class="release-year">{{ release.year }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Komentāru sekcija -->
+                <Comments
+                    :entity-type="'genre'"
+                    :entity-slug="genre.slug"
+                    :entity-id="Number(genre.id)"
+                    :parent-key="'genre_id'"
+                    :initial-comments="genre.comments || []"
+                    :initial-pagination="genre.comments_pagination"
+                />
+            </div>
+
+            <div class="sidebar-space">
+                <!-- Future content like "Similar Artists" will go here -->
+            </div>
+        </div>
+        <AudioPlayer
+            :source="currentAudioSource"
+            :show="showPlayer"
+            @close="closePlayer"
+        />
+    </main>
+    <Footer />
+</template>
+
 <style scoped>
 .genre-page {
     max-width: 90%;
@@ -379,7 +376,7 @@ const formatDuration = (timeString) => {
     margin-bottom: 1rem;
     margin-top: 1rem;
     border-radius: 8px;
-    background-color: #f0f0f0; /* fallback color */
+    background-color: #f0f0f0; /* fallback krāsa */
     --gradient-color-left: rgba(0,0,0,0.3);
     --gradient-color-right: rgba(0,0,0,0.3);
 }
@@ -748,15 +745,7 @@ const formatDuration = (timeString) => {
     text-overflow: ellipsis;
 }
 
-.comments-section {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 3rem;
-}
-
-/* Responsive styles */
+/* Responsivitāte */
 @media (max-width: 1455px) {
     .genre-page {
         width: 90%;

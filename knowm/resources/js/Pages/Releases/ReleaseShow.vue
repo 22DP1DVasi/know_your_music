@@ -243,7 +243,7 @@ const redirectToTrack = (slug) => {
                         :entity-type="'release'"
                         :entity-slug="release.slug"
                         :entity-id="release.id"
-                        :parent-key="'artist_id'"
+                        :parent-key="'release_id'"
                         :initial-comments="release.comments || []"
                         :initial-pagination="release.comments_pagination"
                     />

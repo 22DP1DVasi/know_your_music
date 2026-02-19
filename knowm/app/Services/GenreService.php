@@ -6,26 +6,73 @@ use App\Models\Artist;
 use App\Models\Genre;
 use App\Models\Release;
 use App\Models\Track;
+use App\Models\GenreComment;
 use Illuminate\Support\Facades\DB;
 
 class GenreService
 {
-    public function getGenreWithDetails(int $genreId): array
+    /**
+     * @param Genre $genre
+     * @param int $commentsPage
+     * @return array
+     */
+    public function getGenreWithDetailsAndComments(Genre $genre, int $commentsPage = 1): array
     {
-        return [
-            'genre' => $this->getGenreInfo($genreId),
-            'artists' => $this->getGenreArtistsWithDetails($genreId),
-            'tracks' => $this->getGenreTracksWithDetails($genreId),
-            'releases' => $this->getGenreReleasesWithDetails($genreId),
-            'total_artists' => $this->getGenreArtistsCount($genreId),
-            'total_tracks' => $this->getGenreTracksCount($genreId),
-            'total_releases' => $this->getGenreReleasesCount($genreId),
-        ];
+        // informācija par žanru
+        $baseData = $this->getGenreWithDetails($genre);
+        // komentāri
+        $comments = GenreComment::withTrashed()
+            ->where('genre_id', $genre->id)
+            ->whereNull('parent_id')
+            ->with(['user', 'replies'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'page', $commentsPage);
+
+        // iegūt visu komentāru skaitu, ieskaitot atbildes
+        $totalCommentsCount = GenreComment::withTrashed()
+            ->where('genre_id', $genre->id)
+            ->count();
+
+        return array_merge(
+            $baseData,
+            [
+                'comments' => $comments->items(),
+                'comments_pagination' => [
+                    'current_page' => $comments->currentPage(),
+                    'last_page' => $comments->lastPage(),
+                    'total' => $totalCommentsCount,
+                    'per_page' => $comments->perPage(),
+                ]
+            ]
+        );
     }
 
-    public function getGenreInfo(int $genreId): array
+    /**
+     * @param Genre $genre
+     * @return array
+     */
+    public function getGenreWithDetails(Genre $genre): array
     {
-        $genre = Genre::findOrFail($genreId);
+        $genreInfo = $this->getGenreInfo($genre);
+        return array_merge(
+            $genreInfo,
+            [
+                'artists' => $this->getGenreArtistsWithDetails($genre),
+                'tracks' => $this->getGenreTracksWithDetails($genre),
+                'releases' => $this->getGenreReleasesWithDetails($genre),
+                'total_artists' => $this->getGenreArtistsCount($genre),
+                'total_tracks' => $this->getGenreTracksCount($genre),
+                'total_releases' => $this->getGenreReleasesCount($genre),
+            ]
+        );
+    }
+
+    /**
+     * @param Genre $genre
+     * @return array
+     */
+    public function getGenreInfo(Genre $genre): array
+    {
         return [
             'id' => $genre->id,
             'name' => $genre->name,
@@ -37,10 +84,15 @@ class GenreService
         ];
     }
 
-    public function getGenreArtistsWithDetails(int $genreId, int $limit = 4): array
+    /**
+     * @param Genre $genre
+     * @param int $limit
+     * @return array
+     */
+    public function getGenreArtistsWithDetails(Genre $genre, int $limit = 4): array
     {
-        return Artist::whereHas('genres', function($query) use ($genreId) {
-            $query->where('genres.id', $genreId);
+        return Artist::whereHas('genres', function($query) use ($genre) {
+            $query->where('genres.id', $genre->id);
         })
             ->with(['genres'])
             ->limit($limit)
@@ -56,10 +108,15 @@ class GenreService
             ->toArray();
     }
 
-    public function getGenreTracksWithDetails(int $genreId, int $limit = 10): array
+    /**
+     * @param Genre $genre
+     * @param int $limit
+     * @return array
+     */
+    public function getGenreTracksWithDetails(Genre $genre, int $limit = 10): array
     {
-        return Track::whereHas('genres', function($query) use ($genreId) {
-            $query->where('genres.id', $genreId);
+        return Track::whereHas('genres', function($query) use ($genre) {
+            $query->where('genres.id', $genre->id);
         })
             ->with(['artists', 'releases'])
             ->limit($limit)
@@ -78,10 +135,15 @@ class GenreService
             ->toArray();
     }
 
-    public function getGenreReleasesWithDetails(int $genreId, int $limit = 4): array
+    /**
+     * @param Genre $genre
+     * @param int $limit
+     * @return array
+     */
+    public function getGenreReleasesWithDetails(Genre $genre, int $limit = 4): array
     {
-        return Release::whereHas('genres', function($query) use ($genreId) {
-            $query->where('genres.id', $genreId);
+        return Release::whereHas('genres', function($query) use ($genre) {
+            $query->where('genres.id', $genre->id);
         })
             ->with(['artists'])
             ->orderBy('release_date', 'desc')
@@ -101,28 +163,45 @@ class GenreService
             ->toArray();
     }
 
-    public function getGenreArtistsCount(int $genreId): int
+    /**
+     * @param Genre $genre
+     * @return int
+     */
+    public function getGenreArtistsCount(Genre $genre): int
     {
         return DB::table('artists_genres')
-            ->where('genre_id', $genreId)
+            ->where('genre_id', $genre->id)
             ->count();
     }
 
-    public function getGenreTracksCount(int $genreId): int
+    /**
+     * @param Genre $genre
+     * @return int
+     */
+    public function getGenreTracksCount(Genre $genre): int
     {
         return DB::table('tracks_genres')
-            ->where('genre_id', $genreId)
+            ->where('genre_id', $genre->id)
             ->count();
     }
 
-    public function getGenreReleasesCount(int $genreId): int
+    /**
+     * @param Genre $genre
+     * @return int
+     */
+    public function getGenreReleasesCount(Genre $genre): int
     {
         return DB::table('releases_genres')
-            ->where('genre_id', $genreId)
+            ->where('genre_id', $genre->id)
             ->count();
     }
 
-    public function getGenreArtistsPaginated(int $genreId, int $perPage = 24): array
+    /**
+     * @param Genre $genre
+     * @param int $perPage
+     * @return array
+     */
+    public function getGenreArtistsPaginated(Genre $genre, int $perPage = 24): array
     {
         $query = Artist::query()
             ->select([
@@ -134,7 +213,7 @@ class GenreService
             ->join('artists_genres', 'artists.id', '=', 'artists_genres.artist_id')
             ->leftJoin('artists_tracks', 'artists.id', '=', 'artists_tracks.artist_id')
             ->leftJoin('tracks', 'artists_tracks.track_id', '=', 'tracks.id')
-            ->where('artists_genres.genre_id', $genreId)
+            ->where('artists_genres.genre_id', $genre->id)
             ->groupBy('artists.id', 'artists.name', 'artists.slug')
             ->orderBy('artists.name');
         $paginator = $query->paginate($perPage);
