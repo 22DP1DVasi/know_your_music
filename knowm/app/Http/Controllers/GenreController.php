@@ -9,62 +9,60 @@ use Illuminate\Http\Request;
 use App\Models\Artist;
 use App\Models\Release;
 use App\Models\Track;
+use Inertia\Response;
+use Inertia\ResponseFactory;
 
 class GenreController extends Controller
 {
-    protected $genreService;
+    protected GenreService $genreService;
 
+    /**
+     * Konstruktors.
+     *
+     * @param GenreService $genreService
+     */
     public function __construct(GenreService $genreService)
     {
         $this->genreService = $genreService;
     }
 
     /**
-     * @param $slug
-     * @return \Inertia\Response
-     * Method for show page
+     * @param Genre $genre
+     * @return Response
      */
-
-    public function show($slug)
+    public function show(Genre $genre)
     {
-        $genre = Genre::where('slug', $slug)->firstOrFail();
-        $genreData = $this->genreService->getGenreWithDetails($genre->id);
+        // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
+        $commentsPage = request()->input('comments_page', 1);
+        $genreData = $this->genreService
+            ->getGenreWithDetailsAndComments($genre, $commentsPage);
+
         return Inertia::render('Genres/GenreShow', [
-            'genre' => $genreData['genre'],
-            'artists' => $genreData['artists'],
-            'tracks' => $genreData['tracks'],
-            'releases' => $genreData['releases'],
-            'totalArtists' => $genreData['total_artists'],
-            'totalTracks' => $genreData['total_tracks'],
-            'totalReleases' => $genreData['total_releases'],
+            'genre' => $genreData
         ]);
     }
 
     /**
      * @param $genreSlug
-     * @return \Inertia\Response
-     * Method for showDescription page
+     * @return Response
      */
-    public function showDescription($genreSlug)
+    public function showDescription(Genre $genre): Response
     {
-        $genre = Genre::where('slug', $genreSlug)->firstOrFail();
         return Inertia::render('Genres/GenreDescription', [
             'genre' => $genre,
         ]);
     }
 
     /**
-     * @param $slug
+     * @param Genre $genre
      * @param Request $request
      * @param GenreService $genreService
-     * @return \Inertia\Response|\Inertia\ResponseFactory
-     * Method for allArtists page
+     * @return Response|ResponseFactory
      */
-    public function showAllArtists($slug, Request $request, GenreService $genreService)
+    public function showAllArtists(Genre $genre, Request $request, GenreService $genreService)
     {
-        $genre = Genre::where('slug', $slug)->firstOrFail();
         $perPage = $request->input('perPage', 24);
-        $data = $genreService->getGenreArtistsPaginated($genre->id, $perPage);
+        $data = $genreService->getGenreArtistsPaginated($genre, $perPage);
         return inertia('Genres/GenreAllArtists', [
             'genre' => [
                 'id' => $genre->id,
@@ -79,7 +77,11 @@ class GenreController extends Controller
         ]);
     }
 
-    public function explore(Request $request)
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function explore(Request $request): Response
     {
         $searchQuery = $request->input('q', '');
         $perPage = $request->input('perPage', 24);

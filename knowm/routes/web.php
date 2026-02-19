@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ArtistCommentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -16,6 +15,10 @@ use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ReleaseController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\ArtistCommentController;
+use App\Http\Controllers\ReleaseCommentController;
+use App\Http\Controllers\TrackCommentController;
+use App\Http\Controllers\GenreCommentController;
 //use Illuminate\Support\Facades\App;
 
 //Route::get('/', function () {
@@ -122,9 +125,31 @@ Route::prefix('artists/{artist}')->group(function () {
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
     ->name('releases.show');
 
+// komentāri albuma lapai
+Route::prefix('releases/{release}')->group(function () {
+    Route::get('/comments', [ReleaseCommentController::class, 'get']);
+    Route::post('/comments', [ReleaseCommentController::class, 'store'])
+        ->middleware('auth');
+    Route::put('/comments/{comment}', [ReleaseCommentController::class, 'update'])
+        ->middleware('auth');
+    Route::delete('/comments/{comment}', [ReleaseCommentController::class, 'destroy'])
+        ->middleware('auth');
+});
+
 // dziesmas inf. lapa
 Route::get('/tracks/{track}', [TrackController::class, 'show'])
     ->name('tracks.show');
+
+// komentāri dziesmas lapai
+Route::prefix('tracks/{track}')->group(function () {
+    Route::get('/comments', [TrackCommentController::class, 'get']);
+    Route::post('/comments', [TrackCommentController::class, 'store'])
+        ->middleware('auth');
+    Route::put('/comments/{comment}', [TrackCommentController::class, 'update'])
+        ->middleware('auth');
+    Route::delete('/comments/{comment}', [TrackCommentController::class, 'destroy'])
+        ->middleware('auth');
+});
 
 // žanra inf. lapa
 Route::get('/genres/{genre}', [GenreController::class, 'show'])
@@ -135,8 +160,19 @@ Route::get('/genres/{genre}/description', [GenreController::class, 'showDescript
     ->name('genre.description');
 
 // lapa priekš visiem izpildītājiem, kuri ir saistīti ar šo žanru
-Route::get('/genres/{slug}/artists', [GenreController::class, 'showAllArtists'])
+Route::get('/genres/{genre}/artists', [GenreController::class, 'showAllArtists'])
     ->name('genres.artists');
+
+// komentāri žanra lapai
+Route::prefix('genres/{genre}')->group(function () {
+    Route::get('/comments', [GenreCommentController::class, 'get']);
+    Route::post('/comments', [GenreCommentController::class, 'store'])
+        ->middleware('auth');
+    Route::put('/comments/{comment}', [GenreCommentController::class, 'update'])
+        ->middleware('auth');
+    Route::delete('/comments/{comment}', [GenreCommentController::class, 'destroy'])
+        ->middleware('auth');
+});
 
 // lapa izpildītāju izpētīšanai
 Route::get('/explore/artists', [ArtistController::class, 'explore'])

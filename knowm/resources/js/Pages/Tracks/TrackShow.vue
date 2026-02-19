@@ -2,35 +2,46 @@
 import { Head, router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import Footer from '@/Components/Footer.vue'
+import Comments from '@/Components/Comments/Comments.vue'
 import { ref, computed } from 'vue'
 import ColorThief from 'colorthief'
 import dayjs from 'dayjs';
+import { useDate } from '@/composables/useDate'
 
+// plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
     track: {
         type: Object,
         required: true,
         default: () => ({
-            id: Number,
-            title: String,
-            cover_url: String,
-            release_date: String,
-            duration: String,
-            artists: Array,
-            genres: Array,
-            release: Object
-        })
-    },
-    lyrics: {
-        type: Object,
-        default: () => ({
-            id: Number,
-            text: String,
-            status: String,
-            track_id: Number
+            id: null,
+            title: '',
+            slug: '',
+            cover_url: '',
+            duration: '',
+            description: '',
+            release_date: '',
+            artists: [],
+            genres: [],
+            releases: [],
+            lyrics: {
+                id: null,
+                text: '',
+                status: 'requires verification',
+                track_id: null
+            },
+            comments: [],
+            comments_pagination: {
+                current_page: 1,
+                last_page: 1,
+                total: 0,
+                per_page: 10
+            }
         })
     }
 });
+
+const { formatDuration } = useDate()
 
 const heroImage = ref(null);
 const heroStyle = ref({
@@ -58,12 +69,6 @@ const handleImageLoad = () => {
 const formatDate = (dateString) => {
     if (!dateString) return 'Unknown';
     return dayjs(dateString).format('MMMM D, YYYY');
-};
-
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const [hours, minutes, seconds] = timeString.split(':');
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
 };
 
 const redirectToGenre = (slug) => {
@@ -166,7 +171,7 @@ const redirectToGenre = (slug) => {
                         <section class="track-lyrics">
                             <div class="lyrics-header">
                                 <h2 class="section-title">Lyrics</h2>
-                                <span v-if="lyrics.status === 'verified'" class="verified-badge">
+                                <span v-if="track.lyrics.status === 'verified'" class="verified-badge">
                                     Verified
                                 </span>
                                 <span v-else class="unverified-badge">
@@ -174,7 +179,7 @@ const redirectToGenre = (slug) => {
                                 </span>
                             </div>
                             <div class="lyrics-content">
-                                <pre v-if="lyrics.text" class="lyrics-text">{{ lyrics.text }}</pre>
+                                <pre v-if="track.lyrics.text" class="lyrics-text">{{ track.lyrics.text }}</pre>
                                 <div v-else class="no-lyrics">
                                     No lyrics available for this track yet.
                                 </div>
@@ -183,10 +188,14 @@ const redirectToGenre = (slug) => {
                     </div>
 
                     <section class="track-comments">
-                        <h2 class="section-title">Comments</h2>
-                        <div class="comments-section">
-                            <!-- Comment components would go here -->
-                        </div>
+                        <Comments
+                            :entity-type="'track'"
+                            :entity-slug="track.slug"
+                            :entity-id="track.id"
+                            :parent-key="'track_id'"
+                            :initial-comments="track.comments"
+                            :initial-pagination="track.comments_pagination"
+                        />
                     </section>
                 </div>
             </div>

@@ -7,17 +7,36 @@ import Comments from '@/Components/Comments/Comments.vue'
 import {ref, computed } from 'vue'
 import ColorThief from 'colorthief'
 
+// plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
     artist: {
         type: Object,
         required: true,
         default: () => ({
-            artist: Object,
-            tracks: Array,
-            total_tracks: Number,
-            genres: Array,
-            releases: Array,
-            total_releases: Number,
+            id: null,
+            name: '',
+            slug: '',
+            profile_url: '',
+            biography: '',
+            formed_year: null,
+            disbanded_year: null,
+            is_active: true,
+            solo_or_band: '',
+
+            genres: [],
+            tracks: [],
+            releases: [],
+            comments: [],
+
+            total_tracks: 0,
+            total_releases: 0,
+
+            comments_pagination: {
+                current_page: 1,
+                last_page: 1,
+                total: 0,
+                per_page: 10
+            }
         })
     }
 });
@@ -123,13 +142,13 @@ const analyzeImage = () => {
 };
 
 const truncatedBio = computed(() => {
-    if (!props.artist.artist.biography) return 'There is no background for this artist.';
-    if (props.artist.artist.biography.length <= bioMaxLength) return props.artist.artist.biography;
-    return props.artist.artist.biography.substring(0, bioMaxLength) + '...';
+    if (!props.artist.biography) return 'There is no background for this artist.';
+    if (props.artist.biography.length <= bioMaxLength) return props.artist.biography;
+    return props.artist.biography.substring(0, bioMaxLength) + '...';
 });
 
 const showReadMore = computed(() => {
-    return props.artist.artist.biography && props.artist.artist.biography.length > bioMaxLength;
+    return props.artist.biography && props.artist.biography.length > bioMaxLength;
 });
 
 const playTrack = (source) => {
@@ -186,16 +205,16 @@ const formatDuration = (timeString) => {
 </script>
 
 <template>
-    <Head :title="artist.artist.name" />
-    <link rel="preload" :href="artist.artist.profile_url" as="image">
+    <Head :title="artist.name" />
+    <link rel="preload" :href="artist.profile_url" as="image">
     <Navbar />
     <main class="artist-page flex-1">
         <div class="artist-hero" :style="heroStyle">
             <div class="hero-gradient" v-if="!isLandscape"></div>
             <div class="hero-image-container">
                 <img
-                    :src="artist.artist.profile_url"
-                    :alt="artist.artist.name"
+                    :src="artist.profile_url"
+                    :alt="artist.name"
                     class="hero-image"
                     ref="heroImage"
                     @load="handleImageLoad"
@@ -203,7 +222,7 @@ const formatDuration = (timeString) => {
                     loading="eager"
                 >
             </div>
-            <h1 class="artist-name">{{ artist.artist.name }}</h1>
+            <h1 class="artist-name">{{ artist.name }}</h1>
         </div>
 
         <div class="artist-content">
@@ -213,7 +232,7 @@ const formatDuration = (timeString) => {
                     <div class="bio-text" v-html="truncatedBio"></div>
                     <button
                         v-if="showReadMore"
-                        @click="redirectToFullBio(props.artist.artist.slug)"
+                        @click="redirectToFullBio(props.artist.slug)"
                         class="read-more-button"
                     >
                         Read more
@@ -226,11 +245,11 @@ const formatDuration = (timeString) => {
                         <div class="info-flex">
                             <div class="info-item">
                                 <span class="info-value">
-                                  <b>{{ capitalize(artist.artist.solo_or_band) || 'Unknown' }}</b>
+                                  <b>{{ capitalize(artist.solo_or_band) || 'Unknown' }}</b>
                                 </span>
                             </div>
                             <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.artist.formed_year || 'Not specified' }} - {{ artist.artist.disbanded_year || (artist.artist.is_active ? 'present' : 'not specified') }}</span>
+                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Not specified' }} - {{ artist.disbanded_year || (artist.is_active ? 'present' : 'not specified') }}</span>
                             </div>
                         </div>
                     </div>
@@ -267,7 +286,7 @@ const formatDuration = (timeString) => {
                         <button
                             v-if="artist.total_tracks > artist.tracks.length"
                             class="see-all-button"
-                            @click="redirectToAllTracks(props.artist.artist.slug)"
+                            @click="redirectToAllTracks(props.artist.slug)"
                         >
                             See all {{ artist.total_tracks }} tracks
                         </button>
@@ -302,7 +321,7 @@ const formatDuration = (timeString) => {
                         <button
                             v-if="artist.total_releases > artist.releases.length"
                             class="see-all-button"
-                            @click="redirectToAllReleases(props.artist.artist.slug)"
+                            @click="redirectToAllReleases(artist.slug)"
                         >
                             See all {{ artist.total_releases }} releases
                         </button>
@@ -310,7 +329,7 @@ const formatDuration = (timeString) => {
                     <div v-if="!artist.releases.length">No releases found for this artist.</div>
                     <div v-else class="release-results">
                         <div
-                            v-for="release in props.artist.releases"
+                            v-for="release in artist.releases"
                             :key="release.id"
                             class="release-card"
                             @click="redirectToRelease(release.slug)"
@@ -330,8 +349,8 @@ const formatDuration = (timeString) => {
                 <!-- Komentāru sekcija -->
                 <Comments
                     :entity-type="'artist'"
-                    :entity-slug="artist.artist.slug"
-                    :entity-id="artist.artist.id"
+                    :entity-slug="artist.slug"
+                    :entity-id="artist.id"
                     :parent-key="'artist_id'"
                     :initial-comments="artist.comments || []"
                     :initial-pagination="artist.comments_pagination"

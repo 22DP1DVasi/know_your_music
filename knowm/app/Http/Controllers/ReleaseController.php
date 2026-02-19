@@ -12,43 +12,40 @@ use App\Models\Artist;
 
 class ReleaseController extends Controller
 {
-    protected $releaseService;
+    protected ReleaseService $releaseService;
 
+    /**
+     * Konstruktors.
+     *
+     * @param ReleaseService $releaseService
+     */
     public function __construct(ReleaseService $releaseService)
     {
         $this->releaseService = $releaseService;
     }
 
-    public function show($slug)
+    /**
+     * Metode priekš ReleaseShow.vue lapas.
+     * Iegūst datus par albumu no datubāzes un daļu no komentāriem un nodod tos lapai.
+     *
+     * @param Release $release
+     * @return \Inertia\Response
+     */
+    public function show(Release $release): \Inertia\Response
     {
-        $release = $this->releaseService->getReleaseWithDetails($slug);
-        $similarReleases = $this->releaseService->getSimilarReleases($release->id);
-
+        // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
+        $commentsPage = request()->input('comments_page', 1);
+        $releaseData = $this->releaseService->getReleaseWithDetailsAndComments($release, $commentsPage);
         return Inertia::render('Releases/ReleaseShow', [
-            'release' => $release,
-            'similar_releases' => $similarReleases
+            'release' => $releaseData
         ]);
     }
 
-    public function uploadCoverImage(Request $request, Release $release)
-    {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048'
-        ]);
-
-        $path = $request->file('image')->storeAs(
-            "releases/{$release->release_type}/{$release->id}/",
-            'cover.webp',
-            'public'
-        );
-
-        return response()->json([
-            'path' => $path,
-            'url' => Storage::url($path)
-        ]);
-    }
-
-    public function explore(Request $request)
+    /**
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function explore(Request $request): \Inertia\Response
     {
         $searchQuery = $request->input('q', '');
         $perPage = $request->input('perPage', 24);

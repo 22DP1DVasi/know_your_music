@@ -27,7 +27,7 @@ class GenreComment extends Model
         'status',
 //        'deleted_username',
         'user_id',
-        'artist_id',
+        'genre_id',
         'parent_id'
     ];
 
@@ -42,13 +42,6 @@ class GenreComment extends Model
         'deleted_at' => 'datetime:Y-m-d H:i:s',
         'edited_at' => 'datetime:Y-m-d H:i:s'
     ];
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['author_name'];
 
     /**
      * Get the user who made the comment.

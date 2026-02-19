@@ -103,7 +103,7 @@ class Genre extends Model
     /**
      * Get a slug value (used as route key)
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }

@@ -51,13 +51,6 @@ class ArtistComment extends Model
     ];
 
     /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['author_name'];
-
-    /**
      * Get the user who made the comment.
      */
     public function user(): BelongsTo
@@ -118,17 +111,6 @@ class ArtistComment extends Model
     public function isParentComment(): bool
     {
         return is_null($this->parent_id);
-    }
-
-    /**
-     * Get the display name for the comment author.
-     */
-    public function getAuthorNameAttribute(): string
-    {
-        if ($this->deleted_username) {
-            return $this->deleted_username;
-        }
-        return $this->user?->name ?? '[Deleted User]';
     }
 
     /**

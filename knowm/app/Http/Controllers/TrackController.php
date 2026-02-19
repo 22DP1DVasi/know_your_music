@@ -8,20 +8,34 @@ use Illuminate\Http\Request;
 
 class TrackController extends Controller
 {
-    protected $trackService;
+    protected TrackService $trackService;
 
+    /**
+     * Konstruktors.
+     *
+     * @param TrackService $trackService
+     */
     public function __construct(TrackService $trackService)
     {
         $this->trackService = $trackService;
     }
 
-    public function show(Track $track)
+    /**
+     * Metode priekš TrackShow.vue lapas.
+     * Iegūst datus par dziesmu no datubāzes un daļu no komentāriem un nodod tos lapai.
+     *
+     * @param Track $track
+     * @return \Inertia\Response
+     */
+    public function show(Track $track): \Inertia\Response
     {
-        $trackData = $this->trackService->getTrackWithDetails($track);
+        // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
+        $commentsPage = request()->input('comments_page', 1);
+        $trackData = $this->trackService
+            ->getTrackWithDetailsAndComments($track, $commentsPage);
 
         return inertia('Tracks/TrackShow', [
-            'track' => $trackData['track'],
-            'lyrics' => $trackData['lyrics']
+            'track' => $trackData
         ]);
     }
 }

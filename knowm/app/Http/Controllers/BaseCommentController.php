@@ -10,7 +10,7 @@ use Carbon\Carbon;
 abstract class BaseCommentController extends Controller
 {
     /**
-     * Must be defined in child controller
+     * Jādefinē pakārtotajā kontrollerī.
      */
     protected string $commentModel;     // piem., ArtistComment::class
     protected string $parentKey;        // piem., artist_id
