@@ -96,29 +96,25 @@ const getLanguageName = (code) => {
             </ul>
         </div>
         <div class="nav-center">
-            <ul>
-                <li>
-                    <div class="search-container-pc">
-                        <div class="search">
-                            <input
-                                type="search"
-                                autocomplete="off"
-                                class="searchTerm"
-                                placeholder="Search..."
-                                v-model="searchQuery"
-                                @keyup.enter="performSearch"
-                            >
-                            <button
-                                type="submit"
-                                class="searchButton"
-                                @click="performSearch"
-                            >
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </li>
-            </ul>
+            <div class="search-container-pc">
+                <div class="search">
+                    <input
+                        type="search"
+                        autocomplete="off"
+                        class="searchTerm"
+                        placeholder="Search..."
+                        v-model="searchQuery"
+                        @keyup.enter="performSearch"
+                    >
+                    <button
+                        type="submit"
+                        class="searchButton"
+                        @click="performSearch"
+                    >
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="nav-right">
             <ul class="buttons-list">
@@ -306,18 +302,29 @@ nav {
 }
 
 .nav-left {
-    flex: 0 0 auto;
+    align-items: center;
 }
 
 .nav-center {
     flex: 1;
     display: flex;
     justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(500px, 40%);
 }
 
 .nav-right {
-    flex: 0 0 auto;
+    align-items: center;
+    margin-left: auto;
+}
+
+.nav-right ul {
     display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
 }
 
 nav ul {
@@ -329,8 +336,8 @@ nav ul {
     margin-left: 1rem;
     display: flex;
     align-items: center;
-    height: 100%;
-    min-height: 55px;
+    /**height: 100%;
+    min-height: 55px;**/
 }
 
 .buttons-list li a {
@@ -371,6 +378,10 @@ nav ul {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.2rem;
     font-weight: bold;
+}
+
+.search-container-pc {
+    width: 80%;
 }
 
 .search {
@@ -837,16 +848,26 @@ nav ul {
     }
 }
 
+@media (max-width: 1270px) {
+    .search-container-pc {
+        margin-right: 30px;
+    }
+}
+
 @media (max-width: 1220px) {
     .hamburger {
         display: block;
     }
 
     .buttons-list {
-        display: none;
+        display: none !important;
     }
 
-    .search-container-pc {
+    /**.search-container-pc {
+        display: none;
+    }**/
+
+    .nav-center {
         display: none;
     }
 
