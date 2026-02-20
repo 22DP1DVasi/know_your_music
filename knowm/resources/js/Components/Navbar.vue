@@ -86,15 +86,19 @@ const getLanguageName = (code) => {
     <!-- Navigācijas joslas elementu nodrošina https://github.com/daniilsonufrijuks un modificēts, lai atbilstu tīmekļa vietnes mērķim -->
     <nav>
         <div class="nav-left">
-            <a href="/" class="logo-container">
-                <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
-                <p>Know Your Music</p>
-            </a>
+            <ul>
+                <li>
+                    <a href="/" class="logo-container">
+                        <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
+                        <p>Know Your Music</p>
+                    </a>
+                </li>
+            </ul>
         </div>
         <div class="nav-center">
             <ul>
                 <li>
-                    <div>
+                    <div class="search-container-pc">
                         <div class="search">
                             <input
                                 type="search"
@@ -117,7 +121,7 @@ const getLanguageName = (code) => {
             </ul>
         </div>
         <div class="nav-right">
-            <ul>
+            <ul class="buttons-list">
                 <!--            <li><a href="/">{{ t('navbar.home') }}</a></li>-->
                 <li class="explore-menu">
                     <div
@@ -321,7 +325,7 @@ nav ul {
     display: flex;
 }
 
-nav ul li {
+.buttons-list li {
     margin-left: 1rem;
     display: flex;
     align-items: center;
@@ -329,19 +333,19 @@ nav ul li {
     min-height: 55px;
 }
 
-nav ul li a {
+.buttons-list li a {
     text-decoration: none;
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 400;
-    padding: 12px 16px;
+    padding: 12px 6px;
     border-radius: 5px;
     display: block; /* aizņem visu li platumu */
     font-size: 16px;
     transition: background-color 0.3s ease;
 }
 
-nav ul li a:hover {
+.buttons-list li a:hover {
     background-color: #20c1f7;
 }
 
@@ -443,6 +447,10 @@ nav ul li a:hover {
 
 .explore-menu {
     position: relative;
+    padding: 12px 6px;
+    display: block;
+    height: 100%;
+    min-height: 55px;
 }
 
 .explore-link {
@@ -450,10 +458,10 @@ nav ul li a:hover {
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 400;
-    padding: 12px 16px;
     border-radius: 5px;
     display: flex;
     align-items: center;
+    padding: 12px 6px;
     transition: background-color 0.3s ease;
 }
 
@@ -468,7 +476,7 @@ nav ul li a:hover {
 
 .explore-dropdown {
     position: absolute;
-    top: 100%;
+    top: 90%;
     left: 0;
     background-color: white;
     border-radius: 4px;
@@ -494,7 +502,10 @@ nav ul li a:hover {
 
 .language-switch {
     position: relative;
-    margin-left: 0.5rem;
+    padding: 12px 6px;
+    display: block;
+    height: 100%;
+    min-height: 55px;
 }
 
 .language-selector {
@@ -502,13 +513,12 @@ nav ul li a:hover {
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 400;
-    padding: 12px 16px;
     border-radius: 5px;
     display: flex;
     align-items: center;
     transition: background-color 0.3s ease;
-    min-height: 55px;
     box-sizing: border-box;
+    padding: 12px 6px;
 }
 
 .language-selector:hover {
@@ -525,12 +535,11 @@ nav ul li a:hover {
 .language-selector i {
     margin-left: 6px;
     font-size: 14px;
-    color: #666;
 }
 
 .language-dropdown {
     position: absolute;
-    top: 100%;
+    top: 90%;
     right: 0;
     background-color: white;
     border-radius: 4px;
@@ -726,7 +735,7 @@ nav ul li a:hover {
     font-size: 23px;
     cursor: pointer;
     color: #000;
-    margin-left: 10px;
+    margin-right: 40px;
 }
 
 .menubar {
@@ -826,10 +835,6 @@ nav ul li a:hover {
     .search {
         width: 90%;
     }
-
-    nav ul li a {
-        padding: 0px 0px;
-    }
 }
 
 @media (max-width: 1220px) {
@@ -837,7 +842,11 @@ nav ul li a:hover {
         display: block;
     }
 
-    nav ul {
+    .buttons-list {
+        display: none;
+    }
+
+    .search-container-pc {
         display: none;
     }
 
@@ -859,6 +868,10 @@ nav ul li a:hover {
 @media (max-width: 430px){
     .menubar.active {
         width: 85%;
+    }
+
+    .mobile-search-button {
+        margin-right: 20px;
     }
 }
 
