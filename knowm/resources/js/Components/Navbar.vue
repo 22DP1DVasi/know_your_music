@@ -182,8 +182,9 @@ const getLanguageName = (code) => {
                         @keydown.enter="toggleDropdown('user')"
                     >
                         <i class="fa fa-user-circle"></i>
-                        <span class="username">{{ user.name }}</span>
+                        <!-- <span class="username">{{ user.name }}</span> -->
                         <div v-show="activeDropdown === 'user'" class="user-dropdown">
+                            <span class="username">{{ user.name }}</span>
                             <a href="/profile">{{ t('navbar.account') }}</a>
                             <a href="/settings">{{ t('navbar.profile_settings') }}</a>
                             <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
@@ -318,6 +319,9 @@ nav {
 .nav-right {
     align-items: center;
     margin-left: auto;
+    /** novērst izkārtojuma maiņu starp atteikts un pieteicies statusiem **/
+    min-width: 280px;
+    justify-content: flex-end;
 }
 
 .nav-right ul {
@@ -679,7 +683,6 @@ nav ul {
 
 .user-avatar i {
     font-size: 24px;
-    margin-right: 8px;
     flex-shrink: 0;
 }
 
