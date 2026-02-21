@@ -181,7 +181,7 @@ const getLanguageName = (code) => {
                         @click.stop
                         @keydown.enter="toggleDropdown('user')"
                     >
-                        <i class="fa fa-user-circle"></i>
+                        <img v-if="user" :src="user.avatar_url" :alt="user.name" />
                         <!-- <span class="username">{{ user.name }}</span> -->
                         <div v-show="activeDropdown === 'user'" class="user-dropdown">
                             <span class="username">{{ user.name }}</span>
@@ -670,20 +670,23 @@ nav ul {
     cursor: pointer;
     position: relative;
     padding: 12px 16px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
     height: 100%;
     box-sizing: border-box;
-    min-width: 0;
 }
 
-.user-avatar:hover {
-    background-color: #20c1f7;
+.user-avatar img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
 }
 
-.user-avatar i {
-    font-size: 24px;
-    flex-shrink: 0;
+.user-avatar:hover img {
+    /**background-color: #20c1f7;**/
+    border-color: #ccc;
 }
 
 .username {
