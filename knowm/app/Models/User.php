@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Storage;
 
 class User extends Authenticatable
 {
@@ -26,7 +27,8 @@ class User extends Authenticatable
         'slug',
         'email',
         'password',
-        'status'
+        'status',
+        'avatar'
     ];
 
     /**
@@ -51,6 +53,8 @@ class User extends Authenticatable
         'updated_at' => 'datetime:Y-m-d H:i:s',
         'deleted_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    protected $appends = ['avatar_url'];
 
     /**
      * Remember comment's author's username when they get deleted
@@ -107,6 +111,18 @@ class User extends Authenticatable
     public function collections(): HasMany
     {
         return $this->hasMany(UserCollection::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        if (!$this->avatar) {
+            return asset('images/default-user-avatar.png');
+        }
+
+        return Storage::url($this->avatar);
     }
 
     /**
