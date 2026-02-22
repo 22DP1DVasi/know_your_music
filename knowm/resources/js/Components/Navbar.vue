@@ -182,9 +182,8 @@ const getLanguageName = (code) => {
                         @keydown.enter="toggleDropdown('user')"
                     >
                         <img v-if="user" :src="user.avatar_url" :alt="user.name" />
-                        <!-- <span class="username">{{ user.name }}</span> -->
                         <div v-show="activeDropdown === 'user'" class="user-dropdown">
-                            <span class="username">{{ user.name }}</span>
+                            <p>{{ user.name }}</p>
                             <a href="/profile">{{ t('navbar.account') }}</a>
                             <a href="/settings">{{ t('navbar.profile_settings') }}</a>
                             <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
@@ -689,19 +688,6 @@ nav ul {
     border-color: #ccc;
 }
 
-.username {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 1;
-    min-width: 0;
-    max-width: 150px;
-    display: inline-block;
-    vertical-align: middle;
-}
-
 .user-dropdown {
     position: absolute;
     top: 100%;
@@ -714,6 +700,15 @@ nav ul {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+.user-dropdown p {
+    padding: 10px 16px;
+    text-decoration: none;
+    color: #333;
+    font-family: Arial, Helvetica, sans-serif;
+    transition: background-color 0.2s;
+    cursor: default;
 }
 
 .user-dropdown a {
