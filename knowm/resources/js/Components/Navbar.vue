@@ -184,8 +184,8 @@ const getLanguageName = (code) => {
                         <img v-if="user" :src="user.avatar_url" :alt="user.name" />
                         <div v-show="activeDropdown === 'user'" class="user-dropdown">
                             <p>{{ user.name }}</p>
-                            <a href="/profile">{{ t('navbar.account') }}</a>
-                            <a href="/settings">{{ t('navbar.profile_settings') }}</a>
+                            <a href="/dashboard">{{ t('navbar.account') }}</a>
+                            <a href="/profile">{{ t('navbar.profile_settings') }}</a>
                             <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
                         </div>
                     </div>
@@ -260,8 +260,8 @@ const getLanguageName = (code) => {
             <li><a href="/about">{{ t('navbar.about') }}</a></li>
             <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
             <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
-            <li v-if="isLoggedIn"><a href="/profile">{{ t('navbar.account') }}</a></li>
-            <li v-if="isLoggedIn"><a href="/settings">{{ t('navbar.profile_settings') }}</a></li>
+            <li v-if="isLoggedIn"><a href="/dashboard">{{ t('navbar.account') }}</a></li>
+            <li v-if="isLoggedIn"><a href="/profile">{{ t('navbar.profile_settings') }}</a></li>
             <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a></li>
         </ul>
     </div>

@@ -200,7 +200,7 @@ Route::post('/locale', function (Request $request) {
 // user account settings
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        return inertia('Dashboard');
+        return inertia('Dashboard/Overview');
     })->name('dashboard');
 
     // profile routes
