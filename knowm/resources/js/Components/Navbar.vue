@@ -108,7 +108,7 @@ const getLanguageName = (code) => {
             <ul>
                 <li>
                     <a href="/" class="logo-container">
-                        <img src="../../../public/images/mini-logo.png" alt="Logo" class="logo">
+                        <img src="/images/mini-logo.png" alt="Logo" class="logo">
                         <p>Know Your Music</p>
                     </a>
                 </li>

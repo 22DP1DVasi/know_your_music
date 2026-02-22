@@ -2,5 +2,17 @@
     "overview": {
         "account_header": "Your Account",
         "member_since": "Member since"
+    },
+    "layout": {
+        "overview_label": "Overview",
+        "profile_settings": "Profile Settings",
+        "favorites": "Favorites",
+        "favorite_artists": "Favorite artists",
+        "playlists": "Playlists",
+        "user_playlists": "User playlists",
+        "create_new_pl": "Create new playlist",
+        "recommendations": "Recommendations",
+        "history_recom": "History of recommendations",
+        "logout": "Log Out"
     }
 }

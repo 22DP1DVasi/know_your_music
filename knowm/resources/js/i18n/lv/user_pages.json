@@ -2,5 +2,17 @@
     "overview": {
         "account_header": "Jūsu konts",
         "member_since": "Dalībnieks kopš"
+    },
+    "layout": {
+        "overview_label": "Pārskats",
+        "profile_settings": "Profila iestatījumi",
+        "favorites": "Izlase",
+        "favorite_artists": "Mīļākie izpildītāji",
+        "playlists": "Kolekcijas",
+        "user_playlists": "User playlists",
+        "create_new_pl": "Create new playlist",
+        "recommendations": "Rekomendācijas",
+        "history_recom": "Rekomendāciju vēsture",
+        "logout": "Atteikties"
     }
 }
