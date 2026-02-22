@@ -14,7 +14,7 @@ export function useDate() {
     const { locale } = useI18n();
 
     /**
-     * Atgriež doto datumu LL formātā (MMM D, YYYY).
+     * Atgriež doto datumu LL formātā (MMM D, YYYY; piemēram: 2026. gada 22. februāris).
      *
      * @param date
      * @param format
@@ -23,6 +23,18 @@ export function useDate() {
     const formatDateLL = (date, format = 'LL') => {
         locale.value;
         return dayjs(date).format(format);
+    };
+
+    /**
+     * Atgriež doto datumu formātā DD.MM.YYYY (piemēram: 22.02.2026).
+     *
+     * @param date
+     * @param format
+     * @returns {string}
+     */
+    const formatDateDmyNumeric = (date, format = 'DD.MM.YYYY') => {
+        locale.value;
+        return dayjs(date).local().format(format);
     };
 
     /**
@@ -69,6 +81,7 @@ export function useDate() {
 
     return {
         formatDateLL,
+        formatDateDmyNumeric,
         fromNow,
         diffInMinutes,
         formatDuration

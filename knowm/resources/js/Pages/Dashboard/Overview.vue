@@ -2,10 +2,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { useDate } from '@/composables/useDate';
+import { useI18n } from 'vue-i18n';
 
 const user = usePage().props.auth.user;
-
-const { formatDateLL } = useDate()
+const { t } = useI18n();
+const { formatDateDmyNumeric } = useDate()
 
 </script>
 
@@ -15,7 +16,7 @@ const { formatDateLL } = useDate()
     <AuthenticatedLayout>
         <template #header>
             <h2 class="dashboard-header">
-                Your Account
+                {{ t('user_pages.overview.account_header') }}
             </h2>
         </template>
 
@@ -42,7 +43,7 @@ const { formatDateLL } = useDate()
                         <p class="user-email">{{ user?.email }}</p>
                         <p class="join-date">
                             <i class="fa-regular fa-calendar"></i>
-                            Member since {{ formatDateLL(user?.created_at) }}
+                            {{ t('user_pages.overview.member_since') }}: {{ formatDateDmyNumeric(user?.created_at) }}
                         </p>
                     </div>
                 </div>

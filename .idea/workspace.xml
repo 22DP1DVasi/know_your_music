@@ -5,9 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Layouts/AuthenticatedLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Layouts/AuthenticatedLayout.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Overview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Overview.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/composables/useDate.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/composables/useDate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +175,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "features/user-profile-page",
-    "last_opened_file_path": "C:/xampp/htdocs/know_your_music/knowm/resources/js/Pages/Dashboard",
+    "last_opened_file_path": "C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/lv",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -190,9 +193,9 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\Pages\Dashboard" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\lv" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\en" />
+      <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\Pages\Dashboard" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\lang\lv" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
