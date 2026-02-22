@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted, watch, computed} from "vue";
+import {ref, onMounted, onBeforeUnmount, watch, computed} from "vue";
 import { usePage, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n'
 
@@ -7,7 +7,10 @@ const page = usePage();
 
 const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
 const isMenuActive = ref(false);
-const isMobileSearchActive = ref(false);
+const isMobile = ref(false);
+let mediaQuery;
+
+// const isMobileSearchActive = ref(false);
 const activeDropdown = ref(null);
 const closeAllDropdowns = () => {
     activeDropdown.value = null;
@@ -15,6 +18,21 @@ const closeAllDropdowns = () => {
 // reaktīvas vērtības
 const user = computed(() => page.props.auth?.user ?? null);
 const isLoggedIn = computed(() => !!user.value);
+
+const update = () => {
+    isMobile.value = mediaQuery.matches;
+};
+
+onMounted(() => {
+    window.addEventListener('click', closeAllDropdowns)
+    mediaQuery = window.matchMedia("(max-width: 1220px)");
+    update();
+    mediaQuery.addEventListener("change", update);
+});
+
+onBeforeUnmount(() => {
+    mediaQuery.removeEventListener("change", update);
+});
 
 const toggleDarkMode = () => {
     isDarkMode.value = !isDarkMode.value;
@@ -44,12 +62,13 @@ const logout = () => {
     router.post('/logout');
 };
 
-const toggleMobileSearch = () => {
-    isMobileSearchActive.value = !isMobileSearchActive.value;
-};
-onMounted(() => {
-    window.addEventListener('click', closeAllDropdowns)
-});
+// const toggleMobileSearch = () => {
+//     isMobileSearchActive.value = !isMobileSearchActive.value;
+// };
+//
+// onMounted(() => {
+//     window.addEventListener('click', closeAllDropdowns)
+// });
 
 const searchQuery = ref('');
 
@@ -191,23 +210,17 @@ const getLanguageName = (code) => {
                     </div>
                 </li>
             </ul>
-        </div>
-
-        <!-- meklēšanas poga mobilajās ierīcēs -->
-        <button class="mobile-search-button" @click="toggleMobileSearch">
-            <i class="fa fa-search"></i>
-        </button>
-        <!-- hamburger izvēlne -->
-<!--        <div class="hamburger" @click="toggleNav">-->
-        <div
-            class="hamburger"
-            role="button"
-            aria-label="Toggle menu"
-            @click="toggleNav"
-        >
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
+            <!-- hamburger izvēlne - tikai telefona režīmā-->
+            <div
+                class="hamburger"
+                role="button"
+                aria-label="Toggle menu"
+                @click="toggleNav"
+            >
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+            </div>
         </div>
     </nav>
     <!-- izvēlne mobilajās ierīcēs -->
@@ -266,7 +279,7 @@ const getLanguageName = (code) => {
         </ul>
     </div>
     <!-- meklēšanas josla mobilajām ierīcēm -->
-    <div v-show="isMobileSearchActive" class="mobile-search-container">
+    <div v-show="isMobile" class="mobile-search-container">
         <div class="search">
             <input
                 type="search"
@@ -302,10 +315,14 @@ nav {
 }
 
 .nav-left {
+    min-width: 0;
+    display: flex;
     align-items: center;
+    flex: 0 0 auto;
 }
 
 .nav-center {
+    min-width: 0;
     flex: 1;
     display: flex;
     justify-content: center;
@@ -316,10 +333,12 @@ nav {
 }
 
 .nav-right {
+    display: flex;
+    flex: 0 0 auto;
     align-items: center;
     margin-left: auto;
     /** novērst izkārtojuma maiņu starp atteikts un pieteicies statusiem **/
-    min-width: 280px;
+    min-width: 30px;
     justify-content: flex-end;
 }
 
@@ -339,8 +358,6 @@ nav ul {
     margin-left: 1rem;
     display: flex;
     align-items: center;
-    /**height: 100%;
-    min-height: 55px;**/
 }
 
 .buttons-list li a {
@@ -367,6 +384,7 @@ nav ul {
     cursor: pointer;
     margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 .logo {
@@ -375,12 +393,14 @@ nav ul {
     object-fit: contain;
     margin-right: 10px;
     margin-bottom: 4px;
+    flex-shrink: 0;
 }
 
 .logo-container p {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.2rem;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .search-container-pc {
@@ -684,7 +704,6 @@ nav ul {
 }
 
 .user-avatar:hover img {
-    /**background-color: #20c1f7;**/
     border-color: #ccc;
 }
 
@@ -740,16 +759,6 @@ nav ul {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px;
 }
 
-.mobile-search-button {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 23px;
-    cursor: pointer;
-    color: #000;
-    margin-right: 40px;
-}
-
 .menubar {
     position: absolute;
     top: 0;
@@ -763,7 +772,7 @@ nav ul {
     padding: 20% 0;
     background-color: rgb(201, 229, 250);
     transition: all 0.5s ease-in;
-    z-index: 500;
+    z-index: 1000;
 }
 
 .menubar.active {
@@ -817,7 +826,7 @@ nav ul {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    z-index: 900;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -831,6 +840,7 @@ nav ul {
 .hamburger {
     display: none;
     cursor: pointer;
+    margin-right: 10px;
 }
 
 .hamburger .line {
@@ -864,20 +874,12 @@ nav ul {
         display: none !important;
     }
 
-    /**.search-container-pc {
-        display: none;
-    }**/
-
     .nav-center {
         display: none;
     }
 
     .language-switch {
         margin-left: 0;
-    }
-
-    .mobile-search-button {
-        display: block;
     }
 }
 
@@ -891,15 +893,15 @@ nav ul {
     .menubar.active {
         width: 85%;
     }
-
-    .mobile-search-button {
-        margin-right: 20px;
-    }
 }
 
 @media (max-width: 370px) {
     .logo-container p {
         display: none;
+    }
+
+    .hamburger {
+        margin-right: 25px;
     }
 
     .mobile-language-options {
