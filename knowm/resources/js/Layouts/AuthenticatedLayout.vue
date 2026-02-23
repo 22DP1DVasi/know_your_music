@@ -191,6 +191,7 @@ onBeforeUnmount(() => {
                             class="language-selector"
                             :class="{ 'active': activeLanguageDropdown }"
                         >
+                            <i class="fa-solid fa-globe"></i>
                             <span class="language-code">{{ locale.toUpperCase() }}</span>
                             <i class="fa fa-caret-down" :class="{ 'rotate': activeLanguageDropdown }"></i>
                         </button>
@@ -363,7 +364,7 @@ onBeforeUnmount(() => {
                             :class="{ 'active': activeLanguageDropdown }"
                         >
                             <i class="fa-solid fa-globe"></i>
-                            <span>{{ locale === 'en' ? 'English' : 'Latviešu' }}</span>
+                            <span class="language-code">{{ locale.toUpperCase() }}</span>
                             <i class="fa fa-caret-down" :class="{ 'rotate': activeLanguageDropdown }"></i>
                         </button>
                         <div v-show="activeLanguageDropdown" class="mobile-language-dropdown">
@@ -372,14 +373,14 @@ onBeforeUnmount(() => {
                                 class="mobile-language-option"
                                 :class="{ active: locale === 'en' }"
                             >
-                                🇺🇸 English
+                                English
                             </button>
                             <button
                                 @click="changeLanguage('lv')"
                                 class="mobile-language-option"
                                 :class="{ active: locale === 'lv' }"
                             >
-                                🇱🇻 Latviešu
+                                Latviešu
                             </button>
                         </div>
                     </div>
@@ -437,11 +438,11 @@ onBeforeUnmount(() => {
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 1.5rem 1rem;
+    padding: 1rem 1rem 1.5rem;
 }
 
 .logo-container {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     padding: 0 0.5rem;
 }
 
@@ -465,7 +466,7 @@ onBeforeUnmount(() => {
     align-items: center;
     gap: 1rem;
     padding: 1rem 0.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     border-bottom: 1px solid rgba(12, 75, 170, 0.1);
 }
 
@@ -642,6 +643,10 @@ onBeforeUnmount(() => {
 
 .language-code {
     font-weight: 600;
+    color: #0c4baa;
+}
+
+.language-selector i:first-child {
     color: #0c4baa;
 }
 
@@ -934,7 +939,6 @@ onBeforeUnmount(() => {
     font-weight: 500;
 }
 
-/* Ensure dropdown appears above other elements */
 .language-dropdown, .mobile-language-dropdown {
     z-index: 1000;
 }
