@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
                     <ul class="nav-list">
                         <!-- Pārskats -->
                         <li class="nav-item">
-                            <Link href="#" class="nav-link primary">
+                            <Link :href="route('dashboard')" class="nav-link primary">
                                 <i class="fa-solid fa-gauge-high nav-icon"></i>
                                 <span>{{ t('user_pages.layout.overview_label') }}</span>
                             </Link>
@@ -107,7 +107,7 @@ onBeforeUnmount(() => {
 
                         <!-- Profila iestatījumi -->
                         <li class="nav-item">
-                            <Link href="#" class="nav-link primary">
+                            <Link :href="route('profile.edit')" class="nav-link primary">
                                 <i class="fa-solid fa-user-gear nav-icon"></i>
                                 <span>{{ t('user_pages.layout.profile_settings') }}</span>
                             </Link>
@@ -275,14 +275,14 @@ onBeforeUnmount(() => {
                 <nav class="mobile-sidebar-nav">
                     <ul class="nav-list">
                         <li class="nav-item">
-                            <Link href="#" class="nav-link primary" @click="closeMobileSidebar">
+                            <Link :href="route('dashboard')" class="nav-link primary" @click="closeMobileSidebar">
                                 <i class="fa-solid fa-gauge-high nav-icon"></i>
                                 <span>{{ t('user_pages.layout.overview_label') }}</span>
                             </Link>
                         </li>
 
                         <li class="nav-item">
-                            <Link href="#" class="nav-link primary" @click="closeMobileSidebar">
+                            <Link :href="route('profile.edit')" class="nav-link primary" @click="closeMobileSidebar">
                                 <i class="fa-solid fa-user-gear nav-icon"></i>
                                 <span>{{ t('user_pages.layout.profile_settings') }}</span>
                             </Link>
