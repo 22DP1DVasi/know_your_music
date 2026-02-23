@@ -29,6 +29,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $userAvatar = $this->generateAvatarGradient($request->user()->name);
         return array_merge(parent::share($request), [
 //            ...parent::share($request),
             'auth' => [
@@ -39,6 +40,9 @@ class HandleInertiaRequests extends Middleware
                         'slug' => $request->user()->slug,
                         'email' => $request->user()->email,
                         'avatar_url' => $request->user()->avatar_url,
+                        'initial' => $userAvatar['initial'],
+                        'avatar_color_1' => $userAvatar['avatar_color_1'],
+                        'avatar_color_2' => $userAvatar['avatar_color_2'],
                         'roles' => $request->user()
                             ->roles
                             ->pluck('name'),
@@ -51,5 +55,32 @@ class HandleInertiaRequests extends Middleware
             ],
             'locale' => app()->getLocale()
         ]);
+    }
+
+    /**
+     * Ģenerē sākumburtu un profila avatāra krāsas atkarībā no lietotāja lietotājvārda.
+     *
+     * @param string $name
+     * @return array
+     */
+    private function generateAvatarGradient(string $name): array
+    {
+        // heksadecimāla jaucējkoda izveide
+        $hash = md5($name);
+        // izmantot pirmos baitus tonim (0-360)
+        $hue = hexdec(substr($hash, 0, 4)) % 360;
+
+        // saglabāt piesātinājumu un gaišumu jaukos UI drošos diapazonos
+        $saturation = 65;
+        $lightness = 55;
+
+        // nedaudz nobīdīt tonu un palielināt gaišumu otrajai krāsai
+        $hue2 = ($hue + 20) % 360;
+        $lightness2 = 65;
+        return [
+            'initial' => strtoupper(substr($name, 0, 1)),
+            'avatar_color_1' => "hsl($hue, {$saturation}%, {$lightness}%)",
+            'avatar_color_2' => "hsl($hue2, {$saturation}%, {$lightness2}%)",
+        ];
     }
 }

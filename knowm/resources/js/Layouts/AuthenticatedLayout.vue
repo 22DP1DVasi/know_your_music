@@ -80,13 +80,19 @@ onBeforeUnmount(() => {
                 <div class="user-info">
                     <div class="avatar-container">
                         <img
-                            v-if="user?.avatar_url"
+                            v-if="user.avatar_url"
                             :src="user.avatar_url"
                             :alt="user.name"
                             class="avatar"
                         >
-                        <div v-else class="avatar-placeholder">
-                            {{ user?.name?.charAt(0) || 'U' }}
+                        <div
+                            v-else
+                            class="avatar-initial"
+                            :style="{
+                                background: `linear-gradient(135deg, ${user.avatar_color_1}, ${user.avatar_color_2})`
+                            }"
+                        >
+                            {{ user.initial }}
                         </div>
                     </div>
                     <div class="user-details">
@@ -253,13 +259,19 @@ onBeforeUnmount(() => {
                     <div class="mobile-sidebar-user">
                         <div class="avatar-container small">
                             <img
-                                v-if="user?.avatar_url"
+                                v-if="user.avatar_url"
                                 :src="user.avatar_url"
                                 :alt="user.name"
                                 class="avatar"
                             >
-                            <div v-else class="avatar-placeholder small">
-                                {{ user?.name?.charAt(0) || 'U' }}
+                            <div
+                                v-else
+                                class="avatar-initial"
+                                :style="{
+                                background: `linear-gradient(135deg, ${user.avatar_color_1}, ${user.avatar_color_2})`
+                            }"
+                            >
+                                {{ user.initial }}
                             </div>
                         </div>
                         <div class="user-details">
@@ -483,7 +495,7 @@ onBeforeUnmount(() => {
     box-shadow: 0 2px 8px rgba(12, 75, 170, 0.2);
 }
 
-.avatar-placeholder {
+.avatar-initial {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -824,7 +836,7 @@ onBeforeUnmount(() => {
 }
 
 .avatar-container.small .avatar,
-.avatar-container.small .avatar-placeholder {
+.avatar-container.small .avatar-initial {
     width: 40px;
     height: 40px;
     font-size: 1rem;

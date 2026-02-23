@@ -200,7 +200,20 @@ const getLanguageName = (code) => {
                         @click.stop
                         @keydown.enter="toggleDropdown('user')"
                     >
-                        <img v-if="user" :src="user.avatar_url" :alt="user.name" />
+                        <img
+                            v-if="user.avatar_url"
+                            :src="user.avatar_url"
+                            :alt="user.name"
+                        />
+                        <div
+                            v-else
+                            class="avatar-initial"
+                            :style="{
+                                background: `linear-gradient(135deg, ${user.avatar_color_1}, ${user.avatar_color_2})`
+                            }"
+                        >
+                            {{ user.initial }}
+                        </div>
                         <div v-show="activeDropdown === 'user'" class="user-dropdown">
                             <p>{{ user.name }}</p>
                             <a href="/dashboard">{{ t('navbar.account') }}</a>
@@ -684,26 +697,38 @@ nav ul {
 }
 
 .user-avatar {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-    padding: 12px 16px;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.user-avatar img {
     width: 36px;
     height: 36px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.user-avatar img,
+.avatar-initial {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    object-fit: cover;
-    display: block;
     border: 2px solid transparent;
     transition: border-color 0.2s ease;
 }
 
-.user-avatar:hover img {
+.user-avatar img {
+    display: block;
+    object-fit: cover;
+}
+
+.avatar-initial {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.user-avatar:hover img,
+.avatar-initial:hover {
     border-color: #ccc;
 }
 

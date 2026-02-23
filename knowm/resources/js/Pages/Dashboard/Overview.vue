@@ -27,13 +27,19 @@ const { formatDateDmyNumeric } = useDate()
                     <!-- Avatārs -->
                     <div class="avatar-container">
                         <img
-                            v-if="user?.avatar_url"
+                            v-if="user.avatar_url"
                             :src="user.avatar_url"
                             :alt="user.name"
                             class="avatar"
                         >
-                        <div v-else class="avatar-placeholder">
-                            {{ user?.name?.charAt(0) || 'U' }}
+                        <div
+                            v-else
+                            class="avatar-initial"
+                            :style="{
+                                background: `linear-gradient(135deg, ${user.avatar_color_1}, ${user.avatar_color_2})`
+                            }"
+                        >
+                            {{ user.initial }}
                         </div>
                     </div>
 
@@ -113,11 +119,10 @@ const { formatDateDmyNumeric } = useDate()
     box-shadow: 0 6px 20px rgba(12, 75, 170, 0.3);
 }
 
-.avatar-placeholder {
+.avatar-initial {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #0c4baa, #20c1f7);
     color: white;
     display: flex;
     align-items: center;
@@ -129,7 +134,7 @@ const { formatDateDmyNumeric } = useDate()
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.avatar-placeholder:hover {
+.avatar-initial:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 20px rgba(12, 75, 170, 0.3);
 }

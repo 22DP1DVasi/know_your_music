@@ -57,7 +57,7 @@ defineProps({
 }
 
 .profile-container {
-    padding-top: 3rem;
+    padding-top: 2rem;
     padding-bottom: 3rem;
 }
 
@@ -80,6 +80,7 @@ defineProps({
     max-width: 36rem;
 }
 
+/* Responsivitāte */
 @media (min-width: 1024px) {
     .profile-content {
         padding-left: 2rem;
