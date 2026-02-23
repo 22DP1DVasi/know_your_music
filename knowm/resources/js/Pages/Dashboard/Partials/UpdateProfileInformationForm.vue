@@ -260,13 +260,17 @@ const handleAvatarRemove = async () => {
 }
 
 .profile-info-layout {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: 1fr;
     gap: 2rem;
+    justify-items: center;
+    width: 65vw;
 }
 
 .form-fields {
-    flex: 2;
+    min-width: 0;
+    width: 100%;
+    max-width: 600px;
 }
 
 .section-header {
@@ -361,12 +365,15 @@ const handleAvatarRemove = async () => {
 }
 
 .avatar-section {
-    flex: 1;
-    min-width: 250px;
+    width: 100%;
+    max-width: 320px;
+    flex-shrink: 0;
+    min-width: 0;
     background: #f9fafb;
     border-radius: 0.75rem;
     padding: 1.5rem 1.5rem 1rem;
     border: 1px solid #e5e7eb;
+    box-sizing: border-box;
 }
 
 .avatar-title {
@@ -500,10 +507,40 @@ const handleAvatarRemove = async () => {
 }
 
 /* Responsivitāte */
+@media (max-width: 1285px) {
+    .profile-info-layout {
+        width: 58vw;
+    }
+}
+
+@media (max-width: 1023px) {
+    .profile-info-layout {
+        width: 78vw;
+    }
+}
+
 @media (min-width: 768px) {
     .profile-info-layout {
-        flex-direction: row;
+        grid-template-columns: minmax(0, 1fr) 320px;
         gap: 3rem;
+        justify-items: stretch;
+        align-items: start;
+    }
+
+    .form-fields {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .profile-info-layout {
+        width: 100%;
+    }
+
+    .form-fields {
+        width: 100%;
+        max-width: 600px;
     }
 }
 

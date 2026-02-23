@@ -6,15 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ProfileController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Middleware/HandleInertiaRequests.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Middleware/HandleInertiaRequests.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Layouts/AuthenticatedLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Layouts/AuthenticatedLayout.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Overview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Overview.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Partials/UpdateProfileInformationForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Partials/UpdateProfileInformationForm.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Settings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Settings.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -395,7 +387,11 @@
       <workItem from="1771673915252" duration="11109000" />
       <workItem from="1771758550529" duration="684000" />
       <workItem from="1771839196422" duration="2296000" />
-      <workItem from="1771845538714" duration="12409000" />
+      <workItem from="1771845538714" duration="14887000" />
+      <workItem from="1771875343407" duration="159000" />
+      <workItem from="1771875548486" duration="142000" />
+      <workItem from="1771875816406" duration="48000" />
+      <workItem from="1771876735046" duration="5165000" />
     </task>
     <servers />
   </component>
