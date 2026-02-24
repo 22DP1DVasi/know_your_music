@@ -29,23 +29,23 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $userAvatar = $this->generateAvatarGradient($request->user()->name);
+        $user = $request->user();
+        $userAvatar = $user
+            ? $this->generateAvatarGradient($user->name)
+            : null;
         return array_merge(parent::share($request), [
-//            ...parent::share($request),
             'auth' => [
-                'user' => $request->user()
+                'user' => $user
                     ? [
-                        'id' => $request->user()->id,
-                        'name' => $request->user()->name,
-                        'slug' => $request->user()->slug,
-                        'email' => $request->user()->email,
-                        'avatar_url' => $request->user()->avatar_url,
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'slug' => $user->slug,
+                        'email' => $user->email,
+                        'avatar_url' => $user->avatar_url,
                         'initial' => $userAvatar['initial'],
                         'avatar_color_1' => $userAvatar['avatar_color_1'],
                         'avatar_color_2' => $userAvatar['avatar_color_2'],
-                        'roles' => $request->user()
-                            ->roles
-                            ->pluck('name'),
+                        'roles' => $user->roles->pluck('name'),
                     ]
                     : null,
             ],

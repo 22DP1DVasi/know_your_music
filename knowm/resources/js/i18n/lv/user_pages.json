@@ -14,5 +14,28 @@
         "recommendations": "Rekomendācijas",
         "history_recom": "Rekomendāciju vēsture",
         "logout": "Atteikties"
+    },
+    "settings": {
+        "profile_header": "Profila iestatījumi",
+        "profile_info_label": "Profila informācija",
+        "profile_info_description": "Atjauniniet sava konta profila informāciju un e-pasta adresi.",
+        "name_label": "Vārds",
+        "email_label": "E-pasts",
+        "verification_text": "Jūsu e-pasta adrese nav verificēta.",
+        "verification_link": "Noklikšķiniet šeit, lai atkārtoti nosūtītu verifikācijas e-pastu.",
+        "verification_success": "Jauna verifikācijas saite ir nosūtīta uz jūsu e-pasta adresi.",
+        "save_button": "Saglabāt",
+        "saved_message": "Saglabāts.",
+        "avatar_title": "Profila attēls",
+        "avatar_upload_title": "Augšupielādēt jaunu attēlu",
+        "avatar_remove_title": "Noņemt attēlu",
+        "avatar_uploading": "Augšupielādē...",
+        "avatar_helper_1": "Noklikšķiniet uz kameras ikonas, lai augšupielādētu jaunu foto.",
+        "avatar_helper_2": "Maks. izmērs: 2MB. Formāti: JPG, PNG, GIF, WEBP.",
+        "avatar_error_type": "Lūdzu, augšupielādējiet derīgu attēla failu (JPEG, PNG, GIF vai WEBP)",
+        "avatar_error_size": "Faila izmēram jābūt mazākam par 2MB",
+        "avatar_error_upload": "Neizdevās augšupielādēt attēlu. Lūdzu, mēģiniet vēlreiz.",
+        "avatar_error_remove": "Neizdevās noņemt attēlu. Lūdzu, mēģiniet vēlreiz.",
+        "avatar_remove_confirm": "Vai tiešām vēlaties noņemt savu profila attēlu?"
     }
 }

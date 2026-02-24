@@ -7,6 +7,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import {route} from "ziggy-js";
+import { useI18n } from 'vue-i18n';
 
 defineProps({
     mustVerifyEmail: {
@@ -18,11 +19,34 @@ defineProps({
 });
 
 const user = usePage().props.auth.user;
+const { t } = useI18n();
+
+// reaktīvās atsauces uz lietotāja datiem, kas var mainīties
+const userInitial = ref(user.initial);
+const userColor1 = ref(user.avatar_color_1);
+const userColor2 = ref(user.avatar_color_2);
+const userName = ref(user.name);
 
 const form = useForm({
     name: user.name,
     email: user.email,
 });
+
+// iesniegt veidlapu + atjaunināt lietotāja datus veiksmīgas izpildes gadījumā
+const submitForm = () => {
+    form.patch(route('profile.update'), {
+        onSuccess: () => {
+            // atjaunināt reaktīvās atsauces ar jauniem lietotāja datiem no lapas props
+            const updatedUser = usePage().props.auth.user;
+            userName.value = updatedUser.name;
+            userInitial.value = updatedUser.initial;
+            userColor1.value = updatedUser.avatar_color_1;
+            userColor2.value = updatedUser.avatar_color_2;
+            // atjaunināt veidlapas nosaukumu, ja tas tika mainīts
+            form.name = updatedUser.name;
+        }
+    });
+};
 
 // Avatar handling
 const isUploadingAvatar = ref(false);
@@ -38,13 +62,13 @@ const handleAvatarUpload = async (event) => {
     if (!file) return;
     // validēt faila tipu
     if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
-        alert('Please upload a valid image file (JPEG, PNG, GIF, or WEBP)');
+        alert(t('user_pages.settings.avatar_error_type'));
         return;
     }
 
     // validēt faila lielumu (maks. 2 MB)
     if (file.size > 2 * 1024 * 1024) {
-        alert('File size must be less than 2MB');
+        alert(t('user_pages.settings.avatar_error_size'));
         return;
     }
 
@@ -60,12 +84,13 @@ const handleAvatarUpload = async (event) => {
         if (response.data.success) {
             avatarPreview.value = response.data.avatar_url;
             // atjaunināt lietotāja objektu lapas props'os
-            usePage().props.auth.user.avatar_url = response.data.avatar_url;
-            usePage().props.auth.user.avatar = response.data.avatar_path;
+            const updatedUser = usePage().props.auth.user;
+            updatedUser.avatar_url = response.data.avatar_url;
+            updatedUser.avatar = response.data.avatar_path;
         }
     } catch (error) {
         console.error('Error uploading avatar:', error);
-        alert('Failed to upload avatar. Please try again.');
+        alert(t('user_pages.settings.avatar_error_upload'));
     } finally {
         isUploadingAvatar.value = false;
         // notīrīt faila ievadi
@@ -74,7 +99,7 @@ const handleAvatarUpload = async (event) => {
 };
 
 const handleAvatarRemove = async () => {
-    if (!confirm('Are you sure you want to remove your avatar?')) return;
+    if (!confirm(t('user_pages.settings.avatar_remove_confirm'))) return;
     isUploadingAvatar.value = true;
     try {
         const response = await axios.delete(route('profile.avatar.destroy'));
@@ -82,12 +107,13 @@ const handleAvatarRemove = async () => {
         if (response.data.success) {
             avatarPreview.value = null;
             // atjaunināt lietotāja objektu lapas props'os
-            usePage().props.auth.user.avatar_url = response.data.avatar_url;
-            usePage().props.auth.user.avatar = null;
+            const updatedUser = usePage().props.auth.user;
+            updatedUser.avatar_url = response.data.avatar_url;
+            updatedUser.avatar = null;
         }
     } catch (error) {
         console.error('Error removing avatar:', error);
-        alert('Failed to remove avatar. Please try again.');
+        alert(t('user_pages.settings.avatar_error_remove'));
     } finally {
         isUploadingAvatar.value = false;
     }
@@ -102,19 +128,19 @@ const handleAvatarRemove = async () => {
             <div class="form-fields">
                 <header class="section-header">
                     <h2 class="section-title">
-                        Profile Information
+                        {{ t('user_pages.settings.profile_info_label') }}
                     </h2>
                     <p class="section-description">
-                        Update your account's profile information and email address.
+                        {{ t('user_pages.settings.profile_info_description') }}
                     </p>
                 </header>
 
                 <form
-                    @submit.prevent="form.patch(route('profile.update'))"
+                    @submit.prevent="submitForm"
                     class="profile-form"
                 >
                     <div class="form-group">
-                        <InputLabel for="name" value="Name" />
+                        <InputLabel for="name" :value="t('user_pages.settings.name_label')" />
 
                         <TextInput
                             id="name"
@@ -130,7 +156,7 @@ const handleAvatarRemove = async () => {
                     </div>
 
                     <div class="form-group">
-                        <InputLabel for="email" value="Email" />
+                        <InputLabel for="email" :value="t('user_pages.settings.email_label')" />
 
                         <TextInput
                             id="email"
@@ -146,14 +172,14 @@ const handleAvatarRemove = async () => {
 
                     <div v-if="mustVerifyEmail && user.email_verified_at === null" class="verification-section">
                         <p class="verification-text">
-                            Your email address is unverified.
+                            {{ t('user_pages.settings.verification_text') }}
                             <Link
                                 :href="route('verification.send')"
                                 method="post"
                                 as="button"
                                 class="verification-link"
                             >
-                                Click here to re-send the verification email.
+                                {{ t('user_pages.settings.verification_link') }}
                             </Link>
                         </p>
 
@@ -161,12 +187,14 @@ const handleAvatarRemove = async () => {
                             v-show="status === 'verification-link-sent'"
                             class="verification-success"
                         >
-                            A new verification link has been sent to your email address.
+                            {{ t('user_pages.settings.verification_success') }}
                         </div>
                     </div>
 
                     <div class="form-actions">
-                        <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                        <PrimaryButton :disabled="form.processing">
+                            {{ t('user_pages.settings.save_button') }}
+                        </PrimaryButton>
 
                         <Transition
                             enter-active-class="transition"
@@ -178,7 +206,7 @@ const handleAvatarRemove = async () => {
                                 v-if="form.recentlySuccessful"
                                 class="success-message"
                             >
-                                Saved.
+                                {{ t('user_pages.settings.saved_message') }}
                             </p>
                         </Transition>
                     </div>
@@ -187,33 +215,35 @@ const handleAvatarRemove = async () => {
 
             <!-- Labā puse: iemiesojums -->
             <div class="avatar-section">
-                <h3 class="avatar-title">Profile Picture</h3>
+                <h3 class="avatar-title">
+                    {{ t('user_pages.settings.avatar_title') }}
+                </h3>
 
                 <div class="avatar-container">
                     <div class="avatar-preview-wrapper">
                         <img
                             v-if="avatarPreview"
                             :src="avatarPreview"
-                            :alt="user.name"
+                            :alt="userName"
                             class="avatar-preview"
                         >
                         <div
                             v-else
                             class="avatar-initial"
                             :style="{
-                                background: `linear-gradient(135deg, ${user.avatar_color_1}, ${user.avatar_color_2})`
+                                background: `linear-gradient(135deg, ${userColor1}, ${userColor2})`
                             }"
                         >
-                            {{ user.initial }}
+                            {{ userInitial }}
                         </div>
 
-                        <!-- Upload overlay on hover -->
+                        <!-- Atveidot pārklājumu, novietojot kursoru -->
                         <div class="avatar-overlay">
                             <button
                                 @click="triggerFileInput"
                                 class="avatar-action-button upload-action"
                                 :disabled="isUploadingAvatar"
-                                title="Upload new avatar"
+                                :title="t('user_pages.settings.avatar_upload_title')"
                             >
                                 <i class="fa-solid fa-camera"></i>
                             </button>
@@ -222,7 +252,7 @@ const handleAvatarRemove = async () => {
                                 @click="handleAvatarRemove"
                                 class="avatar-action-button remove-action"
                                 :disabled="isUploadingAvatar"
-                                title="Remove avatar"
+                                :title="t('user_pages.settings.avatar_remove_title')"
                             >
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
@@ -241,12 +271,12 @@ const handleAvatarRemove = async () => {
                     <!-- Ielādēšana indikators -->
                     <div v-if="isUploadingAvatar" class="avatar-loading">
                         <i class="fa-solid fa-spinner fa-spin"></i>
-                        <span>Uploading...</span>
+                        <span>{{ t('user_pages.settings.avatar_uploading') }}</span>
                     </div>
 
                     <p class="avatar-helper">
-                        Click the camera icon to upload a new photo.<br>
-                        Max size: 2MB. Formats: JPG, PNG, GIF, WEBP.
+                        {{ t('user_pages.settings.avatar_helper_1') }}<br>
+                        {{ t('user_pages.settings.avatar_helper_2') }}
                     </p>
                 </div>
             </div>

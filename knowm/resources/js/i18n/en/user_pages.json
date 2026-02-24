@@ -14,5 +14,28 @@
         "recommendations": "Recommendations",
         "history_recom": "History of recommendations",
         "logout": "Log Out"
+    },
+    "settings": {
+        "profile_header": "Profile Settings",
+        "profile_info_label": "Profile Information",
+        "profile_info_description": "Update your account's profile information and email address.",
+        "name_label": "Name",
+        "email_label": "Email",
+        "verification_text": "Your email address is unverified.",
+        "verification_link": "Click here to re-send the verification email.",
+        "verification_success": "A new verification link has been sent to your email address.",
+        "save_button": "Save",
+        "saved_message": "Saved.",
+        "avatar_title": "Profile Picture",
+        "avatar_upload_title": "Upload new avatar",
+        "avatar_remove_title": "Remove avatar",
+        "avatar_uploading": "Uploading...",
+        "avatar_helper_1": "Click the camera icon to upload a new photo.",
+        "avatar_helper_2": "Max size: 2MB. Formats: JPG, PNG, GIF, WEBP.",
+        "avatar_error_type": "Please upload a valid image file (JPEG, PNG, GIF, or WEBP)",
+        "avatar_error_size": "File size must be less than 2MB",
+        "avatar_error_upload": "Failed to upload avatar. Please try again.",
+        "avatar_error_remove": "Failed to remove avatar. Please try again.",
+        "avatar_remove_confirm": "Are you sure you want to remove your avatar?"
     }
 }
