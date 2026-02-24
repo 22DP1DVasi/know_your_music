@@ -222,7 +222,13 @@ const formatDuration = (timeString) => {
                     loading="eager"
                 >
             </div>
-            <h1 class="artist-name">{{ artist.name }}</h1>
+            <div class="artist-title-container">
+                <h1 class="artist-name">{{ artist.name }}</h1>
+                <button class="favorite-button">
+                    <i class="fa-regular fa-heart"></i>
+                    <span>Add to Favorites</span>
+                </button>
+            </div>
         </div>
 
         <div class="artist-content">
@@ -430,24 +436,88 @@ const formatDuration = (timeString) => {
     z-index: 1;
 }
 
-.artist-name {
+.artist-title-container {
     position: absolute;
     bottom: 0;
     left: 0;
+    right: 0;
     padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 3;
+}
+
+.artist-title-container::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to top right,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.4) 30%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 0 0 0 8px;
+}
+
+.artist-name {
     color: white;
     font-size: 2.5rem;
     font-weight: 700;
+    margin: 0;
     text-shadow:
         -1px -1px 0 rgba(0, 0, 0, 0.9),
         1px -1px 0 rgba(0, 0, 0, 0.9),
         -1px  1px 0 rgba(0, 0, 0, 0.9),
         1px  1px 0 rgba(0, 0, 0, 0.9),
-        -2px  0px 0 rgba(0, 0, 0, 0.7),
-        2px  0px 0 rgba(0, 0, 0, 0.7),
-        0px -2px 0 rgba(0, 0, 0, 0.7),
-        0px  2px 0 rgba(0, 0, 0, 0.7);
-    z-index: 3;
+        -2px  0 0 rgba(0, 0, 0, 0.7),
+        2px  0 0 rgba(0, 0, 0, 0.7),
+        0 -2px 0 rgba(0, 0, 0, 0.7),
+        0  2px 0 rgba(0, 0, 0, 0.7);
+    position: relative;
+    z-index: 2;
+}
+
+.favorite-button {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 40px;
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+}
+
+.favorite-button i {
+    font-size: 1.1rem;
+}
+
+.favorite-button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.favorite-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .artist-content {
@@ -841,9 +911,22 @@ const formatDuration = (timeString) => {
         height: 220px;
     }
 
+    .artist-title-container {
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+
     .artist-name {
         font-size: 2rem;
-        padding: 1rem;
+    }
+
+    .favorite-button {
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .favorite-button i {
+        font-size: 1rem;
     }
 
     .main-content {
@@ -883,6 +966,16 @@ const formatDuration = (timeString) => {
 }
 
 @media (max-width: 480px) {
+    .artist-title-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .artist-name {
+        font-size: 1.8rem;
+    }
+
     .info-item {
         flex: 1 0 100%;
     }

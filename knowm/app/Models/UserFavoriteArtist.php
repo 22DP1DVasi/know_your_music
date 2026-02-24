@@ -16,12 +16,11 @@ class UserFavoriteArtist extends Pivot
     protected $fillable = [
         'user_id',
         'artist_id',
-        'sort_order',
     ];
 
-    protected $casts = [
+    /*protected $casts = [
         'sort_order' => 'integer',
-    ];
+    ];*/
 
     /**
      * The user who favorited this artist

@@ -233,9 +233,7 @@ class User extends Authenticatable
     public function favoriteArtists(): BelongsToMany
     {
         return $this->belongsToMany(Artist::class, 'user_favorite_artists')
-            ->using(UserFavoriteArtist::class)
-            ->withPivot('sort_order')
-            ->orderBy('user_favorite_artists.sort_order');
+            ->using(UserFavoriteArtist::class);
     }
 
     /**
