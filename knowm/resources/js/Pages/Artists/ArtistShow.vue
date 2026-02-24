@@ -20,6 +20,7 @@ const props = defineProps({
             slug: '',
             profile_url: '',
             biography: '',
+            biography_lv: '',
             formed_year: null,
             disbanded_year: null,
             is_active: true,
@@ -47,7 +48,7 @@ const props = defineProps({
 // piekļuve koplietojamiem datiem no servera puses
 const page = usePage();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const heroImage = ref(null);
 const heroStyle = ref({
@@ -195,14 +196,66 @@ const analyzeImage = () => {
     imageStyle.value.opacity = '1';
 };
 
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
+const currentBiography = computed(() => {
+    if (locale.value === 'lv' && props.artist.biography_lv) {
+        return props.artist.biography_lv;
+    }
+    if (locale.value === 'en' && props.artist.biography) {
+        return props.artist.biography;
+    }
+    if (locale.value === 'lv' && !props.artist.biography_lv && props.artist.biography) {
+        return props.artist.biography;
+    }
+    if (locale.value === 'en' && !props.artist.biography && props.artist.biography_lv) {
+        return props.artist.biography_lv;
+    }
+    return '';
+});
+
+const languageNotice = computed(() => {
+    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    if (locale.value === 'lv' && !props.artist.biography_lv && props.artist.biography) {
+        return {
+            show: true,
+            message: 'Biogrāfija pieejama tikai angļu valodā.',
+            type: 'lv-no-bio'
+        };
+    }
+    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    if (locale.value === 'en' && !props.artist.biography && props.artist.biography_lv) {
+        return {
+            show: true,
+            message: 'Biography available only in Latvian.',
+            type: 'en-no-bio'
+        };
+    }
+    return {
+        show: false,
+        message: '',
+        type: null
+    };
+});
+
 const truncatedBio = computed(() => {
-    if (!props.artist.biography) return 'There is no background for this artist.';
-    if (props.artist.biography.length <= bioMaxLength) return props.artist.biography;
-    return props.artist.biography.substring(0, bioMaxLength) + '...';
+    const bio = currentBiography.value;
+    if (!bio) {
+        // ja biogrāfijas nav vispār, atgrieziet lokalizētu ziņojumu
+        return t('artists.show.no_biography');
+    }
+    if (bio.length <= bioMaxLength) return bio;
+    return bio.substring(0, bioMaxLength) + '...';
 });
 
 const showReadMore = computed(() => {
-    return props.artist.biography && props.artist.biography.length > bioMaxLength;
+    const bio = currentBiography.value;
+    return bio && bio.length > bioMaxLength;
 });
 
 const playTrack = (source) => {
@@ -220,6 +273,8 @@ const closePlayer = () => {
 
 const redirectToFullBio = (slug) => {
     window.location.href = `/artists/${slug}/bio`;
+    // You can pass the current locale if needed
+    // window.location.href = `/artists/${slug}/bio${locale.value === 'lv' ? '?lang=lv' : ''}`;
 };
 
 const redirectToAllGenres = () => {
@@ -293,14 +348,19 @@ const formatDuration = (timeString) => {
         <div class="artist-content">
             <div class="main-content">
                 <section class="artist-description">
-                    <h2 class="section-title">About</h2>
+                    <h2 class="section-title">{{ t('artists.show.about') }}</h2>
+                    <!-- Language notice -->
+                    <div v-if="languageNotice.show" class="language-notice">
+                        {{ languageNotice.message }}
+                    </div>
+                    <!-- Biography text -->
                     <div class="bio-text" v-html="truncatedBio"></div>
                     <button
                         v-if="showReadMore"
                         @click="redirectToFullBio(props.artist.slug)"
                         class="read-more-button"
                     >
-                        Read more
+                        {{ t('artists.show.read_more') }}
                     </button>
                 </section>
 
@@ -674,6 +734,32 @@ const formatDuration = (timeString) => {
 
 .read-more-button:hover {
     background: #1a5fc9;
+}
+
+.language-notice {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #999;
+    font-style: italic;
+}
+
+/* Optional: Different border colors for different notice types */
+.language-notice[data-type="lv-no-bio"] {
+    border-left-color: #0c4baa; /* Latvian blue theme */
+}
+
+.language-notice[data-type="en-no-bio"] {
+    border-left-color: #aa0c4b; /* Different color for English notice */
+}
+
+.no-bio {
+    color: #666;
+    font-style: italic;
+    padding: 0.5rem 0;
 }
 
 .bio-text {

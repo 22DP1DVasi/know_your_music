@@ -73,6 +73,7 @@ class ArtistService
             'slug' => $artist->slug,
             'profile_url' => $artist->profile_url,
             'biography' => $artist->biography,
+            'biography_lv' => $artist->biography_lv,
             'formed_year' => $artist->formed_year,
             'disbanded_year' => $artist->disbanded_year,
             'is_active' => $artist->is_active,

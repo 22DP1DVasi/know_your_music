@@ -5,5 +5,10 @@
         "producer": "Producer",
         "favorited": "Favorited",
         "add_to_favorites": "Add to Favorites"
+    },
+    "show": {
+        "about": "About",
+        "no_biography": "There is no background for this artist.",
+        "read_more": "Read more"
     }
 }

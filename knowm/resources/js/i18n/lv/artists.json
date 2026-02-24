@@ -5,5 +5,10 @@
         "producer": "Producents",
         "favorited": "Pievienots izlasei",
         "add_to_favorites": "Pievienot izlasei"
+    },
+    "show": {
+        "about": "Par izpildītāju",
+        "no_biography": "Šim izpildītājam nav pieejama biogrāfija.",
+        "read_more": "Lasīt vairāk"
     }
 }
