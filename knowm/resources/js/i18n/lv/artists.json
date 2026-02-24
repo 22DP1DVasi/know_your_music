@@ -2,6 +2,8 @@
     "global": {
         "primary": "Galvenais",
         "featured": "Viesis",
-        "producer": "Producents"
+        "producer": "Producents",
+        "favorited": "Pievienots izlasei",
+        "add_to_favorites": "Pievienot izlasei"
     }
 }

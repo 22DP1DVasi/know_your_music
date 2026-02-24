@@ -2,6 +2,8 @@
     "global": {
         "primary": "Primary",
         "featured": "Featured",
-        "producer": "Producer"
+        "producer": "Producer",
+        "favorited": "Favorited",
+        "add_to_favorites": "Add to Favorites"
     }
 }

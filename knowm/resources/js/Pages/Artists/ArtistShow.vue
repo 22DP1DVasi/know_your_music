@@ -7,6 +7,7 @@ import Comments from '@/Components/Comments/Comments.vue'
 import {ref, computed, watch } from 'vue'
 import ColorThief from 'colorthief'
 import { route } from "ziggy-js";
+import { useI18n } from 'vue-i18n';
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -45,6 +46,8 @@ const props = defineProps({
 
 // piekļuve koplietojamiem datiem no servera puses
 const page = usePage();
+
+const { t } = useI18n();
 
 const heroImage = ref(null);
 const heroStyle = ref({
@@ -282,7 +285,7 @@ const formatDuration = (timeString) => {
                     :disabled="isFavoriteLoading"
                 >
                     <i :class="isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
-                    <span>{{ isFavorite ? 'Favorited' : 'Add to Favorites' }}</span>
+                    <span>{{ isFavorite ? t('artists.global.favorited') : t('artists.global.add_to_favorites') }}</span>
                 </button>
             </div>
         </div>
