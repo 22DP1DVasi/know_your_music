@@ -6,7 +6,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
-import {route} from "ziggy-js";
+import { route } from "ziggy-js";
 import { useI18n } from 'vue-i18n';
 
 defineProps({

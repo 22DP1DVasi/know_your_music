@@ -46,6 +46,12 @@
         "password_label": "Password",
         "password_placeholder": "Password",
         "cancel_button": "Cancel",
-        "delete_confirm_button": "Delete Account"
+        "delete_confirm_button": "Delete Account",
+
+        "update_password_title": "Update Password",
+        "update_password_description": "Ensure your account is using a long, random password to stay secure.",
+        "current_password_label": "Current Password",
+        "new_password_label": "New Password",
+        "confirm_password_label": "Confirm Password"
     }
 }

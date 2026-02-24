@@ -46,6 +46,12 @@
         "password_label": "Parole",
         "password_placeholder": "Parole",
         "cancel_button": "Atcelt",
-        "delete_confirm_button": "Dzēst kontu"
+        "delete_confirm_button": "Dzēst kontu",
+
+        "update_password_title": "Atjaunināt paroli",
+        "update_password_description": "Pārliecinieties, vai jūsu kontā tiek izmantota gara, nejauša parole, lai saglabātu drošību.",
+        "current_password_label": "Pašreizējā parole",
+        "new_password_label": "Jaunā parole",
+        "confirm_password_label": "Apstiprināt jauno paroli"
     }
 }

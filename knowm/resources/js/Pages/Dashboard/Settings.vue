@@ -43,7 +43,7 @@ const { t } = useI18n();
                     <UpdatePasswordForm class="form-container" />
                 </div>
 
-                <div class="profile-card">
+                <div class="profile-card-delete">
                     <DeleteUserForm class="form-container" />
                 </div>
             </div>
@@ -79,6 +79,13 @@ const { t } = useI18n();
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
+.profile-card-delete {
+    background-color: #ffffff;
+    padding: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 2px groove #ff3333;
+}
+
 .form-container {
     max-width: 36rem;
 }
@@ -98,6 +105,11 @@ const { t } = useI18n();
     }
 
     .profile-card {
+        border-radius: 0.5rem;
+        padding: 2rem;
+    }
+
+    .profile-card-delete {
         border-radius: 0.5rem;
         padding: 2rem;
     }
