@@ -114,15 +114,19 @@ class User extends Authenticatable
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getAvatarUrlAttribute(): string
+    public function getAvatarUrlAttribute(): ?string
     {
-        if (!$this->avatar) {
-            return asset('images/default-user-avatar.png');
+//        if (!$this->avatar) {
+//            return asset('images/default-user-avatar.png');
+//        }
+//
+//        return Storage::url($this->avatar);
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
         }
-
-        return Storage::url($this->avatar);
+        return null;
     }
 
     /**

@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Partials/UpdatePasswordForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Partials/UpdatePasswordForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Partials/UpdateProfileInformationForm.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Partials/UpdateProfileInformationForm.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Settings.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/Settings.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,7 +174,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;features/user-avatar&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;features/user-profile-page&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/lv&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -191,6 +195,7 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\lv" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\en" />
+      <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\Pages\Dashboard" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\lang\lv" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -385,6 +390,13 @@
       <workItem from="1771587003450" duration="14006000" />
       <workItem from="1771673915252" duration="11109000" />
       <workItem from="1771758550529" duration="684000" />
+      <workItem from="1771839196422" duration="2296000" />
+      <workItem from="1771845538714" duration="14887000" />
+      <workItem from="1771875343407" duration="159000" />
+      <workItem from="1771875548486" duration="142000" />
+      <workItem from="1771875816406" duration="48000" />
+      <workItem from="1771876735046" duration="5546000" />
+      <workItem from="1771925249573" duration="8077000" />
     </task>
     <servers />
   </component>

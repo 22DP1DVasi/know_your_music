@@ -1,0 +1,57 @@
+{
+    "overview": {
+        "account_header": "Your Account",
+        "member_since": "Member since"
+    },
+    "layout": {
+        "overview_label": "Overview",
+        "profile_settings": "Profile Settings",
+        "favorites": "Favorites",
+        "favorite_artists": "Favorite artists",
+        "playlists": "Playlists",
+        "user_playlists": "User playlists",
+        "create_new_pl": "Create new playlist",
+        "recommendations": "Recommendations",
+        "history_recom": "History of recommendations",
+        "logout": "Log Out"
+    },
+    "settings": {
+        "profile_header": "Profile Settings",
+        "profile_info_label": "Profile Information",
+        "profile_info_description": "Update your account's profile information and email address.",
+        "name_label": "Name",
+        "email_label": "Email",
+        "verification_text": "Your email address is unverified.",
+        "verification_link": "Click here to re-send the verification email.",
+        "verification_success": "A new verification link has been sent to your email address.",
+        "save_button": "Save",
+        "saved_message": "Saved.",
+        "avatar_title": "Profile Picture",
+        "avatar_upload_title": "Upload new avatar",
+        "avatar_remove_title": "Remove avatar",
+        "avatar_uploading": "Uploading...",
+        "avatar_helper_1": "Click the camera icon to upload a new photo.",
+        "avatar_helper_2": "Max size: 2MB. Formats: JPG, PNG, GIF, WEBP.",
+        "avatar_error_type": "Please upload a valid image file (JPEG, PNG, GIF, or WEBP)",
+        "avatar_error_size": "File size must be less than 2MB",
+        "avatar_error_upload": "Failed to upload avatar. Please try again.",
+        "avatar_error_remove": "Failed to remove avatar. Please try again.",
+        "avatar_remove_confirm": "Are you sure you want to remove your avatar?",
+
+        "delete_account_title": "Delete Account",
+        "delete_account_description": "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.",
+        "delete_account_button": "Delete Account",
+        "delete_confirm_title": "Are you sure you want to delete your account?",
+        "delete_confirm_description": "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.",
+        "password_label": "Password",
+        "password_placeholder": "Password",
+        "cancel_button": "Cancel",
+        "delete_confirm_button": "Delete Account",
+
+        "update_password_title": "Update Password",
+        "update_password_description": "Ensure your account is using a long, random password to stay secure.",
+        "current_password_label": "Current Password",
+        "new_password_label": "New Password",
+        "confirm_password_label": "Confirm Password"
+    }
+}

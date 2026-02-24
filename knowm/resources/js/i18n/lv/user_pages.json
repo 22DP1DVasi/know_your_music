@@ -1,0 +1,57 @@
+{
+    "overview": {
+        "account_header": "Jūsu konts",
+        "member_since": "Dalībnieks kopš"
+    },
+    "layout": {
+        "overview_label": "Pārskats",
+        "profile_settings": "Profila iestatījumi",
+        "favorites": "Izlase",
+        "favorite_artists": "Mīļākie izpildītāji",
+        "playlists": "Kolekcijas",
+        "user_playlists": "User playlists",
+        "create_new_pl": "Create new playlist",
+        "recommendations": "Rekomendācijas",
+        "history_recom": "Rekomendāciju vēsture",
+        "logout": "Atteikties"
+    },
+    "settings": {
+        "profile_header": "Profila iestatījumi",
+        "profile_info_label": "Profila informācija",
+        "profile_info_description": "Atjauniniet sava konta profila informāciju un e-pasta adresi.",
+        "name_label": "Vārds",
+        "email_label": "E-pasts",
+        "verification_text": "Jūsu e-pasta adrese nav verificēta.",
+        "verification_link": "Noklikšķiniet šeit, lai atkārtoti nosūtītu verifikācijas e-pastu.",
+        "verification_success": "Jauna verifikācijas saite ir nosūtīta uz jūsu e-pasta adresi.",
+        "save_button": "Saglabāt",
+        "saved_message": "Saglabāts.",
+        "avatar_title": "Profila attēls",
+        "avatar_upload_title": "Augšupielādēt jaunu attēlu",
+        "avatar_remove_title": "Noņemt attēlu",
+        "avatar_uploading": "Augšupielādē...",
+        "avatar_helper_1": "Noklikšķiniet uz kameras ikonas, lai augšupielādētu jaunu foto.",
+        "avatar_helper_2": "Maks. izmērs: 2MB. Formāti: JPG, PNG, GIF, WEBP.",
+        "avatar_error_type": "Lūdzu, augšupielādējiet derīgu attēla failu (JPEG, PNG, GIF vai WEBP)",
+        "avatar_error_size": "Faila izmēram jābūt mazākam par 2MB",
+        "avatar_error_upload": "Neizdevās augšupielādēt attēlu. Lūdzu, mēģiniet vēlreiz.",
+        "avatar_error_remove": "Neizdevās noņemt attēlu. Lūdzu, mēģiniet vēlreiz.",
+        "avatar_remove_confirm": "Vai tiešām vēlaties noņemt savu profila attēlu?",
+
+        "delete_account_title": "Dzēst kontu",
+        "delete_account_description": "Kad jūsu konts tiks dzēsts, visi tā resursi un dati tiks neatgriezeniski izdzēsti. Pirms konta dzēšanas, lūdzu, lejupielādējiet visus datus, ko vēlaties saglabāt.",
+        "delete_account_button": "Dzēst kontu",
+        "delete_confirm_title": "Vai tiešām vēlaties dzēst savu kontu?",
+        "delete_confirm_description": "Kad jūsu konts tiks dzēsts, visi tā resursi un dati tiks neatgriezeniski izdzēsti. Lūdzu, ievadiet savu paroli, lai apstiprinātu, ka vēlaties neatgriezeniski dzēst savu kontu.",
+        "password_label": "Parole",
+        "password_placeholder": "Parole",
+        "cancel_button": "Atcelt",
+        "delete_confirm_button": "Dzēst kontu",
+
+        "update_password_title": "Atjaunināt paroli",
+        "update_password_description": "Pārliecinieties, vai jūsu kontā tiek izmantota gara, nejauša parole, lai saglabātu drošību.",
+        "current_password_label": "Pašreizējā parole",
+        "new_password_label": "Jaunā parole",
+        "confirm_password_label": "Apstiprināt jauno paroli"
+    }
+}
