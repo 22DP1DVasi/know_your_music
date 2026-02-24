@@ -36,6 +36,16 @@
         "avatar_error_size": "Faila izmēram jābūt mazākam par 2MB",
         "avatar_error_upload": "Neizdevās augšupielādēt attēlu. Lūdzu, mēģiniet vēlreiz.",
         "avatar_error_remove": "Neizdevās noņemt attēlu. Lūdzu, mēģiniet vēlreiz.",
-        "avatar_remove_confirm": "Vai tiešām vēlaties noņemt savu profila attēlu?"
+        "avatar_remove_confirm": "Vai tiešām vēlaties noņemt savu profila attēlu?",
+
+        "delete_account_title": "Dzēst kontu",
+        "delete_account_description": "Kad jūsu konts tiks dzēsts, visi tā resursi un dati tiks neatgriezeniski izdzēsti. Pirms konta dzēšanas, lūdzu, lejupielādējiet visus datus, ko vēlaties saglabāt.",
+        "delete_account_button": "Dzēst kontu",
+        "delete_confirm_title": "Vai tiešām vēlaties dzēst savu kontu?",
+        "delete_confirm_description": "Kad jūsu konts tiks dzēsts, visi tā resursi un dati tiks neatgriezeniski izdzēsti. Lūdzu, ievadiet savu paroli, lai apstiprinātu, ka vēlaties neatgriezeniski dzēst savu kontu.",
+        "password_label": "Parole",
+        "password_placeholder": "Parole",
+        "cancel_button": "Atcelt",
+        "delete_confirm_button": "Dzēst kontu"
     }
 }
