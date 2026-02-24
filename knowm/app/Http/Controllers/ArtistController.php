@@ -49,6 +49,30 @@ class ArtistController extends Controller
     }
 
     /**
+     * Pievieno izpildītāju lietotāja izlasei.
+     *
+     * @param Artist $artist
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addFavorite(Artist $artist): \Illuminate\Http\RedirectResponse
+    {
+        auth()->user()->favoriteArtists()->syncWithoutDetaching([$artist->id]);
+        return back()->with('success', 'Artist added to favorites');
+    }
+
+    /**
+     * Noņem izpildītāju no lietotāja izlases.
+     *
+     * @param Artist $artist
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function removeFavorite(Artist $artist): \Illuminate\Http\RedirectResponse
+    {
+        auth()->user()->favoriteArtists()->detach($artist->id);
+        return back()->with('success', 'Artist removed from favorites');
+    }
+
+    /**
      * Atveido izpildītāja biogrāfijas lapu.
      *
      * @param Artist $artist

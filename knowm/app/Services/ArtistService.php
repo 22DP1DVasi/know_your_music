@@ -61,6 +61,12 @@ class ArtistService
      */
     public function getArtistInfo(Artist $artist): array
     {
+        // vai izpildītājs ir pievienots lietotāja izlasei
+        if (auth()->check()) {
+            $artist->is_favorite = auth()->user()->favoriteArtists()
+                ->where('artist_id', $artist->id)
+                ->exists();
+        }
         return [
             'id' => $artist->id,
             'name' => $artist->name,
@@ -71,6 +77,7 @@ class ArtistService
             'disbanded_year' => $artist->disbanded_year,
             'is_active' => $artist->is_active,
             'solo_or_band' => $artist->solo_or_band,
+            'is_favorite' => $artist->is_favorite
         ];
     }
 

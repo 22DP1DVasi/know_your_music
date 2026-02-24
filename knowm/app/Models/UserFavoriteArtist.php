@@ -18,9 +18,15 @@ class UserFavoriteArtist extends Pivot
         'artist_id',
     ];
 
-    /*protected $casts = [
-        'sort_order' => 'integer',
-    ];*/
+    /**
+     * Atribūti, kas jānodod (cast).
+     *
+     * @var string[]
+     */
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s'
+    ];
 
     /**
      * The user who favorited this artist

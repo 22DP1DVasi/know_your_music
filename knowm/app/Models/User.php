@@ -230,10 +230,10 @@ class User extends Authenticatable
     /**
      * Get the favorite artists for the user.
      */
-    public function favoriteArtists(): BelongsToMany
+    public function favoriteArtists()
     {
         return $this->belongsToMany(Artist::class, 'user_favorite_artists')
-            ->using(UserFavoriteArtist::class);
+            ->withTimestamps();
     }
 
     /**

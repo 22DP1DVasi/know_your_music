@@ -1,11 +1,12 @@
 <script setup>
-import { Head, usePage } from '@inertiajs/vue3'
+import { Head, usePage, router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
 import Comments from '@/Components/Comments/Comments.vue'
-import {ref, computed } from 'vue'
+import {ref, computed, watch } from 'vue'
 import ColorThief from 'colorthief'
+import { route } from "ziggy-js";
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -22,6 +23,7 @@ const props = defineProps({
             disbanded_year: null,
             is_active: true,
             solo_or_band: '',
+            is_favorite: 'false',
 
             genres: [],
             tracks: [],
@@ -58,11 +60,60 @@ const imageStyle = ref({
     height: '100%',
     objectFit: 'cover'
 });
+
 const isLandscape = ref(false);
 const colorThief = new ColorThief();
 const bioMaxLength = 500;
 const showPlayer = ref(false);
 const currentAudioSource = ref('');
+const isFavorite = ref(props.artist.is_favorite || false);
+const isFavoriteLoading = ref(false);
+
+const toggleFavorite = async () => {
+    if (isFavoriteLoading.value) return;
+    isFavoriteLoading.value = true;
+    try {
+        if (isFavorite.value) {
+            // noņemt no izlases
+            router.delete(route('artists.favorite.destroy', props.artist.slug), {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    isFavorite.value = false;
+                    isFavoriteLoading.value = false;
+                },
+                onError: (errors) => {
+                    console.error('Error removing from favorites:', errors);
+                    isFavoriteLoading.value = false;
+                }
+            });
+        } else {
+            // pievienot izlasei
+            router.post(route('artists.favorite.store', props.artist.slug), {}, {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    isFavorite.value = true;
+                    isFavoriteLoading.value = false;
+                },
+                onError: (errors) => {
+                    console.error('Error adding to favorites:', errors);
+                    isFavoriteLoading.value = false;
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error toggling favorite:', error);
+        isFavoriteLoading.value = false;
+    }
+};
+
+// watch / skatīties, vai nav lapu atjauninājumu, ja izlases stāvoklis mainās no citas vietas
+watch(() => props.artist.is_favorite, (newValue) => {
+    if (newValue !== undefined) {
+        isFavorite.value = newValue;
+    }
+});
 
 // attēlu apstrāde
 const handleImageLoad = () => {
@@ -224,9 +275,14 @@ const formatDuration = (timeString) => {
             </div>
             <div class="artist-title-container">
                 <h1 class="artist-name">{{ artist.name }}</h1>
-                <button class="favorite-button">
-                    <i class="fa-regular fa-heart"></i>
-                    <span>Add to Favorites</span>
+                <button
+                    class="favorite-button"
+                    :class="{ 'favorited': isFavorite }"
+                    @click="toggleFavorite"
+                    :disabled="isFavoriteLoading"
+                >
+                    <i :class="isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
+                    <span>{{ isFavorite ? 'Favorited' : 'Add to Favorites' }}</span>
                 </button>
             </div>
         </div>
@@ -506,18 +562,56 @@ const formatDuration = (timeString) => {
 
 .favorite-button i {
     font-size: 1.1rem;
+    transition: transform 0.2s ease;
 }
 
-.favorite-button:hover {
+.favorite-button.favorited {
+    background: rgba(220, 38, 38, 0.2);
+    border-color: rgba(220, 38, 38, 0.4);
+}
+
+.favorite-button.favorited i {
+    color: #ff4d4d;
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+}
+
+.favorite-button:not(:disabled):hover {
     background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
-.favorite-button:active {
+.favorite-button.favorited:not(:disabled):hover {
+    background: rgba(220, 38, 38, 0.3);
+    border-color: rgba(220, 38, 38, 0.6);
+}
+
+.favorite-button.favorited:not(:disabled):hover i {
+    transform: scale(1.1);
+}
+
+.favorite-button:not(:disabled):active {
     transform: translateY(1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.favorite-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.favorite-button:disabled i {
+    animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .artist-content {

@@ -92,7 +92,9 @@ Route::get('/search/tracks', [SearchController::class, 'tracks'])
 Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
     ->name('search.lyrics');
 
+
 // informācijas lapas (izpildītāji, žanri, albumi, dziesmas)
+
 
 // izpildītāja inf. lapa
 Route::get('/artists/{artist}', [ArtistController::class, 'show'])
@@ -120,6 +122,15 @@ Route::prefix('artists/{artist}')->group(function () {
     Route::delete('/comments/{comment}', [ArtistCommentController::class, 'destroy'])
         ->middleware('auth');
 });
+
+// izpildtītāja pievienošana/noņemšana no mīļāko izpildītāju saraksta
+Route::post('/artists/{artist}/favorite', [ArtistController::class, 'addFavorite'])
+    ->name('artists.favorite.store')
+    ->middleware('auth');
+Route::delete('/artists/{artist}/favorite', [ArtistController::class, 'removeFavorite'])
+    ->name('artists.favorite.destroy')
+    ->middleware('auth');
+
 
 // albuma inf. lapa
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
