@@ -150,7 +150,7 @@ class SearchController extends Controller
             return $track;
         });
 
-        return Inertia::render('LyricsSearchResults', [
+        return Inertia::render('Lyrics/LyricsSearchResults', [
             'tracks' => $tracks->items(),
             'searchQuery' => $query,
             'paginationLinks' => $tracks->toArray()['links'],
