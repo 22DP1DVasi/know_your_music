@@ -1,3 +1,61 @@
+<script setup>
+import { Head, router } from "@inertiajs/vue3";
+import Navbar from "@/Components/Navbar.vue";
+import Footer from "@/Components/Footer.vue";
+import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
+import { route } from 'ziggy-js';
+
+const props = defineProps({
+    artists: Array,
+    releases: Array,
+    metadataMatches: Array,
+    lyricsMatches: Array,
+    searchQuery: String,
+    hasMoreArtists: Boolean,
+    hasMoreReleases: Boolean,
+    hasMoreTracks: Boolean,
+    artistsCount: Number,
+    releasesCount: Number,
+    tracksCount: Number,
+    metadataMatchesCount: Number,
+    lyricsMatchesCount: Number
+});
+
+const formatDuration = (timeString) => {
+    if (!timeString) return '--:--';
+    const [hours, minutes, seconds] = timeString.split(':');
+    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
+// const cleanSnippet = (snippet) => {
+//     if (!snippet) return '';
+//     return snippet
+//         .replace(/\\/g, '')
+//         .replace(/[\x00-\x1F\x7F]/g, ' ')
+//         .replace(/\s+/g, ' ')
+//         .trim();
+// };
+
+const formatArtists = (artists) => {
+    if (!artists || artists.length === 0) return '';
+    const names = artists.map(artist => artist.name);
+    return names.join(', ');
+};
+
+const redirectToArtist = (slug) => {
+    router.get(`/artists/${slug}`);
+};
+
+const redirectToRelease = (slug) => {
+    router.get(`/releases/${slug}`);
+};
+
+const redirectToTrack = (slug) => {
+    router.get(`/tracks/${slug}`);
+};
+
+</script>
+
 <template>
     <Head title="Know Your Music Search" />
     <Navbar/>
@@ -14,18 +72,14 @@
                     </a>
                 </div>
                 <div class="artist-results">
-                    <a v-for="artist in artists"
-                       :key="artist.id"
-                       @click="redirectToArtist(artist.slug)"
-                       class="artist-card">
-                        <div class="image-wrapper">
-                            <img :src="artist.banner_url" :alt="artist.name">
-                        </div>
-                        <div class="artist-info">
-                            <h3>{{ artist.name }}</h3>
-                            <p>{{ artist.tracks_count }} {{ artist.tracks_count === 1 ? 'track' : 'tracks' }}</p>
-                        </div>
-                    </a>
+                    <ArtistCardMain
+                        v-for="artist in artists"
+                        :key="artist.id"
+                        :artist="artist"
+                        :redirect-to="redirectToArtist"
+                        :show-track-count="false"
+                        :track-count-text="(count) => `${count} ${count === 1 ? 'track' : 'tracks'}`"
+                    />
                 </div>
             </section>
 
@@ -136,63 +190,6 @@
     <Footer/>
 </template>
 
-<script setup>
-import { Head, router } from "@inertiajs/vue3";
-import Navbar from "@/Components/Navbar.vue";
-import Footer from "@/Components/Footer.vue";
-import { route } from 'ziggy-js';
-
-const props = defineProps({
-    artists: Array,
-    releases: Array,
-    metadataMatches: Array,
-    lyricsMatches: Array,
-    searchQuery: String,
-    hasMoreArtists: Boolean,
-    hasMoreReleases: Boolean,
-    hasMoreTracks: Boolean,
-    artistsCount: Number,
-    releasesCount: Number,
-    tracksCount: Number,
-    metadataMatchesCount: Number,
-    lyricsMatchesCount: Number
-});
-
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const [hours, minutes, seconds] = timeString.split(':');
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
-};
-
-// const cleanSnippet = (snippet) => {
-//     if (!snippet) return '';
-//     return snippet
-//         .replace(/\\/g, '')
-//         .replace(/[\x00-\x1F\x7F]/g, ' ')
-//         .replace(/\s+/g, ' ')
-//         .trim();
-// };
-
-const formatArtists = (artists) => {
-    if (!artists || artists.length === 0) return '';
-    const names = artists.map(artist => artist.name);
-    return names.join(', ');
-};
-
-const redirectToArtist = (slug) => {
-    router.get(`/artists/${slug}`);
-};
-
-const redirectToRelease = (slug) => {
-    router.get(`/releases/${slug}`);
-};
-
-const redirectToTrack = (slug) => {
-    router.get(`/tracks/${slug}`);
-};
-
-</script>
-
 <style scoped>
 .results-title {
     max-width: 800px;
@@ -249,66 +246,8 @@ const redirectToTrack = (slug) => {
 .artist-results {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: flex-start;
-}
-
-.artist-card {
-    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.artist-card:hover {
-    cursor: pointer;
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.artist-card .image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.artist-card .image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.artist-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-/* max two rows for name/title, if overflows - ellipsis */
-.artist-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.artist-info p {
-    margin: 0;
-    color: #666;
-    font-size: 0.9rem;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
 }
 
 .release-section {
@@ -554,25 +493,18 @@ const redirectToTrack = (slug) => {
         padding-top: 0.5rem;
     }
 
-    .artist-card {
-        flex: 0 0 calc(50% - 0.75rem); /* 2 cards per row */
-    }
-
     .release-card {
         flex: 0 0 calc(50% - 0.75rem);
     }
 
-    .artist-info,
     .release-info {
         padding: 1.25rem;
     }
 
-    .artist-info h3,
     .release-info h3 {
         font-size: 1.05rem;
     }
 
-    .artist-info p,
     .release-info p {
         font-size: 0.95rem;
     }
@@ -590,10 +522,6 @@ const redirectToTrack = (slug) => {
 
     .artist-results {
         justify-content: center;
-    }
-
-    .artist-card {
-        flex: 0 0 80%;
     }
 
     .release-results {
