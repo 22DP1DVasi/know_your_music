@@ -13,6 +13,8 @@ import enAdmArtists from './i18n/en/adm_artists.json'
 import enUserPages from './i18n/en/user_pages.json'
 import enArtists from './i18n/en/artists.json'
 
+import enComponents from './i18n/en/components.json';
+
 import lvNavbar from './i18n/lv/navbar.json'
 import lvHome from './i18n/lv/home.json'
 import lvAdmDashboard from './i18n/lv/adm_dashboard.json'
@@ -23,6 +25,8 @@ import lvAdmArtists from './i18n/lv/adm_artists.json'
 
 import lvUserPages from './i18n/lv/user_pages.json'
 import lvArtists from './i18n/lv/artists.json'
+
+import lvComponents from './i18n/lv/components.json';
 
 const savedLocale = localStorage.getItem('locale') || 'lv'
 dayjs.locale(savedLocale)
@@ -44,7 +48,9 @@ const i18n = createI18n({
             adm_layout: enAdmLayout,
             adm_users: enAdmUsers,
             adm_roles: enAdmRoles,
-            adm_artists: enAdmArtists
+            adm_artists: enAdmArtists,
+
+            components: enComponents
         },
         lv: {
             navbar: lvNavbar,
@@ -58,7 +64,9 @@ const i18n = createI18n({
             adm_layout: lvAdmLayout,
             adm_users: lvAdmAUsers,
             adm_roles: lvAdmRoles,
-            adm_artists: lvAdmArtists
+            adm_artists: lvAdmArtists,
+
+            components: lvComponents
         }
     }
 })

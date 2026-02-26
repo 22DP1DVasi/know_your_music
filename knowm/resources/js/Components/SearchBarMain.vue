@@ -1,7 +1,8 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { debounce } from 'lodash-es';
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
     // sākotnējā meklēšanas vaicājuma vērtība
@@ -12,7 +13,7 @@ const props = defineProps({
     // vietturis
     placeholder: {
         type: String,
-        default: 'Search...'
+        default: null
     },
     // meklēšanas ceļš
     searchRoute: {
@@ -45,6 +46,12 @@ const props = defineProps({
         default: false
     }
 });
+
+const { t } = useI18n()
+
+const computedPlaceholder = computed(() =>
+    props.placeholder ?? t('components.searchbar.default_placeholder')
+)
 
 const emit = defineEmits(['update:modelValue', 'search', 'input']);
 
@@ -132,7 +139,7 @@ defineExpose({
                 type="search"
                 autocomplete="off"
                 class="searchTerm"
-                :placeholder="placeholder"
+                :placeholder="computedPlaceholder"
                 v-model="localSearchQuery"
                 @keyup.enter="handleSearch"
                 @input="handleInput"

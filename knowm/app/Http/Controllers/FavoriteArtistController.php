@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Request;
 
 class FavoriteArtistController
 {
@@ -18,12 +18,19 @@ class FavoriteArtistController
     {
         $user = Auth::user();
         $artists = $user->favoriteArtists()
-            ->orderBy('name')
-            ->paginate(20)
+            ->when($request->search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->orderBy('name', $request->sort ?? 'asc')
+            ->paginate(16)
             ->withQueryString();
 
         return Inertia::render('Dashboard/FavoriteArtists', [
-            'artists' => $artists
+            'artists' => $artists,
+            'filters' => [
+                'search' => $request->search,
+                'sort' => $request->sort
+            ]
         ]);
     }
 }

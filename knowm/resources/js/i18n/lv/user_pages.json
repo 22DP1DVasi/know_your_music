@@ -61,6 +61,13 @@
         "back_to_dashboard": "Atpakaļ uz paneli",
         "no_favorites_title": "Vēl nav mīļāko izpildītāju",
         "no_favorites_description": "Sāciet meklēt izpildītājus un pievienojiet tos savai izlasei, lai tos redzētu šeit.",
-        "explore_artists": "Atklāt izpildītājus"
+        "explore_artists": "Atklāt izpildītājus",
+        "search_placeholder": "Meklēt izpildītājus...",
+        "sort_asc": "A līdz Z",
+        "sort_desc": "Z līdz A",
+        "sort_tooltip": "Mainīt kārtošanas secību",
+        "no_search_results_title": "Nav atrasts neviens izpildītājs",
+        "no_search_results_description": "Neviens izpildītājs neatbilst meklēšanas vaicājumam \"{query}\".",
+        "clear_search": "Notīrīt meklēšanu"
     }
 }

@@ -1,13 +1,14 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import { ref, computed, watch } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
 import Pagination from '@/Components/Admin/Pagination.vue';
-import { computed } from 'vue';
-import { route } from "ziggy-js";
+import SearchBarMain from '@/Components/SearchBarMain.vue';
+import {route} from "ziggy-js";
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 
 const props = defineProps({
     artists: {
@@ -22,12 +23,19 @@ const props = defineProps({
             from: 0,
             to: 0
         })
+    },
+    filters: {
+        type: Object,
+        default: () => ({
+            search: '',
+            sort: 'asc'
+        })
     }
 });
 
-const redirectToArtist = (slug) => {
-    router.get(`/artists/${slug}`);
-};
+// filtru reaktīvais stāvoklis
+const searchQuery = ref(props.filters.search || '');
+const sortOrder = ref(props.filters.sort || 'asc');
 
 // computed rekvizīts pluralizētam skaitam
 const totalCountText = computed(() => {
@@ -36,6 +44,45 @@ const totalCountText = computed(() => {
         return t('user_pages.favorites.total_count_singular', { count });
     }
     return t('user_pages.favorites.total_count_plural', { count });
+});
+
+const redirectToArtist = (slug) => {
+    router.get(`/artists/${slug}`);
+};
+
+const handleSearch = (query) => {
+    searchQuery.value = query;
+    applyFilters();
+};
+
+const toggleSortOrder = () => {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+    applyFilters();
+};
+
+const applyFilters = () => {
+    router.get(
+        route('dashboard.favorites.artists'),
+        {
+            search: searchQuery.value || null,
+            sort: sortOrder.value
+        },
+        {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true
+        }
+    );
+};
+
+// watch filtra izmaiņas ar debounce
+// izmanto kamrēr debounce search nestrādā searchbar komponentā
+let searchTimeout;
+watch(searchQuery, (newValue) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        applyFilters();
+    }, 500);
 });
 
 </script>
@@ -58,6 +105,35 @@ const totalCountText = computed(() => {
                 </p>
             </div>
 
+            <!-- Meklēšanas un kārtošanas sadaļa -->
+            <div class="filters-section">
+                <div class="search-wrapper">
+                    <SearchBarMain
+                        v-model="searchQuery"
+                        :placeholder="t('user_pages.favorites.search_placeholder')"
+                        @search="handleSearch"
+                    />
+                </div>
+
+                <div class="sort-wrapper">
+                    <button
+                        @click="toggleSortOrder"
+                        class="sort-button"
+                        :class="{ 'active': sortOrder === 'desc' }"
+                        :title="t('user_pages.favorites.sort_tooltip')"
+                    >
+                        <i class="fa-solid fa-arrow-down-wide-short"></i>
+                        <span class="sort-text">
+                            {{ sortOrder === 'asc'
+                            ? t('user_pages.favorites.sort_asc')
+                            : t('user_pages.favorites.sort_desc')
+                            }}
+                        </span>
+                        <i class="fa-solid fa-chevron-down sort-indicator"></i>
+                    </button>
+                </div>
+            </div>
+
             <!-- Izpildītāju saraksts -->
             <div v-if="artists.data && artists.data.length > 0" class="artists-list">
                 <ArtistCardMain
@@ -73,17 +149,32 @@ const totalCountText = computed(() => {
             <div v-else class="empty-state">
                 <i class="fa-regular fa-heart empty-icon"></i>
                 <h3 class="empty-title">
-                    {{ t('user_pages.favorites.no_favorites_title') }}
+                    {{ searchQuery
+                    ? t('user_pages.favorites.no_search_results_title')
+                    : t('user_pages.favorites.no_favorites_title')
+                    }}
                 </h3>
                 <p class="empty-description">
-                    {{ t('user_pages.favorites.no_favorites_description') }}
+                    {{ searchQuery
+                    ? t('user_pages.favorites.no_search_results_description', { query: searchQuery })
+                    : t('user_pages.favorites.no_favorites_description')
+                    }}
                 </p>
                 <button
+                    v-if="!searchQuery"
                     @click="router.get(route('artists.explore'))"
                     class="explore-button"
                 >
                     <i class="fa-solid fa-compass"></i>
                     <span>{{ t('user_pages.favorites.explore_artists') }}</span>
+                </button>
+                <button
+                    v-else
+                    @click="searchQuery = ''; handleSearch('')"
+                    class="explore-button"
+                >
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>{{ t('user_pages.favorites.clear_search') }}</span>
                 </button>
             </div>
 
@@ -134,6 +225,87 @@ ja būs nepieciešams. :|
 @media (prefers-color-scheme: dark) {
     .favorites-count {
         color: #9ca3af;
+    }
+}
+
+/* Filters Section */
+.filters-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-wrapper {
+    flex: 1;
+    min-width: 250px;
+}
+
+.sort-wrapper {
+    flex-shrink: 0;
+}
+
+.sort-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: white;
+    border: 1px solid rgba(12, 75, 170, 0.2);
+    border-radius: 30px;
+    color: #4b5563;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.sort-button:hover {
+    background: rgba(12, 75, 170, 0.05);
+    border-color: #0c4baa;
+}
+
+.sort-button.active {
+    background: rgba(12, 75, 170, 0.1);
+    border-color: #0c4baa;
+    color: #0c4baa;
+}
+
+.sort-button i:first-child {
+    font-size: 1rem;
+    color: #0c4baa;
+}
+
+.sort-indicator {
+    font-size: 0.75rem;
+    margin-left: 0.25rem;
+    transition: transform 0.2s ease;
+}
+
+.sort-button.active .sort-indicator {
+    transform: rotate(180deg);
+}
+
+.sort-text {
+    font-weight: 500;
+}
+
+@media (prefers-color-scheme: dark) {
+    .sort-button {
+        background: #1f2937;
+        border-color: #374151;
+        color: #9ca3af;
+    }
+
+    .sort-button:hover {
+        background: #374151;
+        border-color: #0c4baa;
+    }
+
+    .sort-button.active {
+        background: rgba(12, 75, 170, 0.2);
+        color: #f3f4f6;
     }
 }
 
@@ -267,6 +439,27 @@ ja būs nepieciešams. :|
         width: 100%;
         justify-content: center;
         padding: 0.75rem 1rem;
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+    .filters-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-wrapper {
+        min-width: 100%;
+    }
+
+    .sort-wrapper {
+        width: 100%;
+    }
+
+    .sort-button {
+        width: 100%;
+        justify-content: center;
     }
 }
 

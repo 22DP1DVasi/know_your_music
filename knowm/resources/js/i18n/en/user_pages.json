@@ -61,6 +61,13 @@
         "back_to_dashboard": "Back to Dashboard",
         "no_favorites_title": "No favorite artists yet",
         "no_favorites_description": "Start exploring artists and add them to your favorites to see them here.",
-        "explore_artists": "Explore Artists"
+        "explore_artists": "Explore Artists",
+        "search_placeholder": "Search artists...",
+        "sort_asc": "A to Z",
+        "sort_desc": "Z to A",
+        "sort_tooltip": "Change sort order",
+        "no_search_results_title": "No artists found",
+        "no_search_results_description": "No artists match your search \"{query}\".",
+        "clear_search": "Clear search"
     }
 }
