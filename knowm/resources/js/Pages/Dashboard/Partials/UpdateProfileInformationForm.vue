@@ -34,7 +34,7 @@ const form = useForm({
 
 // iesniegt veidlapu + atjaunināt lietotāja datus veiksmīgas izpildes gadījumā
 const submitForm = () => {
-    form.patch(route('profile.update'), {
+    form.patch(route('settings.update'), {
         onSuccess: () => {
             // atjaunināt reaktīvās atsauces ar jauniem lietotāja datiem no lapas props
             const updatedUser = usePage().props.auth.user;
@@ -76,7 +76,7 @@ const handleAvatarUpload = async (event) => {
     const formData = new FormData();
     formData.append('avatar', file);
     try {
-        const response = await axios.post(route('profile.avatar.update'), formData, {
+        const response = await axios.post(route('settings.avatar.update'), formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -102,7 +102,7 @@ const handleAvatarRemove = async () => {
     if (!confirm(t('user_pages.settings.avatar_remove_confirm'))) return;
     isUploadingAvatar.value = true;
     try {
-        const response = await axios.delete(route('profile.avatar.destroy'));
+        const response = await axios.delete(route('settings.avatar.destroy'));
 
         if (response.data.success) {
             avatarPreview.value = null;

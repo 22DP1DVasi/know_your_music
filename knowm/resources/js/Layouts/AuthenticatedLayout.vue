@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
 
                         <!-- Profila iestatījumi -->
                         <li class="nav-item">
-                            <Link :href="route('profile.edit')" class="nav-link primary">
+                            <Link :href="route('settings.edit')" class="nav-link primary">
                                 <i class="fa-solid fa-user-gear nav-icon"></i>
                                 <span>{{ t('user_pages.layout.profile_settings') }}</span>
                             </Link>
@@ -132,7 +132,7 @@ onBeforeUnmount(() => {
                             </button>
                             <ul class="submenu" v-show="isMenuExpanded('favorites')">
                                 <li>
-                                    <Link href="#" class="submenu-link">
+                                    <Link :href="route('dashboard.favorites.artists')" class="submenu-link">
                                         <i class="fa-solid fa-user-group submenu-icon"></i>
                                         {{ t('user_pages.layout.favorite_artists') }}
                                     </Link>
@@ -294,7 +294,7 @@ onBeforeUnmount(() => {
                         </li>
 
                         <li class="nav-item">
-                            <Link :href="route('profile.edit')" class="nav-link primary" @click="closeMobileSidebar">
+                            <Link :href="route('settings.edit')" class="nav-link primary" @click="closeMobileSidebar">
                                 <i class="fa-solid fa-user-gear nav-icon"></i>
                                 <span>{{ t('user_pages.layout.profile_settings') }}</span>
                             </Link>
@@ -312,7 +312,7 @@ onBeforeUnmount(() => {
                             </button>
                             <ul class="submenu" v-show="isMenuExpanded('favorites')">
                                 <li>
-                                    <Link href="#" class="submenu-link" @click="closeMobileSidebar">
+                                    <Link :href="route('dashboard.favorites.artists')" class="submenu-link" @click="closeMobileSidebar">
                                         <i class="fa-solid fa-user-group submenu-icon"></i>
                                         {{ t('user_pages.layout.favorite_artists') }}
                                     </Link>

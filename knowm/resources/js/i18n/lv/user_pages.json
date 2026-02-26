@@ -53,5 +53,14 @@
         "current_password_label": "Pašreizējā parole",
         "new_password_label": "Jaunā parole",
         "confirm_password_label": "Apstiprināt jauno paroli"
+    },
+    "favorites": {
+        "favorite_artists_title": "Mīļākie izpildītāji",
+        "total_count_singular": "Jums ir {count} mīļākais izpildītājs",
+        "total_count_plural": "Jums ir {count} mīļākie izpildītāji",
+        "back_to_dashboard": "Atpakaļ uz paneli",
+        "no_favorites_title": "Vēl nav mīļāko izpildītāju",
+        "no_favorites_description": "Sāciet meklēt izpildītājus un pievienojiet tos savai izlasei, lai tos redzētu šeit.",
+        "explore_artists": "Atklāt izpildītājus"
     }
 }

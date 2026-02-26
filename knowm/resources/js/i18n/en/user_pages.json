@@ -53,5 +53,14 @@
         "current_password_label": "Current Password",
         "new_password_label": "New Password",
         "confirm_password_label": "Confirm Password"
+    },
+    "favorites": {
+        "favorite_artists_title": "Favorite Artists",
+        "total_count_singular": "You have {count} favorite artist",
+        "total_count_plural": "You have {count} favorite artists",
+        "back_to_dashboard": "Back to Dashboard",
+        "no_favorites_title": "No favorite artists yet",
+        "no_favorites_description": "Start exploring artists and add them to your favorites to see them here.",
+        "explore_artists": "Explore Artists"
     }
 }

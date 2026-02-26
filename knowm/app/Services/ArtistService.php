@@ -116,8 +116,8 @@ class ArtistService
                 'duration' => $track->duration->format('H:i:s'),
                 'audio_source' => $track->audio_source,
                 'cover_url' => $track->cover_url,
-                'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
-                'release_title' => $track->releases->first()->title,
+                'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name])
+//                'release_title' => $track->releases->first()->title,
             ];
         })->toArray();
     }
