@@ -16,11 +16,16 @@ class UserFavoriteArtist extends Pivot
     protected $fillable = [
         'user_id',
         'artist_id',
-        'sort_order',
     ];
 
+    /**
+     * Atribūti, kas jānodod (cast).
+     *
+     * @var string[]
+     */
     protected $casts = [
-        'sort_order' => 'integer',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
 
     /**

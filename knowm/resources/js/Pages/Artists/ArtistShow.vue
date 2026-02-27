@@ -1,11 +1,13 @@
 <script setup>
-import { Head, usePage } from '@inertiajs/vue3'
+import { Head, usePage, router } from '@inertiajs/vue3'
 import Navbar from '@/Components/Navbar.vue'
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue'
 import Comments from '@/Components/Comments/Comments.vue'
-import {ref, computed } from 'vue'
+import {ref, computed, watch } from 'vue'
 import ColorThief from 'colorthief'
+import { route } from "ziggy-js";
+import { useI18n } from 'vue-i18n';
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -18,10 +20,12 @@ const props = defineProps({
             slug: '',
             profile_url: '',
             biography: '',
+            biography_lv: '',
             formed_year: null,
             disbanded_year: null,
             is_active: true,
             solo_or_band: '',
+            is_favorite: 'false',
 
             genres: [],
             tracks: [],
@@ -44,6 +48,8 @@ const props = defineProps({
 // piekļuve koplietojamiem datiem no servera puses
 const page = usePage();
 
+const { t, locale } = useI18n();
+
 const heroImage = ref(null);
 const heroStyle = ref({
     height: '400px',
@@ -58,11 +64,60 @@ const imageStyle = ref({
     height: '100%',
     objectFit: 'cover'
 });
+
 const isLandscape = ref(false);
 const colorThief = new ColorThief();
 const bioMaxLength = 500;
 const showPlayer = ref(false);
 const currentAudioSource = ref('');
+const isFavorite = ref(props.artist.is_favorite || false);
+const isFavoriteLoading = ref(false);
+
+const toggleFavorite = async () => {
+    if (isFavoriteLoading.value) return;
+    isFavoriteLoading.value = true;
+    try {
+        if (isFavorite.value) {
+            // noņemt no izlases
+            router.delete(route('artists.favorite.destroy', props.artist.slug), {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    isFavorite.value = false;
+                    isFavoriteLoading.value = false;
+                },
+                onError: (errors) => {
+                    console.error('Error removing from favorites:', errors);
+                    isFavoriteLoading.value = false;
+                }
+            });
+        } else {
+            // pievienot izlasei
+            router.post(route('artists.favorite.store', props.artist.slug), {}, {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    isFavorite.value = true;
+                    isFavoriteLoading.value = false;
+                },
+                onError: (errors) => {
+                    console.error('Error adding to favorites:', errors);
+                    isFavoriteLoading.value = false;
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error toggling favorite:', error);
+        isFavoriteLoading.value = false;
+    }
+};
+
+// watch / skatīties, vai nav lapu atjauninājumu, ja izlases stāvoklis mainās no citas vietas
+watch(() => props.artist.is_favorite, (newValue) => {
+    if (newValue !== undefined) {
+        isFavorite.value = newValue;
+    }
+});
 
 // attēlu apstrāde
 const handleImageLoad = () => {
@@ -141,14 +196,66 @@ const analyzeImage = () => {
     imageStyle.value.opacity = '1';
 };
 
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
+const currentBiography = computed(() => {
+    if (locale.value === 'lv' && props.artist.biography_lv) {
+        return props.artist.biography_lv;
+    }
+    if (locale.value === 'en' && props.artist.biography) {
+        return props.artist.biography;
+    }
+    if (locale.value === 'lv' && !props.artist.biography_lv && props.artist.biography) {
+        return props.artist.biography;
+    }
+    if (locale.value === 'en' && !props.artist.biography && props.artist.biography_lv) {
+        return props.artist.biography_lv;
+    }
+    return '';
+});
+
+const languageNotice = computed(() => {
+    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    if (locale.value === 'lv' && !props.artist.biography_lv && props.artist.biography) {
+        return {
+            show: true,
+            message: 'Biogrāfija pieejama tikai angļu valodā.',
+            type: 'lv-no-bio'
+        };
+    }
+    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    if (locale.value === 'en' && !props.artist.biography && props.artist.biography_lv) {
+        return {
+            show: true,
+            message: 'Biography available only in Latvian.',
+            type: 'en-no-bio'
+        };
+    }
+    return {
+        show: false,
+        message: '',
+        type: null
+    };
+});
+
 const truncatedBio = computed(() => {
-    if (!props.artist.biography) return 'There is no background for this artist.';
-    if (props.artist.biography.length <= bioMaxLength) return props.artist.biography;
-    return props.artist.biography.substring(0, bioMaxLength) + '...';
+    const bio = currentBiography.value;
+    if (!bio) {
+        // ja biogrāfijas nav vispār, atgrieziet lokalizētu ziņojumu
+        return t('artists.show.no_biography');
+    }
+    if (bio.length <= bioMaxLength) return bio;
+    return bio.substring(0, bioMaxLength) + '...';
 });
 
 const showReadMore = computed(() => {
-    return props.artist.biography && props.artist.biography.length > bioMaxLength;
+    const bio = currentBiography.value;
+    return bio && bio.length > bioMaxLength;
 });
 
 const playTrack = (source) => {
@@ -166,6 +273,8 @@ const closePlayer = () => {
 
 const redirectToFullBio = (slug) => {
     window.location.href = `/artists/${slug}/bio`;
+    // You can pass the current locale if needed
+    // window.location.href = `/artists/${slug}/bio${locale.value === 'lv' ? '?lang=lv' : ''}`;
 };
 
 const redirectToAllGenres = () => {
@@ -222,20 +331,36 @@ const formatDuration = (timeString) => {
                     loading="eager"
                 >
             </div>
-            <h1 class="artist-name">{{ artist.name }}</h1>
+            <div class="artist-title-container">
+                <h1 class="artist-name">{{ artist.name }}</h1>
+                <button
+                    class="favorite-button"
+                    :class="{ 'favorited': isFavorite }"
+                    @click="toggleFavorite"
+                    :disabled="isFavoriteLoading"
+                >
+                    <i :class="isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i>
+                    <span>{{ isFavorite ? t('artists.global.favorited') : t('artists.global.add_to_favorites') }}</span>
+                </button>
+            </div>
         </div>
 
         <div class="artist-content">
             <div class="main-content">
                 <section class="artist-description">
-                    <h2 class="section-title">About</h2>
+                    <h2 class="section-title">{{ t('artists.show.about') }}</h2>
+                    <!-- Language notice -->
+                    <div v-if="languageNotice.show" class="language-notice">
+                        {{ languageNotice.message }}
+                    </div>
+                    <!-- Biography text -->
                     <div class="bio-text" v-html="truncatedBio"></div>
                     <button
                         v-if="showReadMore"
                         @click="redirectToFullBio(props.artist.slug)"
                         class="read-more-button"
                     >
-                        Read more
+                        {{ t('artists.show.read_more') }}
                     </button>
                 </section>
 
@@ -430,24 +555,126 @@ const formatDuration = (timeString) => {
     z-index: 1;
 }
 
-.artist-name {
+.artist-title-container {
     position: absolute;
     bottom: 0;
     left: 0;
+    right: 0;
     padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 3;
+}
+
+.artist-title-container::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to top right,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.4) 30%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 0 0 0 8px;
+}
+
+.artist-name {
     color: white;
     font-size: 2.5rem;
     font-weight: 700;
+    margin: 0;
     text-shadow:
         -1px -1px 0 rgba(0, 0, 0, 0.9),
         1px -1px 0 rgba(0, 0, 0, 0.9),
         -1px  1px 0 rgba(0, 0, 0, 0.9),
         1px  1px 0 rgba(0, 0, 0, 0.9),
-        -2px  0px 0 rgba(0, 0, 0, 0.7),
-        2px  0px 0 rgba(0, 0, 0, 0.7),
-        0px -2px 0 rgba(0, 0, 0, 0.7),
-        0px  2px 0 rgba(0, 0, 0, 0.7);
-    z-index: 3;
+        -2px  0 0 rgba(0, 0, 0, 0.7),
+        2px  0 0 rgba(0, 0, 0, 0.7),
+        0 -2px 0 rgba(0, 0, 0, 0.7),
+        0  2px 0 rgba(0, 0, 0, 0.7);
+    position: relative;
+    z-index: 2;
+}
+
+.favorite-button {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 40px;
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2;
+}
+
+.favorite-button i {
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+.favorite-button.favorited {
+    background: rgba(220, 38, 38, 0.2);
+    border-color: rgba(220, 38, 38, 0.4);
+}
+
+.favorite-button.favorited i {
+    color: #ff4d4d;
+    text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+}
+
+.favorite-button:not(:disabled):hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.favorite-button.favorited:not(:disabled):hover {
+    background: rgba(220, 38, 38, 0.3);
+    border-color: rgba(220, 38, 38, 0.6);
+}
+
+.favorite-button.favorited:not(:disabled):hover i {
+    transform: scale(1.1);
+}
+
+.favorite-button:not(:disabled):active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.favorite-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.favorite-button:disabled i {
+    animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .artist-content {
@@ -507,6 +734,32 @@ const formatDuration = (timeString) => {
 
 .read-more-button:hover {
     background: #1a5fc9;
+}
+
+.language-notice {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #999;
+    font-style: italic;
+}
+
+/* Optional: Different border colors for different notice types */
+.language-notice[data-type="lv-no-bio"] {
+    border-left-color: #0c4baa; /* Latvian blue theme */
+}
+
+.language-notice[data-type="en-no-bio"] {
+    border-left-color: #aa0c4b; /* Different color for English notice */
+}
+
+.no-bio {
+    color: #666;
+    font-style: italic;
+    padding: 0.5rem 0;
 }
 
 .bio-text {
@@ -841,9 +1094,22 @@ const formatDuration = (timeString) => {
         height: 220px;
     }
 
+    .artist-title-container {
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+
     .artist-name {
         font-size: 2rem;
-        padding: 1rem;
+    }
+
+    .favorite-button {
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .favorite-button i {
+        font-size: 1rem;
     }
 
     .main-content {
@@ -883,6 +1149,16 @@ const formatDuration = (timeString) => {
 }
 
 @media (max-width: 480px) {
+    .artist-title-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .artist-name {
+        font-size: 1.8rem;
+    }
+
     .info-item {
         flex: 1 0 100%;
     }

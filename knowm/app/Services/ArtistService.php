@@ -61,16 +61,24 @@ class ArtistService
      */
     public function getArtistInfo(Artist $artist): array
     {
+        // vai izpildītājs ir pievienots lietotāja izlasei
+        if (auth()->check()) {
+            $artist->is_favorite = auth()->user()->favoriteArtists()
+                ->where('artist_id', $artist->id)
+                ->exists();
+        }
         return [
             'id' => $artist->id,
             'name' => $artist->name,
             'slug' => $artist->slug,
             'profile_url' => $artist->profile_url,
             'biography' => $artist->biography,
+            'biography_lv' => $artist->biography_lv,
             'formed_year' => $artist->formed_year,
             'disbanded_year' => $artist->disbanded_year,
             'is_active' => $artist->is_active,
             'solo_or_band' => $artist->solo_or_band,
+            'is_favorite' => $artist->is_favorite
         ];
     }
 
@@ -108,8 +116,8 @@ class ArtistService
                 'duration' => $track->duration->format('H:i:s'),
                 'audio_source' => $track->audio_source,
                 'cover_url' => $track->cover_url,
-                'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
-                'release_title' => $track->releases->first()->title,
+                'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name])
+//                'release_title' => $track->releases->first()->title,
             ];
         })->toArray();
     }

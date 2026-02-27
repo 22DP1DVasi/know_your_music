@@ -1,23 +1,3 @@
-<template>
-    <div v-if="totalPages > 1" class="pagination-container">
-        <div class="pagination">
-            <Link
-                v-for="(link, index) in validLinks"
-                :key="index"
-                :href="link.url ? `${link.url}&q=${searchQuery}` : null"
-                class="page-link"
-                :class="{
-                    'active': link.active,
-                    'disabled': !link.url,
-                    'nav-link': isNavLink(link.label)
-                }"
-                v-html="formatLabel(link.label)"
-                preserve-state
-            />
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -51,6 +31,26 @@ const formatLabel = (label) => {
     return label;
 };
 </script>
+
+<template>
+    <div v-if="totalPages > 1" class="pagination-container">
+        <div class="pagination">
+            <Link
+                v-for="(link, index) in validLinks"
+                :key="index"
+                :href="link.url ? `${link.url}&q=${searchQuery}` : null"
+                class="page-link"
+                :class="{
+                    'active': link.active,
+                    'disabled': !link.url,
+                    'nav-link': isNavLink(link.label)
+                }"
+                v-html="formatLabel(link.label)"
+                preserve-state
+            />
+        </div>
+    </div>
+</template>
 
 <style scoped>
 .pagination-container {

@@ -19,6 +19,7 @@ use App\Http\Controllers\ArtistCommentController;
 use App\Http\Controllers\ReleaseCommentController;
 use App\Http\Controllers\TrackCommentController;
 use App\Http\Controllers\GenreCommentController;
+use App\Http\Controllers\FavoriteArtistController;
 //use Illuminate\Support\Facades\App;
 
 //Route::get('/', function () {
@@ -92,7 +93,9 @@ Route::get('/search/tracks', [SearchController::class, 'tracks'])
 Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
     ->name('search.lyrics');
 
+
 // informācijas lapas (izpildītāji, žanri, albumi, dziesmas)
+
 
 // izpildītāja inf. lapa
 Route::get('/artists/{artist}', [ArtistController::class, 'show'])
@@ -120,6 +123,15 @@ Route::prefix('artists/{artist}')->group(function () {
     Route::delete('/comments/{comment}', [ArtistCommentController::class, 'destroy'])
         ->middleware('auth');
 });
+
+// izpildtītāja pievienošana/noņemšana no mīļāko izpildītāju saraksta
+Route::post('/artists/{artist}/favorite', [ArtistController::class, 'addFavorite'])
+    ->name('artists.favorite.store')
+    ->middleware('auth');
+Route::delete('/artists/{artist}/favorite', [ArtistController::class, 'removeFavorite'])
+    ->name('artists.favorite.destroy')
+    ->middleware('auth');
+
 
 // albuma inf. lapa
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
@@ -197,19 +209,24 @@ Route::post('/locale', function (Request $request) {
     return response()->noContent();
 });
 
-// user account settings
+// lietotāja konta ceļi
 Route::middleware('auth')->group(function () {
+    // pārskats
     Route::get('/dashboard', function () {
         return inertia('Dashboard/Overview');
     })->name('dashboard');
 
-    // profile routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // profila iestatījumi
+    Route::get('/dashboard/settings', [ProfileController::class, 'edit'])->name('settings.edit');
+    Route::patch('/dashboard/settings', [ProfileController::class, 'update'])->name('settings.update');
+    Route::delete('/dashboard/settings', [ProfileController::class, 'destroy'])->name('settings.destroy');
 
-    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
-    Route::delete('/profile/avatar', [ProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
+    Route::post('/dashboard/settings/avatar', [ProfileController::class, 'updateAvatar'])->name('settings.avatar.update');
+    Route::delete('/dashboard/settings/avatar', [ProfileController::class, 'destroyAvatar'])->name('settings.avatar.destroy');
+
+    // izlases
+    Route::get('/dashboard/favorites/artists', [FavoriteArtistController::class, 'favoriteArtists'])
+        ->name('dashboard.favorites.artists');
 });
 
 // authentication routes

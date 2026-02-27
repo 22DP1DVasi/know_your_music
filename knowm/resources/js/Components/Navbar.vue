@@ -21,6 +21,9 @@ const isLoggedIn = computed(() => !!user.value);
 
 const update = () => {
     isMobile.value = mediaQuery.matches;
+    if (!isMobile.value) {
+        isMenuActive.value = false;
+    }
 };
 
 onMounted(() => {
@@ -217,7 +220,7 @@ const getLanguageName = (code) => {
                         <div v-show="activeDropdown === 'user'" class="user-dropdown">
                             <p>{{ user.name }}</p>
                             <a href="/dashboard">{{ t('navbar.account') }}</a>
-                            <a href="/profile">{{ t('navbar.profile_settings') }}</a>
+                            <a href="/dashboard/settings">{{ t('navbar.profile_settings') }}</a>
                             <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
                         </div>
                     </div>
@@ -239,10 +242,10 @@ const getLanguageName = (code) => {
     <!-- izvēlne mobilajās ierīcēs -->
     <div
         class="overlay"
-        :class="{ active: isMenuActive }"
+        :class="{ active: isMenuActive && isMobile }"
         @click="toggleNav"
     ></div>
-    <div class="menubar" :class="{ active: isMenuActive }">
+    <div class="menubar" :class="{ active: isMenuActive && isMobile }">
         <div class="menubar-header">
             <span>{{ t('navbar.menu') }}</span>
         </div>
@@ -287,7 +290,7 @@ const getLanguageName = (code) => {
             <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
             <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
             <li v-if="isLoggedIn"><a href="/dashboard">{{ t('navbar.account') }}</a></li>
-            <li v-if="isLoggedIn"><a href="/profile">{{ t('navbar.profile_settings') }}</a></li>
+            <li v-if="isLoggedIn"><a href="/dashboard/settings">{{ t('navbar.profile_settings') }}</a></li>
             <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a></li>
         </ul>
     </div>

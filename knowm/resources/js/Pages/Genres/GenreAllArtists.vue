@@ -1,50 +1,10 @@
-<template>
-    <Head :title="`All ${genre.name} Artists`" />
-    <Navbar />
-    <main class="flex-1">
-        <div class="genre-artists-container">
-            <div class="results-header">
-                <h1 class="results-title">All {{ capitalizeFirstLetter(genre.name) }} Artists</h1>
-                <div class="go-back-arrow-wrapper">
-                    <div class="go-back-arrow" @click="goBack">
-                        <span class="arrow-icon">←</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="artist-results">
-                <div v-for="artist in artists" :key="artist.id" class="artist-card" @click="redirectToArtist(artist.slug)">
-                    <div class="image-wrapper">
-                        <img :src="artist.profile_url" :alt="artist.name">
-                    </div>
-                    <div class="artist-info">
-                        <h3>{{ artist.name }}</h3>
-                        <p>{{ artist.tracks_count }} {{ artist.tracks_count === 1 ? 'track' : 'tracks' }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div v-if="artists.length === 0" class="no-results">
-                No artists found in this genre
-            </div>
-
-            <Pagination
-                :links="paginationLinks"
-                :current-page="currentPage"
-                :total-pages="totalPages"
-                class="pagination"
-            />
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
 import { ref, onBeforeUnmount, onMounted } from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
+import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
 
 const props = defineProps({
     genre: {
@@ -91,6 +51,46 @@ const goBack = () => {
 };
 
 </script>
+
+<template>
+    <Head :title="`All ${genre.name} Artists`" />
+    <Navbar />
+    <main class="flex-1">
+        <div class="genre-artists-container">
+            <div class="results-header">
+                <h1 class="results-title">All {{ capitalizeFirstLetter(genre.name) }} Artists</h1>
+                <div class="go-back-arrow-wrapper">
+                    <div class="go-back-arrow" @click="goBack">
+                        <span class="arrow-icon">←</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="artist-results">
+                <ArtistCardMain
+                    v-for="artist in artists"
+                    :key="artist.id"
+                    :artist="artist"
+                    :redirect-to="redirectToArtist"
+                    :show-track-count="false"
+                    :track-count-text="(count) => `${count} ${count === 1 ? 'track' : 'tracks'}`"
+                />
+            </div>
+
+            <div v-if="artists.length === 0" class="no-results">
+                No artists found in this genre
+            </div>
+
+            <Pagination
+                :links="paginationLinks"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                class="pagination"
+            />
+        </div>
+    </main>
+    <Footer />
+</template>
 
 <style scoped>
 .genre-artists-container {
@@ -152,64 +152,6 @@ const goBack = () => {
     padding: 0 2rem;
 }
 
-.artist-card {
-    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-}
-
-.artist-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.artist-card .image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.artist-card .image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.artist-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-/* max two rows for name/title, if overflows - ellipsis */
-.artist-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.artist-info p {
-    margin: 0;
-    color: #666;
-    font-size: 0.9rem;
-}
-
 .no-results {
     padding: 2rem;
     text-align: center;
@@ -228,22 +170,6 @@ const goBack = () => {
         font-size: 1.8rem;
         padding: 0.5rem 1rem 1rem;
     }
-
-    .artist-card {
-        flex: 0 0 calc(50% - 0.75rem); /* 2 cards per row */
-    }
-
-    .artist-info {
-        padding: 1.25rem;
-    }
-
-    .artist-info h3 {
-        font-size: 1.05rem;
-    }
-
-    .artist-info p {
-        font-size: 0.95rem;
-    }
 }
 
 @media (max-width: 480px) {
@@ -259,10 +185,6 @@ const goBack = () => {
 
     .artist-results {
         justify-content: center;
-    }
-
-    .artist-card {
-        flex: 0 0 80%;
     }
 }
 
