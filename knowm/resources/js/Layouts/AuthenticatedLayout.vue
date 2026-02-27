@@ -233,14 +233,14 @@ onBeforeUnmount(() => {
         <!-- Mobilā režīma galvene -->
         <header class="mobile-header">
             <div class="mobile-header-content">
-                <button @click="toggleMobileSidebar" class="mobile-menu-toggle">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
                 <div class="mobile-logo">
                     <Link :href="route('home')" class="logo-link">
                         <img src="/images/mini-logo.png" alt="Logo" class="logo-small">
                     </Link>
                 </div>
+                <button @click="toggleMobileSidebar" class="mobile-menu-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </header>
 
