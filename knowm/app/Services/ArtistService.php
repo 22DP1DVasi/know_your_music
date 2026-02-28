@@ -117,7 +117,11 @@ class ArtistService
                 'duration' => $track->duration,
                 'audio_source' => $track->audio_source,
                 'cover_url' => $track->cover_url,
-                'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name])
+                'artists' => $track->artists->map(fn($a) =>
+                    ['id' => $a->id,
+                    'name' => $a->name,
+                    'slug' => $a->slug]
+                )
 //                'release_title' => $track->releases->first()->title,
             ];
         })->toArray();

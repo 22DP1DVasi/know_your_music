@@ -422,6 +422,7 @@ const capitalize = (value) => {
                             :key="track.id"
                             :track="track"
                             :index="index"
+                            :show-artists="true"
                             @track-click="handleTrackClick"
                         />
 <!--                        <button-->

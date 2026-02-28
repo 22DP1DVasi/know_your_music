@@ -104,6 +104,11 @@ const handleImageError = (event) => {
     event.target.src = props.fallbackImage;
 };
 
+const redirectToArtist = (slug, event) => {
+    event.stopPropagation(); // novērst dziesmas kartes klikšķa palaidi
+    router.get(`/artists/${slug}`);
+};
+
 // Expose methods
 defineExpose({
     handleTrackClick
@@ -147,9 +152,21 @@ defineExpose({
 
             <!-- Izpildītāju slots vairāku izpildītāju izcelšanai -->
             <slot name="artists">
-                <p v-if="showArtists && formattedArtists" class="track-artists">
-                    {{ formattedArtists }}
-                </p>
+                <div v-if="showArtists && track.artists && track.artists.length" class="track-artists">
+                    <span
+                        v-for="(artist, artistIndex) in track.artists"
+                        :key="artist.id"
+                        class="artist-link-wrapper"
+                    >
+                        <a
+                            @click="redirectToArtist(artist.slug, $event)"
+                            class="artist-link"
+                        >
+                            {{ artist.name }}
+                        </a>
+                        <span v-if="artistIndex < track.artists.length - 1" class="artist-separator">, </span>
+                    </span>
+                </div>
             </slot>
 
             <!-- Papildu informācijas slots (like album name, etc.) -->
@@ -279,9 +296,30 @@ defineExpose({
     margin: 0.25rem 0 0;
     font-size: 0.85rem;
     color: #666;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.artist-link-wrapper {
+    display: inline;
+}
+
+.artist-link {
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    display: inline;
+}
+
+.artist-link:hover {
+    color: #0c4baa;
+    text-decoration: underline;
+}
+
+.artist-separator {
+    color: #666;
+    white-space: pre;
 }
 
 .track-duration {
