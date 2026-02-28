@@ -73,6 +73,8 @@ const showPlayer = ref(false);
 const currentAudioSource = ref('');
 const isFavorite = ref(props.artist.is_favorite || false);
 const isFavoriteLoading = ref(false);
+// ref priekš izvelnēm, kas var būt atvērtas lapā, piem, no TrackCard
+const openMenuId = ref(null)
 
 const toggleFavorite = async () => {
     if (isFavoriteLoading.value) return;
@@ -423,6 +425,8 @@ const capitalize = (value) => {
                             :track="track"
                             :index="index"
                             :show-artists="true"
+                            :menu-open="openMenuId === track.id"
+                            @toggle-menu="(id) => openMenuId = openMenuId === id ? null : id"
                             @track-click="handleTrackClick"
                         />
 <!--                        <button-->
@@ -864,7 +868,7 @@ const capitalize = (value) => {
 .track-list {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 2rem;
     max-width: 100%;

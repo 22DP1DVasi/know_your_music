@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useDate } from '@/composables/useDate';
 
@@ -60,12 +60,35 @@ const props = defineProps({
     fallbackImage: {
         type: String,
         default: '/images/default-release-banner.webp'
+    },
+    // konteksta izvēlnes opcijas
+    showContextMenu: {
+        type: Boolean,
+        default: true
+    },
+    canAdd: {
+        type: Boolean,
+        default: true
+    },
+    canRemove: {
+        type: Boolean,
+        default: false
+    },
+    menuOpen: {
+        type: Boolean,
+        default: false
     }
 });
 
 const { formatDuration } = useDate();
 // definē emitu: saņēm funkciju/vērtību no vecākkomponenta un izmanto šajā
-const emit = defineEmits(['track-click']);
+const emit = defineEmits([
+    'track-click',
+    'add-to-playlist',
+    'remove',
+    'toggle-menu'
+]);
+const menuContainer = ref(null);
 
 // computed rekvizīti
 const displayIndex = computed(() => {
@@ -109,7 +132,48 @@ const redirectToArtist = (slug, event) => {
     router.get(`/artists/${slug}`);
 };
 
-// Expose methods
+// konteksta izvēlnes apstrādātāji
+const toggleMenu = () => {
+    emit('toggle-menu', props.track.id);
+};
+
+const closeMenu = () => {
+    emit('toggle-menu', null);
+};
+
+const handleClickOutside = (event) => {
+    if (
+        props.menuOpen &&
+        menuContainer.value &&
+        !menuContainer.value.contains(event.target)
+    ) {
+        emit('toggle-menu', null);
+    }
+};
+
+const handleAddToPlaylist = () => {
+    console.log('Add to playlist:', props.track.title);
+    // emit/izsūtīt notikumu vecākkomponentam apstrādei
+    emit('add-to-playlist', props.track);
+    closeMenu();
+};
+
+const handleRemove = () => {
+    console.log('Remove:', props.track.title);
+    // emit/izsūtīt notikumu vecākkomponentam apstrādei
+    emit('remove', props.track);
+    closeMenu();
+};
+
+// aizvērt izvēlni, noklikšķinot ārpusē
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside);
+});
+
 defineExpose({
     handleTrackClick
 });
@@ -176,6 +240,36 @@ defineExpose({
         <!-- Ilgums -->
         <div v-if="showDuration" class="track-duration">
             {{ formattedDuration }}
+        </div>
+
+        <!-- Konteksta izvēlne -->
+        <div v-if="showContextMenu" class="context-menu-container" ref="menuContainer">
+            <button
+                class="context-menu-button"
+                @click.stop="toggleMenu"
+                aria-label="Track actions"
+            >
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+
+            <div v-if="menuOpen" class="context-dropdown">
+                <button
+                    v-if="canAdd"
+                    class="context-menu-item"
+                    @click="handleAddToPlaylist"
+                >
+                    <i class="fa-regular fa-plus"></i>
+                    Add to playlist
+                </button>
+                <button
+                    v-if="canRemove"
+                    class="context-menu-item"
+                    @click="handleRemove"
+                >
+                    <i class="fa-regular fa-trash-can"></i>
+                    Remove
+                </button>
+            </div>
         </div>
 
         <!-- Labais slots pielāgotām darbībām -->
@@ -310,6 +404,7 @@ defineExpose({
     cursor: pointer;
     transition: color 0.2s ease;
     display: inline;
+    font-size: clamp(9px, 3vw, 1rem);
 }
 
 .artist-link:hover {
@@ -341,6 +436,106 @@ defineExpose({
     .track-duration {
         font-size: 0.85rem;
         flex: 0 0 45px;
+    }
+}
+
+.context-menu-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: 0.5rem;
+}
+
+.context-menu-button {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.context-menu-button:hover {
+    background-color: #f0f0f0;
+    color: #0c4baa;
+}
+
+.context-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.25rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 160px;
+    z-index: 10;
+    overflow: hidden;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.context-menu-item {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: background-color 0.2s ease;
+}
+
+.context-menu-item i {
+    width: 16px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.context-menu-item:hover {
+    background-color: #f5f5f5;
+    color: #0c4baa;
+}
+
+.context-menu-item:hover i {
+    color: #0c4baa;
+}
+
+@media (max-width: 768px) {
+    .context-menu-button {
+        font-size: 1.1rem;
+        width: 28px;
+        height: 28px;
+    }
+
+    .context-dropdown {
+        min-width: 140px;
+    }
+
+    .context-menu-item {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.85rem;
     }
 }
 
