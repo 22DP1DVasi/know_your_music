@@ -9,8 +9,8 @@
         "favorites": "Izlase",
         "favorite_artists": "Mīļākie izpildītāji",
         "playlists": "Kolekcijas",
-        "user_playlists": "User playlists",
-        "create_new_pl": "Create new playlist",
+        "user_playlists": "Lietotāja kolekcijas",
+        "create_new_pl": "Izveido jaunu kolekciju",
         "recommendations": "Rekomendācijas",
         "history_recom": "Rekomendāciju vēsture",
         "logout": "Atteikties"
@@ -69,5 +69,19 @@
         "no_search_results_title": "Nav atrasts neviens izpildītājs",
         "no_search_results_description": "Neviens izpildītājs neatbilst meklēšanas vaicājumam \"{query}\".",
         "clear_search": "Notīrīt meklēšanu"
+    },
+    "playlists": {
+        "page_title": "Mani atskaņošanas saraksti",
+        "total_count_singular": "Jums ir {count} atskaņošanas saraksts",
+        "total_count_plural": "Jums ir {count} atskaņošanas saraksti",
+        "create_new": "Izveidot jaunu",
+        "back_to_dashboard": "Atpakaļ uz paneli",
+        "track_count_singular": "{count} dziesma",
+        "track_count_plural": "{count} dziesmas",
+        "private": "Privāts",
+        "public": "Publisks",
+        "no_playlists_title": "Vēl nav atskaņošanas sarakstu",
+        "no_playlists_description": "Izveidojiet savu pirmo atskaņošanas sarakstu, lai sāktu organizēt savas iecienītākās dziesmas.",
+        "create_first": "Izveidot pirmo sarakstu"
     }
 }

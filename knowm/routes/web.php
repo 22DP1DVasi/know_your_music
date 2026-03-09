@@ -20,6 +20,7 @@ use App\Http\Controllers\ReleaseCommentController;
 use App\Http\Controllers\TrackCommentController;
 use App\Http\Controllers\GenreCommentController;
 use App\Http\Controllers\FavoriteArtistController;
+use App\Http\Controllers\UserCollectionController;
 //use Illuminate\Support\Facades\App;
 
 //Route::get('/', function () {
@@ -227,6 +228,10 @@ Route::middleware('auth')->group(function () {
     // izlases
     Route::get('/dashboard/favorites/artists', [FavoriteArtistController::class, 'favoriteArtists'])
         ->name('dashboard.favorites.artists');
+
+    // kolekcijas
+    Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
+        ->name('dashboard.playlists');
 });
 
 // authentication routes

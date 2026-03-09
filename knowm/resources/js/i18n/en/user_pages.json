@@ -69,5 +69,19 @@
         "no_search_results_title": "No artists found",
         "no_search_results_description": "No artists match your search \"{query}\".",
         "clear_search": "Clear search"
+    },
+    "playlists": {
+        "page_title": "My Playlists",
+        "total_count_singular": "You have {count} playlist",
+        "total_count_plural": "You have {count} playlists",
+        "create_new": "Create New",
+        "back_to_dashboard": "Back to Dashboard",
+        "track_count_singular": "{count} track",
+        "track_count_plural": "{count} tracks",
+        "private": "Private",
+        "public": "Public",
+        "no_playlists_title": "No playlists yet",
+        "no_playlists_description": "Create your first playlist to start organizing your favorite tracks.",
+        "create_first": "Create Your First Playlist"
     }
 }

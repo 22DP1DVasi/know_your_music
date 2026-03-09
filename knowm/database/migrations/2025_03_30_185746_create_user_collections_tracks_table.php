@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_collections_tracks', function (Blueprint $table) {
-            $table->unsignedBigInteger('collection_id');
+            $table->unsignedBigInteger('user_collection_id');
             $table->unsignedBigInteger('track_id');
             $table->unsignedInteger('track_position');
             $table->timestamps();

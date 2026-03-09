@@ -153,7 +153,7 @@ onBeforeUnmount(() => {
                             </button>
                             <ul class="submenu" v-show="isMenuExpanded('playlists')">
                                 <li>
-                                    <Link href="#" class="submenu-link">
+                                    <Link :href="route('dashboard.playlists')" class="submenu-link">
                                         <i class="fa-regular fa-rectangle-list submenu-icon"></i>
                                         {{ t('user_pages.layout.user_playlists') }}
                                     </Link>
@@ -332,7 +332,7 @@ onBeforeUnmount(() => {
                             </button>
                             <ul class="submenu" v-show="isMenuExpanded('playlists')">
                                 <li>
-                                    <Link href="#" class="submenu-link" @click="closeMobileSidebar">
+                                    <Link :href="route('dashboard.playlists')" class="submenu-link" @click="closeMobileSidebar">
                                         <i class="fa-regular fa-rectangle-list submenu-icon"></i>
                                         {{ t('user_pages.layout.user_playlists') }}
                                     </Link>

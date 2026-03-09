@@ -103,7 +103,7 @@ class Track extends Model
     /**
      * Collections this track belongs to
      */
-    public function userCollections(): BelongsToMany
+    public function collections(): BelongsToMany
     {
         return $this->belongsToMany(UserCollection::class, 'user_collections_tracks')
             ->withPivot('track_position');
