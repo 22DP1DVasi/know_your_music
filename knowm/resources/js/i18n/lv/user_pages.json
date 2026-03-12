@@ -75,7 +75,6 @@
         "total_count_singular": "Jums ir {count} atskaņošanas saraksts",
         "total_count_plural": "Jums ir {count} atskaņošanas saraksti",
         "create_new": "Izveidot jaunu",
-        "back_to_dashboard": "Atpakaļ uz paneli",
         "track_count_singular": "{count} dziesma",
         "track_count_plural": "{count} dziesmas",
         "private": "Privāts",

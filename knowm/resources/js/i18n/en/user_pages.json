@@ -75,7 +75,6 @@
         "total_count_singular": "You have {count} playlist",
         "total_count_plural": "You have {count} playlists",
         "create_new": "Create New",
-        "back_to_dashboard": "Back to Dashboard",
         "track_count_singular": "{count} track",
         "track_count_plural": "{count} tracks",
         "private": "Private",
