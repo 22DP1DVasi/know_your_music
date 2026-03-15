@@ -45,6 +45,10 @@ class UserCollectionController extends Controller
             ->orderBy('user_collections_tracks.track_position')
             ->paginate(20);
 
+        $firstTrack = $playlist->tracks()
+            ->orderBy('user_collections_tracks.track_position')
+            ->first();
+
         return Inertia::render('Dashboard/UserPlaylistShow', [
             'playlist' => [
                 'id' => $playlist->id,
@@ -52,6 +56,7 @@ class UserCollectionController extends Controller
                 'slug' => $playlist->slug,
                 'description' => $playlist->description,
                 'is_private' => $playlist->is_private,
+                'cover_url' => $firstTrack->cover_url,
                 'created_at' => $playlist->created_at,
                 'updated_at' => $playlist->updated_at,
             ],

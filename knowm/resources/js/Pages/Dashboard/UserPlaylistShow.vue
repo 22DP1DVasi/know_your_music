@@ -17,14 +17,14 @@ const props = defineProps({
 });
 
 // stāvoklis bezgalīgai ritināšanai
-const currentPageFromUrl = new URLSearchParams(window.location.search).get('page') || 1
-const displayedTracks = ref([])
-const currentPage = ref(1)
-const lastPage = ref(props.tracks.last_page)
-const isLoading = ref(false)
-const hasMore = ref(true);
+const currentPageFromUrl = new URLSearchParams(window.location.search).get('page') || 1;
+const displayedTracks = ref([]);
+const currentPage = ref(1);
+const lastPage = ref(props.tracks.last_page);
+const isLoading = ref(false);
 const trackListRef = ref(null);
-const loadTrigger = ref(null)
+const loadTrigger = ref(null);
+const isInitializing = ref(true)
 
 // izvēlnes stāvoklis dziesmu kartēm
 const openMenuId = ref(null);
@@ -34,8 +34,13 @@ onMounted(async () => {
     for (let page = 1; page <= targetPage; page++) {
         await loadPage(page)
     }
+    isInitializing.value = false
     setupObserver()
 })
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
 
 const loadPage = (page) => {
     return new Promise((resolve) => {
@@ -77,10 +82,6 @@ const setupObserver = () => {
 
     observer.observe(loadTrigger.value)
 }
-
-onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll);
-});
 
 const handleScroll = () => {
     if (!nextPage.value || isLoading.value) return;
@@ -149,13 +150,9 @@ const goToEdit = () => {
             <div class="playlist-info-section">
                 <div class="playlist-image">
                     <img
-                        :src="playlist.tracks && playlist.tracks[0]?.cover_url || '/images/default-playlist-banner.webp'"
+                        :src="playlist.cover_url || '/images/default-playlist-banner.webp'"
                         :alt="playlist.name"
                     >
-                    <div class="track-count-badge">
-                        <i class="fa-solid fa-music"></i>
-                        <span>{{ tracks.length }} {{ t('user_pages.playlistshow.tracks') }}</span>
-                    </div>
                 </div>
 
                 <div class="playlist-details">
@@ -200,13 +197,17 @@ const goToEdit = () => {
                 </div>
             </div>
 
+            <div v-if="isInitializing" class="loading-initial">
+                <i class="fa-solid fa-spinner fa-spin" style="margin-right: 3px;"></i>
+                <span>{{ t('user_pages.playlistshow.loading') }}</span>
+            </div>
+
             <!-- Dziesmu saraksta sadaļa -->
             <div class="tracklist-section">
                 <h3 class="tracklist-title">
                     <i class="fa-solid fa-list"></i>
                     {{ t('user_pages.playlistshow.tracks') }}
-<!--                    <span class="track-count">({{ tracks.length }})</span>-->
-                    <span class="track-count">({{ tracks.length }})</span>
+                    <span class="track-count">({{ tracks.total }})</span>
                 </h3>
 
                 <div v-if="displayedTracks.length > 0" ref="trackListRef" class="track-list">
@@ -235,7 +236,7 @@ const goToEdit = () => {
                 </div>
 
                 <!-- Tukšs stāvoklis -->
-                <div v-else class="empty-tracks">
+                <div v-else-if="!isInitializing" class="empty-tracks">
                     <i class="fa-regular fa-list empty-icon"></i>
                     <h3 class="empty-title">
                         {{ t('user_pages.playlistshow.no_tracks_title') }}
@@ -450,6 +451,10 @@ const goToEdit = () => {
 .meta-item i {
     color: #0c4baa;
     font-size: 0.9rem;
+}
+
+.loading-initial {
+    margin-bottom: 5px;
 }
 
 .tracklist-section {
