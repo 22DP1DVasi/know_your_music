@@ -82,5 +82,20 @@
         "no_playlists_title": "No playlists yet",
         "no_playlists_description": "Create your first playlist to start organizing your favorite tracks.",
         "create_first": "Create Your First Playlist"
+    },
+    "playlistshow": {
+        "tracks": "Tracks",
+        "private": "Private",
+        "public": "Public",
+        "edit": "Edit Playlist",
+        "created": "Created",
+        "updated": "Updated",
+        "remove_track_confirm": "Are you sure you want to remove this track from the playlist?",
+        "remove_track_error": "Failed to remove track. Please try again.",
+        "loading": "Loading more tracks...",
+        "end_of_list": "You've reached the end of the playlist",
+        "no_tracks_title": "No tracks in this playlist",
+        "no_tracks_description": "Start adding tracks to build your perfect playlist.",
+        "add_tracks": "Add Tracks"
     }
 }

@@ -39,8 +39,8 @@ class UserCollection extends Model
     public function tracks(): BelongsToMany
     {
         return $this->belongsToMany(Track::class, 'user_collections_tracks')
-            ->withPivot('track_position')
-            ->orderBy('user_collections_tracks.track_position');
+            ->withPivot('track_position');
+//            ->orderBy('user_collections_tracks.track_position');
     }
 
     /**

@@ -101,6 +101,7 @@ const formatDate = (dateString) => {
 };
 
 // const formatDuration = (timeString) => {
+//     // console.log(`hey ${timeString}`);
 //     if (!timeString) return '--:--';
 //     const [hours, minutes, seconds] = timeString.split(':');
 //     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
@@ -236,7 +237,7 @@ const redirectToTrack = (slug) => {
                                         </span>
                                     </p>
                                 </div>
-                                <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                                <div class="track-duration">{{ formatDuration(track.duration, 'HH:mm:ss') }}</div>
                             </div>
                         </div>
                     </section>

@@ -77,6 +77,10 @@ const props = defineProps({
     menuOpen: {
         type: Boolean,
         default: false
+    },
+    durationFormat: {
+        type: String,
+        default: ''
     }
 });
 
@@ -101,7 +105,7 @@ const imageUrl = computed(() => {
 });
 
 const formattedDuration = computed(() => {
-    return formatDuration(props.track.duration);
+    return formatDuration(props.track.duration, props.durationFormat);
 });
 
 const formattedArtists = computed(() => {

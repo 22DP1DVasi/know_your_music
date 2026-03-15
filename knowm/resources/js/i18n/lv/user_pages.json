@@ -82,5 +82,20 @@
         "no_playlists_title": "Vēl nav atskaņošanas sarakstu",
         "no_playlists_description": "Izveidojiet savu pirmo atskaņošanas sarakstu, lai sāktu organizēt savas iecienītākās dziesmas.",
         "create_first": "Izveidot pirmo sarakstu"
+    },
+    "playlistshow": {
+        "tracks": "Dziesmas",
+        "private": "Privāts",
+        "public": "Publisks",
+        "edit": "Rediģēt sarakstu",
+        "created": "Izveidots",
+        "updated": "Atjaunināts",
+        "remove_track_confirm": "Vai tiešām vēlaties noņemt šo dziesmu no atskaņošanas saraksta?",
+        "remove_track_error": "Neizdevās noņemt dziesmu. Lūdzu, mēģiniet vēlreiz.",
+        "loading": "Ielādē vairāk dziesmu...",
+        "end_of_list": "Esat sasniedzis saraksta beigas",
+        "no_tracks_title": "Šajā atskaņošanas sarakstā nav dziesmu",
+        "no_tracks_description": "Sāciet pievienot dziesmas, lai izveidotu savu ideālo atskaņošanas sarakstu.",
+        "add_tracks": "Pievienot dziesmas"
     }
 }

@@ -232,6 +232,11 @@ Route::middleware('auth')->group(function () {
     // kolekcijas
     Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
         ->name('dashboard.playlists');
+
+    Route::get('/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
+        ->name('playlists.show');
+    Route::delete('/playlists/{playlist:slug}/tracks/{track}', [UserCollectionController::class, 'removeTrack'])
+        ->name('playlists.tracks.destroy');
 });
 
 // authentication routes
