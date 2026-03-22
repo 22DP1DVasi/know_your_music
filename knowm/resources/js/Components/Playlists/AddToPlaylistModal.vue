@@ -1,6 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import axios from 'axios';
+import { route } from "ziggy-js";
 
 const { t } = useI18n();
 
@@ -9,26 +11,50 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    playlists: {
-        type: Array,
-        required: true,
-        default: () => []
-    },
-    isAdding: {
-        type: Boolean,
-        default: false
+    track: {
+        type: Object,
+        required: true
     }
 });
 
-const emit = defineEmits(['close', 'select', 'create']);
+const emit = defineEmits(['close', 'added']);
 
+// stāvokļi
+const playlists = ref([]);
+const isLoading = ref(false);
+const isAddingToPlaylist = ref(null);
+const isCreating = ref(false);
 const searchQuery = ref('');
+const showCreateForm = ref(false);
 
+// saraksta izveidošanas forma
+const newPlaylistForm = ref({
+    name: '',
+    is_private: false
+});
+
+const errors = ref({
+    name: null
+});
+
+// ielādēt lietotāja atsk. sarakstus
+const fetchPlaylists = async () => {
+    isLoading.value = true;
+    try {
+        const response = await axios.get(route('playlists.user.list'));
+        playlists.value = response.data.playlists;
+    } catch (error) {
+        console.error('Error fetching playlists:', error);
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+// filtrēti saraksti pēc meklēšanas
 const filteredPlaylists = computed(() => {
-    if (!searchQuery.value) return props.playlists;
-
+    if (!searchQuery.value) return playlists.value;
     const query = searchQuery.value.toLowerCase().trim();
-    return props.playlists.filter(playlist =>
+    return playlists.value.filter(playlist =>
         playlist.name.toLowerCase().includes(query)
     );
 });
@@ -38,15 +64,73 @@ const close = () => {
     emit('close');
 };
 
-const selectPlaylist = (playlist) => {
-    emit('select', playlist);
-    close();
+// pievienot dziesmu atsk. sarakstam
+const selectPlaylist = async (playlist) => {
+    if (isAddingToPlaylist.value) return;
+    isAddingToPlaylist.value = playlist.id;
+    try {
+        await axios.post(route('playlists.add-track', playlist.slug), {
+            track_id: props.track.id
+        });
+        emit('added', { playlist, track: props.track });
+        close();
+    } catch (error) {
+        console.error('Error adding track to playlist:', error);
+        alert(t('user_pages.playlists.add_error'));
+    } finally {
+        isAddingToPlaylist.value = null;
+    }
 };
 
-const createNewPlaylist = () => {
-    emit('create');
-    close();
+const openCreateForm = () => {
+    showCreateForm.value = true;
 };
+
+const closeCreateForm = () => {
+    showCreateForm.value = false;
+    newPlaylistForm.value = { name: '', is_private: false };
+    errors.value = { name: null };
+};
+
+// izveidot jaunu atsk. sarakstu un pievienot dziesmu
+const createAndAddPlaylist = async () => {
+    // Validācija
+    if (!newPlaylistForm.value.name.trim()) {
+        errors.value.name = t('user_pages.playlists.error_name_required');
+        return;
+    }
+    if (newPlaylistForm.value.name.length > 100) {
+        errors.value.name = t('user_pages.playlists.error_name_length');
+        return;
+    }
+    isCreating.value = true;
+    try {
+        const response = await axios.post(route('playlists.store'), {
+            name: newPlaylistForm.value.name.trim(),
+            is_private: newPlaylistForm.value.is_private,
+            track_id: props.track.id
+        });
+        emit('added', { playlist: response.data.playlist, track: props.track });
+        closeCreateForm();
+        close();
+    } catch (error) {
+        console.error('Error creating playlist:', error);
+        if (error.response?.data?.errors) {
+            errors.value = error.response.data.errors;
+        } else {
+            alert(t('user_pages.playlists.create_error'));
+        }
+    } finally {
+        isCreating.value = false;
+    }
+};
+
+// kad mod. logs atveras, ielādē sarakstus
+watch(() => props.show, (newVal) => {
+    if (newVal) {
+        fetchPlaylists();
+    }
+});
 
 </script>
 
@@ -57,7 +141,8 @@ const createNewPlaylist = () => {
                 <div class="modal-header">
                     <h3 class="modal-title">
                         <i class="fa-solid fa-plus-circle"></i>
-                        {{ t('user_pages.playlist.add_to_playlist') }}
+                        {{ t('user_pages.playlists.add_to_playlist') }}
+                        <span v-if="track" class="track-name">"{{ track.title }}"</span>
                     </h3>
                     <button @click="close" class="modal-close-button">
                         <i class="fa-solid fa-times"></i>
@@ -65,67 +150,157 @@ const createNewPlaylist = () => {
                 </div>
 
                 <div class="modal-body">
-                    <!-- Meklēšanas lauks WIP -->
-                    <div v-if="playlists.length > 5" class="search-wrapper">
-                        <input
-                            v-model="searchQuery"
-                            type="text"
-                            :placeholder="t('user_pages.playlist.search_placeholder')"
-                            class="search-input"
-                        >
+                    <!-- Ielādes indikators -->
+                    <div v-if="isLoading" class="loading-state">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <span>{{ t('user_pages.playlists.loading') }}</span>
                     </div>
 
-                    <!-- Atsk. sarakstu saraksts ar ritināšanu -->
-                    <div class="playlists-list" :class="{ 'has-search': playlists.length > 5 }">
-                        <div
-                            v-for="playlist in filteredPlaylists"
-                            :key="playlist.id"
-                            class="playlist-item"
-                            @click="selectPlaylist(playlist)"
-                        >
-                            <div class="playlist-cover">
-                                <img
-                                    :src="playlist.cover_url || '/images/default-playlist-banner.webp'"
-                                    :alt="playlist.name"
-                                    loading="lazy"
-                                >
-                            </div>
+                    <!-- Atsk. sarakstu saraksts -->
+                    <template v-else>
+                        <!-- Meklēšanas lauks -->
+                        <div v-if="playlists.length > 5" class="search-wrapper">
+                            <input
+                                v-model="searchQuery"
+                                type="text"
+                                :placeholder="t('user_pages.playlists.search_placeholder')"
+                                class="search-input"
+                            >
+                        </div>
 
-                            <div class="playlist-info">
-                                <div class="playlist-name">{{ playlist.name }}</div>
-                                <div class="playlist-meta">
-                                    <span class="track-count">{{ playlist.tracks_count || 0 }} {{ t('user_pages.playlist.tracks') }}</span>
-                                    <span class="privacy-badge" :class="playlist.is_private ? 'private' : 'public'">
-                                        <i :class="playlist.is_private ? 'fa-solid fa-lock' : 'fa-solid fa-globe'"></i>
-                                        <span>{{ playlist.is_private ? t('user_pages.playlist.private') : t('user_pages.playlist.public') }}</span>
-                                    </span>
+                        <div class="playlists-list" :class="{ 'has-search': playlists.length > 5 }">
+                            <div
+                                v-for="playlist in filteredPlaylists"
+                                :key="playlist.id"
+                                class="playlist-item"
+                                @click="selectPlaylist(playlist)"
+                            >
+                                <div class="playlist-cover">
+                                    <img
+                                        :src="playlist.cover_url || '/images/default-playlist-banner.webp'"
+                                        :alt="playlist.name"
+                                        loading="lazy"
+                                    >
+                                </div>
+
+                                <div class="playlist-info">
+                                    <div class="playlist-name">{{ playlist.name }}</div>
+                                    <div class="playlist-meta">
+                                        <span class="track-count">{{ playlist.tracks_count || 0 }} {{ t('user_pages.playlists.tracks') }}</span>
+                                        <span class="privacy-badge" :class="playlist.is_private ? 'private' : 'public'">
+                                            <i :class="playlist.is_private ? 'fa-solid fa-lock' : 'fa-solid fa-globe'"></i>
+                                            <span>{{ playlist.is_private ? t('user_pages.playlists.private') : t('user_pages.playlists.public') }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="playlist-add-icon">
+                                    <i v-if="isAddingToPlaylist === playlist.id" class="fa-solid fa-spinner fa-spin"></i>
+                                    <i v-else class="fa-solid fa-plus"></i>
                                 </div>
                             </div>
 
-                            <div class="playlist-add-icon">
-                                <i class="fa-solid fa-plus"></i>
+                            <!-- Tukšs stāvoklis -->
+                            <div v-if="filteredPlaylists.length === 0" class="empty-state">
+                                <i class="fa-regular fa-list-empty"></i>
+                                <p>{{ searchQuery ? t('user_pages.playlists.no_search_results') : t('user_pages.playlists.no_playlists') }}</p>
                             </div>
                         </div>
+                    </template>
+                </div>
 
-                        <!-- Tukšs stāvoklis -->
-                        <div v-if="filteredPlaylists.length === 0" class="empty-state">
-                            <i class="fa-regular fa-list-empty"></i>
-                            <p>{{ searchQuery ? t('user_pages.playlist.no_search_results') : t('user_pages.playlist.no_playlists') }}</p>
+                <div class="modal-footer">
+                    <button @click="close" class="cancel-button" :disabled="isAddingToPlaylist || isCreating">
+                        {{ t('user_pages.playlists.cancel') }}
+                    </button>
+                    <button
+                        @click="openCreateForm"
+                        class="create-button"
+                        :disabled="isAddingToPlaylist || isCreating"
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        {{ t('user_pages.playlists.create_new') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </Teleport>
+
+    <!-- Jauna atsk. saraksta izveides veidlapa -->
+    <Teleport to="body">
+        <div v-if="showCreateForm" class="modal-overlay" @click.self="closeCreateForm">
+            <div class="modal-container modal-small">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fa-solid fa-plus"></i>
+                        {{ t('user_pages.playlists.create_new_playlist') }}
+                    </h3>
+                    <button @click="closeCreateForm" class="modal-close-button">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">
+                            {{ t('user_pages.playlists.playlist_name') }} <span class="required">*</span>
+                        </label>
+                        <input
+                            v-model="newPlaylistForm.name"
+                            type="text"
+                            class="form-input"
+                            :class="{ 'error': errors.name }"
+                            maxlength="100"
+                            :placeholder="t('user_pages.playlists.playlist_name_placeholder')"
+                            autofocus
+                        >
+                        <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
+                        <div class="char-counter">{{ newPlaylistForm.name.length }}/100</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">{{ t('user_pages.playlists.privacy') }}</label>
+                        <div class="privacy-toggle-compact">
+                            <button
+                                type="button"
+                                class="toggle-option-compact"
+                                :class="{ 'active': !newPlaylistForm.is_private }"
+                                @click="newPlaylistForm.is_private = false"
+                            >
+                                <i class="fa-solid fa-globe"></i>
+                                <span>{{ t('user_pages.playlists.public') }}</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="toggle-option-compact"
+                                :class="{ 'active': newPlaylistForm.is_private }"
+                                @click="newPlaylistForm.is_private = true"
+                            >
+                                <i class="fa-solid fa-lock"></i>
+                                <span>{{ t('user_pages.playlists.private') }}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button @click="close" class="cancel-button">
-                        {{ t('user_pages.playlist.cancel') }}
+                    <button @click="closeCreateForm" class="cancel-button" :disabled="isCreating">
+                        {{ t('user_pages.playlists.cancel') }}
                     </button>
                     <button
-                        v-if="!isAdding"
-                        @click="createNewPlaylist"
+                        @click="createAndAddPlaylist"
                         class="create-button"
+                        :disabled="!newPlaylistForm.name.trim() || isCreating"
+                        :class="{ 'loading': isCreating }"
                     >
-                        <i class="fa-solid fa-plus"></i>
-                        {{ t('user_pages.playlist.create_new') }}
+                        <span v-if="isCreating">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            {{ t('user_pages.playlists.creating') }}
+                        </span>
+                        <span v-else>
+                            <i class="fa-solid fa-plus"></i>
+                            {{ t('user_pages.playlists.create_and_add') }}
+                        </span>
                     </button>
                 </div>
             </div>
@@ -161,6 +336,10 @@ const createNewPlaylist = () => {
     animation: slideUp 0.3s ease;
 }
 
+.modal-container.modal-small {
+    max-width: 380px;
+}
+
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -178,10 +357,20 @@ const createNewPlaylist = () => {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .modal-title i {
     color: #0c4baa;
+}
+
+.track-name {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #0c4baa;
+    background: rgba(12, 75, 170, 0.1);
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
 }
 
 .modal-close-button {
@@ -211,6 +400,15 @@ const createNewPlaylist = () => {
     display: flex;
     flex-direction: column;
     padding: 0;
+}
+
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem;
+    color: #0c4baa;
 }
 
 .search-wrapper {
@@ -257,10 +455,6 @@ const createNewPlaylist = () => {
 
 .playlist-item:hover {
     background: rgba(12, 75, 170, 0.05);
-}
-
-.playlist-item:active {
-    background: rgba(12, 75, 170, 0.1);
 }
 
 .playlist-cover {
@@ -340,11 +534,6 @@ const createNewPlaylist = () => {
     justify-content: center;
     color: #0c4baa;
     font-size: 1rem;
-    transition: transform 0.2s ease;
-}
-
-.playlist-item:hover .playlist-add-icon {
-    transform: scale(1.1);
 }
 
 .empty-state {
@@ -366,11 +555,10 @@ const createNewPlaylist = () => {
 
 .modal-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
     padding: 1rem 1.25rem;
     border-top: 1px solid rgba(12, 75, 170, 0.1);
-    gap: 0.75rem;
     flex-shrink: 0;
 }
 
@@ -386,9 +574,14 @@ const createNewPlaylist = () => {
     transition: all 0.2s ease;
 }
 
-.cancel-button:hover {
+.cancel-button:hover:not(:disabled) {
     background: #f5f5f5;
     border-color: #999;
+}
+
+.cancel-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .create-button {
@@ -406,19 +599,110 @@ const createNewPlaylist = () => {
     transition: all 0.2s ease;
 }
 
-.create-button:hover {
+.create-button:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(12, 75, 170, 0.3);
 }
 
+.create-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.create-button.loading {
+    opacity: 0.8;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.required {
+    color: #dc2626;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 3px rgba(12, 75, 170, 0.1);
+}
+
+.form-input.error {
+    border-color: #dc2626;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.char-counter {
+    font-size: 0.7rem;
+    color: #666;
+    text-align: right;
+    margin-top: 0.25rem;
+}
+
+.privacy-toggle-compact {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.toggle-option-compact {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.75rem;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-option-compact.active {
+    background: white;
+    border-color: #0c4baa;
+    color: #0c4baa;
+}
+
+.toggle-option-compact.active:first-of-type {
+    border-color: #16a34a;
+    color: #16a34a;
+}
+
+.toggle-option-compact.active:last-of-type {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
 /* Animācijas */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes slideUp {
@@ -446,11 +730,7 @@ const createNewPlaylist = () => {
     border-radius: 4px;
 }
 
-.playlists-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(12, 75, 170, 0.5);
-}
-
-/* Responsivitāte */
+/* Mobilā versija */
 @media (max-width: 640px) {
     .modal-container {
         width: 95%;
@@ -464,10 +744,6 @@ const createNewPlaylist = () => {
     .playlist-cover {
         width: 40px;
         height: 40px;
-    }
-
-    .playlist-name {
-        font-size: 0.85rem;
     }
 }
 

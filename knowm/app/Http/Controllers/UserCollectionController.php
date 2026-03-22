@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\UserCollection;
 use App\Models\Track;
+use Illuminate\Support\Str;
 
 class UserCollectionController extends Controller
 {
@@ -43,10 +44,6 @@ class UserCollectionController extends Controller
             ->with(['artists:id,name,slug'])
             ->orderBy('user_collections_tracks.track_position')
             ->paginate(20);
-
-//        $firstTrack = $playlist->tracks()
-//            ->orderBy('user_collections_tracks.track_position')
-//            ->first();
 
         return Inertia::render('Dashboard/UserPlaylistShow', [
             'playlist' => [
@@ -128,6 +125,110 @@ class UserCollectionController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Track removed successfully.'
+        ]);
+    }
+
+    /**
+     * Iegūst lietotāja atskaņošanas sarakstus priekš AddToPlaylistModal.vue mod. logam.
+     */
+    public function getUserPlaylists(Request $request)
+    {
+        $playlists = Auth::user()->collections()
+            ->withCount('tracks')
+            ->orderBy('name')
+            ->get()
+            ->map(function($playlist) {
+                return [
+                    'id' => $playlist->id,
+                    'name' => $playlist->name,
+                    'slug' => $playlist->slug,
+                    'is_private' => $playlist->is_private,
+                    'tracks_count' => $playlist->tracks_count,
+                    'cover_url' => $playlist->cover_url
+                ];
+            });
+        return response()->json([
+            'playlists' => $playlists
+        ]);
+    }
+
+    /**
+     * Pievieno dziesmu esošam atskaņošanas sarakstam.
+     */
+    public function addTrackToPlaylist(Request $request, UserCollection $playlist)
+    {
+        if ($playlist->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to modify this playlist.'
+            ], 403);
+        }
+        $request->validate([
+            'track_id' => 'required|exists:tracks,id'
+        ]);
+        // pārbaudīt, vai dziesma jau pastāv atsk. sarakstā
+        // nestrādā?
+        if ($playlist->tracks()->where('track_id', $request->track_id)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Track already exists in this playlist.'
+            ], 422);
+        }
+
+        // iegūt nākamo pozīciju
+        $maxPosition = $playlist->tracks()->max('track_position') ?? 0;
+        $nextPosition = $maxPosition + 1;
+        // pievienot dziesmu
+        $playlist->tracks()->attach($request->track_id, [
+            'track_position' => $nextPosition
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Track added to playlist successfully.'
+        ]);
+    }
+
+    /**
+     * Izveidot jaunu atsk. sarakstu un pievienot tam dziesmu.
+     */
+    public function createPlaylistWithTrack(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'is_private' => 'required|boolean',
+            'track_id' => 'required|exists:tracks,id'
+        ]);
+
+        // izveidot sarakstu
+        $playlist = UserCollection::create([
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+//            'slug' => Str::slug($request->name) . '-' . Str::random(6),
+            'description' => null,
+            'is_private' => $request->is_private,
+        ]);
+        // pievienot dziesmu
+        $playlist->tracks()->attach($request->track_id, [
+            'track_position' => 1
+        ]);
+        // ielādēt dziesmu skaitu atbildei
+        $playlist->loadCount('tracks');
+        // Get cover_url from the added track
+//        $track = Track::find($request->track_id);
+//        $coverUrl = $track->cover_url;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Playlist created and track added successfully.',
+            'playlist' => [
+                'id' => $playlist->id,
+                'name' => $playlist->name,
+                'slug' => $playlist->slug,
+                'is_private' => $playlist->is_private,
+                'tracks_count' => $playlist->tracks_count,
+                'cover_url' => $playlist->cover_url
+            ]
         ]);
     }
 }

@@ -239,6 +239,13 @@ Route::middleware('auth')->group(function () {
         ->name('playlists.update');
     Route::delete('/playlists/{playlist:slug}/tracks/{track}', [UserCollectionController::class, 'removeTrack'])
         ->name('playlists.tracks.destroy');
+
+    Route::get('/playlists/user/list', [UserCollectionController::class, 'getUserPlaylists'])
+        ->name('playlists.user.list');
+    Route::post('/playlists/{playlist:slug}/add-track', [UserCollectionController::class, 'addTrackToPlaylist'])
+        ->name('playlists.add-track');
+    Route::post('/playlists', [UserCollectionController::class, 'createPlaylistWithTrack'])
+        ->name('playlists.store');
 });
 
 // authentication routes

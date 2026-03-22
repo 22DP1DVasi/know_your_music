@@ -5,10 +5,12 @@ import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlatlistModal from '@/Components/Playlists/AddToPlaylistModal.vue';
 import {ref, computed, watch } from 'vue';
 import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
 import { useI18n } from 'vue-i18n';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -74,7 +76,20 @@ const currentAudioSource = ref('');
 const isFavorite = ref(props.artist.is_favorite || false);
 const isFavoriteLoading = ref(false);
 // ref priekš izvelnēm, kas var būt atvērtas lapā, piem, no TrackCard
-const openMenuId = ref(null)
+const openMenuId = ref(null);
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const openAddToPlaylistModal = (track) => {
+    selectedTrack.value = track
+    showPlaylistModal.value = true
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
+};
 
 const toggleFavorite = async () => {
     if (isFavoriteLoading.value) return;
@@ -428,6 +443,7 @@ const capitalize = (value) => {
                             :menu-open="openMenuId === track.id"
                             @toggle-menu="(id) => openMenuId = openMenuId === id ? null : id"
                             @track-click="handleTrackClick"
+                            @add-to-playlist="openAddToPlaylistModal"
                         />
 <!--                        <button-->
 <!--                            v-if="track.audio_source"-->
@@ -492,6 +508,12 @@ const capitalize = (value) => {
         />
     </main>
     <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>

@@ -27,6 +27,15 @@ class UserCollection extends Model
 
     protected $appends = ['cover_url'];
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($playlist) {
+            $playlist->slug = $playlist->generateUniqueSlug();
+        });
+    }
+
     /**
      * The user who owns this collection
      */
