@@ -345,9 +345,14 @@ const togglePrivacy = () => {
     </AuthenticatedLayout>
 
     <!-- Rediģēšanas modālais logs -->
+    <!--
+    to know:
+    Teleport elements pārvieto elementu no pašreizējās HTML struktūras uz citu elementu,
+    kas jau ir uzstādīts DOM.
+    -->
     <Teleport to="body">
         <div v-if="showEditModal" class="modal-overlay" @click.self="closeEditModal">
-            <div class="modal-container">
+            <div class="modal-container modal-compact">
                 <div class="modal-header">
                     <h3 class="modal-title">{{ t('user_pages.playlistshow.edit_modal_title') }}</h3>
                     <button @click="closeEditModal" class="modal-close-button">
@@ -392,7 +397,7 @@ const togglePrivacy = () => {
                             class="form-textarea"
                             :class="{ 'error': editErrors.description }"
                             maxlength="255"
-                            rows="3"
+                            rows="2"
                             :placeholder="t('user_pages.playlistshow.edit_description_placeholder')"
                         ></textarea>
                         <div class="input-footer">
@@ -400,55 +405,50 @@ const togglePrivacy = () => {
                             <span class="char-counter">{{ editForm.description?.length || 0 }}/255</span>
                         </div>
                     </div>
-
-                    <!-- Privātuma statusa pārslēgs -->
-                    <div class="form-group">
-                        <label class="form-label">{{ t('user_pages.playlistshow.edit_privacy_label') }}</label>
-                        <div class="privacy-toggle">
-                            <button
-                                type="button"
-                                class="toggle-option"
-                                :class="{ 'active': !editForm.is_private }"
-                                @click="editForm.is_private = false"
-                            >
-                                <i class="fa-solid fa-globe"></i>
-                                <span>{{ t('user_pages.playlistshow.public') }}</span>
-                            </button>
-                            <button
-                                type="button"
-                                class="toggle-option"
-                                :class="{ 'active': editForm.is_private }"
-                                @click="editForm.is_private = true"
-                            >
-                                <i class="fa-solid fa-lock"></i>
-                                <span>{{ t('user_pages.playlistshow.private') }}</span>
-                            </button>
-                        </div>
-                        <p class="privacy-description">
-                            {{ editForm.is_private
-                            ? t('user_pages.playlistshow.edit_privacy_private_desc')
-                            : t('user_pages.playlistshow.edit_privacy_public_desc')
-                            }}
-                        </p>
-                    </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button @click="closeEditModal" class="cancel-button" :disabled="isSaving">
-                        {{ t('user_pages.playlistshow.edit_cancel') }}
-                    </button>
-                    <button
-                        @click="savePlaylistChanges"
-                        class="save-button"
-                        :disabled="isSaving"
-                        :class="{ 'loading': isSaving }"
-                    >
-                    <span v-if="isSaving">
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-                        {{ t('user_pages.playlistshow.edit_saving') }}
-                    </span>
-                        <span v-else>{{ t('user_pages.playlistshow.edit_save') }}</span>
-                    </button>
+                    <!-- Privātuma statusa pārslēgs, kreisajā pusē -->
+                    <div class="privacy-toggle">
+                        <span class="privacy-label">{{ t('user_pages.playlistshow.edit_privacy_label') }}:</span>
+                        <button
+                            type="button"
+                            class="toggle-option"
+                            :class="{ 'active': !editForm.is_private }"
+                            @click="editForm.is_private = false"
+                        >
+                            <i class="fa-solid fa-globe"></i>
+                            <span>{{ t('user_pages.playlistshow.public') }}</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="toggle-option"
+                            :class="{ 'active': editForm.is_private }"
+                            @click="editForm.is_private = true"
+                        >
+                            <i class="fa-solid fa-lock"></i>
+                            <span>{{ t('user_pages.playlistshow.private') }}</span>
+                        </button>
+                    </div>
+
+                    <!-- Darbību pogas, labajā pusē -->
+                    <div class="modal-actions">
+                        <button @click="closeEditModal" class="cancel-button" :disabled="isSaving">
+                            {{ t('user_pages.playlistshow.edit_cancel') }}
+                        </button>
+                        <button
+                            @click="savePlaylistChanges"
+                            class="save-button"
+                            :disabled="isSaving"
+                            :class="{ 'loading': isSaving }"
+                        >
+                        <span v-if="isSaving">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            {{ t('user_pages.playlistshow.edit_saving') }}
+                        </span>
+                            <span v-else>{{ t('user_pages.playlistshow.edit_save') }}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -723,21 +723,6 @@ const togglePrivacy = () => {
     font-size: 1.2rem;
 }
 
-.end-message {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 2rem;
-    color: #6b7280;
-    font-size: 0.9rem;
-}
-
-.end-message i {
-    color: #16a34a;
-    font-size: 1rem;
-}
-
 .empty-tracks {
     text-align: center;
     padding: 4rem 1rem;
@@ -823,43 +808,35 @@ const togglePrivacy = () => {
     animation: slideUp 0.3s ease;
 }
 
-@media (prefers-color-scheme: dark) {
-    .modal-container {
-        background: #1f2937;
-    }
+.modal-container.modal-compact {
+    max-width: 550px;
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid rgba(12, 75, 170, 0.1);
 }
 
 .modal-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 600;
     color: #333;
     margin: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-    .modal-title {
-        color: #f3f4f6;
-    }
 }
 
 .modal-close-button {
     background: none;
     border: none;
     color: #666;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.4rem;
     border-radius: 50%;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -872,33 +849,23 @@ const togglePrivacy = () => {
 }
 
 .modal-body {
-    padding: 1.5rem;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    padding: 1.25rem 1.5rem;
-    border-top: 1px solid rgba(12, 75, 170, 0.1);
+    padding: 1rem 1.25rem;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
 }
 
 .form-label {
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: #333;
-    margin-bottom: 0.5rem;
-}
-
-@media (prefers-color-scheme: dark) {
-    .form-label {
-        color: #e5e7eb;
-    }
+    margin-bottom: 0.4rem;
 }
 
 .required {
@@ -907,10 +874,10 @@ const togglePrivacy = () => {
 
 .form-input {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.6rem 0.75rem;
     border: 1px solid #ddd;
     border-radius: 8px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: all 0.2s ease;
 }
 
@@ -926,12 +893,13 @@ const togglePrivacy = () => {
 
 .form-textarea {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.6rem 0.75rem;
     border: 1px solid #ddd;
     border-radius: 8px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     resize: vertical;
     transition: all 0.2s ease;
+    font-family: inherit;
 }
 
 .form-textarea:focus {
@@ -948,86 +916,103 @@ const togglePrivacy = () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 0.5rem;
+    margin-top: 0.35rem;
 }
 
 .error-message {
     color: #dc2626;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .char-counter {
     color: #666;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     margin-left: auto;
 }
 
 .general-error {
     background: #fee2e2;
     color: #dc2626;
-    padding: 0.75rem;
+    padding: 0.6rem;
     border-radius: 8px;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
     border: 1px solid #fecaca;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(12, 75, 170, 0.1);
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .privacy-toggle {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.privacy-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333;
 }
 
 .toggle-option {
-    flex: 1;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem;
+    gap: 0.35rem;
+    padding: 0.4rem 0.75rem;
     background: #f5f5f5;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 30px;
     color: #666;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .toggle-option i {
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .toggle-option.active {
     background: white;
     border-color: #0c4baa;
     color: #0c4baa;
-    box-shadow: 0 2px 8px rgba(12, 75, 170, 0.1);
+    box-shadow: 0 2px 6px rgba(12, 75, 170, 0.1);
 }
 
-.toggle-option.active.public {
+.toggle-option.active:first-of-type {
     border-color: #16a34a;
     color: #16a34a;
 }
 
-.toggle-option.active.private {
+.toggle-option.active:last-of-type {
     border-color: #dc2626;
     color: #dc2626;
 }
 
-.privacy-description {
-    font-size: 0.8rem;
-    color: #666;
-    margin: 0.5rem 0 0 0;
+.modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
 }
 
 .cancel-button {
-    padding: 0.6rem 1.25rem;
+    padding: 0.45rem 1rem;
     background: white;
     border: 1px solid #ddd;
     border-radius: 30px;
     color: #666;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -1044,21 +1029,22 @@ const togglePrivacy = () => {
 }
 
 .save-button {
-    padding: 0.6rem 1.5rem;
+    padding: 0.45rem 1.25rem;
     background: linear-gradient(135deg, #0c4baa, #20c1f7);
     border: none;
     border-radius: 30px;
     color: white;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 100px;
+    min-width: 85px;
+    text-align: center;
 }
 
 .save-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(12, 75, 170, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(12, 75, 170, 0.3);
 }
 
 .save-button:disabled {
@@ -1072,7 +1058,7 @@ const togglePrivacy = () => {
 }
 
 .save-button.loading i {
-    margin-right: 0.5rem;
+    margin-right: 0.35rem;
 }
 
 /* Animācijas */
@@ -1125,28 +1111,23 @@ const togglePrivacy = () => {
         max-height: 95vh;
     }
 
-    .modal-header,
-    .modal-body,
     .modal-footer {
-        padding: 1rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
     }
 
     .privacy-toggle {
-        flex-direction: column;
-    }
-
-    .toggle-option {
         justify-content: center;
     }
 
-    .modal-footer {
-        flex-direction: column;
+    .modal-actions {
+        justify-content: center;
     }
 
     .cancel-button,
     .save-button {
-        width: 100%;
-        justify-content: center;
+        min-width: 100px;
     }
 }
 
