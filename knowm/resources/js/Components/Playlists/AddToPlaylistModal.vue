@@ -1,0 +1,474 @@
+<script setup>
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+const props = defineProps({
+    show: {
+        type: Boolean,
+        default: false
+    },
+    playlists: {
+        type: Array,
+        required: true,
+        default: () => []
+    },
+    isAdding: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const emit = defineEmits(['close', 'select', 'create']);
+
+const searchQuery = ref('');
+
+const filteredPlaylists = computed(() => {
+    if (!searchQuery.value) return props.playlists;
+
+    const query = searchQuery.value.toLowerCase().trim();
+    return props.playlists.filter(playlist =>
+        playlist.name.toLowerCase().includes(query)
+    );
+});
+
+const close = () => {
+    searchQuery.value = '';
+    emit('close');
+};
+
+const selectPlaylist = (playlist) => {
+    emit('select', playlist);
+    close();
+};
+
+const createNewPlaylist = () => {
+    emit('create');
+    close();
+};
+
+</script>
+
+<template>
+    <Teleport to="body">
+        <div v-if="show" class="modal-overlay" @click.self="close">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        {{ t('user_pages.playlist.add_to_playlist') }}
+                    </h3>
+                    <button @click="close" class="modal-close-button">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Meklēšanas lauks WIP -->
+                    <div v-if="playlists.length > 5" class="search-wrapper">
+                        <input
+                            v-model="searchQuery"
+                            type="text"
+                            :placeholder="t('user_pages.playlist.search_placeholder')"
+                            class="search-input"
+                        >
+                    </div>
+
+                    <!-- Atsk. sarakstu saraksts ar ritināšanu -->
+                    <div class="playlists-list" :class="{ 'has-search': playlists.length > 5 }">
+                        <div
+                            v-for="playlist in filteredPlaylists"
+                            :key="playlist.id"
+                            class="playlist-item"
+                            @click="selectPlaylist(playlist)"
+                        >
+                            <div class="playlist-cover">
+                                <img
+                                    :src="playlist.cover_url || '/images/default-playlist-banner.webp'"
+                                    :alt="playlist.name"
+                                    loading="lazy"
+                                >
+                            </div>
+
+                            <div class="playlist-info">
+                                <div class="playlist-name">{{ playlist.name }}</div>
+                                <div class="playlist-meta">
+                                    <span class="track-count">{{ playlist.tracks_count || 0 }} {{ t('user_pages.playlist.tracks') }}</span>
+                                    <span class="privacy-badge" :class="playlist.is_private ? 'private' : 'public'">
+                                        <i :class="playlist.is_private ? 'fa-solid fa-lock' : 'fa-solid fa-globe'"></i>
+                                        <span>{{ playlist.is_private ? t('user_pages.playlist.private') : t('user_pages.playlist.public') }}</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="playlist-add-icon">
+                                <i class="fa-solid fa-plus"></i>
+                            </div>
+                        </div>
+
+                        <!-- Tukšs stāvoklis -->
+                        <div v-if="filteredPlaylists.length === 0" class="empty-state">
+                            <i class="fa-regular fa-list-empty"></i>
+                            <p>{{ searchQuery ? t('user_pages.playlist.no_search_results') : t('user_pages.playlist.no_playlists') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button @click="close" class="cancel-button">
+                        {{ t('user_pages.playlist.cancel') }}
+                    </button>
+                    <button
+                        v-if="!isAdding"
+                        @click="createNewPlaylist"
+                        class="create-button"
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        {{ t('user_pages.playlist.create_new') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </Teleport>
+</template>
+
+<style scoped>
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-container {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(12, 75, 170, 0.1);
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modal-title i {
+    color: #0c4baa;
+}
+
+.modal-close-button {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #0c4baa;
+}
+
+.modal-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+.search-wrapper {
+    padding: 1rem 1.25rem 0.5rem 1.25rem;
+    flex-shrink: 0;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    background: #f9fafb;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 3px rgba(12, 75, 170, 0.1);
+    background: white;
+}
+
+.playlists-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 0 1rem 0;
+}
+
+.playlists-list.has-search {
+    padding-top: 0;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(12, 75, 170, 0.05);
+}
+
+.playlist-item:hover {
+    background: rgba(12, 75, 170, 0.05);
+}
+
+.playlist-item:active {
+    background: rgba(12, 75, 170, 0.1);
+}
+
+.playlist-cover {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.playlist-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.playlist-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.playlist-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playlist-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.track-count {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.privacy-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.privacy-badge i {
+    font-size: 0.6rem;
+}
+
+.privacy-badge.public {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.privacy-badge.private {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.playlist-add-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0c4baa;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.playlist-item:hover .playlist-add-icon {
+    transform: scale(1.1);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    color: #666;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(12, 75, 170, 0.1);
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.cancel-button {
+    padding: 0.45rem 1rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    color: #666;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-button:hover {
+    background: #f5f5f5;
+    border-color: #999;
+}
+
+.create-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(12, 75, 170, 0.3);
+}
+
+/* Animācijas */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.playlists-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.playlists-list::-webkit-scrollbar-track {
+    background: rgba(12, 75, 170, 0.05);
+    border-radius: 4px;
+}
+
+.playlists-list::-webkit-scrollbar-thumb {
+    background: rgba(12, 75, 170, 0.3);
+    border-radius: 4px;
+}
+
+.playlists-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(12, 75, 170, 0.5);
+}
+
+/* Responsivitāte */
+@media (max-width: 640px) {
+    .modal-container {
+        width: 95%;
+        max-height: 80vh;
+    }
+
+    .playlist-item {
+        padding: 0.625rem 1rem;
+    }
+
+    .playlist-cover {
+        width: 40px;
+        height: 40px;
+    }
+
+    .playlist-name {
+        font-size: 0.85rem;
+    }
+}
+
+</style>

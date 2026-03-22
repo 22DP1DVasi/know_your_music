@@ -25,6 +25,8 @@ class UserCollection extends Model
         'is_private' => 'boolean',
     ];
 
+    protected $appends = ['cover_url'];
+
     /**
      * The user who owns this collection
      */
@@ -100,5 +102,11 @@ class UserCollection extends Model
         $slug = preg_replace('/\s+/u', '-', $slug);
         $slug = preg_replace('/[^\p{L}\p{N}]+/u', '-', $slug);
         return trim($slug, '-');
+    }
+
+    public function getCoverUrlAttribute()
+    {
+        $firstTrack = $this->tracks()->first();
+        return $firstTrack?->cover_url;
     }
 }

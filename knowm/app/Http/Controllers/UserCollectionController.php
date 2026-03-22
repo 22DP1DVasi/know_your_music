@@ -39,15 +39,14 @@ class UserCollectionController extends Controller
         if ($playlist->is_private && $playlist->user_id !== Auth::id()) {
             abort(403, 'This playlist is private.');
         }
-
         $tracks = $playlist->tracks()
             ->with(['artists:id,name,slug'])
             ->orderBy('user_collections_tracks.track_position')
             ->paginate(20);
 
-        $firstTrack = $playlist->tracks()
-            ->orderBy('user_collections_tracks.track_position')
-            ->first();
+//        $firstTrack = $playlist->tracks()
+//            ->orderBy('user_collections_tracks.track_position')
+//            ->first();
 
         return Inertia::render('Dashboard/UserPlaylistShow', [
             'playlist' => [
@@ -56,7 +55,7 @@ class UserCollectionController extends Controller
                 'slug' => $playlist->slug,
                 'description' => $playlist->description,
                 'is_private' => $playlist->is_private,
-                'cover_url' => $firstTrack->cover_url ?? null,
+                'cover_url' => $playlist->cover_url,
                 'created_at' => $playlist->created_at,
                 'updated_at' => $playlist->updated_at,
             ],
