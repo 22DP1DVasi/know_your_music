@@ -29,6 +29,24 @@ const isInitializing = ref(true)
 // izvēlnes stāvoklis dziesmu kartēm
 const openMenuId = ref(null);
 
+// rediģēšanas mod. loga stāvoklis
+const showEditModal = ref(false);
+const isSaving = ref(false);
+
+// rediģēšanas forma
+const editForm = ref({
+    name: props.playlist.name || '',
+    description: props.playlist.description || '',
+    is_private: props.playlist.is_private || false
+});
+
+// kļūdu apstrāde
+const editErrors = ref({
+    name: null,
+    description: null,
+    general: null
+});
+
 onMounted(async () => {
     const targetPage = parseInt(currentPageFromUrl)
     for (let page = 1; page <= targetPage; page++) {
@@ -130,6 +148,75 @@ const goToEdit = () => {
     router.get(route('playlists.edit', props.playlist.slug));
 };
 
+// Atvērt rediģēšanas modāli
+const openEditModal = () => {
+    editForm.value = {
+        name: props.playlist.name || '',
+        description: props.playlist.description || '',
+        is_private: props.playlist.is_private || false
+    };
+    editErrors.value = { name: null, description: null, general: null };
+    showEditModal.value = true;
+};
+
+// Aizvērt rediģēšanas modāli
+const closeEditModal = () => {
+    showEditModal.value = false;
+    isSaving.value = false;
+};
+
+// Saglabāt izmaiņas
+const savePlaylistChanges = async () => {
+    // Validācija
+    let hasErrors = false;
+    editErrors.value = { name: null, description: null, general: null };
+
+    if (!editForm.value.name || editForm.value.name.trim() === '') {
+        editErrors.value.name = t('user_pages.playlistshow.edit_error_name_required');
+        hasErrors = true;
+    } else if (editForm.value.name.length > 100) {
+        editErrors.value.name = t('user_pages.playlistshow.edit_error_name_length');
+        hasErrors = true;
+    }
+
+    if (editForm.value.description && editForm.value.description.length > 255) {
+        editErrors.value.description = t('user_pages.playlistshow.edit_error_description_length');
+        hasErrors = true;
+    }
+
+    if (hasErrors) return;
+
+    isSaving.value = true;
+
+    try {
+        await router.put(route('playlists.update', props.playlist.slug), {
+            name: editForm.value.name.trim(),
+            description: editForm.value.description?.trim() || null,
+            is_private: editForm.value.is_private
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeEditModal();
+            },
+            onError: (errors) => {
+                if (errors.name) editErrors.value.name = errors.name;
+                if (errors.description) editErrors.value.description = errors.description;
+                if (errors.general) editErrors.value.general = errors.general;
+            }
+        });
+    } catch (error) {
+        console.error('Error saving playlist:', error);
+        editErrors.value.general = t('user_pages.playlistshow.edit_error_general');
+    } finally {
+        isSaving.value = false;
+    }
+};
+
+// Pārslēgt privātuma statusu
+const togglePrivacy = () => {
+    editForm.value.is_private = !editForm.value.is_private;
+};
+
 </script>
 
 <template>
@@ -173,7 +260,7 @@ const goToEdit = () => {
                                 </span>
                             </span>
 
-                            <button v-if="canEdit" @click="goToEdit" class="edit-button">
+                            <button v-if="canEdit" @click="openEditModal" class="edit-button">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <span>{{ t('user_pages.playlistshow.edit') }}</span>
                             </button>
@@ -256,6 +343,116 @@ const goToEdit = () => {
             </div>
         </div>
     </AuthenticatedLayout>
+
+    <!-- Rediģēšanas modālais logs -->
+    <Teleport to="body">
+        <div v-if="showEditModal" class="modal-overlay" @click.self="closeEditModal">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3 class="modal-title">{{ t('user_pages.playlistshow.edit_modal_title') }}</h3>
+                    <button @click="closeEditModal" class="modal-close-button">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Kļūda -->
+                    <div v-if="editErrors.general" class="general-error">
+                        {{ editErrors.general }}
+                    </div>
+
+                    <!-- Nosaukums -->
+                    <div class="form-group">
+                        <label for="playlist-name" class="form-label">
+                            {{ t('user_pages.playlistshow.edit_name_label') }} <span class="required">*</span>
+                        </label>
+                        <input
+                            id="playlist-name"
+                            v-model="editForm.name"
+                            type="text"
+                            class="form-input"
+                            :class="{ 'error': editErrors.name }"
+                            maxlength="100"
+                            :placeholder="t('user_pages.playlistshow.edit_name_placeholder')"
+                        >
+                        <div class="input-footer">
+                            <span v-if="editErrors.name" class="error-message">{{ editErrors.name }}</span>
+                            <span class="char-counter">{{ editForm.name.length }}/100</span>
+                        </div>
+                    </div>
+
+                    <!-- Aprakst -->
+                    <div class="form-group">
+                        <label for="playlist-description" class="form-label">
+                            {{ t('user_pages.playlistshow.edit_description_label') }}
+                        </label>
+                        <textarea
+                            id="playlist-description"
+                            v-model="editForm.description"
+                            class="form-textarea"
+                            :class="{ 'error': editErrors.description }"
+                            maxlength="255"
+                            rows="3"
+                            :placeholder="t('user_pages.playlistshow.edit_description_placeholder')"
+                        ></textarea>
+                        <div class="input-footer">
+                            <span v-if="editErrors.description" class="error-message">{{ editErrors.description }}</span>
+                            <span class="char-counter">{{ editForm.description?.length || 0 }}/255</span>
+                        </div>
+                    </div>
+
+                    <!-- Privātuma statusa pārslēgs -->
+                    <div class="form-group">
+                        <label class="form-label">{{ t('user_pages.playlistshow.edit_privacy_label') }}</label>
+                        <div class="privacy-toggle">
+                            <button
+                                type="button"
+                                class="toggle-option"
+                                :class="{ 'active': !editForm.is_private }"
+                                @click="editForm.is_private = false"
+                            >
+                                <i class="fa-solid fa-globe"></i>
+                                <span>{{ t('user_pages.playlistshow.public') }}</span>
+                            </button>
+                            <button
+                                type="button"
+                                class="toggle-option"
+                                :class="{ 'active': editForm.is_private }"
+                                @click="editForm.is_private = true"
+                            >
+                                <i class="fa-solid fa-lock"></i>
+                                <span>{{ t('user_pages.playlistshow.private') }}</span>
+                            </button>
+                        </div>
+                        <p class="privacy-description">
+                            {{ editForm.is_private
+                            ? t('user_pages.playlistshow.edit_privacy_private_desc')
+                            : t('user_pages.playlistshow.edit_privacy_public_desc')
+                            }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button @click="closeEditModal" class="cancel-button" :disabled="isSaving">
+                        {{ t('user_pages.playlistshow.edit_cancel') }}
+                    </button>
+                    <button
+                        @click="savePlaylistChanges"
+                        class="save-button"
+                        :disabled="isSaving"
+                        :class="{ 'loading': isSaving }"
+                    >
+                    <span v-if="isSaving">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        {{ t('user_pages.playlistshow.edit_saving') }}
+                    </span>
+                        <span v-else>{{ t('user_pages.playlistshow.edit_save') }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </Teleport>
 </template>
 
 <style scoped>
@@ -600,6 +797,305 @@ const goToEdit = () => {
     box-shadow: 0 6px 18px rgba(12, 75, 170, 0.3);
 }
 
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-container {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+    .modal-container {
+        background: #1f2937;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(12, 75, 170, 0.1);
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .modal-title {
+        color: #f3f4f6;
+    }
+}
+
+.modal-close-button {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #0c4baa;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid rgba(12, 75, 170, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .form-label {
+        color: #e5e7eb;
+    }
+}
+
+.required {
+    color: #dc2626;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 3px rgba(12, 75, 170, 0.1);
+}
+
+.form-input.error {
+    border-color: #dc2626;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    resize: vertical;
+    transition: all 0.2s ease;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 3px rgba(12, 75, 170, 0.1);
+}
+
+.form-textarea.error {
+    border-color: #dc2626;
+}
+
+.input-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.8rem;
+}
+
+.char-counter {
+    color: #666;
+    font-size: 0.8rem;
+    margin-left: auto;
+}
+
+.general-error {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    border: 1px solid #fecaca;
+}
+
+.privacy-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.toggle-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #666;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-option i {
+    font-size: 1rem;
+}
+
+.toggle-option.active {
+    background: white;
+    border-color: #0c4baa;
+    color: #0c4baa;
+    box-shadow: 0 2px 8px rgba(12, 75, 170, 0.1);
+}
+
+.toggle-option.active.public {
+    border-color: #16a34a;
+    color: #16a34a;
+}
+
+.toggle-option.active.private {
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+.privacy-description {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0.5rem 0 0 0;
+}
+
+.cancel-button {
+    padding: 0.6rem 1.25rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-button:hover:not(:disabled) {
+    background: #f5f5f5;
+    border-color: #999;
+}
+
+.cancel-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.save-button {
+    padding: 0.6rem 1.5rem;
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.save-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(12, 75, 170, 0.3);
+}
+
+.save-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.save-button.loading {
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    opacity: 0.8;
+}
+
+.save-button.loading i {
+    margin-right: 0.5rem;
+}
+
+/* Animācijas */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Responsivitāte */
 @media (max-width: 768px) {
     .playlist-info-section {
@@ -620,6 +1116,37 @@ const goToEdit = () => {
 
     .playlist-title {
         font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .modal-container {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 1rem;
+    }
+
+    .privacy-toggle {
+        flex-direction: column;
+    }
+
+    .toggle-option {
+        justify-content: center;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .cancel-button,
+    .save-button {
+        width: 100%;
+        justify-content: center;
     }
 }
 

@@ -56,13 +56,42 @@ class UserCollectionController extends Controller
                 'slug' => $playlist->slug,
                 'description' => $playlist->description,
                 'is_private' => $playlist->is_private,
-                'cover_url' => $firstTrack->cover_url,
+                'cover_url' => $firstTrack->cover_url ?? null,
                 'created_at' => $playlist->created_at,
                 'updated_at' => $playlist->updated_at,
             ],
             'tracks' => $tracks,
             'canEdit' => $playlist->user_id === Auth::id(),
         ]);
+    }
+
+    /**
+     * Atjaunināt norādīto atskaņošanas sarakstu.
+     */
+    public function update(Request $request, UserCollection $playlist)
+    {
+        // pārbaudīt, vai lietotājam pieder atskaņošanas saraksts
+        if ($playlist->user_id !== Auth::id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to edit this playlist.'
+            ], 403);
+        }
+        // validācija
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
+            'is_private' => 'required|boolean',
+        ]);
+        // ja tika nomainīts nosaukums, jāmaina arī tekstveida identifikators
+        if ($validated['name'] !== $playlist->name) {
+            $validated['slug'] = $playlist->generateUniqueSlug($validated['name']);
+        }
+        // atjaunināt atsk. sarakstu
+        $playlist->update($validated);
+
+        return redirect()->route('playlists.show', $playlist->fresh())
+            ->with('success', 'Playlist updated successfully.');
     }
 
     public function removeTrack(UserCollection $playlist, Track $track)

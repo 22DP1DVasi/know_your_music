@@ -96,6 +96,21 @@
         "end_of_list": "You've reached the end of the playlist",
         "no_tracks_title": "No tracks in this playlist",
         "no_tracks_description": "Start adding tracks to build your perfect playlist.",
-        "add_tracks": "Add Tracks"
+        "add_tracks": "Add Tracks",
+        "edit_modal_title": "Edit Playlist",
+        "edit_name_label": "Playlist name",
+        "edit_name_placeholder": "My Awesome Playlist",
+        "edit_description_label": "Description",
+        "edit_description_placeholder": "A collection of my favorite tracks...",
+        "edit_privacy_label": "Privacy",
+        "edit_privacy_public_desc": "Anyone can see this playlist",
+        "edit_privacy_private_desc": "Only you can see this playlist",
+        "edit_cancel": "Cancel",
+        "edit_save": "Save Changes",
+        "edit_saving": "Saving...",
+        "edit_error_name_required": "Playlist name is required",
+        "edit_error_name_length": "Playlist name must not exceed 100 characters",
+        "edit_error_description_length": "Description must not exceed 255 characters",
+        "edit_error_general": "Failed to update playlist. Please try again."
     }
 }

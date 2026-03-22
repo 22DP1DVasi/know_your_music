@@ -96,6 +96,21 @@
         "end_of_list": "Esat sasniedzis saraksta beigas",
         "no_tracks_title": "Šajā atskaņošanas sarakstā nav dziesmu",
         "no_tracks_description": "Sāciet pievienot dziesmas, lai izveidotu savu ideālo atskaņošanas sarakstu.",
-        "add_tracks": "Pievienot dziesmas"
+        "add_tracks": "Pievienot dziesmas",
+        "edit_modal_title": "Rediģēt atskaņošanas sarakstu",
+        "edit_name_label": "Saraksta nosaukums",
+        "edit_name_placeholder": "Mans superīgais saraksts",
+        "edit_description_label": "Apraksts",
+        "edit_description_placeholder": "Mana iecienītāko dziesmu kolekcija...",
+        "edit_privacy_label": "Privātums",
+        "edit_privacy_public_desc": "Ikviens var redzēt šo sarakstu",
+        "edit_privacy_private_desc": "Tikai jūs varat redzēt šo sarakstu",
+        "edit_cancel": "Atcelt",
+        "edit_save": "Saglabāt izmaiņas",
+        "edit_saving": "Saglabā...",
+        "edit_error_name_required": "Saraksta nosaukums ir obligāts",
+        "edit_error_name_length": "Saraksta nosaukums nedrīkst pārsniegt 100 rakstzīmes",
+        "edit_error_description_length": "Apraksts nedrīkst pārsniegt 255 rakstzīmes",
+        "edit_error_general": "Neizdevās atjaunināt sarakstu. Lūdzu, mēģiniet vēlreiz."
     }
 }

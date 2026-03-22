@@ -8,6 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/UserPlaylistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/UserPlaylistShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -408,7 +411,9 @@
       <workItem from="1773257327504" duration="857000" />
       <workItem from="1773340981722" duration="2008000" />
       <workItem from="1773485817172" duration="7586000" />
-      <workItem from="1773579737730" duration="12157000" />
+      <workItem from="1773579737730" duration="12790000" />
+      <workItem from="1773688244667" duration="1635000" />
+      <workItem from="1774184631039" duration="2183000" />
     </task>
     <servers />
   </component>

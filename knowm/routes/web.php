@@ -235,6 +235,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
         ->name('playlists.show');
+    Route::put('/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
+        ->name('playlists.update');
     Route::delete('/playlists/{playlist:slug}/tracks/{track}', [UserCollectionController::class, 'removeTrack'])
         ->name('playlists.tracks.destroy');
 });
