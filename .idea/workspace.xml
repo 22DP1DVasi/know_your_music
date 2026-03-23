@@ -5,15 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/components.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/components.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/FavoriteArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/FavoriteArtistController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/SearchBarMain.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/SearchBarMain.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/FavoriteArtists.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/FavoriteArtists.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/AddToPlaylistModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/AddToPlaylistModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +175,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;features/favorite-artists-list&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;features/user-playlists&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/lv&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -403,6 +401,23 @@
       <workItem from="1771925249573" duration="8077000" />
       <workItem from="1772023190663" duration="10738000" />
       <workItem from="1772093470131" duration="14919000" />
+      <workItem from="1772226883450" duration="120000" />
+      <workItem from="1772277161472" duration="21613000" />
+      <workItem from="1772349082382" duration="1627000" />
+      <workItem from="1772390666109" duration="1219000" />
+      <workItem from="1772471600056" duration="1411000" />
+      <workItem from="1772565545257" duration="908000" />
+      <workItem from="1772882191759" duration="1828000" />
+      <workItem from="1773081124858" duration="4558000" />
+      <workItem from="1773257327504" duration="857000" />
+      <workItem from="1773340981722" duration="2008000" />
+      <workItem from="1773485817172" duration="7586000" />
+      <workItem from="1773579737730" duration="12790000" />
+      <workItem from="1773688244667" duration="1635000" />
+      <workItem from="1774184631039" duration="2484000" />
+      <workItem from="1774193362584" duration="139000" />
+      <workItem from="1774193557671" duration="90000" />
+      <workItem from="1774193877657" duration="8439000" />
     </task>
     <servers />
   </component>

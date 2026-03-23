@@ -1,11 +1,12 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import Comments from '@/Components/Comments/Comments.vue'
-import { ref, computed } from 'vue'
-import ColorThief from 'colorthief'
+import { Head, router } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import Comments from '@/Components/Comments/Comments.vue';
+import { ref, computed } from 'vue';
+import ColorThief from 'colorthief';
 import dayjs from 'dayjs';
+import { useDate } from '@/composables/useDate';
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -38,6 +39,8 @@ const props = defineProps({
         })
     }
 });
+
+const { formatDuration } = useDate()
 
 const heroImage = ref(null);
 const heroStyle = ref({
@@ -97,11 +100,12 @@ const formatDate = (dateString) => {
     return dayjs(dateString).format('DD/MM/YYYY');
 };
 
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const [hours, minutes, seconds] = timeString.split(':');
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
-};
+// const formatDuration = (timeString) => {
+//     // console.log(`hey ${timeString}`);
+//     if (!timeString) return '--:--';
+//     const [hours, minutes, seconds] = timeString.split(':');
+//     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+// };
 
 const redirectToGenre = (slug) => {
     window.location.href = `/genres/${slug}`;
@@ -233,7 +237,7 @@ const redirectToTrack = (slug) => {
                                         </span>
                                     </p>
                                 </div>
-                                <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                                <div class="track-duration">{{ formatDuration(track.duration, 'HH:mm:ss') }}</div>
                             </div>
                         </div>
                     </section>

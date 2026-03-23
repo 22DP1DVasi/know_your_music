@@ -1,13 +1,16 @@
 <script setup>
-import { Head, usePage, router } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
+import { Head, usePage, router } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
-import Footer from '@/Components/Footer.vue'
-import Comments from '@/Components/Comments/Comments.vue'
-import {ref, computed, watch } from 'vue'
-import ColorThief from 'colorthief'
+import Footer from '@/Components/Footer.vue';
+import Comments from '@/Components/Comments/Comments.vue';
+import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlatlistModal from '@/Components/Playlists/AddToPlaylistModal.vue';
+import {ref, computed, watch } from 'vue';
+import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
 import { useI18n } from 'vue-i18n';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -72,6 +75,21 @@ const showPlayer = ref(false);
 const currentAudioSource = ref('');
 const isFavorite = ref(props.artist.is_favorite || false);
 const isFavoriteLoading = ref(false);
+// ref priekš izvelnēm, kas var būt atvērtas lapā, piem, no TrackCard
+const openMenuId = ref(null);
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const openAddToPlaylistModal = (track) => {
+    selectedTrack.value = track
+    showPlaylistModal.value = true
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
+};
 
 const toggleFavorite = async () => {
     if (isFavoriteLoading.value) return;
@@ -273,7 +291,7 @@ const closePlayer = () => {
 
 const redirectToFullBio = (slug) => {
     window.location.href = `/artists/${slug}/bio`;
-    // You can pass the current locale if needed
+    // var nodot pašreizējo lokalizāciju ja nepieciešams
     // window.location.href = `/artists/${slug}/bio${locale.value === 'lv' ? '?lang=lv' : ''}`;
 };
 
@@ -289,9 +307,13 @@ const redirectToAllTracks = (slug) => {
     window.location.href = `/artists/${slug}/tracks`;
 };
 
-const redirectToTrack = (slug) => {
-    window.location.href = `/tracks/${slug}`;
+const handleTrackClick = (track) => {
+    router.get(`/tracks/${track.slug}`);
 };
+
+// const redirectToTrack = (slug) => {
+//     window.location.href = `/tracks/${slug}`;
+// };
 
 const redirectToRelease = (slug) => {
     window.location.href = `/releases/${slug}`;
@@ -303,12 +325,6 @@ const redirectToAllReleases = (slug) => {
 const capitalize = (value) => {
     if (!value) return 'Unknown';
     return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-};
-
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const [hours, minutes, seconds] = timeString.split(':');
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
 };
 
 </script>
@@ -349,11 +365,11 @@ const formatDuration = (timeString) => {
             <div class="main-content">
                 <section class="artist-description">
                     <h2 class="section-title">{{ t('artists.show.about') }}</h2>
-                    <!-- Language notice -->
+                    <!-- Valodas piezīme -->
                     <div v-if="languageNotice.show" class="language-notice">
                         {{ languageNotice.message }}
                     </div>
-                    <!-- Biography text -->
+                    <!-- Biogrāfiajs teksts -->
                     <div class="bio-text" v-html="truncatedBio"></div>
                     <button
                         v-if="showReadMore"
@@ -418,25 +434,24 @@ const formatDuration = (timeString) => {
                     </div>
                     <div v-if="!artist.tracks.length" style="margin-bottom: 2rem;">No tracks found from this artist.</div>
                     <div v-else class="track-list">
-                        <div v-for="(track, index) in artist.tracks" :key="track.id" class="track-card">
-                            <span class="track-number">{{ index + 1 }}</span>
-                            <img :src="track.cover_url" class="track-image" :alt="track.title">
-                            <div class="track-info">
-                                <h3>
-                                    <a @click="redirectToTrack(track.slug)" class="track-title">
-                                        {{ track.title }}
-                                    </a>
-                                </h3>
-                            </div>
-                            <button
-                                v-if="track.audio_source"
-                                @click="playTrack(track.audio_source)"
-                                class="play-button"
-                            >
-                                <i class="fa-regular fa-circle-play"></i>
-                            </button>
-                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                        </div>
+                        <TrackCard
+                            v-for="(track, index) in artist.tracks"
+                            :key="track.id"
+                            :track="track"
+                            :index="index"
+                            :show-artists="true"
+                            :menu-open="openMenuId === track.id"
+                            @toggle-menu="(id) => openMenuId = openMenuId === id ? null : id"
+                            @track-click="handleTrackClick"
+                            @add-to-playlist="openAddToPlaylistModal"
+                        />
+<!--                        <button-->
+<!--                            v-if="track.audio_source"-->
+<!--                            @click="playTrack(track.audio_source)"-->
+<!--                            class="play-button"-->
+<!--                        >-->
+<!--                            <i class="fa-regular fa-circle-play"></i>-->
+<!--                        </button>-->
                     </div>
                 </section>
 
@@ -493,6 +508,12 @@ const formatDuration = (timeString) => {
         />
     </main>
     <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>
@@ -747,13 +768,13 @@ const formatDuration = (timeString) => {
     font-style: italic;
 }
 
-/* Optional: Different border colors for different notice types */
+/* dažādas robežas krāsas dažādiem paziņojumu veidiem */
 .language-notice[data-type="lv-no-bio"] {
-    border-left-color: #0c4baa; /* Latvian blue theme */
+    border-left-color: #0c4baa; /* zilā tēma latviešu v */
 }
 
 .language-notice[data-type="en-no-bio"] {
-    border-left-color: #aa0c4b; /* Different color for English notice */
+    border-left-color: #aa0c4b; /* cita krāsa angļu v */
 }
 
 .no-bio {
@@ -869,80 +890,10 @@ const formatDuration = (timeString) => {
 .track-list {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 2rem;
     max-width: 100%;
-}
-
-.track-card {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-    gap: 0.75rem;
-}
-
-.track-number {
-    color: #666;
-    width: 24px;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-.track-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 4px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.track-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.track-info h3 {
-    text-decoration: none;
-    transition: color 0.2s;
-    font-size: 0.95rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-title {
-    cursor: pointer;
-}
-
-.track-title:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.play-button {
-    background: none;
-    border: none;
-    color: #0c4baa;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0 0.5rem;
-    transition: transform 0.2s, color 0.2s;
-    flex-shrink: 0;
-}
-
-.play-button:hover {
-    color: #1a5fc9;
-    transform: scale(1.1);
-}
-
-.track-duration {
-    color: #666;
-    font-size: 0.9rem;
-    flex: 0 0 50px;
-    text-align: right;
 }
 
 .artist-releases {
@@ -1128,24 +1079,6 @@ const formatDuration = (timeString) => {
     .info-card {
         width: 100%;
     }
-
-    .track-card {
-        padding: 0.75rem;
-        gap: 0.75rem;
-    }
-
-    .track-image {
-        width: 45px;
-        height: 45px;
-    }
-
-    .track-info {
-        padding: 0 0.25rem;
-    }
-
-    .track-duration {
-        flex: 0 0 50px;
-    }
 }
 
 @media (max-width: 480px) {
@@ -1161,29 +1094,6 @@ const formatDuration = (timeString) => {
 
     .info-item {
         flex: 1 0 100%;
-    }
-
-    .track-card {
-        padding: 0.5rem;
-        gap: 0.5rem;
-    }
-
-    .track-image {
-        width: 40px;
-        height: 40px;
-    }
-
-    .track-number {
-        width: 20px;
-    }
-
-    .track-title {
-        font-size: 0.9rem;
-    }
-
-    .track-duration {
-        font-size: 0.85rem;
-        flex: 0 0 45px;
     }
 
     .release-results {

@@ -20,6 +20,7 @@ use App\Http\Controllers\ReleaseCommentController;
 use App\Http\Controllers\TrackCommentController;
 use App\Http\Controllers\GenreCommentController;
 use App\Http\Controllers\FavoriteArtistController;
+use App\Http\Controllers\UserCollectionController;
 //use Illuminate\Support\Facades\App;
 
 //Route::get('/', function () {
@@ -227,6 +228,24 @@ Route::middleware('auth')->group(function () {
     // izlases
     Route::get('/dashboard/favorites/artists', [FavoriteArtistController::class, 'favoriteArtists'])
         ->name('dashboard.favorites.artists');
+
+    // kolekcijas
+    Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
+        ->name('dashboard.playlists');
+
+    Route::get('/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
+        ->name('playlists.show');
+    Route::put('/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
+        ->name('playlists.update');
+    Route::delete('/playlists/{playlist:slug}/tracks/{track}', [UserCollectionController::class, 'removeTrack'])
+        ->name('playlists.tracks.destroy');
+
+    Route::get('/playlists/user/list', [UserCollectionController::class, 'getUserPlaylists'])
+        ->name('playlists.user.list');
+    Route::post('/playlists/{playlist:slug}/add-track', [UserCollectionController::class, 'addTrackToPlaylist'])
+        ->name('playlists.add-track');
+    Route::post('/playlists', [UserCollectionController::class, 'createPlaylistWithTrack'])
+        ->name('playlists.store');
 });
 
 // authentication routes

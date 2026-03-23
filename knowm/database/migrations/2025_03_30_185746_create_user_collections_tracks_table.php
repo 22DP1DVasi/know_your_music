@@ -12,14 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_collections_tracks', function (Blueprint $table) {
-            $table->unsignedBigInteger('collection_id');
+            $table->id();
+            $table->unsignedBigInteger('user_collection_id');
             $table->unsignedBigInteger('track_id');
             $table->unsignedInteger('track_position');
             $table->timestamps();
 
-            // composite primary key
-            $table->primary(['collection_id', 'track_id']);
-            // position index for sorting
+            // viena un tā pati dziesma nedrīkst parādīties kolekcijā divas reizes
+            $table->unique(['collection_id', 'track_id']);
+
+            // Rule 2: divas dziesmas vienā kolekcijā nevar koplietot pozīciju
+            $table->unique(['collection_id', 'track_position']);
+
             $table->index(['collection_id', 'track_position']);
 
             // foreign keys
@@ -34,7 +38,7 @@ return new class extends Migration
                 ->onDelete('cascade');
         });
 
-        // add position management trigger
+        // pozīcijas pārvaldības trigeris
         DB::unprepared('
             CREATE TRIGGER set_collection_track_position
             BEFORE INSERT ON user_collections_tracks

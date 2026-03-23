@@ -16,6 +16,7 @@ class UserCollection extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'slug',
         'description',
         'is_private',
     ];
@@ -23,6 +24,17 @@ class UserCollection extends Model
     protected $casts = [
         'is_private' => 'boolean',
     ];
+
+    protected $appends = ['cover_url'];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($playlist) {
+            $playlist->slug = $playlist->generateUniqueSlug();
+        });
+    }
 
     /**
      * The user who owns this collection
@@ -38,8 +50,8 @@ class UserCollection extends Model
     public function tracks(): BelongsToMany
     {
         return $this->belongsToMany(Track::class, 'user_collections_tracks')
-            ->withPivot('track_position')
-            ->orderBy('user_collections_tracks.track_position');
+            ->withPivot('track_position');
+//            ->orderBy('user_collections_tracks.track_position');
     }
 
     /**
@@ -70,5 +82,40 @@ class UserCollection extends Model
                 'track_position' => $position + 1
             ]);
         }
+    }
+
+    /**
+     * Ģenerē unikālo tekstveida identifikatoru.
+     */
+    public function generateUniqueSlug($name = null): string
+    {
+        $nameToUse = $name ?? $this->name;
+        $slug = $this->customSlugify($nameToUse);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (static::where('slug', $slug)
+            ->where('id', '!=', $this->id) // atjaunināšanas laikā izslēgt pašreizējo izpildītāju
+            ->exists()) {
+            $slug = "{$originalSlug}-{$counter}";
+            $counter++;
+        }
+        return $slug;
+    }
+
+    /**
+     * Pielāgot nosaukumu tekstveida identifikatoram
+     */
+    private function customSlugify(string $name): string
+    {
+        $slug = mb_strtolower($name);
+        $slug = preg_replace('/\s+/u', '-', $slug);
+        $slug = preg_replace('/[^\p{L}\p{N}]+/u', '-', $slug);
+        return trim($slug, '-');
+    }
+
+    public function getCoverUrlAttribute()
+    {
+        $firstTrack = $this->tracks()->first();
+        return $firstTrack?->cover_url;
     }
 }
