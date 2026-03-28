@@ -17,26 +17,14 @@ const isAdmin = computed(() => roles.value.includes('super_admin'));
 
 const secondaryButton = computed(() => {
     return isLoggedIn.value
-        ? { text: 'Tune Your Profile', href: '/dashboard' }
-        : { text: 'Join Now', href: '/login' }
+        ? { text: t('home.tune_profile'), href: '/dashboard' }
+        : { text: t('home.join_now'), href: '/login' }
 })
 
 const features = [
-    {
-        icon: '🎵',
-        title: 'Deep Music Knowledge',
-        description: 'Explore artist backgrounds, song meanings, and hidden connections between musicians.'
-    },
-    {
-        icon: '🔍',
-        title: 'Track Exploration',
-        description: 'Discover lyrics, production credits, and interesting facts about your favorite songs.'
-    },
-    {
-        icon: '💾',
-        title: 'Save & Organize',
-        description: 'Create collections of tracks you love and share them with the community.'
-    }
+    { icon: '🎵', key: 'deep_knowledge' },
+    { icon: '🔍', key: 'track_exploration' },
+    { icon: '💾', key: 'save_organize' }
 ];
 
 // onMounted funkcija ritināšanas aktivizētm animācijām
@@ -127,12 +115,12 @@ const getBarStyle = (index) => {
             <div class="features-overlay"></div>
 
             <div class="container">
-                <h2 class="section-title animate-on-scroll">Why Music Lovers Choose Us</h2>
+                <h2 class="section-title animate-on-scroll">{{ t('home.why_choose_us') }}</h2>
                 <div class="features-grid">
                     <div v-for="(feature, index) in features" :key="index" class="feature-card animate-on-scroll" :style="{ transitionDelay: `${index * 0.1}s` }">
                         <div class="feature-icon">{{ feature.icon }}</div>
-                        <h3>{{ feature.title }}</h3>
-                        <p>{{ feature.description }}</p>
+                        <h3>{{ t(`home.features.${feature.key}.title`) }}</h3>
+                        <p>{{ t(`home.features.${feature.key}.description`) }}</p>
                     </div>
                 </div>
             </div>
@@ -143,8 +131,8 @@ const getBarStyle = (index) => {
         <!-- Viettura sadaļa (WIP, būs kartes vai kaut kas līdzīgs) -->
         <section class="trending-section">
             <div class="container">
-                <h2 class="section-title animate-on-scroll">Trending Now</h2>
-                <p class="section-subtitle animate-on-scroll">Discover what the community is listening to</p>
+                <h2 class="section-title animate-on-scroll">{{ t('home.trending_now') }}</h2>
+                <p class="section-subtitle animate-on-scroll">{{ t('home.trending_subtitle') }}</p>
                 <div class="placeholder-grid">
                     <div v-for="n in 4" :key="n" class="placeholder-card animate-on-scroll" :style="{ transitionDelay: `${n * 0.05}s` }">
                         <div class="placeholder-image"></div>
@@ -163,9 +151,9 @@ const getBarStyle = (index) => {
         <section class="cta-section">
             <div class="container">
                 <div class="cta-content animate-on-scroll">
-                    <h2>Start discovering music today</h2>
+                    <h2>{{ t('home.start_discovering') }}</h2>
                     <div class="cta-buttons">
-                        <a href="/explore/artists" class="cta-button primary">Browse Artists</a>
+                        <a href="/explore/artists" class="cta-button primary">{{ t('home.browse_artists') }}</a>
                         <a :href="secondaryButton.href" class="cta-button secondary">
                             {{ secondaryButton.text }}
                         </a>
