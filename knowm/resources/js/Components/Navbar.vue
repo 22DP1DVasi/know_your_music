@@ -1,5 +1,5 @@
 <script setup>
-import {ref, onMounted, onBeforeUnmount, watch, computed} from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, computed } from "vue";
 import { usePage, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n'
 
@@ -324,7 +324,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    z-index: 1;
+    z-index: 10;
     height: 55px;
     min-height: 55px;
     position: relative;
