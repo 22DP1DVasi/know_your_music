@@ -3,6 +3,7 @@ import dayjs from '@/utils/dayjs'
 import { watch } from 'vue';
 
 import enNavbar from './i18n/en/navbar.json'
+import enFooter from './i18n/en/footer.json'
 import enHome from './i18n/en/home.json'
 import enAdmDashboard from './i18n/en/adm_dashboard.json'
 import enAdmLayout from './i18n/en/adm_layout.json'
@@ -16,6 +17,7 @@ import enArtists from './i18n/en/artists.json'
 import enComponents from './i18n/en/components.json';
 
 import lvNavbar from './i18n/lv/navbar.json'
+import lvFooter from './i18n/lv/footer.json'
 import lvHome from './i18n/lv/home.json'
 import lvAdmDashboard from './i18n/lv/adm_dashboard.json'
 import lvAdmLayout from './i18n/lv/adm_layout.json'
@@ -38,6 +40,7 @@ const i18n = createI18n({
     messages: {
         en: {
             navbar: enNavbar,
+            footer: enFooter,
             home: enHome,
 
             user_pages: enUserPages,
@@ -54,6 +57,7 @@ const i18n = createI18n({
         },
         lv: {
             navbar: lvNavbar,
+            footer: lvFooter,
             home: lvHome,
 
             user_pages: lvUserPages,
