@@ -50,5 +50,33 @@
         "contact_us_link": "Contact Us",
         "questions_text_middle": "page or email us at",
         "questions_text_end": "- we're happy to explain anything!"
+    },
+    "tos": {
+        "hero_badge": "Terms & Conditions",
+        "hero_title": "Terms of Service",
+        "last_updated": "Last Updated:",
+        "last_updated_date": "May 2024",
+        "intro_text": "These terms outline the rules for using our service. By accessing our site, you agree to these conditions.",
+        "your_account_title": "Your Account",
+        "your_account_item1": "You're responsible for keeping your login info secure.",
+        "your_account_item2": "No fake names, spam, or impersonation - keep it real.",
+        "your_account_item3": "We can suspend accounts that break these rules.",
+        "your_content_title": "Your Content",
+        "your_content_item1": "Comments/edits must be respectful and accurate. No hate speech or misinformation.",
+        "your_content_item2": "By posting, you allow us to display it on Know Your Music (but you still own your words).",
+        "your_content_item3": "Don't upload illegal content (we'll remove it).",
+        "copyright_title": "Copyright",
+        "copyright_item1": "We don't host actual music files - just info about music (lyrics, artist details, etc.).",
+        "copyright_item2_start": "If you think something violates copyright, email us at",
+        "our_rules_title": "Our Rules",
+        "our_rules_item1": "Don't break the site (no hacking, scraping, or bots).",
+        "our_rules_item2": "Admins can edit/remove content to keep things accurate.",
+        "disclaimer_title": "Disclaimer",
+        "disclaimer_item1": "Music data comes from users and APIs. We try our best to keep information accurate and up to date.",
+        "questions_title": "Questions?",
+        "questions_text_start": "Visit our",
+        "contact_us_link": "Contact Us",
+        "questions_text_middle": "page or email us at",
+        "questions_text_end": "- we're happy to explain anything!"
     }
 }

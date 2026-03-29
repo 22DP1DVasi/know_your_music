@@ -50,5 +50,33 @@
         "contact_us_link": "Kontaktu",
         "questions_text_middle": "lapu vai rakstiet mums uz",
         "questions_text_end": "- ar prieku visu izskaidrosim!"
+    },
+    "tos": {
+        "hero_badge": "Noteikumi un nosacījumi",
+        "hero_title": "Lietošanas noteikumi",
+        "last_updated": "Pēdējoreiz atjaunots:",
+        "last_updated_date": "2024. gada maijs",
+        "intro_text": "Šie noteikumi nosaka mūsu pakalpojuma lietošanas kārtību. Izmantojot mūsu vietni, jūs piekrītat šiem noteikumiem.",
+        "your_account_title": "Jūsu konts",
+        "your_account_item1": "Jūs esat atbildīgs par sava pieteikšanās informācijas drošību.",
+        "your_account_item2": "Nav viltotu vārdu, surogātpasta vai personu atdarināšanas - esiet godīgi.",
+        "your_account_item3": "Mēs varam apturēt kontus, kas pārkāpj šos noteikumus.",
+        "your_content_title": "Jūsu saturs",
+        "your_content_item1": "Komentāriem/labojumiem jābūt cieņpilniem un precīziem. Bez naida runas vai dezinformācijas.",
+        "your_content_item2": "Publicējot saturu, jūs atļaujat to rādīt Know Your Music platformā (bet jūs joprojām saglabājat īpašumtiesības uz saviem vārdiem).",
+        "your_content_item3": "Neaugšupielādējiet nelikumīgu saturu (mēs to noņemsim).",
+        "copyright_title": "Autortiesības",
+        "copyright_item1": "Mēs neizvietojam faktiskus mūzikas failus - tikai informāciju par mūziku (dziesmu tekstus, informāciju par izpildītājiem utt.).",
+        "copyright_item2_start": "Ja uzskatāt, ka kaut kas pārkāpj autortiesības, rakstiet mums uz",
+        "our_rules_title": "Mūsu noteikumi",
+        "our_rules_item1": "Nebojājiet vietni (bez hakeru uzbrukumiem, datu ieguves vai robotprogrammatūrām).",
+        "our_rules_item2": "Administratori var rediģēt/noņemt saturu, lai nodrošinātu precizitāti.",
+        "disclaimer_title": "Atruna",
+        "disclaimer_item1": "Mūzikas dati nāk no lietotājiem un API. Mēs cenšamies nodrošināt informācijas precizitāti un aktualitāti.",
+        "questions_title": "Jautājumi?",
+        "questions_text_start": "Apmeklējiet mūsu",
+        "contact_us_link": "Kontaktu",
+        "questions_text_middle": "lapu vai rakstiet mums uz",
+        "questions_text_end": "- ar prieku visu izskaidrosim!"
     }
 }
