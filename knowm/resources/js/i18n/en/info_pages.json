@@ -1,0 +1,22 @@
+{
+    "aboutus": {
+        "hero_badge": "Welcome to",
+        "hero_title": "Know Your Music",
+        "hero_subtitle": "Your ultimate destination for exploring music like never before",
+        "intro_text": "We're more than just a music database - we're a passionate community where fans, artists, and curious listeners come together to discover, share, and celebrate the world of music.",
+        "what_we_offer": "What We Offer",
+        "feature_music_encyclopedia_title": "Music Encyclopedia",
+        "feature_music_encyclopedia_desc": "Dive deep into artist biographies, discographies, lyrics, and fascinating facts about your favorite musicians and bands.",
+        "feature_playback_title": "Seamless Playback",
+        "feature_playback_desc": "Preview tracks via integrated streaming to discover new sounds effortlessly.",
+        "feature_your_music_title": "Your Music, Your Way",
+        "feature_your_music_desc": "Save songs, create playlists, comment, and connect with fellow music lovers.",
+        "feature_community_title": "Community-Driven Accuracy",
+        "feature_community_desc": "Users can suggest edits via comments, while admins ensure content stays up-to-date and reliable.",
+        "feature_coming_soon_title": "And even more to come!",
+        "feature_coming_soon_desc": "Stay tuned for exciting new features and improvements.",
+        "our_mission": "Our Mission",
+        "mission_text": "At Know Your Music, we believe every song has a story. Whether you're a casual listener or a die-hard fan, our platform helps you uncover the details behind the music you love - and find your next favorite artist along the way.",
+        "mission_cta": "Join us and deepen your musical journey today!"
+    }
+}

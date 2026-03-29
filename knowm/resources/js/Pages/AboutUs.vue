@@ -1,8 +1,11 @@
 <script setup>
-import { Head } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import { onMounted } from 'vue'
+import { Head } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import { onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 // onMounted funkcija ritināšanas aktivizētm animācijām
 // onMounted gaida, kad komponents tiek pievienots DOM
@@ -33,68 +36,59 @@ onMounted(() => {
         <div class="about-container">
             <!-- Hero sadaļa -->
             <div class="about-hero animate-on-scroll">
-                <div class="hero-badge">Welcome to</div>
-                <h1 class="hero-title">Know Your Music</h1>
-                <p class="hero-subtitle">
-                    Your ultimate destination for exploring music like never before
-                </p>
+                <div class="hero-badge">{{ t('info_pages.aboutus.hero_badge') }}</div>
+                <h1 class="hero-title">{{ t('info_pages.aboutus.hero_title') }}</h1>
+                <p class="hero-subtitle">{{ t('info_pages.aboutus.hero_subtitle') }}</p>
                 <div class="hero-decoration"></div>
             </div>
 
             <!-- Informācijas sadaļa -->
             <section class="about-section intro-section animate-on-scroll">
-                <p class="intro-text">
-                    We're more than just a music database - we're a passionate community where fans, artists,
-                    and curious listeners come together to discover, share, and celebrate the world of music.
-                </p>
+                <p class="intro-text">{{ t('info_pages.aboutus.intro_text') }}</p>
             </section>
 
             <!-- Iespēju sadaļa -->
             <section class="about-section animate-on-scroll">
-                <h2 class="section-title">What We Offer</h2>
+                <h2 class="section-title">{{ t('info_pages.aboutus.what_we_offer') }}</h2>
                 <div class="features-grid">
                     <div class="feature-card">
                         <div class="feature-icon">🎤</div>
-                        <h3>Music Encyclopedia</h3>
-                        <p>Dive deep into artist biographies, discographies, lyrics, and fascinating facts about your favorite musicians and bands.</p>
+                        <h3>{{ t('info_pages.aboutus.feature_music_encyclopedia_title') }}</h3>
+                        <p>{{ t('info_pages.aboutus.feature_music_encyclopedia_desc') }}</p>
                     </div>
 
                     <div class="feature-card">
                         <div class="feature-icon">🎧</div>
-                        <h3>Seamless Playback</h3>
-                        <p>Preview tracks via integrated streaming to discover new sounds effortlessly.</p>
+                        <h3>{{ t('info_pages.aboutus.feature_playback_title') }}</h3>
+                        <p>{{ t('info_pages.aboutus.feature_playback_desc') }}</p>
                     </div>
 
                     <div class="feature-card">
                         <div class="feature-icon">💾</div>
-                        <h3>Your Music, Your Way</h3>
-                        <p>Save songs, create playlists, comment, and connect with fellow music lovers.</p>
+                        <h3>{{ t('info_pages.aboutus.feature_your_music_title') }}</h3>
+                        <p>{{ t('info_pages.aboutus.feature_your_music_desc') }}</p>
                     </div>
 
                     <div class="feature-card">
                         <div class="feature-icon">👥</div>
-                        <h3>Community-Driven Accuracy</h3>
-                        <p>Users can suggest edits via comments, while admins ensure content stays up-to-date and reliable.</p>
+                        <h3>{{ t('info_pages.aboutus.feature_community_title') }}</h3>
+                        <p>{{ t('info_pages.aboutus.feature_community_desc') }}</p>
                     </div>
 
                     <div class="feature-card coming-soon">
                         <div class="feature-icon">✨</div>
-                        <h3>And even more to come!</h3>
-                        <p>Stay tuned for exciting new features and improvements.</p>
+                        <h3>{{ t('info_pages.aboutus.feature_coming_soon_title') }}</h3>
+                        <p>{{ t('info_pages.aboutus.feature_coming_soon_desc') }}</p>
                     </div>
                 </div>
             </section>
 
             <!-- Misijas nodaļa -->
             <section class="about-section mission-section animate-on-scroll">
-                <h2 class="section-title">Our Mission</h2>
-                <p class="mission-text">
-                    At Know Your Music, we believe every song has a story. Whether you're a casual listener
-                    or a die-hard fan, our platform helps you uncover the details behind the music you love - and
-                    find your next favorite artist along the way.
-                </p>
+                <h2 class="section-title">{{ t('info_pages.aboutus.our_mission') }}</h2>
+                <p class="mission-text">{{ t('info_pages.aboutus.mission_text') }}</p>
                 <div class="mission-cta">
-                    <span class="cta-text">Join us and deepen your musical journey today!</span>
+                    <span class="cta-text">{{ t('info_pages.aboutus.mission_cta') }}</span>
                     <span class="cta-emoji">🎵</span>
                 </div>
             </section>

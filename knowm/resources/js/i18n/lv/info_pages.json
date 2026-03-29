@@ -1,0 +1,22 @@
+{
+    "aboutus": {
+        "hero_badge": "Laipni lūdzam",
+        "hero_title": "Know Your Music",
+        "hero_subtitle": "Tava galvenā vieta mūzikas atklāšanai kā nekad agrāk",
+        "intro_text": "Mēs esam vairāk nekā tikai mūzikas datubāze - mēs esam aizrautīga kopiena, kur fani, izpildītāji un ziņkārīgi klausītāji sanāk kopā, lai atklātu, dalītos un svinētu mūzikas pasauli.",
+        "what_we_offer": "Ko mēs piedāvājam",
+        "feature_music_encyclopedia_title": "Mūzikas enciklopēdija",
+        "feature_music_encyclopedia_desc": "Iedziļinies izpildītāju biogrāfijās, diskogrāfijās, dziesmu tekstos un aizraujošos faktos par saviem iecienītākajiem mūziķiem un grupām.",
+        "feature_playback_title": "Nevainojama atskaņošana",
+        "feature_playback_desc": "Iepazīsties ar dziesmu fragmentiem, izmantojot integrēto straumēšanu, un atklāj jaunas skaņas bez piepūles.",
+        "feature_your_music_title": "Tava mūzika, tavā veidā",
+        "feature_your_music_desc": "Saglabā dziesmas, veido atskaņošanas sarakstus, komentē un sazinies ar citiem mūzikas cienītājiem.",
+        "feature_community_title": "Kopienas vadīta precizitāte",
+        "feature_community_desc": "Lietotāji var ierosināt labojumus komentāros, savukārt administratori nodrošina, ka saturs ir aktuāls un uzticams.",
+        "feature_coming_soon_title": "Un vēl vairāk drīzumā!",
+        "feature_coming_soon_desc": "Sekojiet līdzi jaunumiem un uzlabojumiem.",
+        "our_mission": "Mūsu misija",
+        "mission_text": "Know Your Music mēs ticam, ka katrai dziesmai ir stāsts. Neatkarīgi no tā, vai esi ikdienas klausītājs vai uzticīgs fans, mūsu platforma palīdz atklāt detaļas aiz iemīļotās mūzikas - un atrast savu nākamo iecienītāko izpildītāju.",
+        "mission_cta": "Pievienojies mums un padziļini savu muzikālo ceļojumu jau šodien!"
+    }
+}
