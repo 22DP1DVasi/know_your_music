@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/info_pages.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/info_pages.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/AboutUs.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/AboutUs.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/PrivacyPolicy.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/PrivacyPolicy.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -436,7 +434,7 @@
       <workItem from="1774193877657" duration="8439000" />
       <workItem from="1774378199669" duration="4456000" />
       <workItem from="1774710723873" duration="11978000" />
-      <workItem from="1774774472764" duration="13156000" />
+      <workItem from="1774774472764" duration="13498000" />
     </task>
     <servers />
   </component>

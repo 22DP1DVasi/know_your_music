@@ -1,63 +1,99 @@
+<script setup>
+import { Head } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import { onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+// onMounted funkcija ritināšanas aktivizētm animācijām
+// onMounted gaida, kad komponents tiek pievienots DOM
+onMounted(() => {
+    // izveidot Intersection Observer'u, lai noteiktu, kad elementi nonāk skatvietā
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // pārbaudīt, vai elements ir redzams
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // pārtraukt šī elementa novērošanu, lai animācija tiktu palaista tikai vienreiz
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });  // kad ir redzami 20% elementa
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+});
+
+</script>
+
 <template>
     <Head title="Privacy Policy" />
     <Navbar />
     <main class="flex-1">
         <div class="privacy-container">
-            <div class="privacy-header">
-                <h1>Privacy Policy</h1>
+            <div class="privacy-header animate-on-scroll">
+                <div class="hero-badge">{{ t('info_pages.privacy_pol.hero_badge') }}</div>
+                <h1>{{ t('info_pages.privacy_pol.hero_title') }}</h1>
                 <p class="update-date">
-                    <em>Last updated: May 2024</em>
+                    <em>{{ t('info_pages.privacy_pol.last_updated') }} {{ t('info_pages.privacy_pol.last_updated_date') }}</em>
                 </p>
+                <div class="hero-decoration"></div>
             </div>
 
             <div class="privacy-content">
-                <section class="privacy-section">
+                <section class="privacy-section intro-section animate-on-scroll">
                     <p class="intro-text">
-                        Your privacy matters to us at <b>Know Your Music</b>. This policy explains what information we collect,
-                        how we use it, and your rights regarding your personal data.
+                        {{ t('info_pages.privacy_pol.intro_text_start') }} <b>Know Your Music</b>. {{ t('info_pages.privacy_pol.intro_text_end') }}
                     </p>
                 </section>
 
-                <section class="privacy-section">
-                    <h2>What We Collect</h2>
-                    <p style="margin-bottom: 10px;">We only gather the info needed to make Know Your Music work smoothly:</p>
+                <section class="privacy-section animate-on-scroll">
+                    <h2>{{ t('info_pages.privacy_pol.what_we_collect_title') }}</h2>
+                    <p class="section-subtitle">{{ t('info_pages.privacy_pol.what_we_collect_subtitle') }}</p>
                     <ul class="policy-list">
-                        <li><strong>Basic account data:</strong> Username, email, and password (hashed for security).</li>
-                        <li><strong>Music preferences:</strong> Artists you follow, tracks you save, and searches to improve recommendations.</li>
-                        <li><strong>Cookies:</strong> To remember your login and settings (you can disable these in your browser).</li>
+                        <li><strong>{{ t('info_pages.privacy_pol.basic_account_data_title') }}</strong> {{ t('info_pages.privacy_pol.basic_account_data_desc') }}</li>
+                        <li><strong>{{ t('info_pages.privacy_pol.music_preferences_title') }}</strong> {{ t('info_pages.privacy_pol.music_preferences_desc') }}</li>
+                        <li><strong>{{ t('info_pages.privacy_pol.cookies_title') }}</strong> {{ t('info_pages.privacy_pol.cookies_desc') }}</li>
                     </ul>
                 </section>
 
-                <section class="privacy-section">
-                    <h2>How We Use It</h2>
+                <section class="privacy-section animate-on-scroll">
+                    <h2>{{ t('info_pages.privacy_pol.how_we_use_title') }}</h2>
                     <ul class="policy-list">
-                        <li>To personalize your experience (e.g., recommend music you might like).</li>
-                        <li>To let you comment, create collections, and interact with others.</li>
-                        <li>To fix bugs and improve the site (we use anonymized analytics).</li>
+                        <li>{{ t('info_pages.privacy_pol.how_we_use_item1') }}</li>
+                        <li>{{ t('info_pages.privacy_pol.how_we_use_item2') }}</li>
+                        <li>{{ t('info_pages.privacy_pol.how_we_use_item3') }}</li>
                     </ul>
                 </section>
 
-                <section class="privacy-section">
-                    <h2>What We Don't Do</h2>
+                <section class="privacy-section animate-on-scroll">
+                    <h2>{{ t('info_pages.privacy_pol.what_we_dont_title') }}</h2>
                     <ul class="policy-list">
-                        <li>Sell your data to third parties.</li>
-                        <li>Spam you - we'll only email you for important updates (like password resets).</li>
+                        <li>{{ t('info_pages.privacy_pol.what_we_dont_item1') }}</li>
+                        <li>{{ t('info_pages.privacy_pol.what_we_dont_item2') }}</li>
                     </ul>
                 </section>
 
-                <section class="privacy-section">
-                    <h2>Your Rights</h2>
+                <section class="privacy-section animate-on-scroll">
+                    <h2>{{ t('info_pages.privacy_pol.your_rights_title') }}</h2>
                     <ul class="policy-list">
-                        <li>Delete your account anytime.</li>
-                        <li>Opt out of cookies (though some features might break).</li>
-                        <li>Request your data (we'll send you a copy).</li>
+                        <li>{{ t('info_pages.privacy_pol.your_rights_item1') }}</li>
+                        <li>{{ t('info_pages.privacy_pol.your_rights_item2') }}</li>
+                        <li>{{ t('info_pages.privacy_pol.your_rights_item3') }}</li>
                     </ul>
                 </section>
 
-                <section class="privacy-section contact-section">
-                    <h2>Questions?</h2>
+                <section class="privacy-section contact-section animate-on-scroll">
+                    <h2>{{ t('info_pages.privacy_pol.questions_title') }}</h2>
                     <p>
-                        Visit our <a href="/contact">Contact Us</a> page or email us at <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a> - we're happy to explain anything!
+                        {{ t('info_pages.privacy_pol.questions_text_start') }}
+                        <a href="/contact">{{ t('info_pages.privacy_pol.contact_us_link') }}</a>
+                        {{ t('info_pages.privacy_pol.questions_text_middle') }}
+                        <a href="mailto:kymsupprort@gmail.com">kymsupprort@gmail.com</a>
+                        {{ t('info_pages.privacy_pol.questions_text_end') }}
                     </p>
                 </section>
             </div>
@@ -66,119 +102,176 @@
     <Footer />
 </template>
 
-<script setup>
-import { Head } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-</script>
-
 <style scoped>
 .privacy-container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 40px 20px;
-    color: #333;
+    padding: 2rem 1.5rem 4rem;
 }
 
 .privacy-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 3rem;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.hero-badge {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0c4baa;
+    background: rgba(12, 75, 170, 0.1);
+    padding: 0.4rem 1rem;
+    border-radius: 40px;
+    margin-bottom: 1rem;
 }
 
 .privacy-header h1 {
     font-size: 2.5rem;
+    font-weight: 700;
     color: #0c4baa;
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.privacy-header .update-date {
-    text-align: left;
+.update-date {
     font-size: 0.9rem;
     font-style: italic;
-    color: #666;
+    color: #64748b;
 }
 
-.privacy-section {
-    margin-bottom: 40px;
+.hero-decoration {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #0c4baa, #20c1f7);
+    border-radius: 3px;
+}
+
+.intro-section {
+    margin-bottom: 2rem;
 }
 
 .intro-text {
-    font-size: 1.2rem;
-    line-height: 1.6;
+    font-size: 1.1rem;
+    line-height: 1.7;
     text-align: center;
-    max-width: 800px;
-    margin: 0 auto 30px;
+    max-width: 700px;
+    margin: 0 auto;
+    color: #334155;
+}
+
+.privacy-section {
+    margin-bottom: 2.5rem;
 }
 
 h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
     color: #0c4baa;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #b0ddff;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(12, 75, 170, 0.2);
+}
+
+.section-subtitle {
+    margin-bottom: 1rem;
+    color: #475569;
 }
 
 .policy-list {
     list-style-type: none;
     padding-left: 0;
-    font-size: 1.1rem;
     line-height: 1.6;
 }
 
 .policy-list li {
-    margin-bottom: 15px;
-    padding-left: 25px;
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
     position: relative;
+    color: #334155;
 }
 
 .policy-list li:before {
     content: "•";
     color: #0c4baa;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     position: absolute;
     left: 0;
-    top: -3px;
+    top: -2px;
 }
 
 .contact-section {
-    background-color: rgba(100, 183, 255, 0.3);
-    padding: 30px;
-    border-radius: 10px;
+    margin-top: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(12, 75, 170, 0.04), rgba(32, 193, 247, 0.04));
+    border-radius: 20px;
     text-align: center;
 }
 
 .contact-section a {
     color: #0c4baa;
-    font-weight: bold;
+    font-weight: 600;
     text-decoration: none;
-    word-break: break-word;
+    transition: color 0.2s ease;
 }
 
 .contact-section a:hover {
+    color: #20c1f7;
     text-decoration: underline;
 }
 
+/* Animācijas */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s ease;
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsivitāte */
 @media (max-width: 768px) {
+    .privacy-container {
+        padding: 1.5rem 1rem 3rem;
+    }
+
     .privacy-header h1 {
         font-size: 2rem;
     }
 
-    .privacy-container {
-        padding: 30px 15px;
-    }
-
-    .privacy-section {
-        margin-bottom: 30px;
+    .intro-text {
+        font-size: 1rem;
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
+    }
+
+    .contact-section {
+        padding: 1.5rem;
     }
 }
 
-@media (max-width: 360px) {
-    .contact-section {
-        font-size: 0.8rem;
+@media (max-width: 480px) {
+    .privacy-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .policy-list li {
+        font-size: 0.95rem;
     }
 }
 
