@@ -12,10 +12,7 @@ const { t } = useI18n();
 const page = usePage();
 
 const user = computed(() => page.props.auth?.user ?? null);
-// const isLoggedIn = computed(() => !!page.props.auth?.user)
 const isLoggedIn = computed(() => !!user.value);
-const roles = computed(() => page.props.auth?.user?.roles ?? []);
-const isAdmin = computed(() => roles.value.includes('super_admin'));
 
 const secondaryButton = computed(() => {
     return isLoggedIn.value
@@ -65,15 +62,6 @@ const getBarStyle = (index) => {
     <Head title="Know Your Music" />
     <Navbar/>
     <main class="home-main">
-        <div class="adm-button-container">
-            <Link
-                v-if="isAdmin"
-                :href="route('admin-dashboard')"
-                class="adm-button"
-            >
-                {{ t('home.admin_panel') }}
-            </Link>
-        </div>
         <!-- Hero sadaļa -->
         <section class="hero-section">
             <!-- Ekvalaizera fons -->
@@ -170,12 +158,6 @@ const getBarStyle = (index) => {
 <style scoped>
 .home-main {
     overflow-x: hidden;
-}
-
-.adm-button-container {
-    margin-top: 5px;
-    position: absolute;
-    right: 50px;
 }
 
 .container {

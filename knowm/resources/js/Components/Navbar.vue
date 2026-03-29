@@ -1,7 +1,8 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed } from "vue";
-import { usePage, router } from '@inertiajs/vue3';
+import {usePage, router, Link} from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n'
+import { route } from "ziggy-js";
 
 const page = usePage();
 const { locale, t } = useI18n();
@@ -9,6 +10,8 @@ const { locale, t } = useI18n();
 // reaktīvas vērtības
 const user = computed(() => page.props.auth?.user ?? null);
 const isLoggedIn = computed(() => !!user.value);
+const roles = computed(() => user.value?.roles ?? []);
+const isAdmin = computed(() => roles.value.includes('super_admin'));
 
 const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
 const isMenuActive = ref(false);
@@ -85,6 +88,7 @@ const performSearch = () => {
 };
 
 const changeLanguage = (lang) => {
+    console.log(`roles: ${roles.value}`);
     locale.value = lang;
     localStorage.setItem('locale', lang);
 };
@@ -211,6 +215,13 @@ const isActiveRoute = (routePath) => {
                                 <p class="user-name">{{ user.name }}</p>
                                 <a href="/dashboard">Dashboard</a>
                                 <a href="/dashboard/settings">Profile Settings</a>
+                                <Link
+                                    v-if="isAdmin"
+                                    :href="route('admin-dashboard')"
+                                    class="admin-link"
+                                >
+                                    Admin Panel
+                                </Link>
                                 <a href="#" @click.prevent="logout">Logout</a>
                             </div>
                         </transition>
@@ -288,7 +299,13 @@ const isActiveRoute = (routePath) => {
                     <template v-else>
                         <a href="/dashboard">Dashboard</a>
                         <a href="/dashboard/settings">Profile Settings</a>
-                        <Link v-if="isAdmin" :href="route('admin-dashboard')" class="admin-link">Admin Panel</Link>
+                        <Link
+                            v-if="isAdmin"
+                            :href="route('admin-dashboard')"
+                            class="admin-link"
+                        >
+                            Admin Panel
+                        </Link>
                         <a href="#" @click.prevent="logout">Logout</a>
                     </template>
                 </nav>
@@ -602,6 +619,12 @@ const isActiveRoute = (routePath) => {
     margin-bottom: 0.25rem;
     color: #0f172a;
     pointer-events: none !important;
+}
+
+.admin-link {
+    margin: 0.25rem 0;
+    background-color: #c8d9ff;
+    border-radius: 8px !important;
 }
 
 .dropdown-fade-enter-active,
