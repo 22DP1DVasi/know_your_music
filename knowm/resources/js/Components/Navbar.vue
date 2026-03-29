@@ -16,6 +16,7 @@ const isMobile = ref(false);
 let mediaQuery;
 const activeDropdown = ref(null);
 const searchQuery = ref('');
+const isMobileExploreOpen = ref(false);
 
 const closeAllDropdowns = () => {
     activeDropdown.value = null;
@@ -61,6 +62,10 @@ const toggleNav = () => {
 
 const toggleDropdown = (name) => {
     activeDropdown.value = activeDropdown.value === name ? null : name;
+};
+
+const toggleMobileExplore = () => {
+    isMobileExploreOpen.value = !isMobileExploreOpen.value;
 };
 
 const redirectToExplore = (type) => {
@@ -254,10 +259,27 @@ const isActiveRoute = (routePath) => {
                     </div>
                 </div>
 
+                <div
+                    class="mobile-explore-section"
+                    @click.stop
+                >
+                    <div
+                        class="mobile-explore-header"
+                        @click="toggleMobileExplore"
+                    >
+                        <span>Explore</span>
+                        <i class="fa fa-caret-down" :class="{ rotated: isMobileExploreOpen }"></i>
+                    </div>
+                    <transition name="dropdown-fade">
+                        <div v-show="isMobileExploreOpen" class="mobile-explore-dropdown">
+                            <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
+                            <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
+                            <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                        </div>
+                    </transition>
+                </div>
+
                 <nav class="mobile-nav">
-                    <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
-                    <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
-                    <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
                     <a href="/about">About</a>
                     <template v-if="!isLoggedIn">
                         <a href="/login">Login</a>
@@ -266,6 +288,7 @@ const isActiveRoute = (routePath) => {
                     <template v-else>
                         <a href="/dashboard">Dashboard</a>
                         <a href="/dashboard/settings">Profile Settings</a>
+                        <Link v-if="isAdmin" :href="route('admin-dashboard')" class="admin-link">Admin Panel</Link>
                         <a href="#" @click.prevent="logout">Logout</a>
                     </template>
                 </nav>
@@ -477,6 +500,7 @@ const isActiveRoute = (routePath) => {
     z-index: 200;
     backdrop-filter: blur(4px);
     border: 1px solid rgba(12, 75, 170, 0.1);
+    pointer-events: none;
 }
 
 .dropdown-menu a {
@@ -486,6 +510,7 @@ const isActiveRoute = (routePath) => {
     text-decoration: none;
     font-size: 0.9rem;
     transition: all 0.2s ease;
+    pointer-events: auto;
 }
 
 .dropdown-menu a:hover {
@@ -557,6 +582,7 @@ const isActiveRoute = (routePath) => {
     border-bottom: 1px solid #eef2f6;
     margin-bottom: 0.25rem;
     color: #0f172a;
+    pointer-events: none !important;
 }
 
 .dropdown-fade-enter-active,
@@ -623,7 +649,7 @@ const isActiveRoute = (routePath) => {
 
 .mobile-language-section {
     margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid #eef2f6;
 }
 
@@ -655,6 +681,46 @@ const isActiveRoute = (routePath) => {
     background: #0c4baa;
     border-color: #0c4baa;
     color: white;
+}
+
+.mobile-explore-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1e293b;
+    cursor: pointer;
+}
+
+.mobile-explore-header i {
+    transition: transform 0.2s ease;
+    color: #64748b;
+}
+
+.mobile-explore-header i.rotated {
+    transform: rotate(180deg);
+}
+
+.mobile-explore-dropdown {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 2px solid #0c4baa;
+}
+
+.mobile-explore-dropdown a {
+    padding: 0.6rem 0;
+    font-size: 0.95rem;
+    color: #475569;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.mobile-explore-dropdown a:hover {
+    color: #0c4baa;
 }
 
 .mobile-nav {

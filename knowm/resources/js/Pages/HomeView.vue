@@ -11,7 +11,9 @@ const { t } = useI18n();
 
 const page = usePage();
 
-const isLoggedIn = computed(() => !!page.props.auth?.user)
+const user = computed(() => page.props.auth?.user ?? null);
+// const isLoggedIn = computed(() => !!page.props.auth?.user)
+const isLoggedIn = computed(() => !!user.value);
 const roles = computed(() => page.props.auth?.user?.roles ?? []);
 const isAdmin = computed(() => roles.value.includes('super_admin'));
 
