@@ -4,20 +4,22 @@ import { usePage, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n'
 
 const page = usePage();
+const { locale, t } = useI18n();
+
+// reaktīvas vērtības
+const user = computed(() => page.props.auth?.user ?? null);
+const isLoggedIn = computed(() => !!user.value);
 
 const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
 const isMenuActive = ref(false);
 const isMobile = ref(false);
 let mediaQuery;
-
-// const isMobileSearchActive = ref(false);
 const activeDropdown = ref(null);
+const searchQuery = ref('');
+
 const closeAllDropdowns = () => {
     activeDropdown.value = null;
 };
-// reaktīvas vērtības
-const user = computed(() => page.props.auth?.user ?? null);
-const isLoggedIn = computed(() => !!user.value);
 
 const update = () => {
     isMobile.value = mediaQuery.matches;
@@ -27,7 +29,7 @@ const update = () => {
 };
 
 onMounted(() => {
-    window.addEventListener('click', closeAllDropdowns)
+    window.addEventListener('click', closeAllDropdowns);
     mediaQuery = window.matchMedia("(max-width: 1220px)");
     update();
     mediaQuery.addEventListener("change", update);
@@ -39,7 +41,6 @@ onBeforeUnmount(() => {
 
 const toggleDarkMode = () => {
     isDarkMode.value = !isDarkMode.value;
-    // document.documentElement.classList.toggle("dark-mode", isDarkMode.value);
     localStorage.setItem("darkMode", isDarkMode.value);
 };
 
@@ -50,11 +51,16 @@ watch(isDarkMode, (val) => {
 
 const toggleNav = () => {
     isMenuActive.value = !isMenuActive.value;
+    // bloķēt ritināšanu, kad izvēlne ir atvērta, WIP
+    if (isMenuActive.value) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
 };
 
 const toggleDropdown = (name) => {
-    activeDropdown.value =
-        activeDropdown.value === name ? null : name;
+    activeDropdown.value = activeDropdown.value === name ? null : name;
 };
 
 const redirectToExplore = (type) => {
@@ -65,16 +71,6 @@ const logout = () => {
     router.post('/logout');
 };
 
-// const toggleMobileSearch = () => {
-//     isMobileSearchActive.value = !isMobileSearchActive.value;
-// };
-//
-// onMounted(() => {
-//     window.addEventListener('click', closeAllDropdowns)
-// });
-
-const searchQuery = ref('');
-
 const performSearch = () => {
     if (searchQuery.value.trim()) {
         router.get('/search', {
@@ -83,12 +79,10 @@ const performSearch = () => {
     }
 };
 
-const { locale, t } = useI18n()
-
 const changeLanguage = (lang) => {
     locale.value = lang;
     localStorage.setItem('locale', lang);
-}
+};
 
 watch(locale, (newLocale) => {
     document.documentElement.lang = newLocale;
@@ -102,35 +96,36 @@ const getLanguageName = (code) => {
     return languages[code] || code;
 };
 
+// aktīvā maršruta iezīmēšanas helper
+const isActiveRoute = (routePath) => {
+    return window.location.pathname === routePath;
+};
+
 </script>
 
 <template>
-    <!-- Navigācijas joslas elementu nodrošina https://github.com/daniilsonufrijuks un modificēts, lai atbilstu tīmekļa vietnes mērķim -->
-    <nav>
+    <nav class="navbar">
         <div class="nav-left">
-            <ul>
-                <li>
-                    <a href="/" class="logo-container">
-                        <img src="/images/mini-logo.png" alt="Logo" class="logo">
-                        <p>Know Your Music</p>
-                    </a>
-                </li>
-            </ul>
+            <a href="/" class="logo-container">
+                <img src="/images/mini-logo.png" alt="Logo" class="logo">
+                <p>Know Your Music</p>
+            </a>
         </div>
+
         <div class="nav-center">
-            <div class="search-container-pc">
+            <div class="search-container">
                 <div class="search">
                     <input
                         type="search"
                         autocomplete="off"
-                        class="searchTerm"
+                        class="search-term"
                         placeholder="Search..."
                         v-model="searchQuery"
                         @keyup.enter="performSearch"
                     >
                     <button
                         type="submit"
-                        class="searchButton"
+                        class="search-button"
                         @click="performSearch"
                     >
                         <i class="fa fa-search"></i>
@@ -138,69 +133,58 @@ const getLanguageName = (code) => {
                 </div>
             </div>
         </div>
+
         <div class="nav-right">
-            <ul class="buttons-list">
-                <!--            <li><a href="/">{{ t('navbar.home') }}</a></li>-->
-                <li class="explore-menu">
+            <ul class="nav-links">
+                <li class="dropdown-item">
                     <div
-                        class="explore-link"
+                        class="dropdown-trigger"
                         role="button"
                         tabindex="0"
-                        @click="toggleDropdown('explore')"
-                        @click.stop
+                        @click.stop="toggleDropdown('explore')"
                         @keydown.enter="toggleDropdown('explore')"
                     >
-                        {{ t('navbar.explore') }} <i class="fa fa-caret-down"></i>
+                        Explore <i class="fa fa-caret-down"></i>
                     </div>
-                    <div v-show="activeDropdown === 'explore'" class="explore-dropdown">
-                        <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
-                        <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
-                        <!--                    <a href="#" @click.prevent="redirectToExplore('tracks')">{{ t('navbar.explore_tracks') }}</a>-->
-                        <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
-                    </div>
+                    <transition name="dropdown-fade">
+                        <div v-show="activeDropdown === 'explore'" class="dropdown-menu">
+                            <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
+                            <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
+                            <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                        </div>
+                    </transition>
                 </li>
-                <li><a href="/about">{{ t('navbar.about') }}</a></li>
 
-                <!-- Valodas slēdzis -->
-                <li class="language-switch">
+                <li><a href="/about" :class="{ active: isActiveRoute('/about') }">About</a></li>
+
+                <li class="dropdown-item">
                     <div
-                        class="language-selector"
+                        class="dropdown-trigger"
                         role="button"
                         tabindex="0"
-                        @click="toggleDropdown('language')"
-                        @click.stop
+                        @click.stop="toggleDropdown('language')"
                         @keydown.enter="toggleDropdown('language')"
                     >
-                        <span class="language-code">{{ locale.toUpperCase() }}</span>
+                        <span class="lang-code">{{ locale.toUpperCase() }}</span>
                         <i class="fa fa-caret-down"></i>
                     </div>
-                    <div v-show="activeDropdown === 'language'" class="language-dropdown">
-                        <a
-                            href="#"
-                            @click.prevent="changeLanguage('en')"
-                            :class="{ active: locale === 'en' }"
-                        >
-                            English
-                        </a>
-                        <a
-                            href="#"
-                            @click.prevent="changeLanguage('lv')"
-                            :class="{ active: locale === 'lv' }"
-                        >
-                            Latviešu
-                        </a>
-                    </div>
+                    <transition name="dropdown-fade">
+                        <div v-show="activeDropdown === 'language'" class="dropdown-menu language-menu">
+                            <a href="#" @click.prevent="changeLanguage('en')" :class="{ active: locale === 'en' }">English</a>
+                            <a href="#" @click.prevent="changeLanguage('lv')" :class="{ active: locale === 'lv' }">Latviešu</a>
+                        </div>
+                    </transition>
                 </li>
 
-                <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
-                <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
+                <li v-if="!isLoggedIn"><a href="/login">Login</a></li>
+                <li v-if="!isLoggedIn"><a href="/signup">Sign up</a></li>
+
                 <li v-if="isLoggedIn" class="user-menu">
                     <div
                         class="user-avatar"
                         role="button"
                         tabindex="0"
-                        @click="toggleDropdown('user')"
-                        @click.stop
+                        @click.stop="toggleDropdown('user')"
                         @keydown.enter="toggleDropdown('user')"
                     >
                         <img
@@ -217,97 +201,92 @@ const getLanguageName = (code) => {
                         >
                             {{ user.initial }}
                         </div>
-                        <div v-show="activeDropdown === 'user'" class="user-dropdown">
-                            <p>{{ user.name }}</p>
-                            <a href="/dashboard">{{ t('navbar.account') }}</a>
-                            <a href="/dashboard/settings">{{ t('navbar.profile_settings') }}</a>
-                            <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
-                        </div>
+                        <transition name="dropdown-fade">
+                            <div v-show="activeDropdown === 'user'" class="dropdown-menu user-dropdown">
+                                <p class="user-name">{{ user.name }}</p>
+                                <a href="/dashboard">Dashboard</a>
+                                <a href="/dashboard/settings">Profile Settings</a>
+                                <a href="#" @click.prevent="logout">Logout</a>
+                            </div>
+                        </transition>
                     </div>
                 </li>
             </ul>
-            <!-- hamburger izvēlne - tikai telefona režīmā-->
-            <div
-                class="hamburger"
-                role="button"
-                aria-label="Toggle menu"
-                @click="toggleNav"
-            >
+
+            <div class="hamburger" @click="toggleNav">
                 <span class="line"></span>
                 <span class="line"></span>
                 <span class="line"></span>
             </div>
         </div>
     </nav>
-    <!-- izvēlne mobilajās ierīcēs -->
-    <div
-        class="overlay"
-        :class="{ active: isMenuActive && isMobile }"
-        @click="toggleNav"
-    ></div>
-    <div class="menubar" :class="{ active: isMenuActive && isMobile }">
-        <div class="menubar-header">
-            <span>{{ t('navbar.menu') }}</span>
-        </div>
-        <ul>
-            <!-- Valodas slēdzis mobilajās ierīcēs -->
-            <li class="mobile-language-switch">
-                <div class="mobile-language-label">{{ t('navbar.language') }}:</div>
-                <div class="mobile-language-options">
-                    <button
-                        @click="changeLanguage('en')"
-                        :class="{ active: locale === 'en' }"
-                    >
-                        English
-                    </button>
-                    <button
-                        @click="changeLanguage('lv')"
-                        :class="{ active: locale === 'lv' }"
-                    >
-                        Latviešu
-                    </button>
-                </div>
-            </li>
 
-            <!-- nosacījuma atveidošana mobilajai izvēlnei -->
-<!--            <li><a href="/">{{ t('navbar.home') }}</a></li>-->
-            <li class="mobile-explore-item">
-                <a
-                    href="#"
-                    @click="toggleDropdown('mobile_explore')"
-                    @click.stop
-                >
-                    {{ t('navbar.explore') }} <i class="fa fa-caret-down"></i>
-                </a>
-                <div v-show="activeDropdown === 'mobile_explore'" class="mobile-explore-dropdown">
-                    <a href="/explore/artists">{{ t('navbar.explore_artists') }}</a>
-                    <a href="/explore/releases">{{ t('navbar.explore_releases') }}</a>
-<!--                    <a href="/explore/tracks">{{ t('navbar.explore_tracks') }}</a>-->
-                    <a href="/explore/genres">{{ t('navbar.explore_genres') }}</a>
+    <!-- Pārklājums -->
+    <transition name="fade">
+        <div v-if="isMenuActive && isMobile" class="overlay" @click="toggleNav"></div>
+    </transition>
+
+    <!-- Mobilo ierīču sānjosla -->
+    <transition name="slide-right">
+        <div v-if="isMenuActive && isMobile" class="mobile-sidebar">
+            <div class="mobile-sidebar-header">
+                <span class="menu-title">Menu</span>
+                <button class="close-sidebar" @click="toggleNav">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="mobile-sidebar-content">
+                <div class="mobile-language-section">
+                    <div class="mobile-language-label">Language</div>
+                    <div class="mobile-language-options">
+                        <button
+                            @click="changeLanguage('en')"
+                            :class="{ active: locale === 'en' }"
+                        >
+                            English
+                        </button>
+                        <button
+                            @click="changeLanguage('lv')"
+                            :class="{ active: locale === 'lv' }"
+                        >
+                            Latviešu
+                        </button>
+                    </div>
                 </div>
-            </li>
-            <li><a href="/about">{{ t('navbar.about') }}</a></li>
-            <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
-            <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
-            <li v-if="isLoggedIn"><a href="/dashboard">{{ t('navbar.account') }}</a></li>
-            <li v-if="isLoggedIn"><a href="/dashboard/settings">{{ t('navbar.profile_settings') }}</a></li>
-            <li v-if="isLoggedIn"><a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a></li>
-        </ul>
-    </div>
-    <!-- meklēšanas josla mobilajām ierīcēm -->
+
+                <nav class="mobile-nav">
+                    <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
+                    <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
+                    <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                    <a href="/about">About</a>
+                    <template v-if="!isLoggedIn">
+                        <a href="/login">Login</a>
+                        <a href="/signup">Sign up</a>
+                    </template>
+                    <template v-else>
+                        <a href="/dashboard">Dashboard</a>
+                        <a href="/dashboard/settings">Profile Settings</a>
+                        <a href="#" @click.prevent="logout">Logout</a>
+                    </template>
+                </nav>
+            </div>
+        </div>
+    </transition>
+
+    <!-- Mobilo ierīču meklēšanas josla -->
     <div v-show="isMobile" class="mobile-search-container">
         <div class="search">
             <input
                 type="search"
                 autocomplete="off"
-                class="searchTerm"
+                class="search-term"
                 placeholder="Search..."
                 v-model="searchQuery"
                 @keyup.enter="performSearch"
             />
             <button
                 type="submit"
-                class="searchButton"
+                class="search-button"
                 @click="performSearch"
             >
                 <i class="fa fa-search"></i>
@@ -317,176 +296,113 @@ const getLanguageName = (code) => {
 </template>
 
 <style scoped>
-nav {
-    background-color: rgb(185, 225, 255);
-    padding: 5px 2%;
+.navbar {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 2%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    z-index: 10;
-    height: 55px;
-    min-height: 55px;
-    position: relative;
+    box-shadow: 0 2px 12px rgba(12, 75, 170, 0.08);
+    z-index: 100;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    transition: all 0.3s ease;
 }
 
-.nav-left {
-    min-width: 0;
-    display: flex;
-    align-items: center;
+.nav-left,
+.nav-right {
     flex: 0 0 auto;
 }
 
 .nav-center {
-    min-width: 0;
     flex: 1;
     display: flex;
     justify-content: center;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(500px, 40%);
-}
-
-.nav-right {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    margin-left: auto;
-    /** novērst izkārtojuma maiņu starp atteikts un pieteicies statusiem **/
-    min-width: 30px;
-    justify-content: flex-end;
-}
-
-.nav-right ul {
-    display: flex;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-}
-
-.buttons-list li {
-    margin-left: 1rem;
-    display: flex;
-    align-items: center;
-}
-
-.buttons-list li a {
-    text-decoration: none;
-    color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 400;
-    padding: 12px 6px;
-    border-radius: 5px;
-    display: block; /* aizņem visu li platumu */
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.buttons-list li a:hover {
-    background-color: #20c1f7;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .logo-container {
-    height: 55px;
     display: flex;
     align-items: center;
-    text-decoration: none; /* noņemt pasvītrojumu no saites */
-    cursor: pointer;
-    margin: 0;
-    padding: 0;
-    width: 100%;
+    text-decoration: none;
+    gap: 0.5rem;
 }
 
 .logo {
     width: 100px;
     height: 56px;
     object-fit: contain;
-    margin-right: 10px;
-    margin-bottom: 4px;
-    flex-shrink: 0;
 }
 
 .logo-container p {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: 600;
+    color: #0c4baa;
     white-space: nowrap;
 }
 
-.search-container-pc {
-    width: 80%;
+.search-container {
+    width: 100%;
 }
 
 .search {
-    margin: 0 auto;
-    width: 100%;
-    position: relative;
     display: flex;
-    z-index: 1;
-}
-
-.searchTerm {
     width: 100%;
-    border: 3px solid #54b3ebed;
-    border-right: none;
-    padding: 10px;
-    height: 40px;
-    border-radius: 7px 0 0 7px;
+    background: #f5f7fa;
+    border-radius: 48px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.search:focus-within {
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 3px rgba(12, 75, 170, 0.1);
+}
+
+.search-term {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    border-radius: 48px 0 0 48px;
     outline: none;
-    color: #000000;
-    font-size: 16px;
+    color: #1e293b;
 }
 
-.searchTerm:focus {
-    outline: none !important;
-    box-shadow: none !important;
+.search-term::placeholder {
+    color: #94a3b8;
 }
 
-.searchButton {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    border: 1px solid #54b3ebed;
-    background: #54b3ebed;
-    text-align: center;
-    color: #fff;
-    border-radius: 0 7px 7px 0;
+.search-button {
+    background: transparent;
+    border: none;
+    padding: 0 1rem;
+    font-size: 1rem;
+    color: #0c4baa;
     cursor: pointer;
-    font-size: 20px;
+    border-radius: 0 48px 48px 0;
+    transition: all 0.2s ease;
+    position: relative;
+    text-align: center;
     overflow: hidden;
 }
 
-.searchButton i {
+.search-button i {
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 /* mainīt uz mūzikas ikonu, novietojot kursoru */
-.searchButton:hover i {
+.search-button:hover i {
     opacity: 0;
     transform: scale(0.5);
 }
 
-/* mūzikas ikonas pievienošana pēc kursora novietošanas */
-.searchButton:hover::after {
-    content: "\f001";
-    font-family: "FontAwesome";
-    font-size: 20px;
-    color: #fff;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.searchButton::after {
+.search-button::after {
     content: "";
     opacity: 0;
     position: absolute;
@@ -495,216 +411,112 @@ nav ul {
     transform: translate(-50%, -50%) scale(0.5);
 }
 
-.explore-menu {
-    position: relative;
-    padding: 12px 6px;
-    display: block;
-    height: 100%;
-    min-height: 55px;
+/* mūzikas ikonas pievienošana pēc kursora novietošanas */
+.search-button:hover::after {
+    content: "\f001";
+    font-family: "Font Awesome 6 Free", sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: #0c4baa;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.explore-link {
-    cursor: pointer;
-    color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 400;
-    border-radius: 5px;
+.nav-links {
     display: flex;
     align-items: center;
-    padding: 12px 6px;
-    transition: background-color 0.3s ease;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-.explore-link:hover {
-    background-color: #20c1f7;
-}
-
-.explore-link i {
-    margin-left: 5px;
-    font-size: 14px;
-}
-
-.explore-dropdown {
-    position: absolute;
-    top: 90%;
-    left: 0;
-    background-color: white;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    min-width: 160px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.explore-dropdown a {
-    padding: 10px 16px;
-    text-decoration: none;
-    color: #333;
-    font-family: Arial, Helvetica, sans-serif;
-    transition: background-color 0.2s;
-}
-
-.explore-dropdown a:hover {
-    background-color: #f5f5f5;
-}
-
-.language-switch {
-    position: relative;
-    padding: 12px 6px;
-    display: block;
-    height: 100%;
-    min-height: 55px;
-}
-
-.language-selector {
-    cursor: pointer;
-    color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: 400;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.3s ease;
-    box-sizing: border-box;
-    padding: 12px 6px;
-}
-
-.language-selector:hover {
-    background-color: #20c1f7;
-}
-
-.language-code {
-    font-size: 16px;
+.nav-links li a,
+.dropdown-trigger {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: 0.95rem;
     font-weight: 500;
-    text-transform: uppercase;
+    color: #1e293b;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.nav-links li a:hover,
+.dropdown-trigger:hover {
+    color: #0c4baa;
+    background: rgba(12, 75, 170, 0.05);
+}
+
+.nav-links li a.active {
+    color: #0c4baa;
+    font-weight: 600;
+}
+
+.dropdown-item {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    min-width: 180px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 0.5rem 0;
+    z-index: 200;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(12, 75, 170, 0.1);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.6rem 1rem;
+    color: #334155;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(12, 75, 170, 0.05);
+    color: #0c4baa;
+}
+
+.dropdown-menu a.active {
+    background: rgba(12, 75, 170, 0.1);
+    color: #0c4baa;
+    font-weight: 500;
+}
+
+.language-menu {
+    min-width: 140px;
+}
+
+.lang-code {
+    font-weight: 600;
     letter-spacing: 0.5px;
 }
 
-.language-selector i {
-    margin-left: 6px;
-    font-size: 14px;
-}
-
-.language-dropdown {
-    position: absolute;
-    top: 90%;
-    right: 0;
-    background-color: white;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    min-width: 140px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.language-dropdown a {
-    padding: 10px 16px;
-    text-decoration: none;
-    color: #333;
-    font-family: Arial, Helvetica, sans-serif;
-    transition: background-color 0.2s;
-    font-size: 15px;
-    white-space: nowrap;
-}
-
-.language-dropdown a:hover {
-    background-color: #f5f5f5;
-}
-
-.language-dropdown a.active {
-    background-color: #e8f4fc;
-    color: #007bff;
-    font-weight: 500;
-}
-
-.mobile-language-switch {
-    display: flex;
-    flex-direction: column;
-    padding: 15px 10px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-}
-
-.mobile-language-label {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 8px;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.mobile-language-options {
-    display: flex;
-    gap: 10px;
-}
-
-.mobile-language-options button {
-    background: none;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #333;
-    flex: 1;
-}
-
-.mobile-language-options button:hover {
-    background-color: #f5f5f5;
-    border-color: #ccc;
-}
-
-.mobile-language-options button.active {
-    background-color: #20c1f7;
-    color: white;
-    border-color: #20c1f7;
-}
-
-.mobile-explore-dropdown {
-    padding-left: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.mobile-explore-dropdown a {
-    padding: 8px 0;
-    color: #000;
-    text-decoration: none;
-}
-
-.mobile-explore-item {
-    position: relative;
-}
-
-.mobile-explore-item > a {
-    display: flex;
-    align-items: center;
-}
-
-.mobile-explore-item i {
-    margin-left: 5px;
-    font-size: 14px;
-}
-
-.language-switch select {
-    background: transparent;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 6px;
+.user-menu {
+    margin-left: 0.5rem;
 }
 
 .user-avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     cursor: pointer;
     position: relative;
-    flex-shrink: 0;
 }
 
 .user-avatar img,
@@ -712,224 +524,249 @@ nav ul {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    border: 2px solid transparent;
-    transition: border-color 0.2s ease;
-}
-
-.user-avatar img {
-    display: block;
     object-fit: cover;
-}
-
-.avatar-initial {
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    font-weight: 600;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .user-avatar:hover img,
 .avatar-initial:hover {
-    border-color: #ccc;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(12, 75, 170, 0.15);
+}
+
+.avatar-initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
 }
 
 .user-dropdown {
-    position: absolute;
-    top: 100%;
+    left: auto;
     right: 0;
-    background-color: white;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    min-width: 160px;
+    min-width: 200px;
+}
+
+.user-name {
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid #eef2f6;
+    margin-bottom: 0.25rem;
+    color: #0f172a;
+}
+
+.dropdown-fade-enter-active,
+.dropdown-fade-leave-active {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-fade-enter-from,
+.dropdown-fade-leave-to {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.mobile-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 85%;
+    max-width: 320px;
+    height: 100%;
+    background: white;
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
 }
 
-.user-dropdown p {
-    padding: 10px 16px;
-    text-decoration: none;
-    color: #333;
-    font-family: Arial, Helvetica, sans-serif;
-    transition: background-color 0.2s;
-    cursor: default;
-}
-
-.user-dropdown a {
-    padding: 10px 16px;
-    text-decoration: none;
-    color: #333;
-    font-family: Arial, Helvetica, sans-serif;
-    transition: background-color 0.2s;
-}
-
-.user-dropdown a:hover {
-    background-color: #f5f5f5;
-}
-
-.user-menu {
-    position: relative;
-    margin-left: 1.5rem;
-    max-width: 200px;
-    min-width: fit-content;
-}
-
-.mobile-search-container {
-    background-color: rgb(185, 225, 255);
-    padding: 10px;
-    width: 100%;
+.mobile-sidebar-header {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px;
-}
-
-.menubar {
-    position: absolute;
-    top: 0;
-    transform: translateX(-100%);
-    display: flex;
-    font-family: Arial, Helvetica, sans-serif;
-    justify-content: center;
-    align-items: flex-start;
-    width: 60%;
-    height: 100vh;
-    padding: 20% 0;
-    background-color: rgb(201, 229, 250);
-    transition: all 0.5s ease-in;
-    z-index: 1000;
-}
-
-.menubar.active {
-    transform: translateX(0);
-    left: 0;
-    width: 40%;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-}
-
-.menubar ul {
-    padding: 0;
-    list-style: none;
-    margin-top: 20%;
-}
-
-.menubar ul li {
-    margin-bottom: 20px;
-    font-size: 1.3em;
-}
-
-.menubar ul li a {
-    text-decoration: none;
-    color: #000;
-    font-size: 95%;
-    font-weight: 400;
-    padding: 5px 10px;
-}
-
-.menubar-header {
-    position: absolute; /* fiksēts izvēlnes augšdaļā */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 50px;
-    background-color: rgb(185, 225, 255);
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
-    box-sizing: border-box;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 2;
-    font-size: 1.3rem;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #eef2f6;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 5;
 }
 
-/* pārklājums, lai nosegtu ekrānu, kad izvēlne ir aktīva */
+.menu-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0c4baa;
+}
+
+.close-sidebar {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #64748b;
+    transition: color 0.2s;
+}
+
+.close-sidebar:hover {
+    color: #0c4baa;
+}
+
+.mobile-sidebar-content {
+    flex: 1;
+    padding: 1rem 1.25rem;
+}
+
+.mobile-language-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.mobile-language-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.mobile-language-options {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.mobile-language-options button {
+    flex: 1;
+    padding: 0.5rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #1e293b;
+}
+
+.mobile-language-options button.active {
+    background: #0c4baa;
+    border-color: #0c4baa;
+    color: white;
+}
+
+.mobile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.mobile-nav a {
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    color: #1e293b;
+    text-decoration: none;
+    transition: color 0.2s;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.mobile-nav a:hover {
+    color: #0c4baa;
+}
+
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
     z-index: 900;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.overlay.active {
-    opacity: 1;
-    visibility: visible;
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+.slide-right-enter-from,
+.slide-right-leave-to {
+    transform: translateX(100%);
 }
 
-.hamburger {
-    display: none;
-    cursor: pointer;
-    margin-right: 10px;
+.mobile-search-container {
+    background: white;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #eef2f6;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.hamburger .line {
-    width: 25px;
-    height: 2px;
-    background-color: #ffffff;
-    display: block;
-    margin: 7px auto;
-    transition: all 0.3s ease-in-out;
+.mobile-search-container .search {
+    background: #f8fafc;
 }
 
-/** Responsivitāte **/
-@media (max-width: 1370px){
-    .search {
-        width: 90%;
-    }
-}
-
-@media (max-width: 1270px) {
-    .search-container-pc {
-        margin-right: 30px;
-    }
-}
-
+/* Responsivitāte */
 @media (max-width: 1220px) {
-    .hamburger {
-        display: block;
-    }
-
-    .buttons-list {
-        display: none !important;
-    }
-
     .nav-center {
         display: none;
     }
 
-    .language-switch {
-        margin-left: 0;
-    }
-}
-
-@media (max-width: 600px){
-    .menubar.active {
-        width: 60%;
-    }
-}
-
-@media (max-width: 430px){
-    .menubar.active {
-        width: 85%;
-    }
-}
-
-@media (max-width: 370px) {
-    .logo-container p {
+    .nav-links {
         display: none;
     }
 
     .hamburger {
-        margin-right: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        gap: 5px;
+    }
+
+    .hamburger .line {
+        width: 24px;
+        height: 2px;
+        background: #0c4baa;
+        border-radius: 2px;
+        transition: all 0.2s;
+    }
+
+    .hamburger:hover .line {
+        background: #20c1f7;
+    }
+}
+
+@media (min-width: 1221px) {
+    .hamburger,
+    .mobile-search-container {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-container p {
+        display: none;
+    }
+
+    .mobile-sidebar {
+        width: 85%;
     }
 
     .mobile-language-options {
