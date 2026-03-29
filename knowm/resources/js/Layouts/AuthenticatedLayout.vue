@@ -247,168 +247,172 @@ onBeforeUnmount(() => {
         </header>
 
         <!-- Mobilās sānjoslas pārklājums -->
-        <div
-            v-if="showingMobileSidebar"
-            class="mobile-sidebar-overlay"
-            @click="closeMobileSidebar"
-        ></div>
+        <transition name="fade">
+            <div
+                v-if="showingMobileSidebar"
+                class="mobile-sidebar-overlay"
+                @click="closeMobileSidebar"
+            ></div>
+        </transition>
 
         <!-- Mobilā režīma sānjosla -->
-        <aside class="mobile-sidebar" :class="{ 'open': showingMobileSidebar }">
-            <div class="mobile-sidebar-content">
-                <!-- Mobilās sānjoslas galvene -->
-                <div class="mobile-sidebar-header">
-                    <div class="mobile-sidebar-user">
-                        <div class="avatar-container small">
-                            <img
-                                v-if="user.avatar_url"
-                                :src="user.avatar_url"
-                                :alt="user.name"
-                                class="avatar"
-                            >
-                            <div
-                                v-else
-                                class="avatar-initial"
-                                :style="{
-                                background: `linear-gradient(135deg, ${user.avatar_color_1}, ${user.avatar_color_2})`
-                            }"
-                            >
-                                {{ user.initial }}
+        <transition name="slide-right">
+            <aside v-if="showingMobileSidebar" class="mobile-sidebar">
+                <div class="mobile-sidebar-content">
+                    <!-- Mobilās sānjoslas galvene -->
+                    <div class="mobile-sidebar-header">
+                        <div class="mobile-sidebar-user">
+                            <div class="avatar-container small">
+                                <img
+                                    v-if="user.avatar_url"
+                                    :src="user.avatar_url"
+                                    :alt="user.name"
+                                    class="avatar"
+                                >
+                                <div
+                                    v-else
+                                    class="avatar-initial"
+                                    :style="{
+                                    background: `linear-gradient(135deg, ${user.avatar_color_1}, ${user.avatar_color_2})`
+                                }"
+                                >
+                                    {{ user.initial }}
+                                </div>
+                            </div>
+                            <div class="user-details">
+                                <span class="user-name">{{ user?.name }}</span>
                             </div>
                         </div>
-                        <div class="user-details">
-                            <span class="user-name">{{ user?.name }}</span>
-                        </div>
-                    </div>
-                    <button @click="closeMobileSidebar" class="close-sidebar">
-                        <i class="fa-solid fa-times"></i>
-                    </button>
-                </div>
-
-                <!-- Mobilā navigācijas izvēlne -->
-                <nav class="mobile-sidebar-nav">
-                    <ul class="nav-list">
-                        <li class="nav-item">
-                            <Link :href="route('dashboard')" class="nav-link primary" @click="closeMobileSidebar">
-                                <i class="fa-solid fa-gauge-high nav-icon"></i>
-                                <span>{{ t('user_pages.layout.overview_label') }}</span>
-                            </Link>
-                        </li>
-
-                        <li class="nav-item">
-                            <Link :href="route('settings.edit')" class="nav-link primary" @click="closeMobileSidebar">
-                                <i class="fa-solid fa-user-gear nav-icon"></i>
-                                <span>{{ t('user_pages.layout.profile_settings') }}</span>
-                            </Link>
-                        </li>
-
-                        <li class="nav-item has-submenu">
-                            <button
-                                @click="toggleMenu('favorites')"
-                                class="nav-link primary submenu-toggle"
-                                :class="{ 'expanded': isMenuExpanded('favorites') }"
-                            >
-                                <i class="fa-regular fa-heart nav-icon"></i>
-                                <span>{{ t('user_pages.layout.favorites') }}</span>
-                                <i class="fa-solid fa-chevron-right toggle-icon"></i>
-                            </button>
-                            <ul class="submenu" v-show="isMenuExpanded('favorites')">
-                                <li>
-                                    <Link :href="route('dashboard.favorites.artists')" class="submenu-link" @click="closeMobileSidebar">
-                                        <i class="fa-solid fa-user-group submenu-icon"></i>
-                                        {{ t('user_pages.layout.favorite_artists') }}
-                                    </Link>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item has-submenu">
-                            <button
-                                @click="toggleMenu('playlists')"
-                                class="nav-link primary submenu-toggle"
-                                :class="{ 'expanded': isMenuExpanded('playlists') }"
-                            >
-                                <i class="fa-solid fa-list nav-icon"></i>
-                                <span>{{ t('user_pages.layout.playlists') }}</span>
-                                <i class="fa-solid fa-chevron-right toggle-icon"></i>
-                            </button>
-                            <ul class="submenu" v-show="isMenuExpanded('playlists')">
-                                <li>
-                                    <Link :href="route('dashboard.playlists')" class="submenu-link" @click="closeMobileSidebar">
-                                        <i class="fa-regular fa-rectangle-list submenu-icon"></i>
-                                        {{ t('user_pages.layout.user_playlists') }}
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link href="#" class="submenu-link" @click="closeMobileSidebar">
-                                        <i class="fa-regular fa-plus submenu-icon"></i>
-                                        {{ t('user_pages.layout.create_new_pl') }}
-                                    </Link>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item has-submenu">
-                            <button
-                                @click="toggleMenu('recommendations')"
-                                class="nav-link primary submenu-toggle"
-                                :class="{ 'expanded': isMenuExpanded('recommendations') }"
-                            >
-                                <i class="fa-solid fa-lightbulb nav-icon"></i>
-                                <span>{{ t('user_pages.layout.recommendations') }}</span>
-                                <i class="fa-solid fa-chevron-right toggle-icon"></i>
-                            </button>
-                            <ul class="submenu" v-show="isMenuExpanded('recommendations')">
-                                <li>
-                                    <Link href="#" class="submenu-link" @click="closeMobileSidebar">
-                                        <i class="fa-regular fa-clock submenu-icon"></i>
-                                        {{ t('user_pages.layout.history_recom') }}
-                                    </Link>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </nav>
-
-                <div class="mobile-language-switch-container">
-                    <div class="mobile-language-switch" @click.stop>
-                        <button
-                            @click="toggleLanguageDropdown"
-                            class="mobile-language-selector"
-                            :class="{ 'active': activeLanguageDropdown }"
-                        >
-                            <i class="fa-solid fa-globe"></i>
-                            <span class="language-code">{{ locale.toUpperCase() }}</span>
-                            <i class="fa fa-caret-down" :class="{ 'rotate': activeLanguageDropdown }"></i>
+                        <button @click="closeMobileSidebar" class="close-sidebar">
+                            <i class="fa-solid fa-times"></i>
                         </button>
-                        <div v-show="activeLanguageDropdown" class="mobile-language-dropdown">
+                    </div>
+
+                    <!-- Mobilā navigācijas izvēlne -->
+                    <nav class="mobile-sidebar-nav">
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <Link :href="route('dashboard')" class="nav-link primary" @click="closeMobileSidebar">
+                                    <i class="fa-solid fa-gauge-high nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.overview_label') }}</span>
+                                </Link>
+                            </li>
+
+                            <li class="nav-item">
+                                <Link :href="route('settings.edit')" class="nav-link primary" @click="closeMobileSidebar">
+                                    <i class="fa-solid fa-user-gear nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.profile_settings') }}</span>
+                                </Link>
+                            </li>
+
+                            <li class="nav-item has-submenu">
+                                <button
+                                    @click="toggleMenu('favorites')"
+                                    class="nav-link primary submenu-toggle"
+                                    :class="{ 'expanded': isMenuExpanded('favorites') }"
+                                >
+                                    <i class="fa-regular fa-heart nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.favorites') }}</span>
+                                    <i class="fa-solid fa-chevron-right toggle-icon"></i>
+                                </button>
+                                <ul class="submenu" v-show="isMenuExpanded('favorites')">
+                                    <li>
+                                        <Link :href="route('dashboard.favorites.artists')" class="submenu-link" @click="closeMobileSidebar">
+                                            <i class="fa-solid fa-user-group submenu-icon"></i>
+                                            {{ t('user_pages.layout.favorite_artists') }}
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item has-submenu">
+                                <button
+                                    @click="toggleMenu('playlists')"
+                                    class="nav-link primary submenu-toggle"
+                                    :class="{ 'expanded': isMenuExpanded('playlists') }"
+                                >
+                                    <i class="fa-solid fa-list nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.playlists') }}</span>
+                                    <i class="fa-solid fa-chevron-right toggle-icon"></i>
+                                </button>
+                                <ul class="submenu" v-show="isMenuExpanded('playlists')">
+                                    <li>
+                                        <Link :href="route('dashboard.playlists')" class="submenu-link" @click="closeMobileSidebar">
+                                            <i class="fa-regular fa-rectangle-list submenu-icon"></i>
+                                            {{ t('user_pages.layout.user_playlists') }}
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="#" class="submenu-link" @click="closeMobileSidebar">
+                                            <i class="fa-regular fa-plus submenu-icon"></i>
+                                            {{ t('user_pages.layout.create_new_pl') }}
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="nav-item has-submenu">
+                                <button
+                                    @click="toggleMenu('recommendations')"
+                                    class="nav-link primary submenu-toggle"
+                                    :class="{ 'expanded': isMenuExpanded('recommendations') }"
+                                >
+                                    <i class="fa-solid fa-lightbulb nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.recommendations') }}</span>
+                                    <i class="fa-solid fa-chevron-right toggle-icon"></i>
+                                </button>
+                                <ul class="submenu" v-show="isMenuExpanded('recommendations')">
+                                    <li>
+                                        <Link href="#" class="submenu-link" @click="closeMobileSidebar">
+                                            <i class="fa-regular fa-clock submenu-icon"></i>
+                                            {{ t('user_pages.layout.history_recom') }}
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="mobile-language-switch-container">
+                        <div class="mobile-language-switch" @click.stop>
                             <button
-                                @click="changeLanguage('en')"
-                                class="mobile-language-option"
-                                :class="{ active: locale === 'en' }"
+                                @click="toggleLanguageDropdown"
+                                class="mobile-language-selector"
+                                :class="{ 'active': activeLanguageDropdown }"
                             >
-                                English
+                                <i class="fa-solid fa-globe"></i>
+                                <span class="language-code">{{ locale.toUpperCase() }}</span>
+                                <i class="fa fa-caret-down" :class="{ 'rotate': activeLanguageDropdown }"></i>
                             </button>
-                            <button
-                                @click="changeLanguage('lv')"
-                                class="mobile-language-option"
-                                :class="{ active: locale === 'lv' }"
-                            >
-                                Latviešu
-                            </button>
+                            <div v-show="activeLanguageDropdown" class="mobile-language-dropdown">
+                                <button
+                                    @click="changeLanguage('en')"
+                                    class="mobile-language-option"
+                                    :class="{ active: locale === 'en' }"
+                                >
+                                    English
+                                </button>
+                                <button
+                                    @click="changeLanguage('lv')"
+                                    class="mobile-language-option"
+                                    :class="{ active: locale === 'lv' }"
+                                >
+                                    Latviešu
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Atteikšanās mobilajā režīmā -->
-                <div class="mobile-sidebar-footer">
-                    <Link :href="route('logout')" method="post" as="button" class="logout-button">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        <span>{{ t('user_pages.layout.logout') }}</span>
-                    </Link>
+                    <!-- Atteikšanās mobilajā režīmā -->
+                    <div class="mobile-sidebar-footer">
+                        <Link :href="route('logout')" method="post" as="button" class="logout-button">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            <span>{{ t('user_pages.layout.logout') }}</span>
+                        </Link>
+                    </div>
                 </div>
-            </div>
-        </aside>
+            </aside>
+        </transition>
 
         <!-- Galvenā satura vieta -->
         <main class="main-content">
@@ -815,18 +819,26 @@ onBeforeUnmount(() => {
     display: block;
 }
 
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
 .mobile-sidebar {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
     bottom: 0;
     width: 85%;
     max-width: 320px;
     background: white;
     z-index: 100;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
 }
 
 .mobile-sidebar.open {
@@ -852,6 +864,15 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+}
+
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+.slide-right-enter-from,
+.slide-right-leave-to {
+    transform: translateX(100%);
 }
 
 .avatar-container.small .avatar,

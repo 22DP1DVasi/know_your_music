@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Layouts/AuthenticatedLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Layouts/AuthenticatedLayout.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -435,7 +434,7 @@
       <workItem from="1774193877657" duration="8439000" />
       <workItem from="1774378199669" duration="4456000" />
       <workItem from="1774710723873" duration="11978000" />
-      <workItem from="1774774472764" duration="11249000" />
+      <workItem from="1774774472764" duration="11548000" />
     </task>
     <servers />
   </component>
