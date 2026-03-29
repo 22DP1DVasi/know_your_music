@@ -235,12 +235,14 @@ onBeforeUnmount(() => {
             <div class="mobile-header-content">
                 <div class="mobile-logo">
                     <Link :href="route('home')" class="logo-link">
-                        <img src="/images/mini-logo.png" alt="Logo" class="logo-small">
+                        <img src="/images/mini-logo.png" alt="Logo" class="logo">
                     </Link>
                 </div>
-                <button @click="toggleMobileSidebar" class="mobile-menu-toggle">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
+                <div class="hamburger" @click="toggleMobileSidebar">
+                    <span class="line"></span>
+                    <span class="line"></span>
+                    <span class="line"></span>
+                </div>
             </div>
         </header>
 
@@ -471,6 +473,29 @@ onBeforeUnmount(() => {
     height: 3.5rem;
     width: auto;
     fill: #0c4baa;
+}
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.hamburger .line {
+    width: 24px;
+    height: 2px;
+    background: #0c4baa;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+}
+
+.hamburger:hover .line {
+    background: #20c1f7;
 }
 
 .user-info {
@@ -777,12 +802,6 @@ onBeforeUnmount(() => {
 .mobile-logo {
     display: flex;
     align-items: center;
-}
-
-.logo-small {
-    height: 2rem;
-    width: auto;
-    fill: #0c4baa;
 }
 
 .mobile-sidebar-overlay {
