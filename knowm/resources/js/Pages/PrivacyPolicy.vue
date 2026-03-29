@@ -92,7 +92,7 @@ onMounted(() => {
                         {{ t('info_pages.privacy_pol.questions_text_start') }}
                         <a href="/contact">{{ t('info_pages.privacy_pol.contact_us_link') }}</a>
                         {{ t('info_pages.privacy_pol.questions_text_middle') }}
-                        <a href="mailto:kymsupprort@gmail.com">kymsupprort@gmail.com</a>
+                        <a href="mailto:kymsupport@gmail.com">kymsupport@gmail.com</a>
                         {{ t('info_pages.privacy_pol.questions_text_end') }}
                     </p>
                 </section>

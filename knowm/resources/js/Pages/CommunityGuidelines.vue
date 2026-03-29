@@ -84,7 +84,7 @@ onMounted(() => {
                             {{ t('info_pages.comguidelines.no_illegal_item2_start') }}
                             <a href="/contact">{{ t('info_pages.comguidelines.contact_us_link') }}</a>
                             {{ t('info_pages.comguidelines.no_illegal_item2_middle') }}
-                            <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a>.
+                            <a href="mailto:kymsupport@gmail.com">kymsupport@gmail.com</a>.
                         </li>
                     </ul>
                 </section>

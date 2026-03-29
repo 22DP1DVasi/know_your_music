@@ -74,7 +74,7 @@ onMounted(() => {
                         <li>{{ t('info_pages.tos.copyright_item1') }}</li>
                         <li>
                             {{ t('info_pages.tos.copyright_item2_start') }}
-                            <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a>.
+                            <a href="mailto:kymsupport@gmail.com">kymsupport@gmail.com</a>.
                         </li>
                     </ul>
                 </section>
@@ -100,7 +100,7 @@ onMounted(() => {
                         {{ t('info_pages.tos.questions_text_start') }}
                         <a href="/contact">{{ t('info_pages.tos.contact_us_link') }}</a>
                         {{ t('info_pages.tos.questions_text_middle') }}
-                        <a href="mailto:kymsupprort@gmail.com">kymsupprort@gmail.com</a>
+                        <a href="mailto:kymsupport@gmail.com">kymsupport@gmail.com</a>
                         {{ t('info_pages.tos.questions_text_end') }}
                     </p>
                 </section>
