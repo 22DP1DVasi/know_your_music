@@ -5,7 +5,6 @@ import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
-import AddToPlatlistModal from '@/Components/Playlists/AddToPlaylistModal.vue';
 import {ref, computed, watch } from 'vue';
 import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
@@ -50,6 +49,7 @@ const props = defineProps({
 
 // piekļuve koplietojamiem datiem no servera puses
 const page = usePage();
+const user = page.props.auth?.user;
 
 const { t, locale } = useI18n();
 
@@ -82,8 +82,12 @@ const showPlaylistModal = ref(false);
 const selectedTrack = ref(null);
 
 const openAddToPlaylistModal = (track) => {
-    selectedTrack.value = track
-    showPlaylistModal.value = true
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
 };
 
 const closeModal = () => {
