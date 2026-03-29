@@ -1,67 +1,107 @@
+<script setup>
+import { Head } from '@inertiajs/vue3'
+import Navbar from '@/Components/Navbar.vue'
+import Footer from '@/Components/Footer.vue'
+import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
+// onMounted funkcija ritināšanas aktivizētm animācijām
+// onMounted gaida, kad komponents tiek pievienots DOM
+onMounted(() => {
+    // izveidot Intersection Observer'u, lai noteiktu, kad elementi nonāk skatvietā
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // pārbaudīt, vai elements ir redzams
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // pārtraukt šī elementa novērošanu, lai animācija tiktu palaista tikai vienreiz
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });  // kad ir redzami 20% elementa
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+});
+
+</script>
+
 <template>
     <Head title="Terms of Service" />
     <Navbar />
     <main class="flex-1">
         <div class="terms-container">
-            <div class="terms-header">
-                <h1>Terms of Service</h1>
-                <p class="update-date">Last Updated: May 2024</p>
+            <div class="terms-header animate-on-scroll">
+                <div class="hero-badge">{{ t('info_pages.tos.hero_badge') }}</div>
+                <h1>{{ t('info_pages.tos.hero_title') }}</h1>
+                <p class="update-date">
+                    <em>{{ t('info_pages.tos.last_updated') }} {{ t('info_pages.tos.last_updated_date') }}</em>
+                </p>
+                <div class="hero-decoration"></div>
             </div>
 
             <div class="terms-content">
-                <section class="terms-section">
+                <section class="terms-section intro-section animate-on-scroll">
                     <p class="intro-text">
-                        These terms outline the rules for using our service. By accessing our site, you agree to these conditions.
+                        {{ t('info_pages.tos.intro_text') }}
                     </p>
                 </section>
 
-                <section class="terms-section">
-                    <h2><span class="section-number">1.</span> Your Account</h2>
+                <section class="terms-section animate-on-scroll">
+                    <h2><span class="section-number">1.</span> {{ t('info_pages.tos.your_account_title') }}</h2>
                     <ul class="terms-list">
-                        <li>You're responsible for keeping your login info secure.</li>
-                        <li>No fake names, spam, or impersonation — keep it real.</li>
-                        <li>We can suspend accounts that break these rules.</li>
+                        <li>{{ t('info_pages.tos.your_account_item1') }}</li>
+                        <li>{{ t('info_pages.tos.your_account_item2') }}</li>
+                        <li>{{ t('info_pages.tos.your_account_item3') }}</li>
                     </ul>
                 </section>
 
-                <section class="terms-section">
-                    <h2><span class="section-number">2.</span> Your Content</h2>
+                <section class="terms-section animate-on-scroll">
+                    <h2><span class="section-number">2.</span> {{ t('info_pages.tos.your_content_title') }}</h2>
                     <ul class="terms-list">
-                        <li>Comments/edits must be respectful and accurate. No hate speech or misinformation.</li>
-                        <li>By posting, you allow us to display it on Know Your Music (but you still own your words).</li>
-                        <li>Don't upload illegal content (we'll remove it).</li>
+                        <li>{{ t('info_pages.tos.your_content_item1') }}</li>
+                        <li>{{ t('info_pages.tos.your_content_item2') }}</li>
+                        <li>{{ t('info_pages.tos.your_content_item3') }}</li>
                     </ul>
                 </section>
 
-                <section class="terms-section">
-                    <h2><span class="section-number">3.</span> Copyright</h2>
+                <section class="terms-section animate-on-scroll">
+                    <h2><span class="section-number">3.</span> {{ t('info_pages.tos.copyright_title') }}</h2>
                     <ul class="terms-list">
-                        <li>We don't host actual music files — just info about music (lyrics, artist details, etc.).</li>
-                        <li>If you think something violates copyright, email us at
-                            <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a>.
+                        <li>{{ t('info_pages.tos.copyright_item1') }}</li>
+                        <li>
+                            {{ t('info_pages.tos.copyright_item2_start') }}
+                            <a href="mailto:kymsupport@gmail.com">kymsupport@gmail.com</a>.
                         </li>
                     </ul>
                 </section>
 
-                <section class="terms-section">
-                    <h2><span class="section-number">4.</span> Our Rules</h2>
+                <section class="terms-section animate-on-scroll">
+                    <h2><span class="section-number">4.</span> {{ t('info_pages.tos.our_rules_title') }}</h2>
                     <ul class="terms-list">
-                        <li>Don't break the site (no hacking, scraping, or bots).</li>
-                        <li>Admins can edit/remove content to keep things accurate.</li>
+                        <li>{{ t('info_pages.tos.our_rules_item1') }}</li>
+                        <li>{{ t('info_pages.tos.our_rules_item2') }}</li>
                     </ul>
                 </section>
 
-                <section class="terms-section">
-                    <h2><span class="section-number">5.</span> Disclaimer</h2>
+                <section class="terms-section animate-on-scroll">
+                    <h2><span class="section-number">5.</span> {{ t('info_pages.tos.disclaimer_title') }}</h2>
                     <ul class="terms-list">
-                        <li>Music data comes from users and APIs. We try our best to keep information accurate and up to date.</li>
+                        <li>{{ t('info_pages.tos.disclaimer_item1') }}</li>
                     </ul>
                 </section>
 
-                <section class="terms-section contact-section">
-                    <h2>Questions?</h2>
+                <section class="terms-section contact-section animate-on-scroll">
+                    <h2>{{ t('info_pages.tos.questions_title') }}</h2>
                     <p>
-                        Visit our <a href="/contact">Contact Us</a> page or email us at <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a> — we're happy to explain anything!
+                        {{ t('info_pages.tos.questions_text_start') }}
+                        <a href="/contact">{{ t('info_pages.tos.contact_us_link') }}</a>
+                        {{ t('info_pages.tos.questions_text_middle') }}
+                        <a href="mailto:kymsupport@gmail.com">kymsupport@gmail.com</a>
+                        {{ t('info_pages.tos.questions_text_end') }}
                     </p>
                 </section>
             </div>
@@ -70,127 +110,178 @@
     <Footer />
 </template>
 
-<script setup>
-import { Head } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-</script>
-
 <style scoped>
 .terms-container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 40px 20px;
-    color: #333;
+    padding: 2rem 1.5rem 4rem;
 }
 
 .terms-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 3rem;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.hero-badge {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0c4baa;
+    background: rgba(12, 75, 170, 0.1);
+    padding: 0.4rem 1rem;
+    border-radius: 40px;
+    margin-bottom: 1rem;
 }
 
 .terms-header h1 {
     font-size: 2.5rem;
+    font-weight: 700;
     color: #0c4baa;
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.terms-header .update-date {
-    text-align: left;
+.update-date {
     font-size: 0.9rem;
     font-style: italic;
-    margin-left: 10px;
-    color: #666;
+    color: #64748b;
 }
 
-.terms-section {
-    margin-bottom: 40px;
+.hero-decoration {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #0c4baa, #20c1f7);
+    border-radius: 3px;
+}
+
+.intro-section {
+    margin-bottom: 2rem;
 }
 
 .intro-text {
-    font-size: 1.2rem;
-    line-height: 1.6;
+    font-size: 1.1rem;
+    line-height: 1.7;
     text-align: center;
-    max-width: 800px;
-    margin: 0 auto 30px;
+    max-width: 700px;
+    margin: 0 auto;
+    color: #334155;
+}
+
+.terms-section {
+    margin-bottom: 2.5rem;
 }
 
 h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
     color: #0c4baa;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #b0ddff;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(12, 75, 170, 0.2);
     display: flex;
     align-items: center;
 }
 
 .section-number {
-    margin-right: 10px;
-    color: #06419a;
+    margin-right: 0.5rem;
+    color: #20c1f7;
 }
 
 .terms-list {
     list-style-type: none;
     padding-left: 0;
-    font-size: 1.1rem;
     line-height: 1.6;
 }
 
 .terms-list li {
-    margin-bottom: 15px;
-    padding-left: 25px;
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
     position: relative;
+    color: #334155;
 }
 
 .terms-list li:before {
     content: "•";
     color: #0c4baa;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     position: absolute;
     left: 0;
-    top: -3px;
+    top: -2px;
 }
 
 .contact-section {
-    background-color: rgba(185, 225, 255, 0.3);
-    padding: 30px;
-    border-radius: 10px;
+    margin-top: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(12, 75, 170, 0.04), rgba(32, 193, 247, 0.04));
+    border-radius: 20px;
     text-align: center;
 }
 
 .contact-section a {
     color: #0c4baa;
-    font-weight: bold;
+    font-weight: 600;
     text-decoration: none;
-    word-break: break-word;
+    transition: color 0.2s ease;
 }
 
 .contact-section a:hover {
+    color: #20c1f7;
     text-decoration: underline;
 }
 
+/* Animācijas */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s ease;
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsivitāte */
 @media (max-width: 768px) {
+    .terms-container {
+        padding: 1.5rem 1rem 3rem;
+    }
+
     .terms-header h1 {
         font-size: 2rem;
     }
 
-    .terms-container {
-        padding: 30px 15px;
-    }
-
-    .terms-section {
-        margin-bottom: 30px;
+    .intro-text {
+        font-size: 1rem;
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
+    }
+
+    .contact-section {
+        padding: 1.5rem;
     }
 }
 
-@media (max-width: 360px) {
-    .contact-section {
-        font-size: 0.8rem;
+@media (max-width: 480px) {
+    .terms-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .terms-list li {
+        font-size: 0.95rem;
     }
 }
 

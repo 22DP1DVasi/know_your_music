@@ -3,7 +3,9 @@ import dayjs from '@/utils/dayjs'
 import { watch } from 'vue';
 
 import enNavbar from './i18n/en/navbar.json'
+import enFooter from './i18n/en/footer.json'
 import enHome from './i18n/en/home.json'
+import enInfoPages from './i18n/en/info_pages.json'
 import enAdmDashboard from './i18n/en/adm_dashboard.json'
 import enAdmLayout from './i18n/en/adm_layout.json'
 import enAdmUsers from './i18n/en/adm_users.json'
@@ -16,7 +18,9 @@ import enArtists from './i18n/en/artists.json'
 import enComponents from './i18n/en/components.json';
 
 import lvNavbar from './i18n/lv/navbar.json'
+import lvFooter from './i18n/lv/footer.json'
 import lvHome from './i18n/lv/home.json'
+import lvInfoPages from './i18n/lv/info_pages.json'
 import lvAdmDashboard from './i18n/lv/adm_dashboard.json'
 import lvAdmLayout from './i18n/lv/adm_layout.json'
 import lvAdmAUsers from './i18n/lv/adm_users.json'
@@ -38,7 +42,9 @@ const i18n = createI18n({
     messages: {
         en: {
             navbar: enNavbar,
+            footer: enFooter,
             home: enHome,
+            info_pages: enInfoPages,
 
             user_pages: enUserPages,
 
@@ -54,7 +60,9 @@ const i18n = createI18n({
         },
         lv: {
             navbar: lvNavbar,
+            footer: lvFooter,
             home: lvHome,
+            info_pages: lvInfoPages,
 
             user_pages: lvUserPages,
 

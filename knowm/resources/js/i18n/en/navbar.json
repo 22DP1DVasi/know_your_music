@@ -9,8 +9,10 @@
     "login": "Log In",
     "signup": "Sign Up",
     "account": "Account",
-    "profile_settings": "Settings",
+    "profile_settings": "Profile settings",
+    "admin_panel" : "Admin panel",
     "logout": "Log Out",
-    "menu": "MENU",
-    "language": "Language"
+    "menu": "Menu",
+    "language": "Language",
+    "search_placeholder": "Search..."
 }

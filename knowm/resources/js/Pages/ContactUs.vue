@@ -65,7 +65,7 @@
                         <span class="icon">✉️</span>
                         <div class="info-content">
                             <h4>Email</h4>
-                            <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a>
+                            <a href="mailto:kymsupport@gmail.com">kymsupport@gmail.com</a>
                         </div>
                     </div>
                     <div class="info-item">

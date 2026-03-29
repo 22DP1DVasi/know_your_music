@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/AddToPlaylistModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/AddToPlaylistModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Navbar.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,6 +32,26 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
+    {
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDON0sXbs7MxgTJ&quot;,
+        &quot;number&quot;: 12
+      },
+      &quot;lastSeen&quot;: 1774291989111
+    }
+  ]
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/22DP1DVasi/know_your_music.git&quot;,
+    &quot;accountId&quot;: &quot;ffc7858d-1f1b-470b-bc7c-7b700c50987c&quot;
+  }
+}</component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\Users\User\PHP8.3.9\php.exe">
     <include_path>
       <path value="$PROJECT_DIR$/knowm/vendor/psr/clock" />
@@ -175,7 +189,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;features/user-playlists&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;features/website-gui-update&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/lv&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -418,6 +432,9 @@
       <workItem from="1774193362584" duration="139000" />
       <workItem from="1774193557671" duration="90000" />
       <workItem from="1774193877657" duration="8439000" />
+      <workItem from="1774378199669" duration="4456000" />
+      <workItem from="1774710723873" duration="11978000" />
+      <workItem from="1774774472764" duration="16445000" />
     </task>
     <servers />
   </component>
