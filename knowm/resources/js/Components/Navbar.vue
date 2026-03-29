@@ -352,12 +352,26 @@ const isActiveRoute = (routePath) => {
     align-items: center;
     text-decoration: none;
     gap: 0.5rem;
+    transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+.logo-container:hover {
+    transform: scale(1.02);
+}
+
+.logo-container:active {
+    transform: scale(0.98);
 }
 
 .logo {
     width: 100px;
     height: 56px;
     object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.logo-container:hover .logo {
+    transform: rotate(-3deg);
 }
 
 .logo-container p {
@@ -366,6 +380,11 @@ const isActiveRoute = (routePath) => {
     font-weight: 600;
     color: #0c4baa;
     white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.logo-container:hover p {
+    color: #20c1f7;
 }
 
 .search-container {
