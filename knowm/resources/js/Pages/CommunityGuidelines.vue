@@ -21,7 +21,7 @@
                     <ul class="guidelines-list">
                         <li>No hate speech, harassment, or personal attacks.</li>
                         <li>Disagree with someone? Debate the music, not the person.</li>
-                        <li>Respect diverse tastes — what's "bad music" to you might be someone else's favorite.</li>
+                        <li>Respect diverse tastes - what's "bad music" to you might be someone else's favorite.</li>
                     </ul>
                 </section>
 
@@ -37,7 +37,7 @@
                 <section class="guideline-section">
                     <h2><span class="section-number">3.</span> Contribute Meaningfully</h2>
                     <ul class="guidelines-list">
-                        <li>Comments/edits should add value — no off-topic rants or self-promotion.</li>
+                        <li>Comments/edits should add value - no off-topic rants or self-promotion.</li>
                         <li>Found an error? Suggest a fix politely.</li>
                     </ul>
                 </section>

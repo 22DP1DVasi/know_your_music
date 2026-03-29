@@ -41,7 +41,7 @@
                     <h2>What We Don't Do</h2>
                     <ul class="policy-list">
                         <li>Sell your data to third parties.</li>
-                        <li>Spam you — we'll only email you for important updates (like password resets).</li>
+                        <li>Spam you - we'll only email you for important updates (like password resets).</li>
                     </ul>
                 </section>
 
@@ -57,7 +57,7 @@
                 <section class="privacy-section contact-section">
                     <h2>Questions?</h2>
                     <p>
-                        Visit our <a href="/contact">Contact Us</a> page or email us at <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a> — we're happy to explain anything!
+                        Visit our <a href="/contact">Contact Us</a> page or email us at <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a> - we're happy to explain anything!
                     </p>
                 </section>
             </div>

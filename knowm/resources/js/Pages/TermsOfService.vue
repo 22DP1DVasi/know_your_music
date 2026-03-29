@@ -19,7 +19,7 @@
                     <h2><span class="section-number">1.</span> Your Account</h2>
                     <ul class="terms-list">
                         <li>You're responsible for keeping your login info secure.</li>
-                        <li>No fake names, spam, or impersonation — keep it real.</li>
+                        <li>No fake names, spam, or impersonation - keep it real.</li>
                         <li>We can suspend accounts that break these rules.</li>
                     </ul>
                 </section>
@@ -36,7 +36,7 @@
                 <section class="terms-section">
                     <h2><span class="section-number">3.</span> Copyright</h2>
                     <ul class="terms-list">
-                        <li>We don't host actual music files — just info about music (lyrics, artist details, etc.).</li>
+                        <li>We don't host actual music files - just info about music (lyrics, artist details, etc.).</li>
                         <li>If you think something violates copyright, email us at
                             <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a>.
                         </li>
@@ -61,7 +61,7 @@
                 <section class="terms-section contact-section">
                     <h2>Questions?</h2>
                     <p>
-                        Visit our <a href="/contact">Contact Us</a> page or email us at <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a> — we're happy to explain anything!
+                        Visit our <a href="/contact">Contact Us</a> page or email us at <a href="mailto:knowyourmusicsupprort@gmail.com">knowyourmusicsupprort@gmail.com</a> - we're happy to explain anything!
                     </p>
                 </section>
             </div>
