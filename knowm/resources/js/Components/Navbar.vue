@@ -97,14 +97,6 @@ watch(locale, (newLocale) => {
     document.documentElement.lang = newLocale;
 });
 
-const getLanguageName = (code) => {
-    const languages = {
-        'en': 'English',
-        'lv': 'Latviešu'
-    };
-    return languages[code] || code;
-};
-
 // aktīvā maršruta iezīmēšanas helper
 const isActiveRoute = (routePath) => {
     return window.location.pathname === routePath;
@@ -128,7 +120,7 @@ const isActiveRoute = (routePath) => {
                         type="search"
                         autocomplete="off"
                         class="search-term"
-                        placeholder="Search..."
+                        :placeholder="t('navbar.search_placeholder')"
                         v-model="searchQuery"
                         @keyup.enter="performSearch"
                     >
@@ -153,18 +145,18 @@ const isActiveRoute = (routePath) => {
                         @click.stop="toggleDropdown('explore')"
                         @keydown.enter="toggleDropdown('explore')"
                     >
-                        Explore <i class="fa fa-caret-down"></i>
+                        {{ t('navbar.explore') }} <i class="fa fa-caret-down"></i>
                     </div>
                     <transition name="dropdown-fade">
                         <div v-show="activeDropdown === 'explore'" class="dropdown-menu">
-                            <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
-                            <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
-                            <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                            <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
+                            <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
+                            <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
                         </div>
                     </transition>
                 </li>
 
-                <li><a href="/about" :class="{ active: isActiveRoute('/about') }">About</a></li>
+                <li><a href="/about" :class="{ active: isActiveRoute('/about') }">{{ t('navbar.about') }}</a></li>
 
                 <li class="dropdown-item">
                     <div
@@ -185,8 +177,8 @@ const isActiveRoute = (routePath) => {
                     </transition>
                 </li>
 
-                <li v-if="!isLoggedIn"><a href="/login">Login</a></li>
-                <li v-if="!isLoggedIn"><a href="/signup">Sign up</a></li>
+                <li v-if="!isLoggedIn"><a href="/login">{{ t('navbar.login') }}</a></li>
+                <li v-if="!isLoggedIn"><a href="/signup">{{ t('navbar.signup') }}</a></li>
 
                 <li v-if="isLoggedIn" class="user-menu">
                     <div
@@ -213,16 +205,16 @@ const isActiveRoute = (routePath) => {
                         <transition name="dropdown-fade">
                             <div v-show="activeDropdown === 'user'" class="dropdown-menu user-dropdown">
                                 <p class="user-name">{{ user.name }}</p>
-                                <a href="/dashboard">Dashboard</a>
-                                <a href="/dashboard/settings">Profile Settings</a>
+                                <a href="/dashboard">{{ t('navbar.account') }}</a>
+                                <a href="/dashboard/settings">{{ t('navbar.profile_settings') }}</a>
                                 <Link
                                     v-if="isAdmin"
                                     :href="route('admin-dashboard')"
                                     class="admin-link"
                                 >
-                                    Admin Panel
+                                    {{ t('navbar.admin_panel') }}
                                 </Link>
-                                <a href="#" @click.prevent="logout">Logout</a>
+                                <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
                             </div>
                         </transition>
                     </div>
@@ -246,14 +238,14 @@ const isActiveRoute = (routePath) => {
     <transition name="slide-right">
         <div v-if="isMenuActive && isMobile" class="mobile-sidebar">
             <div class="mobile-sidebar-header">
-                <span class="menu-title">Menu</span>
+                <span class="menu-title">{{ t('navbar.menu') }}</span>
                 <button class="close-sidebar" @click="toggleNav">
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
             <div class="mobile-sidebar-content">
                 <div class="mobile-language-section">
-                    <div class="mobile-language-label">Language</div>
+                    <div class="mobile-language-label">{{ t('navbar.language') }}</div>
                     <div class="mobile-language-options">
                         <button
                             @click="changeLanguage('en')"
@@ -278,35 +270,35 @@ const isActiveRoute = (routePath) => {
                         class="mobile-explore-header"
                         @click="toggleMobileExplore"
                     >
-                        <span>Explore</span>
+                        <span>{{ t('navbar.explore') }}</span>
                         <i class="fa fa-caret-down" :class="{ rotated: isMobileExploreOpen }"></i>
                     </div>
                     <transition name="dropdown-fade">
                         <div v-show="isMobileExploreOpen" class="mobile-explore-dropdown">
-                            <a href="#" @click.prevent="redirectToExplore('artists')">Artists</a>
-                            <a href="#" @click.prevent="redirectToExplore('releases')">Releases</a>
-                            <a href="#" @click.prevent="redirectToExplore('genres')">Genres</a>
+                            <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
+                            <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
+                            <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
                         </div>
                     </transition>
                 </div>
 
                 <nav class="mobile-nav">
-                    <a href="/about">About</a>
+                    <a href="/about">{{ t('navbar.about') }}</a>
                     <template v-if="!isLoggedIn">
-                        <a href="/login">Login</a>
-                        <a href="/signup">Sign up</a>
+                        <a href="/login">{{ t('navbar.login') }}</a>
+                        <a href="/signup">{{ t('navbar.signup') }}</a>
                     </template>
                     <template v-else>
-                        <a href="/dashboard">Dashboard</a>
-                        <a href="/dashboard/settings">Profile Settings</a>
+                        <a href="/dashboard">{{ t('navbar.account') }}</a>
+                        <a href="/dashboard/settings">{{ t('navbar.profile_settings') }}</a>
                         <Link
                             v-if="isAdmin"
                             :href="route('admin-dashboard')"
                             class="admin-link"
                         >
-                            Admin Panel
+                            {{ t('navbar.admin_panel') }}
                         </Link>
-                        <a href="#" @click.prevent="logout">Logout</a>
+                        <a href="#" @click.prevent="logout">{{ t('navbar.logout') }}</a>
                     </template>
                 </nav>
             </div>
@@ -320,7 +312,7 @@ const isActiveRoute = (routePath) => {
                 type="search"
                 autocomplete="off"
                 class="search-term"
-                placeholder="Search..."
+                :placeholder="t('navbar.search_placeholder')"
                 v-model="searchQuery"
                 @keyup.enter="performSearch"
             />

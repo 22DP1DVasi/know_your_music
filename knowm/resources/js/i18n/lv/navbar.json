@@ -8,9 +8,11 @@
     "about": "Par mums",
     "login": "Pieteikties",
     "signup": "Reģistrēties",
-    "account": "Mans konts",
-    "profile_settings": "Iestatījumi",
+    "account": "Konts",
+    "profile_settings": "Profila iestatījumi",
+    "admin_panel" : "Administratora panelis",
     "logout": "Atteikties",
-    "menu": "IZVĒLNE",
-    "language": "Valoda"
+    "menu": "Izvēlne",
+    "language": "Valoda",
+    "search_placeholder": "Meklēt..."
 }

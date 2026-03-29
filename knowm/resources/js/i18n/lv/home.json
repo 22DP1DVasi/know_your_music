@@ -9,11 +9,11 @@
     "trending_now": "Tendences Šobrīd",
     "trending_subtitle": "Atklāj, ko klausās kopiena",
     "start_discovering": "Sāc atklāt mūziku jau šodien",
-    "browse_artists": "Apskatīt Māksliniekus",
+    "browse_artists": "Apskatīt izpildītājus",
     "features": {
         "deep_knowledge": {
             "title": "Dziļas Mūzikas Zināšanas",
-            "description": "Izpēti mākslinieku dzīvesstāstus, dziesmu nozīmes un slēptās saiknes starp mūziķiem."
+            "description": "Izpēti izpildītāju dzīvesstāstus, dziesmu nozīmes un slēptās saiknes starp mūziķiem."
         },
         "track_exploration": {
             "title": "Dziesmu Izpēte",
