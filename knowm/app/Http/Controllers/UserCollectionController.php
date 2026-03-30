@@ -133,8 +133,14 @@ class UserCollectionController extends Controller
      */
     public function getUserPlaylists(Request $request)
     {
+        $trackId = $request->input('track_id');
         $playlists = Auth::user()->collections()
             ->withCount('tracks')
+            ->withCount([
+                'tracks as contains_track' => function ($query) use ($trackId) {
+                    $query->where('tracks.id', $trackId);
+                }
+            ])
             ->orderBy('name')
             ->get()
             ->map(function($playlist) {
@@ -144,9 +150,11 @@ class UserCollectionController extends Controller
                     'slug' => $playlist->slug,
                     'is_private' => $playlist->is_private,
                     'tracks_count' => $playlist->tracks_count,
-                    'cover_url' => $playlist->cover_url
+                    'cover_url' => $playlist->cover_url,
+                    'contains_track' => (bool) $playlist->contains_track,
                 ];
             });
+
         return response()->json([
             'playlists' => $playlists
         ]);

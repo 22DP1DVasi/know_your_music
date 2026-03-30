@@ -24,7 +24,6 @@ const playlists = ref([]);
 const isLoading = ref(false);
 const isAddingToPlaylist = ref(null);
 const isCreating = ref(false);
-const searchQuery = ref('');
 const showCreateForm = ref(false);
 
 // saraksta izveidošanas forma
@@ -41,7 +40,11 @@ const errors = ref({
 const fetchPlaylists = async () => {
     isLoading.value = true;
     try {
-        const response = await axios.get(route('playlists.user.list'));
+        const response = await axios.get(route('playlists.user.list'), {
+            params: {
+                track_id: props.track.id
+            }
+        });
         playlists.value = response.data.playlists;
     } catch (error) {
         console.error('Error fetching playlists:', error);
@@ -50,30 +53,25 @@ const fetchPlaylists = async () => {
     }
 };
 
-// filtrēti saraksti pēc meklēšanas
-const filteredPlaylists = computed(() => {
-    if (!searchQuery.value) return playlists.value;
-    const query = searchQuery.value.toLowerCase().trim();
-    return playlists.value.filter(playlist =>
-        playlist.name.toLowerCase().includes(query)
-    );
-});
-
 const close = () => {
-    searchQuery.value = '';
     emit('close');
 };
 
 // pievienot dziesmu atsk. sarakstam
 const selectPlaylist = async (playlist) => {
     if (isAddingToPlaylist.value) return;
+    // novērst dublikātus
+    if (playlist.contains_track) {
+        return;
+    }
     isAddingToPlaylist.value = playlist.id;
     try {
         await axios.post(route('playlists.add-track', playlist.slug), {
             track_id: props.track.id
         });
+        // atjaunināt UI
+        playlist.contains_track = true;
         emit('added', { playlist, track: props.track });
-        close();
     } catch (error) {
         console.error('Error adding track to playlist:', error);
         alert(t('user_pages.playlists.add_error'));
@@ -158,21 +156,12 @@ watch(() => props.show, (newVal) => {
 
                     <!-- Atsk. sarakstu saraksts -->
                     <template v-else>
-                        <!-- Meklēšanas lauks -->
-                        <div v-if="playlists.length > 5" class="search-wrapper">
-                            <input
-                                v-model="searchQuery"
-                                type="text"
-                                :placeholder="t('user_pages.playlists.search_placeholder')"
-                                class="search-input"
-                            >
-                        </div>
-
                         <div class="playlists-list" :class="{ 'has-search': playlists.length > 5 }">
                             <div
-                                v-for="playlist in filteredPlaylists"
+                                v-for="playlist in playlists"
                                 :key="playlist.id"
                                 class="playlist-item"
+                                :class="{ 'disabled': playlist.contains_track }"
                                 @click="selectPlaylist(playlist)"
                             >
                                 <div class="playlist-cover">
@@ -195,15 +184,27 @@ watch(() => props.show, (newVal) => {
                                 </div>
 
                                 <div class="playlist-add-icon">
-                                    <i v-if="isAddingToPlaylist === playlist.id" class="fa-solid fa-spinner fa-spin"></i>
-                                    <i v-else class="fa-solid fa-plus"></i>
+                                    <i
+                                        v-if="isAddingToPlaylist === playlist.id"
+                                        class="fa-solid fa-spinner fa-spin"
+                                    ></i>
+
+                                    <i
+                                        v-else-if="playlist.contains_track"
+                                        class="fa-solid fa-bookmark"
+                                    ></i>
+
+                                    <i
+                                        v-else
+                                        class="fa-regular fa-bookmark"
+                                    ></i>
                                 </div>
                             </div>
 
                             <!-- Tukšs stāvoklis -->
-                            <div v-if="filteredPlaylists.length === 0" class="empty-state">
+                            <div v-if="playlists.length === 0" class="empty-state">
                                 <i class="fa-regular fa-list-empty"></i>
-                                <p>{{ searchQuery ? t('user_pages.playlists.no_search_results') : t('user_pages.playlists.no_playlists') }}</p>
+                                <p>{{ t('user_pages.playlists.no_playlists') }}</p>
                             </div>
                         </div>
                     </template>
@@ -455,6 +456,11 @@ watch(() => props.show, (newVal) => {
 
 .playlist-item:hover {
     background: rgba(12, 75, 170, 0.05);
+}
+
+.playlist-item.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .playlist-cover {
