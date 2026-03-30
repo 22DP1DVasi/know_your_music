@@ -140,5 +140,20 @@
                 "answer": "Jā, mūsu platforma ir bezmaksas, bet nākotnē varam ieviest premium funkcijas."
             }
         }
+    },
+    "contactus": {
+        "page_title": "Kontakti - Know Your Music",
+        "title": "Kontakti",
+        "subtitle": "Vai ir jautājumi vai ieteikumi? Mēs labprāt uzklausīsim jūs!",
+        "name_label": "Jūsu vārds",
+        "name_placeholder": "Ievadiet savu pilno vārdu",
+        "email_label": "E-pasta adrese",
+        "email_placeholder": "Ievadiet savu e-pasta adresi",
+        "message_label": "Jūsu ziņa",
+        "message_placeholder": "Ierakstiet savu ziņu šeit...",
+        "send_button": "Nosūtīt ziņu",
+        "other_ways_title": "Citi veidi, kā sazināties",
+        "email_title": "E-pasts",
+        "social_title": "Sociālie tīkli"
     }
 }

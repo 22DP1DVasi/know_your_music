@@ -140,5 +140,20 @@
                 "answer": "Yes, our platform is free, but we may introduce premium features in the future."
             }
         }
+    },
+    "contactus": {
+        "page_title": "Contact Us - Know Your Music",
+        "title": "Contact Us",
+        "subtitle": "Have questions or feedback? We'd love to hear from you!",
+        "name_label": "Your Name",
+        "name_placeholder": "Enter your full name",
+        "email_label": "Email Address",
+        "email_placeholder": "Enter your email address",
+        "message_label": "Your Message",
+        "message_placeholder": "Write your message here...",
+        "send_button": "Send Message",
+        "other_ways_title": "Other Ways to Reach Us",
+        "email_title": "Email",
+        "social_title": "Social Media"
     }
 }
