@@ -112,5 +112,33 @@
         "consequences_item3_desc": "(par smagiem pārkāpumiem, piemēram, naida runu)",
         "admin_section_title": "Vēlies kļūt par administratoru?",
         "admin_section_text": "Palīdzīgi un aktīvi lietotāji var tikt uzaicināti pievienoties mūsu moderācijas komandai!"
+    },
+    "faq": {
+        "page_title": "BUJ - Know Your Music",
+        "hero_badge": "Vai ir jautājumi?",
+        "hero_title": "Biežāk uzdotie jautājumi",
+        "hero_subtitle": "Atrodi atbildes uz biežāk uzdotajiem jautājumiem par Know Your Music",
+        "questions": {
+            "create_account": {
+                "question": "Kā izveidot kontu?",
+                "answer": "Lai izveidotu kontu, noklikšķiniet uz pogas 'Reģistrēties' lapas augšdaļā un sekojiet norādījumiem."
+            },
+            "search_music": {
+                "question": "Kā meklēt mūziku un izpildītājus?",
+                "answer": "Izmantojiet meklēšanas joslu lapas augšdaļā, lai atrastu mūziku pēc izpildītāja vārda, albuma vai dziesmas nosaukuma."
+            },
+            "save_favorites": {
+                "question": "Vai varu saglabāt savas iecienītākās dziesmas un izpildītājus?",
+                "answer": "Jā! Reģistrēti lietotāji var veidot personīgās kolekcijas un saglabāt savas iecienītākās dziesmas un izpildītājus."
+            },
+            "recommendations": {
+                "question": "Kā saņemt personalizētus ieteikumus?",
+                "answer": "Mūsu sistēma analizē jūsu klausīšanās preferences un iesaka mūziku, kas atbilst jūsu gaumei."
+            },
+            "free_service": {
+                "question": "Vai pakalpojums ir bezmaksas?",
+                "answer": "Jā, mūsu platforma ir bezmaksas, bet nākotnē varam ieviest premium funkcijas."
+            }
+        }
     }
 }

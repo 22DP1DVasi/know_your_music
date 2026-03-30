@@ -117,7 +117,6 @@ const goBack = () => {
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #ffffff 0%, #b3eaff 100%);
     padding: 2rem;
     position: relative;
 }
