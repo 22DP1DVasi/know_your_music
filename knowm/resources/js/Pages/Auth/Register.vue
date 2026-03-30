@@ -1,108 +1,15 @@
-<template>
-    <Head title="Register Signup" />
-    <div class="register-container">
-        <div class="go-back-arrow" @click="goBack">
-            <span class="arrow-icon text-3xl">←</span>
-        </div>
-
-        <div class="register-box">
-            <div class="logo-container">
-                <img src="../../../../public/images/mini-logo.png" alt="App Logo" class="logo">
-            </div>
-
-            <h2 class="register-title">Press Play on Your Journey</h2>
-
-            <form @submit.prevent="submit">
-                <div>
-                    <InputLabel for="name" value="Userame" class="label" />
-                    <TextInput
-                        id="name"
-                        type="text"
-                        class="input"
-                        v-model="form.name"
-                        required
-                        autofocus
-                        autocomplete="name"
-                    />
-                    <InputError class="error-text" :message="form.errors.name" />
-                </div>
-
-                <div>
-                    <InputLabel for="email" value="Email" class="label" />
-                    <TextInput
-                        id="email"
-                        type="email"
-                        class="input"
-                        v-model="form.email"
-                        required
-                        autocomplete="username"
-                    />
-                    <InputError class="error-text" :message="form.errors.email" />
-                </div>
-
-                <div>
-                    <InputLabel for="password" value="Password" class="label" />
-                    <TextInput
-                        id="password"
-                        type="password"
-                        class="input"
-                        v-model="form.password"
-                        required
-                        autocomplete="new-password"
-                    />
-                    <InputError class="error-text" :message="form.errors.password" />
-                </div>
-
-                <div>
-                    <InputLabel for="password_confirmation" value="Confirm Password" class="label" />
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        class="input"
-                        v-model="form.password_confirmation"
-                        required
-                        autocomplete="new-password"
-                    />
-                    <InputError class="error-text" :message="form.errors.password_confirmation" />
-                </div>
-
-
-                <div class="form-footer">
-                    <Link
-                        :href="route('login')"
-                        class="forgot-password"
-                    >
-                        Already registered?
-                    </Link>
-                </div>
-
-                <div class="submit-button">
-                    <PrimaryButton
-                        class="register-button"
-                        :class="{ 'disabled': form.processing }"
-                        :disabled="form.processing"
-                    >
-                        Register
-                    </PrimaryButton>
-                </div>
-            </form>
-
-            <div class="signup-text">
-                Already have an account?
-                <Link href="/login" class="signup-link">Log in</Link>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
+import { route } from "ziggy-js";
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const form = useForm({
     name: '',
@@ -121,12 +28,14 @@ const goBack = () => {
     window.history.back();
 };
 
+const emailExists = ref(false);
+const checkingEmail = ref(false);
+
 const checkEmail = debounce(async (email) => {
     if (!email || !email.includes('@')) {
         emailExists.value = false;
         return;
     }
-
     try {
         checkingEmail.value = true;
         const response = await axios.get('/api/check-email', {
@@ -146,158 +55,342 @@ const checkEmail = debounce(async (email) => {
         checkingEmail.value = false;
     }
 }, 500);
+
 </script>
+
+<template>
+    <Head :title="t('auth.signup.page_title')" />
+    <div class="register-container">
+        <div class="go-back-arrow" @click="goBack">
+            <span class="arrow-icon">←</span>
+        </div>
+
+        <div class="register-card">
+            <div class="register-header">
+                <div class="logo-container">
+                    <img src="/images/mini-logo.png" alt="App Logo" class="logo">
+                </div>
+                <h1 class="register-title">{{ t('auth.signup.title') }}</h1>
+                <p class="register-subtitle">{{ t('auth.signup.subtitle') }}</p>
+            </div>
+
+            <form @submit.prevent="submit">
+                <div class="form-group">
+                    <InputLabel for="name" :value="t('auth.signup.username_label')" class="label" />
+                    <TextInput
+                        id="name"
+                        type="text"
+                        class="input"
+                        v-model="form.name"
+                        required
+                        autofocus
+                        autocomplete="name"
+                        :placeholder="t('auth.signup.username_placeholder')"
+                    />
+                    <InputError class="error-text" :message="form.errors.name" />
+                </div>
+
+                <div class="form-group">
+                    <InputLabel for="email" :value="t('auth.signup.email_label')" class="label" />
+                    <TextInput
+                        id="email"
+                        type="email"
+                        class="input"
+                        v-model="form.email"
+                        required
+                        autocomplete="username"
+                        :placeholder="t('auth.signup.email_placeholder')"
+                    />
+                    <InputError class="error-text" :message="form.errors.email" />
+                </div>
+
+                <div class="form-group">
+                    <InputLabel for="password" :value="t('auth.signup.password_label')" class="label" />
+                    <TextInput
+                        id="password"
+                        type="password"
+                        class="input"
+                        v-model="form.password"
+                        required
+                        autocomplete="new-password"
+                        :placeholder="t('auth.signup.password_placeholder')"
+                    />
+                    <InputError class="error-text" :message="form.errors.password" />
+                </div>
+
+                <div class="form-group">
+                    <InputLabel for="password_confirmation" :value="t('auth.signup.confirm_password_label')" class="label" />
+                    <TextInput
+                        id="password_confirmation"
+                        type="password"
+                        class="input"
+                        v-model="form.password_confirmation"
+                        required
+                        autocomplete="new-password"
+                        :placeholder="t('auth.signup.confirm_password_placeholder')"
+                    />
+                    <InputError class="error-text" :message="form.errors.password_confirmation" />
+                </div>
+
+                <PrimaryButton
+                    class="register-button"
+                    :class="{ 'disabled': form.processing }"
+                    :disabled="form.processing"
+                >
+                    <span v-if="!form.processing">{{ t('auth.signup.register_button') }}</span>
+                    <span v-else class="loading-spinner"></span>
+                </PrimaryButton>
+            </form>
+
+            <div class="signup-text">
+                {{ t('auth.signup.already_have_account') }}
+                <Link href="/login" class="signup-link">{{ t('auth.signup.login_link') }}</Link>
+            </div>
+        </div>
+    </div>
+</template>
 
 <style scoped>
 .register-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: linear-gradient(to right, #ffffff, #b3eaff);
-    padding: 40px 0 80px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffffff 0%, #b3eaff 100%);
+    padding: 2rem;
+    position: relative;
 }
 
 .go-back-arrow {
-    position: absolute;
-    top: 20px;
-    left: 20px;
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
     border-radius: 50%;
-    padding: 8px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(12, 75, 170, 0.1);
+    z-index: 10;
 }
 
 .go-back-arrow:hover {
-    background-color: rgba(255, 255, 255, 1);
+    background: white;
+    transform: translateX(-4px);
+    box-shadow: 0 6px 16px rgba(12, 75, 170, 0.15);
 }
 
 .arrow-icon {
-    width: 24px;
-    height: 24px;
+    font-size: 1.5rem;
     color: #0c4baa;
+    font-weight: 500;
 }
 
-.register-box {
+.register-card {
     width: 100%;
-    max-width: 400px;
-    background-color: rgb(185, 225, 255);
-    padding: 32px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    max-width: 460px;
+    background: white;
+    border-radius: 32px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 40px rgba(12, 75, 170, 0.12);
+    transition: transform 0.3s ease;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 .logo-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 24px;
-    margin-right: 10px;
+    margin-bottom: 1rem;
 }
 
 .logo {
-    height: 48px;
+    height: 64px;
+    width: auto;
+    padding-right: 40px;
 }
 
 .register-title {
-    text-align: center;
-    color: #000000;
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 6px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0c4baa;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.register-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
 }
 
 .label {
     display: block;
-    color: #000000;
-    font-size: 14px;
-    margin-bottom: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #334155;
+    margin-bottom: 0.5rem;
 }
 
 .input {
     width: 100%;
-    padding: 10px;
-    background-color: #ffffff;
-    border: 5px solid #b0ddff !important;
-    border-radius: 6px;
-    color: #000000;
-    margin-bottom: 8px;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: #1e293b;
+    transition: all 0.2s ease;
 }
 
 .input:focus {
-    outline: none !important;
-    box-shadow: none !important;
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 3px rgba(12, 75, 170, 0.1);
+    background: white;
+}
+
+.input::placeholder {
+    color: #94a3b8;
 }
 
 .error-text {
     color: #ef4444;
-    font-size: 12px;
-    margin-top: 6px;
-}
-
-.form-footer {
-    display: flex;
-    align-items: center;
-    margin-top: 16px;
-    margin-bottom: 10px;
-}
-
-.forgot-password {
-    font-size: 14px;
-    color: #0c4baa;
-    text-decoration: none;
-}
-
-.forgot-password:hover {
-    text-decoration: underline;
-}
-
-.submit-button {
-    margin-top: 24px;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    display: block;
 }
 
 .register-button {
     width: 100%;
-    background-color: #0c4baa;
-    color: #ffffff;
-    font-weight: bold;
-    padding: 12px;
-    border-radius: 6px;
-    transition: background 0.2s;
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.875rem;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    gap: 0.5rem;
 }
 
-.register-button:hover {
-    background-color: #06419a;
+.register-button:hover:not(.disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(12, 75, 170, 0.25);
 }
 
-.disabled {
-    opacity: 0.5;
+.register-button.disabled {
+    opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 .signup-text {
-    margin-top: 16px;
+    margin-top: 1.5rem;
     text-align: center;
-    color: black;
-    font-size: 14px;
+    font-size: 0.85rem;
+    color: #64748b;
 }
 
 .signup-link {
     color: #0c4baa;
+    font-weight: 600;
     text-decoration: none;
+    margin-left: 0.25rem;
+    transition: color 0.2s;
 }
 
 .signup-link:hover {
+    color: #20c1f7;
     text-decoration: underline;
 }
 
-@media (max-height: 700px) {
+/* Responsivitāte */
+@media (max-width: 640px) {
     .register-container {
-        padding: 20px 0;
-        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .register-card {
+        padding: 1.75rem;
+        border-radius: 24px;
+    }
+
+    .go-back-arrow {
+        top: 1rem;
+        left: 1rem;
+        width: 36px;
+        height: 36px;
+    }
+
+    .arrow-icon {
+        font-size: 1.2rem;
+    }
+
+    .register-title {
+        font-size: 1.5rem;
+    }
+
+    .logo {
+        height: 52px;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-card {
+        padding: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .input {
+        padding: 0.65rem 0.875rem;
     }
 }
 
