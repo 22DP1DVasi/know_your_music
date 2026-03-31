@@ -112,5 +112,48 @@
         "consequences_item3_desc": "(severe violations like hate speech)",
         "admin_section_title": "Want to Become an Admin?",
         "admin_section_text": "Helpful, active users may be invited to join our moderation team!"
+    },
+    "faq": {
+        "page_title": "FAQ - Know Your Music",
+        "hero_badge": "Got Questions?",
+        "hero_title": "Frequently Asked Questions",
+        "hero_subtitle": "Find answers to common questions about Know Your Music",
+        "questions": {
+            "create_account": {
+                "question": "How do I create an account?",
+                "answer": "To create an account, click on the 'Sign Up' button at the top of the page and follow the instructions."
+            },
+            "search_music": {
+                "question": "How can I search for music and artists?",
+                "answer": "Use the search bar at the top of the page to find music by artist name, album or track title."
+            },
+            "save_favorites": {
+                "question": "Can I save my favorite tracks and artists?",
+                "answer": "Yes! Registered users can create personal collections and save their favorite songs and artists."
+            },
+            "recommendations": {
+                "question": "How do I get personalized recommendations?",
+                "answer": "Our system analyzes your listening preferences and suggests music based on your taste."
+            },
+            "free_service": {
+                "question": "Is the service free to use?",
+                "answer": "Yes, our platform is free, but we may introduce premium features in the future."
+            }
+        }
+    },
+    "contactus": {
+        "page_title": "Contact Us - Know Your Music",
+        "title": "Contact Us",
+        "subtitle": "Have questions or feedback? We'd love to hear from you!",
+        "name_label": "Your Name",
+        "name_placeholder": "Enter your full name",
+        "email_label": "Email Address",
+        "email_placeholder": "Enter your email address",
+        "message_label": "Your Message",
+        "message_placeholder": "Write your message here...",
+        "send_button": "Send Message",
+        "other_ways_title": "Other Ways to Reach Us",
+        "email_title": "Email",
+        "social_title": "Social Media"
     }
 }
