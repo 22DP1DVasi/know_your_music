@@ -338,7 +338,7 @@ watch(() => props.show, (newVal) => {
 }
 
 .modal-container.modal-small {
-    max-width: 380px;
+    max-width: 420px;
 }
 
 .modal-header {
@@ -620,7 +620,7 @@ watch(() => props.show, (newVal) => {
 }
 
 .form-group {
-    margin-bottom: 1.25rem;
+    margin: 0 1rem 1.25rem;
 }
 
 .form-label {

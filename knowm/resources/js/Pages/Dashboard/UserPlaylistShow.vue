@@ -24,7 +24,7 @@ const lastPage = ref(props.tracks.last_page);
 const isLoading = ref(false);
 const trackListRef = ref(null);
 const loadTrigger = ref(null);
-const isInitializing = ref(true)
+const isInitializing = ref(true);
 
 // izvēlnes stāvoklis dziesmu kartēm
 const openMenuId = ref(null);
@@ -116,23 +116,24 @@ const handleTrackClick = (track) => {
 
 // izņemt dziesmu no atskaņošanas saraksta
 const handleRemoveTrack = async (track) => {
-    if (!confirm(t('user_pages.playlistshow.remove_track_confirm'))) return;
+    if (!confirm('Remove track?')) return;
     try {
-        await router.delete(route('playlists.tracks.destroy', {
+        await axios.delete(route('playlists.tracks.destroy', {
             playlist: props.playlist.slug,
             track: track.id
-        }), {
-            preserveScroll: true,
-            onSuccess: () => {
-                // noņemt dziesmu no lokālajiem masīviem
-                displayedTracks.value = displayedTracks.value.filter(t => t.id !== track.id);
-                // ja nepieciešams, atjaunināt arī galveno dziesmu masīvu
-                props.tracks = props.tracks.filter(t => t.id !== track.id);
-            }
-        });
+        }));
+        // noņemt no parādītajām dziesmām
+        displayedTracks.value = displayedTracks.value.filter(t => t.id !== track.id);
+        // noņemt no sākotnējās datu kopas
+        props.tracks.data = props.tracks.data.filter(t => t.id !== track.id);
+        // pārrēķināt indeksus
+        displayedTracks.value = displayedTracks.value.map((t, index) => ({
+            ...t,
+            track_position: index + 1
+        }));
+
     } catch (error) {
         console.error('Error removing track:', error);
-        alert(t('user_pages.playlistshow.remove_track_error'));
     }
 };
 
