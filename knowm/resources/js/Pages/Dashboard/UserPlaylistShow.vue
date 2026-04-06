@@ -1,10 +1,11 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
+import { Head, usePage, router } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useDate } from '@/composables/useDate';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import { useConfirm } from '@/composables/useConfirm';
 import { route } from "ziggy-js";
 
@@ -17,6 +18,10 @@ const props = defineProps({
     tracks: Object,
     canEdit: Boolean
 });
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
 
 // stāvoklis bezgalīgai ritināšanai
 const currentPageFromUrl = new URLSearchParams(window.location.search).get('page') || 1;
@@ -42,6 +47,24 @@ const editForm = ref({
     description: props.playlist.description || '',
     is_private: props.playlist.is_private || false
 });
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
+};
 
 // kļūdu apstrāde
 const editErrors = ref({
@@ -316,6 +339,7 @@ const togglePrivacy = () => {
                         :menu-open="openMenuId === track.id"
                         duration-format="HH:mm:ss"
                         @track-click="handleTrackClick"
+                        @add-to-playlist="openAddToPlaylistModal"
                         @remove="handleRemoveTrack"
                         @toggle-menu="toggleTrackMenu"
                     />
@@ -461,6 +485,12 @@ const togglePrivacy = () => {
             </div>
         </div>
     </Teleport>
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>

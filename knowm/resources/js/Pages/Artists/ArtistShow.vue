@@ -5,11 +5,11 @@ import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import {ref, computed, watch } from 'vue';
 import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
 import { useI18n } from 'vue-i18n';
-import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({

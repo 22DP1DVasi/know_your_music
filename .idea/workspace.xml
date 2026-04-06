@@ -5,16 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/ConfirmDialog.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/composables/useConfirm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/public/images/default-release-banner.webp" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/public/images/default-release-banner.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/UserPlaylistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/UserPlaylistShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/components.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/components.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -449,7 +442,7 @@
       <workItem from="1775376913797" duration="11335000" />
       <workItem from="1775417377635" duration="2146000" />
       <workItem from="1775466025301" duration="3731000" />
-      <workItem from="1775482905278" duration="5800000" />
+      <workItem from="1775482905278" duration="7016000" />
     </task>
     <servers />
   </component>
