@@ -163,7 +163,7 @@ const handleImageError = (event) => {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    margin-top: 7%;
+    padding-top: 10px;
 }
 
 .playlist-image-wrapper::before,
@@ -230,6 +230,9 @@ const handleImageError = (event) => {
 .playlist-info {
     padding: 1rem;
     flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .playlist-name {
@@ -238,8 +241,11 @@ const handleImageError = (event) => {
     color: #333;
     margin: 0 0 0.5rem 0;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* max 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 @media (prefers-color-scheme: dark) {

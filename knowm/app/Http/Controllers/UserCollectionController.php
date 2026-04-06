@@ -25,8 +25,7 @@ class UserCollectionController extends Controller
         $user = Auth::user();
         $playlists = $user->collections()
         ->with(['tracks' => function($query) {
-            $query->orderBy('user_collections_tracks.track_position')
-                ->limit(1);
+            $query->orderBy('user_collections_tracks.track_position');
         }])
             ->orderBy('created_at', 'desc')
             ->paginate(20)
