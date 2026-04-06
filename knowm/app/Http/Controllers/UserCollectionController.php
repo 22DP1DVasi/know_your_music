@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\UserCollection;
 use App\Models\Track;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class UserCollectionController extends Controller
 {
@@ -23,8 +25,7 @@ class UserCollectionController extends Controller
         $user = Auth::user();
         $playlists = $user->collections()
         ->with(['tracks' => function($query) {
-            $query->orderBy('user_collections_tracks.track_position')
-                ->limit(1);
+            $query->orderBy('user_collections_tracks.track_position');
         }])
             ->orderBy('created_at', 'desc')
             ->paginate(20)
@@ -90,41 +91,40 @@ class UserCollectionController extends Controller
             ->with('success', 'Playlist updated successfully.');
     }
 
-    public function removeTrack(UserCollection $playlist, Track $track)
+    /***
+     * Noņem ierakstu no atskaņošanas saraksta.
+     *
+     * @param UserCollection $playlist
+     * @param Track $track
+     * @return \Illuminate\Http\JsonResponse
+     * @throws Throwable
+     */
+    public function removeTrack(UserCollection $playlist, Track $track): \Illuminate\Http\JsonResponse
     {
-        // pārbaudīt, vai lietotājam pieder kolekcija
-        if ($playlist->user_id !== Auth::id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not authorized to remove tracks from this playlist.'
-            ], 403);
+        if ($playlist->user_id !== auth()->id()) {
+            abort(403);
         }
+        DB::transaction(function () use ($playlist, $track) {
+            // iegūt pašreizējo pozīciju
+            $pivot = DB::table('user_collections_tracks')
+                ->where('user_collection_id', $playlist->id)
+                ->where('track_id', $track->id)
+                ->first();
+            if (!$pivot) {
+                return;
+            }
+            $removedPosition = $pivot->track_position;
 
-        // pārbaudīt, vai kolekcijā ir šī dziesma
-        if (!$playlist->tracks()->where('track_id', $track->id)->exists()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This track is not in the playlist.'
-            ], 404);
-        }
-
-        // moņemt dziesmu
-        $playlist->tracks()->detach($track->id);
-
-        // pārkārtot atlikušās dziesmas
-        $remainingTracks = $playlist->tracks()
-            ->orderBy('track_position')
-            ->get();
-
-        foreach ($remainingTracks as $index => $remainingTrack) {
-            $playlist->tracks()->updateExistingPivot($remainingTrack->id, [
-                'track_position' => $index + 1
-            ]);
-        }
-
+            // noņemt dziesmu
+            $playlist->tracks()->detach($track->id);
+            // pārbīdīt dziesmu pozīcijas
+            DB::table('user_collections_tracks')
+                ->where('user_collection_id', $playlist->id)
+                ->where('track_position', '>', $removedPosition)
+                ->decrement('track_position');
+        });
         return response()->json([
-            'success' => true,
-            'message' => 'Track removed successfully.'
+            'success' => true
         ]);
     }
 
@@ -133,8 +133,14 @@ class UserCollectionController extends Controller
      */
     public function getUserPlaylists(Request $request)
     {
+        $trackId = $request->input('track_id');
         $playlists = Auth::user()->collections()
             ->withCount('tracks')
+            ->withCount([
+                'tracks as contains_track' => function ($query) use ($trackId) {
+                    $query->where('tracks.id', $trackId);
+                }
+            ])
             ->orderBy('name')
             ->get()
             ->map(function($playlist) {
@@ -144,9 +150,11 @@ class UserCollectionController extends Controller
                     'slug' => $playlist->slug,
                     'is_private' => $playlist->is_private,
                     'tracks_count' => $playlist->tracks_count,
-                    'cover_url' => $playlist->cover_url
+                    'cover_url' => $playlist->cover_url,
+                    'contains_track' => (bool) $playlist->contains_track,
                 ];
             });
+
         return response()->json([
             'playlists' => $playlists
         ]);

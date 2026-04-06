@@ -127,6 +127,10 @@
         "edit_error_name_required": "Playlist name is required",
         "edit_error_name_length": "Playlist name must not exceed 100 characters",
         "edit_error_description_length": "Description must not exceed 255 characters",
-        "edit_error_general": "Failed to update playlist. Please try again."
+        "edit_error_general": "Failed to update playlist. Please try again.",
+        "remove_track_conf_title": "Remove track",
+        "remove_track_conf_message": "Are you sure you want to remove this track ({name}) from the playlist?",
+        "remove_track_conf_confirm": "Remove",
+        "remove_track_conf_cancel": "Cancel"
     }
 }
