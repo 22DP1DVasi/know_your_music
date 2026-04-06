@@ -21,6 +21,7 @@ const currentPageFromUrl = new URLSearchParams(window.location.search).get('page
 const displayedTracks = ref([]);
 const currentPage = ref(1);
 const lastPage = ref(props.tracks.last_page);
+const totalTracks = ref(props.tracks.total);
 const isLoading = ref(false);
 const trackListRef = ref(null);
 const loadTrigger = ref(null);
@@ -131,6 +132,7 @@ const handleRemoveTrack = async (track) => {
             ...t,
             track_position: index + 1
         }));
+        totalTracks.value -= 1;
 
     } catch (error) {
         console.error('Error removing track:', error);
@@ -179,16 +181,12 @@ const savePlaylistChanges = async () => {
         editErrors.value.name = t('user_pages.playlistshow.edit_error_name_length');
         hasErrors = true;
     }
-
     if (editForm.value.description && editForm.value.description.length > 255) {
         editErrors.value.description = t('user_pages.playlistshow.edit_error_description_length');
         hasErrors = true;
     }
-
     if (hasErrors) return;
-
     isSaving.value = true;
-
     try {
         await router.put(route('playlists.update', props.playlist.slug), {
             name: editForm.value.name.trim(),
@@ -295,7 +293,7 @@ const togglePrivacy = () => {
                 <h3 class="tracklist-title">
                     <i class="fa-solid fa-list"></i>
                     {{ t('user_pages.playlistshow.tracks') }}
-                    <span class="track-count">({{ tracks.total }})</span>
+                    <span class="track-count">({{ totalTracks }})</span>
                 </h3>
 
                 <div v-if="displayedTracks.length > 0" ref="trackListRef" class="track-list">
@@ -334,7 +332,7 @@ const togglePrivacy = () => {
                     </p>
                     <button
                         v-if="canEdit"
-                        @click="router.get(route('playlists.add-tracks', playlist.slug))"
+                        @click="router.get(route('explore.releases'))"
                         class="add-tracks-button"
                     >
                         <i class="fa-solid fa-plus"></i>
@@ -459,8 +457,15 @@ const togglePrivacy = () => {
 <style scoped>
 .header-content {
     display: flex;
+    min-width: 0;
     align-items: center;
     gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .header-content {
+        margin-top: 15px;
+    }
 }
 
 .back-button {
@@ -488,6 +493,11 @@ const togglePrivacy = () => {
     font-weight: 600;
     color: #0c4baa;
     margin: 0;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .playlist-container {
@@ -506,12 +516,6 @@ const togglePrivacy = () => {
     box-shadow: 0 4px 12px rgba(12, 75, 170, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-    .playlist-info-section {
-        background: #1f2937;
-    }
-}
-
 .playlist-image {
     position: relative;
     width: 200px;
@@ -528,47 +532,30 @@ const togglePrivacy = () => {
     object-fit: cover;
 }
 
-.track-count-badge {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    color: white;
-    padding: 0.35rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-}
-
 .playlist-details {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    overflow: hidden;
 }
 
 .playlist-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+    align-items: flex-start;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .playlist-title {
     font-size: 2rem;
     font-weight: 700;
-    color: #333;
     margin: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-    .playlist-title {
-        color: #f3f4f6;
-    }
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .playlist-actions {
@@ -624,12 +611,12 @@ const togglePrivacy = () => {
     color: #4b5563;
     line-height: 1.6;
     margin: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-    .playlist-description {
-        color: #9ca3af;
-    }
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .playlist-meta {
@@ -662,12 +649,6 @@ const togglePrivacy = () => {
     box-shadow: 0 4px 12px rgba(12, 75, 170, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-    .tracklist-section {
-        background: #1f2937;
-    }
-}
-
 .tracklist-title {
     font-size: 1.25rem;
     font-weight: 600;
@@ -687,16 +668,6 @@ const togglePrivacy = () => {
     font-weight: 400;
     color: #666;
     margin-left: 0.25rem;
-}
-
-@media (prefers-color-scheme: dark) {
-    .tracklist-title {
-        color: #f3f4f6;
-    }
-
-    .track-count {
-        color: #9ca3af;
-    }
 }
 
 .track-list {
@@ -742,24 +713,12 @@ const togglePrivacy = () => {
     margin: 0 0 0.5rem 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    .empty-title {
-        color: #f3f4f6;
-    }
-}
-
 .empty-description {
     font-size: 1rem;
     color: #666;
     max-width: 400px;
     margin: 0 auto 1.5rem;
     line-height: 1.5;
-}
-
-@media (prefers-color-scheme: dark) {
-    .empty-description {
-        color: #9ca3af;
-    }
 }
 
 .add-tracks-button {
@@ -1129,6 +1088,16 @@ const togglePrivacy = () => {
     .cancel-button,
     .save-button {
         min-width: 100px;
+    }
+
+    .playlist-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .playlist-actions {
+        width: 100%;
+        justify-content: space-between;
     }
 }
 

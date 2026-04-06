@@ -436,6 +436,7 @@ onBeforeUnmount(() => {
     display: flex;
     min-height: 100vh;
     background: linear-gradient(to right, #ffffff, #b3eaff);
+    width: 100%;
 }
 
 .desktop-sidebar {
@@ -450,6 +451,7 @@ onBeforeUnmount(() => {
     bottom: 0;
     z-index: 50;
     overflow-y: auto;
+    flex-shrink: 0;
 }
 
 .sidebar-content {
@@ -1005,6 +1007,7 @@ onBeforeUnmount(() => {
     margin-left: 0;
     padding-top: 4rem;
     min-height: 100vh;
+    min-width: 0;
 }
 
 .page-header {
