@@ -5,10 +5,12 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useDate } from '@/composables/useDate';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import { useConfirm } from '@/composables/useConfirm';
 import { route } from "ziggy-js";
 
 const { t } = useI18n();
 const { formatDateLL } = useDate();
+const { confirm } = useConfirm();
 
 const props = defineProps({
     playlist: Object,
@@ -117,7 +119,14 @@ const handleTrackClick = (track) => {
 
 // izņemt dziesmu no atskaņošanas saraksta
 const handleRemoveTrack = async (track) => {
-    if (!confirm('Remove track?')) return;
+    const confirmed = await confirm({
+        title: t('user_pages.playlistshow.remove_track_conf_title'),
+        message: t('user_pages.playlistshow.remove_track_conf_message', { name: track.title }),
+        confirmText: t('user_pages.playlistshow.remove_track_conf_confirm'),
+        cancelText: t('user_pages.playlistshow.remove_track_conf_cancel')
+    })
+
+    if (!confirmed) return
     try {
         await axios.delete(route('playlists.tracks.destroy', {
             playlist: props.playlist.slug,

@@ -7,6 +7,9 @@ import { createApp, h } from 'vue'
 import { ZiggyVue } from 'ziggy-js'
 import i18n from './i18n'
 
+import ConfirmDialog from '@/Components/ConfirmDialog.vue'
+import { useConfirm } from '@/composables/useConfirm'
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel'
 
 createInertiaApp({
@@ -17,13 +20,37 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) })
-            .use(plugin)     // Inertia
-            .use(ZiggyVue)   // Ziggy
-            .use(i18n)       // Vue I18n
-            .mount(el)
+        const vueApp = createApp({
+            setup() {
+                const {
+                    visible,
+                    options,
+                    handleConfirm,
+                    handleCancel
+                } = useConfirm()
+
+                return () => [
+                    h(App, props),
+
+                    h(ConfirmDialog, {
+                        visible: visible.value,
+                        'onUpdate:visible': (v) => (visible.value = v),
+                        title: options.value.title,
+                        message: options.value.message,
+                        confirmText: options.value.confirmText || 'OK',
+                        cancelText: options.value.cancelText || 'Cancel',
+                        onConfirm: handleConfirm,
+                        onCancel: handleCancel
+                    })
+                ]
+            }
+        })
+
+        vueApp
+            .use(plugin)
+            .use(ZiggyVue)
+            .use(i18n)
+
+        return vueApp.mount(el)
     },
-    progress: {
-        color: '#4B5563',
-    },
-})
+});

@@ -1,5 +1,10 @@
 {
     "searchbar": {
         "default_placeholder": "Search..."
+    },
+    "confirmdialog": {
+        "default_title": "Confirm Action",
+        "confirm_text": "OK",
+        "cancel_text": "Cancel"
     }
 }

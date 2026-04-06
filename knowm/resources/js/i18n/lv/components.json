@@ -1,5 +1,10 @@
 {
     "searchbar": {
         "default_placeholder": "Meklēt..."
+    },
+    "confirmdialog": {
+        "default_title": "Apstiprināt darbību",
+        "confirm_text": "Labi",
+        "cancel_text": "Atcelt"
     }
 }
