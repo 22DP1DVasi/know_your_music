@@ -4,6 +4,7 @@ import { ref } from "vue";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
+import ReleaseCard from '@/Components/Releases/ReleaseCard.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
 import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import { route } from 'ziggy-js';
@@ -128,30 +129,13 @@ const closeModal = () => {
                     </a>
                 </div>
                 <div class="release-results">
-                    <div
+                    <ReleaseCard
                         v-for="release in releases"
                         :key="release.id"
-                        class="release-card"
-                        @click="redirectToRelease(release.slug)"
-                    >
-                        <div class="image-wrapper">
-                            <img :src="release.cover_url" :alt="release.title" />
-                        </div>
-                        <div class="release-info">
-                            <h3>{{ release.title }}</h3>
-                            <div v-if="release.artists.length > 1" class="artists-names-container">
-                                <span class="artists-names">
-                                    {{ formatArtists(release.artists) }}
-                                </span>
-                            </div>
-                            <div v-else-if="release.artists.length === 1" class="single-artist">
-                                {{ release.artists[0].name }}
-                            </div>
-                            <p class="release-meta">
-                                {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
-                            </p>
-                        </div>
-                    </div>
+                        :release="release"
+                        :max-artists="3"
+                        @release-click="(release) => redirectToRelease(release.slug)"
+                    />
                 </div>
             </section>
 
@@ -498,4 +482,5 @@ const closeModal = () => {
         flex: 0 0 80%;
     }
 }
+
 </style>
