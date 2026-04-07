@@ -10,32 +10,31 @@ const props = defineProps({
             return value.id && value.title && value.slug;
         }
     },
-    // Optional: custom redirect URL or function
+    // pielāgota novirzīšanas URL vai funkcija
     redirectUrl: {
         type: [String, Function],
         default: null
     },
-    // Optional: custom image URL (falls back to release.cover_url)
+    // pielāgota attēla URL (atkāpšanās pie release.cover_url)
     imageSrc: {
         type: String,
         default: null
     },
-    // Fallback image when release image fails
     fallbackImage: {
         type: String,
         default: '/images/default-release-banner.webp'
     },
-    // Maximum number of artists to show before truncating
+    // maksimālais izpildītāju skaits, kas jārāda pirms apciršanas
     maxArtists: {
         type: Number,
         default: 3
     },
-    // Whether to show track count
+    // vai rādīt dziesmu skaitu
     showTrackCount: {
         type: Boolean,
         default: true
     },
-    // Whether to show release type
+    // vai rādīt albuma tipu
     showReleaseType: {
         type: Boolean,
         default: true
@@ -44,7 +43,7 @@ const props = defineProps({
 
 const emit = defineEmits(['release-click']);
 
-// Computed properties
+// computed rekvizīti
 const imageUrl = computed(() => {
     return props.imageSrc || props.release.cover_url || props.fallbackImage;
 });
@@ -60,13 +59,10 @@ const truncatedArtists = computed(() => {
     if (!props.release.artists || !Array.isArray(props.release.artists)) {
         return '';
     }
-
     const artistNames = props.release.artists.map(artist => artist.name);
-
     if (artistNames.length <= props.maxArtists) {
         return artistNames.join(', ');
     }
-
     const visibleArtists = artistNames.slice(0, props.maxArtists);
     const remainingCount = artistNames.length - props.maxArtists;
     return `${visibleArtists.join(', ')} +${remainingCount}`;
@@ -84,7 +80,6 @@ const formattedReleaseType = computed(() => {
     return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
 });
 
-// Handle click
 const handleReleaseClick = () => {
     emit('release-click', props.release);
 
@@ -99,15 +94,14 @@ const handleReleaseClick = () => {
     }
 };
 
-// Handle image error
 const handleImageError = (event) => {
     event.target.src = props.fallbackImage;
 };
 
-// Expose methods
 defineExpose({
     handleReleaseClick
 });
+
 </script>
 
 <template>
@@ -226,7 +220,7 @@ defineExpose({
     align-items: center;
 }
 
-/* Responsive breakpoints */
+/* Responsivitāte */
 @media (max-width: 1024px) {
     .release-card {
         flex: 0 0 calc(33.333% - 1rem);
