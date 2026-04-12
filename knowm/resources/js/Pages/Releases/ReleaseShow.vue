@@ -118,8 +118,8 @@ const redirectToGenre = (slug) => {
     window.location.href = `/genres/${slug}`;
 };
 
-const redirectToTrack = (slug) => {
-    window.location.href = `/tracks/${slug}`;
+const redirectToTrack = (track) => {
+    router.get(`/tracks/${track.slug}`);
 };
 
 // izvēlnes stāvoklis dziesmu kartēm
