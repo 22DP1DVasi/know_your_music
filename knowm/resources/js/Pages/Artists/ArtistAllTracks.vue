@@ -1,90 +1,14 @@
-<template>
-    <Head :title="`${artist.name} - All Tracks`" />
-    <Navbar />
-    <main class="artist-page flex-1">
-        <div class="artist-hero" :style="heroStyle">
-            <div class="hero-gradient" v-if="!isLandscape"></div>
-            <div class="hero-image-container">
-                <img
-                    :src="getArtistImage(artist)"
-                    :alt="artist.name"
-                    class="hero-image"
-                    ref="heroImage"
-                    @load="handleImageLoad"
-                    :style="imageStyle"
-                    loading="eager"
-                >
-            </div>
-            <h1 class="artist-name">{{ artist.name }}</h1>
-            <div class="back-button" @click="goBackToArtist">
-                ← Back to artist
-            </div>
-        </div>
-
-        <div class="artist-content">
-            <div class="main-content">
-                <div class="search-container">
-                    <input
-                        type="text"
-                        class="searchTerm"
-                        placeholder="Search tracks..."
-                        v-model="localSearchQuery"
-                        @keyup.enter="performSearch"
-                    >
-                    <button
-                        type="submit"
-                        class="searchButton"
-                        @click="performSearch"
-                    >
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
-                <h2 class="section-title">{{ totalTracks }} {{ totalTracks === 1 ? 'track' : 'tracks' }}</h2>
-                <div class="track-list-container">
-                    <div class="track-list">
-                        <div v-for="(track, index) in tracks" :key="track.id" class="track-row">
-                            <div class="track-cell index">{{ (currentPage - 1) * perPage + index + 1 }}</div>
-                            <div class="track-cell title">
-                                <img :src="track.cover_url" class="track-image" :alt="track.title">
-                                <div class="track-info">
-                                    <h3>
-                                        <a @click="redirectToTrack(track.slug)" class="track-title-link">
-                                            {{ track.title }}
-                                        </a>
-                                    </h3>
-                                    <p v-if="track.artist_names" class="artist-names">{{ track.artist_names }}</p>
-                                </div>
-                            </div>
-                            <div class="track-cell duration">{{ formatDuration(track.duration) }}</div>
-                        </div>
-                    </div>
-
-                    <Pagination
-                        v-if="totalPages > 1"
-                        :links="paginationLinks"
-                        :current-page="currentPage"
-                        :total-pages="totalPages"
-                        class="pagination"
-                    />
-                </div>
-            </div>
-
-            <div class="sidebar-space">
-                <!-- Future content like "Similar Artists" will go here -->
-            </div>
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import Pagination from '@/Components/Pagination.vue'
+import { Head, router, usePage } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import Pagination from '@/Components/Pagination.vue';
+import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import { ref } from 'vue';
 import ColorThief from 'colorthief';
 import { debounce } from 'lodash-es';
+import { route } from "ziggy-js";
 
 const props = defineProps({
     artist: {
@@ -120,6 +44,10 @@ const props = defineProps({
         default: () => ({})
     }
 });
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
 
 // hero image
 const heroImage = ref(null);
@@ -228,8 +156,8 @@ const goBackToArtist = () => {
     router.visit(`/artists/${props.artist.slug}`);
 };
 
-const redirectToTrack = (slug) => {
-    router.get(`/tracks/${slug}`);
+const redirectToTrack = (track) => {
+    router.get(`/tracks/${track.slug}`);
 };
 
 const performSearch = debounce(() => {
@@ -246,7 +174,121 @@ const formatDuration = (timeString) => {
     const [hours, minutes, seconds] = timeString.split(':')
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0')
 }
+
+// izvēlnes stāvoklis dziesmu kartēm
+const openMenuId = ref(null);
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const toggleTrackMenu = (trackId) => {
+    openMenuId.value = openMenuId.value === trackId ? null : trackId;
+};
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
+};
+
 </script>
+
+<template>
+    <Head :title="`${artist.name} - All Tracks`" />
+    <Navbar />
+    <main class="artist-page flex-1">
+        <div class="artist-hero" :style="heroStyle">
+            <div class="hero-gradient" v-if="!isLandscape"></div>
+            <div class="hero-image-container">
+                <img
+                    :src="getArtistImage(artist)"
+                    :alt="artist.name"
+                    class="hero-image"
+                    ref="heroImage"
+                    @load="handleImageLoad"
+                    :style="imageStyle"
+                    loading="eager"
+                >
+            </div>
+            <h1 class="artist-name">{{ artist.name }}</h1>
+            <div class="back-button" @click="goBackToArtist">
+                ← Back to artist
+            </div>
+        </div>
+
+        <div class="artist-content">
+            <div class="main-content">
+                <div class="search-container">
+                    <input
+                        type="text"
+                        class="searchTerm"
+                        placeholder="Search tracks..."
+                        v-model="localSearchQuery"
+                        @keyup.enter="performSearch"
+                    >
+                    <button
+                        type="submit"
+                        class="searchButton"
+                        @click="performSearch"
+                    >
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                <h2 class="section-title">{{ totalTracks }} {{ totalTracks === 1 ? 'track' : 'tracks' }}</h2>
+                <div class="track-list-container">
+                    <div class="track-list">
+                        <TrackCard
+                            v-for="(track, index) in tracks"
+                            :key="track.id"
+                            :track="track"
+                            :index="(currentPage - 1) * perPage + index"
+                            :show-number="true"
+                            :show-image="true"
+                            :show-duration="true"
+                            :show-artists="track.artists && track.artists.length > 1"
+                            :menu-open="openMenuId === track.id"
+                            duration-format="HH:mm:ss"
+                            :show-context-menu="true"
+                            :can-add="true"
+                            :can-remove="false"
+                            @track-click="redirectToTrack"
+                            @add-to-playlist="openAddToPlaylistModal"
+                            @toggle-menu="toggleTrackMenu"
+                        />
+                    </div>
+
+                    <Pagination
+                        v-if="totalPages > 1"
+                        :links="paginationLinks"
+                        :current-page="currentPage"
+                        :total-pages="totalPages"
+                        class="pagination"
+                    />
+                </div>
+            </div>
+
+            <div class="sidebar-space">
+                <!-- Future content like "Similar Artists" will go here -->
+            </div>
+        </div>
+    </main>
+    <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
+</template>
 
 <style scoped>
 .artist-page {
@@ -434,85 +476,7 @@ const formatDuration = (timeString) => {
 
 .track-list {
     border-radius: 5px;
-    overflow: hidden;
-}
-
-.track-row {
-    display: flex;
-    align-items: center;
-    padding: 10px 15px;
-    border-bottom: 1px solid #eee;
-    transition: background 0.2s;
-}
-
-.track-row:hover {
-    background: #f9f9f9;
-}
-
-.track-cell {
-    padding: 0 10px;
-    flex-shrink: 0;
-}
-
-.track-cell.index {
-    width: 50px;
-    text-align: center;
-}
-
-.track-cell.title {
-    flex: 3;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    min-width: 0;
-}
-
-.track-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 4px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.track-info {
-    min-width: 0;
-}
-
-.track-info h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-title-link {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.track-title-link:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.artist-names {
-    margin: 3px 0 0;
-    color: #666;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-cell.duration {
-    width: 80px;
-    text-align: right;
-    color: #666;
+    overflow: visible;
 }
 
 .pagination {
@@ -612,11 +576,6 @@ const formatDuration = (timeString) => {
         padding: 10px;
         width: 100%;
         max-width: 280px;
-    }
-
-    .track-image {
-        width: 40px;
-        height: 40px;
     }
 }
 </style>
