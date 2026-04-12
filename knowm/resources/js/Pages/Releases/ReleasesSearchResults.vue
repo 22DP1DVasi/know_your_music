@@ -118,7 +118,6 @@ const goBack = () => {
                             v-for="release in releases"
                             :key="release.id"
                             :release="release"
-                            :artists-label="release.artists.length > 1 ? 'by' : ''"
                             :max-artists="3"
                             @release-click="(release) => redirectToRelease(release.slug)"
                         />

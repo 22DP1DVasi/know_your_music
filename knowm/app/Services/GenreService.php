@@ -146,6 +146,7 @@ class GenreService
             $query->where('genres.id', $genre->id);
         })
             ->with(['artists'])
+            ->withCount('tracks')
             ->orderBy('release_date', 'desc')
             ->limit($limit)
             ->get()
@@ -157,6 +158,7 @@ class GenreService
                     'year' => $release->release_date ? date('Y', strtotime($release->release_date)) : null,
                     'type' => $release->release_type,
                     'cover_url' => $release->cover_url ?? '/images/default-release-cover.webp',
+                    'tracks_count' => $release->tracks_count,
                     'artists' => $release->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
                 ];
             })

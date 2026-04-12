@@ -136,7 +136,9 @@ defineExpose({
     background: white;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 6px 16px rgba(12, 75, 170, 0.08);
+    box-shadow:
+        0 10px 25px rgba(12, 75, 170, 0.15),
+        0 4px 10px rgba(12, 75, 170, 0.08);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     display: flex;
@@ -146,7 +148,9 @@ defineExpose({
 
 .release-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(12, 75, 170, 0.15);
+    box-shadow:
+        0 18px 40px rgba(12, 75, 170, 0.25),
+        0 8px 16px rgba(12, 75, 170, 0.12);
     border-color: rgba(12, 75, 170, 0.12);
 }
 
