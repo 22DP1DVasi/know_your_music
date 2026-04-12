@@ -129,7 +129,7 @@ class GenreService
                     'duration' => $track->duration->format('H:i:s'),
                     'audio_source' => $track->audio_source,
                     'cover_url' => $track->releases->first()->cover_url ?? '/images/default-release-cover.webp',
-                    'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
+                    'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name, 'slug' => $a->slug]),
                 ];
             })
             ->toArray();

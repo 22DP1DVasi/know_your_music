@@ -1,11 +1,14 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
+import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
+import { route } from "ziggy-js";
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -136,6 +139,10 @@ const analyzeImage = () => {
     imageStyle.value.opacity = '1';
 };
 
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
+
 const truncatedDescription = computed(() => {
     if (!props.genre.description) return 'There is no background for this genre.';
     if (props.genre.description.length <= descriptionMaxLength) return props.genre.description;
@@ -154,13 +161,13 @@ const redirectToFullDescription = (slug) => {
     window.location.href = `/genres/${slug}/description`;
 };
 
-const playTrack = (source) => {
-    currentAudioSource.value = source;
-    showPlayer.value = true;
-    setTimeout(() => {
-        document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-};
+// const playTrack = (source) => {
+//     currentAudioSource.value = source;
+//     showPlayer.value = true;
+//     setTimeout(() => {
+//         document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
+//     }, 100);
+// };
 
 const closePlayer = () => {
     showPlayer.value = false;
@@ -175,8 +182,8 @@ const redirectToAllArtists = (slug) => {
     window.location.href = `/genres/${slug}/artists`;
 };
 
-const redirectToTrack = (slug) => {
-    window.location.href = `/tracks/${slug}`;
+const redirectToTrack = (track) => {
+    router.get(`/tracks/${track.slug}`);
 };
 
 const redirectToAllTracks = (slug) => {
@@ -195,6 +202,31 @@ const formatDuration = (timeString) => {
     if (!timeString) return '--:--';
     const [hours, minutes, seconds] = timeString.split(':');
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
+// izvēlnes stāvoklis dziesmu kartēm
+const openMenuId = ref(null);
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const toggleTrackMenu = (trackId) => {
+    openMenuId.value = openMenuId.value === trackId ? null : trackId;
+};
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
 };
 
 </script>
@@ -279,26 +311,24 @@ const formatDuration = (timeString) => {
                         </button>
                     </div>
                     <div class="track-list">
-                        <div v-for="(track, index) in genre.tracks" :key="track.id" class="track-card">
-                            <span class="track-number">{{ index + 1 }}</span>
-                            <img :src="track.cover_url" class="track-image" :alt="track.title">
-                            <div class="track-info">
-                                <h3>
-                                    <a @click="redirectToTrack(track.slug)" class="track-title">
-                                        {{ track.title }}
-                                    </a>
-                                </h3>
-                                <p class="track-artist" @click="redirectToArtist(track.artist_slug)">{{ track.artist_name }}</p>
-                            </div>
-                            <button
-                                v-if="track.audio_source"
-                                @click="playTrack(track.audio_source)"
-                                class="play-button"
-                            >
-                                <i class="fa-regular fa-circle-play"></i>
-                            </button>
-                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                        </div>
+                        <TrackCard
+                            v-for="(track, index) in genre.tracks"
+                            :key="track.id"
+                            :track="track"
+                            :index="index"
+                            duration-format="HH:mm:ss"
+                            :show-number="true"
+                            :show-image="true"
+                            :show-artists="true"
+                            :show-duration="true"
+                            :show-context-menu="true"
+                            :can-add="true"
+                            :can-remove="false"
+                            @track-click="redirectToTrack"
+                            :menu-open="openMenuId === track.id"
+                            @add-to-playlist="openAddToPlaylistModal"
+                            @toggle-menu="toggleTrackMenu"
+                        />
                     </div>
                 </section>
 
@@ -354,6 +384,12 @@ const formatDuration = (timeString) => {
         />
     </main>
     <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>
@@ -562,7 +598,7 @@ const formatDuration = (timeString) => {
 .track-list {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 2rem;
     max-width: 100%;
