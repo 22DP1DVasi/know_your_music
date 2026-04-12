@@ -24,6 +24,11 @@ const props = defineProps({
         type: String,
         default: '/images/default-release-banner.webp'
     },
+    // vai radīt izpildītājus
+    showArtists: {
+        type: Boolean,
+        default: true
+    },
     // maksimālais izpildītāju skaits, kas jārāda pirms apciršanas
     maxArtists: {
         type: Number,
@@ -68,11 +73,11 @@ const truncatedArtists = computed(() => {
     return `${visibleArtists.join(', ')} +${remainingCount}`;
 });
 
-const formattedTrackCount = computed(() => {
-    if (!props.showTrackCount) return '';
-    const count = props.release.tracks_count || 0;
-    return `${count} ${count === 1 ? 'track' : 'tracks'}`;
-});
+// const formattedTrackCount = computed(() => {
+//     if (!props.showTrackCount) return '';
+//     const count = props.release.tracks_count || 0;
+//     return `${count} ${count === 1 ? 'track' : 'tracks'}`;
+// });
 
 const formattedReleaseType = computed(() => {
     if (!props.showReleaseType) return '';
@@ -117,15 +122,18 @@ defineExpose({
         <div class="release-info">
             <h3 class="release-title" :title="release.title">{{ release.title }}</h3>
 
-            <div class="artists-container">
+            <div v-if="showArtists && release.artists && release.artists.length > 0" class="artists-container">
                 <span class="artists-names" :title="formattedArtists">
                     {{ truncatedArtists }}
                 </span>
             </div>
 
             <p class="release-meta">
-                {{ formattedTrackCount }} • {{ formattedReleaseType }}
+                {{ release.release_date ? release.release_date.substring(0, 4) : '----' }} • {{ formattedReleaseType }}
             </p>
+
+            <!-- Papildu informācijas slots -->
+            <slot name="extra-info"></slot>
         </div>
     </div>
 </template>

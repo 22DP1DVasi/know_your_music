@@ -6,6 +6,7 @@ import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
 import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
+import ReleaseCard from "@/Components/Releases/ReleaseCard.vue";
 import {ref, computed, watch } from 'vue';
 import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
@@ -472,21 +473,14 @@ const capitalize = (value) => {
                     </div>
                     <div v-if="!artist.releases.length">No releases found for this artist.</div>
                     <div v-else class="release-results">
-                        <div
+                        <ReleaseCard
                             v-for="release in artist.releases"
                             :key="release.id"
-                            class="release-card"
-                            @click="redirectToRelease(release.slug)"
+                            :release="release"
+                            :show-artists="release.artists && release.artists.length > 1"
+                            @release-click="(release) => redirectToRelease(release.slug)"
                         >
-                            <div class="image-wrapper">
-                                <img :src="release.cover_url" :alt="release.title">
-                            </div>
-                            <div class="release-info">
-                                <h3>{{ release.title }}</h3>
-                                <p class="release-year">{{ release.year }}</p>
-                                <p class="release-type">{{ release.type }}</p>
-                            </div>
-                        </div>
+                        </ReleaseCard>
                     </div>
                 </section>
 

@@ -237,7 +237,7 @@ defineExpose({
                 </div>
             </slot>
 
-            <!-- Papildu informācijas slots (like album name, etc.) -->
+            <!-- Papildu informācijas slots -->
             <slot name="extra-info"></slot>
         </div>
 

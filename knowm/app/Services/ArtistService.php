@@ -146,7 +146,7 @@ class ArtistService
                     'id' => $release->id,
                     'title' => $release->title,
                     'slug' => $release->slug,
-                    'year' => $release->release_date?->format('Y'),
+                    'release_date' => $release->release_date,
                     'type' => $release->release_type,
                     'cover_url' => $release->cover_url ?? '/images/default-release-cover.webp',
                     'artists' => $release->artists->map(fn ($a) => [

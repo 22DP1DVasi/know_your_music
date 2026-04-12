@@ -155,7 +155,7 @@ class GenreService
                     'id' => $release->id,
                     'title' => $release->title,
                     'slug' => $release->slug,
-                    'year' => $release->release_date ? date('Y', strtotime($release->release_date)) : null,
+                    'release_date' => $release->release_date,
                     'type' => $release->release_type,
                     'cover_url' => $release->cover_url ?? '/images/default-release-cover.webp',
                     'tracks_count' => $release->tracks_count,
