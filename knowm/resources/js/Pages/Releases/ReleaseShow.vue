@@ -1,12 +1,15 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
+import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
 import dayjs from 'dayjs';
 import { useDate } from '@/composables/useDate';
+import { route } from "ziggy-js";
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -41,6 +44,10 @@ const props = defineProps({
 });
 
 const { formatDuration } = useDate()
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
 
 const heroImage = ref(null);
 const heroStyle = ref({
@@ -113,6 +120,31 @@ const redirectToGenre = (slug) => {
 
 const redirectToTrack = (slug) => {
     window.location.href = `/tracks/${slug}`;
+};
+
+// izvēlnes stāvoklis dziesmu kartēm
+const openMenuId = ref(null);
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const toggleTrackMenu = (trackId) => {
+    openMenuId.value = openMenuId.value === trackId ? null : trackId;
+};
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
 };
 
 </script>
@@ -222,23 +254,22 @@ const redirectToTrack = (slug) => {
                             <span class="tracks-count">{{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}</span>
                         </div>
                         <div class="track-list">
-                            <div v-for="track in sortedTracks" :key="track.id" class="track-card">
-                                <span class="track-number">{{ track.pivot.track_position }}</span>
-                                <div class="track-info">
-                                    <h3>
-                                        <a @click="redirectToTrack(track.slug)" class="track-title">
-                                            {{ track.title }}
-                                        </a>
-                                    </h3>
-                                    <p class="track-artists" v-if="track.artists.length > 1">
-                                        <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                            <a :href="`/artists/${artist.slug}`">{{ artist.name }}</a>
-                                            <span v-if="index < track.artists.length - 1">, </span>
-                                        </span>
-                                    </p>
-                                </div>
-                                <div class="track-duration">{{ formatDuration(track.duration, 'HH:mm:ss') }}</div>
-                            </div>
+                            <TrackCard
+                                v-for="track in sortedTracks"
+                                :key="track.id"
+                                :track="track"
+                                :index="track.pivot.track_position - 1"
+                                :show-image="false"
+                                :show-artists="track.artists && track.artists.length > 1"
+                                :menu-open="openMenuId === track.id"
+                                duration-format="HH:mm:ss"
+                                :can-add="true"
+                                :can-remove="false"
+                                :show-context-menu="true"
+                                @track-click="redirectToTrack"
+                                @add-to-playlist="openAddToPlaylistModal"
+                                @toggle-menu="toggleTrackMenu"
+                            />
                         </div>
                     </section>
 
@@ -260,6 +291,12 @@ const redirectToTrack = (slug) => {
         </div>
     </main>
     <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>
@@ -565,68 +602,6 @@ const redirectToTrack = (slug) => {
     margin-bottom: 2rem;
 }
 
-.track-card {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-    gap: 1rem;
-}
-
-.track-number {
-    color: #666;
-    width: 24px;
-    text-align: center;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-}
-
-.track-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.track-info h3 {
-    text-decoration: none;
-    transition: color 0.2s;
-    font-size: 0.95rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-title {
-    cursor: pointer;
-}
-
-.track-title:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.track-artists {
-    margin: 0.25rem 0 0;
-    font-size: 0.85rem;
-    color: #666;
-}
-
-.track-artists a {
-    color: #0c4baa;
-    text-decoration: none;
-}
-
-.track-artists a:hover {
-    text-decoration: underline;
-}
-
-.track-duration {
-    color: #666;
-    font-size: 0.9rem;
-    flex: 0 0 60px;
-    text-align: right;
-}
-
 .similar-item a {
     display: flex;
     align-items: center;
@@ -651,14 +626,6 @@ const redirectToTrack = (slug) => {
 
 .similar-item:hover span {
     color: #0c4baa;
-}
-
-.comments-section {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 3rem;
 }
 
 @media (max-width: 1455px) {
@@ -838,19 +805,6 @@ const redirectToTrack = (slug) => {
     .sidebar-space {
         display: none;
     }
-
-    .track-card {
-        padding: 0.75rem;
-        gap: 0.75rem;
-    }
-
-    .track-info {
-        padding: 0 0.25rem;
-    }
-
-    .track-duration {
-        flex: 0 0 50px;
-    }
 }
 
 @media (max-width: 640px) {
@@ -891,24 +845,6 @@ const redirectToTrack = (slug) => {
 
     .meta-value {
         font-size: 0.9rem;
-    }
-
-    .track-card {
-        padding: 0.5rem;
-        gap: 0.5rem;
-    }
-
-    .track-number {
-        width: 20px;
-    }
-
-    .track-title {
-        font-size: 0.9rem;
-    }
-
-    .track-duration {
-        font-size: 0.85rem;
-        flex: 0 0 45px;
     }
 }
 
