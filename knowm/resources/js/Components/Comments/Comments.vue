@@ -3,6 +3,7 @@ import { ref, computed, nextTick, onMounted, onBeforeUnmount } from 'vue' // nex
 import { usePage, Link } from '@inertiajs/vue3'
 import axios from 'axios'
 import { useDate } from '@/composables/useDate'
+import { route } from "ziggy-js";
 
 const props = defineProps({
     entityType: {
@@ -697,7 +698,22 @@ const confirmDeleteComment = async () => {
             >
                 <div class="comment-header">
                     <div class="comment-user">
-                        <i class="fa-regular fa-user"></i>
+                        <div class="user-avatar">
+                            <img
+                                v-if="commentData.comment.user.avatar_url"
+                                :src="commentData.comment.user.avatar_url"
+                                :alt="commentData.comment.user.name"
+                            />
+                            <div
+                                v-else
+                                class="avatar-initial"
+                                :style="{
+                                background: `linear-gradient(135deg, ${commentData.comment.user.avatar_color_1}, ${commentData.comment.user.avatar_color_2})`
+                            }"
+                            >
+                                <p>{{ commentData.comment.user.initial }}</p>
+                            </div>
+                        </div>
                         <span class="user-name">{{ commentData.comment.user?.name || 'Anonymous' }}</span>
                     </div>
 
@@ -1214,9 +1230,37 @@ const confirmDeleteComment = async () => {
     gap: 0.5rem;
 }
 
-.comment-user i {
-    color: #0c4baa;
-    font-size: 1.1rem;
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.user-avatar img,
+.avatar-initial {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatar-initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+}
+
+.avatar-initial p {
+    -webkit-user-select: none; /* Chrome, Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;         /* Standarta */
 }
 
 .user-name {
