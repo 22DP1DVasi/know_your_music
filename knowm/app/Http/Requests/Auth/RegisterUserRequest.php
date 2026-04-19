@@ -45,10 +45,10 @@ class RegisterUserRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.unique' => 'This username is already taken. Please choose another one.',
-            'name.regex' => 'Username can only contain letters, numbers and underscores.',
-            'email.unique' => 'This email is already registered. Please login or use a different email.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'name.unique' => __('messages.signup.name_unique'),
+            'name.regex' => __('messages.signup.name_regex'),
+            'email.unique' => __('messages.signup.email_unique'),
+            'password.confirmed' => __('messages.signup.password_confirmed')
         ];
     }
 }

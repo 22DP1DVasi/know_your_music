@@ -201,12 +201,10 @@ Route::get('/explore/genres', [GenreController::class, 'explore'])
 
 // lokalizācija / locale
 Route::post('/locale', function (Request $request) {
-    $locale = $request->string('locale')->toString();
-    if (! in_array($locale, ['en', 'lv'])) {
-        abort(400);
-    }
+    $locale = (string) $request->input('locale');
+    abort_unless(in_array($locale, ['en', 'lv'], true), 400);
     session(['locale' => $locale]);
-    \Illuminate\Support\Facades\App::setLocale($locale);
+
     return response()->noContent();
 });
 

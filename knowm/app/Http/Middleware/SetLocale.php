@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\App;
 
 class SetLocale
@@ -16,8 +15,13 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        $locale = $request->session()->get('locale', config('app.locale'));
-        App::setLocale($locale);
+        $locale = session('locale', config('app.locale'));
+        // force it to string safely
+        if ($locale instanceof \Illuminate\Support\Stringable) {
+            $locale = $locale->toString();
+        }
+
+        app()->setLocale($locale);
 
         return $next($request);
     }
