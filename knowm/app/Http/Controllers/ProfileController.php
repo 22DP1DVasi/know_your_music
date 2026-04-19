@@ -14,6 +14,23 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    /***
+     * Metode priekš Dashboard.vue lapas.
+     *
+     * @return Response
+     */
+    public function index(): Response
+    {
+        $user = auth()->user();
+        $favoriteArtistsCount = $user->favoriteArtists()->count();
+        $collectionsCount = $user->collections()->count();
+
+        return Inertia::render('Dashboard/Overview', [
+            'favoriteArtistsCount' => $favoriteArtistsCount,
+            'collectionsCount' => $collectionsCount,
+        ]);
+    }
+
     /**
      * Parāda lietotāja profila veidlapu.
      *

@@ -1,7 +1,10 @@
 {
     "overview": {
         "account_header": "Your Account",
-        "member_since": "Member since"
+        "member_since": "Member since",
+        "favorite_artists": "Favorite Artists",
+        "collections": "Collections",
+        "coming_soon": "Coming Soon"
     },
     "layout": {
         "overview_label": "Overview",

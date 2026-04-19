@@ -211,9 +211,7 @@ Route::post('/locale', function (Request $request) {
 // lietotāja konta ceļi
 Route::middleware('auth')->group(function () {
     // pārskats
-    Route::get('/dashboard', function () {
-        return inertia('Dashboard/Overview');
-    })->name('dashboard');
+    Route::get('/dashboard', [ProfileController::class, 'index'])->name('dashboard');
 
     // profila iestatījumi
     Route::get('/dashboard/settings', [ProfileController::class, 'edit'])->name('settings.edit');

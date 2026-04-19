@@ -1,7 +1,10 @@
 {
     "overview": {
         "account_header": "Jūsu konts",
-        "member_since": "Dalībnieks kopš"
+        "member_since": "Dalībnieks kopš",
+        "favorite_artists": "Mīļākie izpildītāji",
+        "collections": "Kolekcijas",
+        "coming_soon": "Drīzumā"
     },
     "layout": {
         "overview_label": "Pārskats",

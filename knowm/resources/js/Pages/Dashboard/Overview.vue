@@ -3,10 +3,24 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { useDate } from '@/composables/useDate';
 import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 
-const user = usePage().props.auth.user;
+const page = usePage();
+const user = page.props.auth.user;
 const { t } = useI18n();
-const { formatDateDmyNumeric } = useDate()
+const { formatDateDmyNumeric } = useDate();
+
+// Get statistics from props
+const props = defineProps({
+    favoriteArtistsCount: {
+        type: Number,
+        default: 0
+    },
+    collectionsCount: {
+        type: Number,
+        default: 0
+    }
+});
 
 </script>
 
@@ -55,9 +69,37 @@ const { formatDateDmyNumeric } = useDate()
                 </div>
             </div>
 
-            <!-- Sarakstu priekšskatījums -->
+            <!-- Statistikas priekšskatījums -->
             <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-regular fa-heart"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value">{{ favoriteArtistsCount }}</span>
+                        <span class="stat-label">{{ t('user_pages.overview.favorite_artists') }}</span>
+                    </div>
+                </div>
 
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-regular fa-rectangle-list"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value">{{ collectionsCount }}</span>
+                        <span class="stat-label">{{ t('user_pages.overview.collections') }}</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value">—</span>
+                        <span class="stat-label">{{ t('user_pages.overview.coming_soon') }}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>
@@ -173,9 +215,60 @@ const { formatDateDmyNumeric } = useDate()
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
     margin-top: 1rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 20px rgba(12, 75, 170, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(12, 75, 170, 0.06);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(12, 75, 170, 0.12);
+    border-color: rgba(12, 75, 170, 0.12);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, rgba(12, 75, 170, 0.1), rgba(32, 193, 247, 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon i {
+    font-size: 1.5rem;
+    color: #0c4baa;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
 /* Responsivitāte */
@@ -237,6 +330,35 @@ const { formatDateDmyNumeric } = useDate()
 
     .stats-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stats-grid {
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
     }
 }
 

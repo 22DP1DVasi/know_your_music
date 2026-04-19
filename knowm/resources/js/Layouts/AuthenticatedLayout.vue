@@ -166,27 +166,6 @@ onBeforeUnmount(() => {
                                 </li>
                             </ul>
                         </li>
-
-                        <!-- Rekomendācijas -->
-                        <li class="nav-item has-submenu">
-                            <button
-                                @click="toggleMenu('recommendations')"
-                                class="nav-link primary submenu-toggle"
-                                :class="{ 'expanded': isMenuExpanded('recommendations') }"
-                            >
-                                <i class="fa-solid fa-lightbulb nav-icon"></i>
-                                <span>{{ t('user_pages.layout.recommendations') }}</span>
-                                <i class="fa-solid fa-chevron-right toggle-icon"></i>
-                            </button>
-                            <ul class="submenu" v-show="isMenuExpanded('recommendations')">
-                                <li>
-                                    <Link href="#" class="submenu-link">
-                                        <i class="fa-regular fa-clock submenu-icon"></i>
-                                        {{ t('user_pages.layout.history_recom') }}
-                                    </Link>
-                                </li>
-                            </ul>
-                        </li>
                     </ul>
                 </nav>
 
