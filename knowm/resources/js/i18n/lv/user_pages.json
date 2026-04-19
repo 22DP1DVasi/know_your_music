@@ -4,6 +4,10 @@
         "member_since": "Dalībnieks kopš",
         "favorite_artists": "Mīļākie izpildītāji",
         "collections": "Kolekcijas",
+        "top_genres": "Populārākie žanri",
+        "no_listening_data": "Nav klausīšanās datu",
+        "start_adding": "Sāciet pievienot dziesmas vai iecienītos",
+        "genres_not_available": "Žanri nav pieejami",
         "coming_soon": "Drīzumā"
     },
     "layout": {

@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head, usePage, Link } from '@inertiajs/vue3';
 import { useDate } from '@/composables/useDate';
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
@@ -10,7 +10,6 @@ const user = page.props.auth.user;
 const { t } = useI18n();
 const { formatDateDmyNumeric } = useDate();
 
-// Get statistics from props
 const props = defineProps({
     favoriteArtistsCount: {
         type: Number,
@@ -19,6 +18,14 @@ const props = defineProps({
     collectionsCount: {
         type: Number,
         default: 0
+    },
+    topGenres: {
+        type: Array,
+        default: () => []
+    },
+    hasNoData: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -91,13 +98,28 @@ const props = defineProps({
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card genres-card">
                     <div class="stat-icon">
-                        <i class="fa-regular fa-clock"></i>
+                        <i class="fa-solid fa-chart-simple"></i>
                     </div>
-                    <div class="stat-content">
-                        <span class="stat-value">—</span>
-                        <span class="stat-label">{{ t('user_pages.overview.coming_soon') }}</span>
+                    <div class="stat-content genres-content">
+                        <span class="stat-label">{{ t('user_pages.overview.top_genres') }}</span>
+                        <div v-if="topGenres.length > 0" class="genres-list">
+                            <div v-for="(genre, index) in topGenres" :key="genre.id" class="genre-item">
+                                <span class="genre-rank">{{ index + 1 }}</span>
+                                <span class="genre-name">{{ genre.name }}</span>
+                                <span class="genre-score">{{ genre.score }} pts</span>
+                            </div>
+                        </div>
+                        <div v-else-if="hasNoData" class="genres-empty">
+                            <p class="empty-message">{{ t('user_pages.overview.no_listening_data') }}</p>
+                            <Link :href="route('explore.artists')" class="empty-cta">
+                                {{ t('user_pages.overview.start_adding') }}
+                            </Link>
+                        </div>
+                        <div v-else class="genres-empty">
+                            <p class="empty-message">{{ t('user_pages.overview.genres_not_available') }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -215,7 +237,7 @@ const props = defineProps({
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
     margin-top: 1rem;
 }
@@ -269,6 +291,96 @@ const props = defineProps({
     font-size: 0.85rem;
     color: #64748b;
     font-weight: 500;
+}
+
+.genres-card {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.genres-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.genres-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.genre-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(12, 75, 170, 0.08);
+}
+
+.genre-item:last-child {
+    border-bottom: none;
+}
+
+.genre-rank {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, rgba(12, 75, 170, 0.1), rgba(32, 193, 247, 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0c4baa;
+}
+
+.genre-name {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.genre-score {
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.genres-empty {
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.empty-message {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0 0 0.75rem 0;
+}
+
+.empty-cta {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    color: white;
+    text-decoration: none;
+    border-radius: 40px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.empty-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(12, 75, 170, 0.25);
+}
+
+.stat-card.genres-card {
+    grid-column: span 2;
 }
 
 /* Responsivitāte */
@@ -327,13 +439,9 @@ const props = defineProps({
     .join-date {
         justify-content: flex-start;
     }
-
-    .stats-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
     .stats-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -345,6 +453,24 @@ const props = defineProps({
 
     .stat-value {
         font-size: 1.75rem;
+    }
+
+    .stat-card.genres-card {
+        grid-column: span 1;
+    }
+
+    .genre-item {
+        gap: 0.5rem;
+    }
+
+    .genre-rank {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+    }
+
+    .genre-name {
+        font-size: 0.85rem;
     }
 }
 
@@ -376,6 +502,10 @@ const props = defineProps({
 
 .profile-card {
     animation: fadeInUp 0.5s ease-out;
+}
+
+.stat-card {
+    animation: fadeInUp 0.7s ease-out;
 }
 
 </style>
