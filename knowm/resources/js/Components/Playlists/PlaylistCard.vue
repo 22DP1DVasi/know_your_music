@@ -26,7 +26,7 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    // noklusējuma attēls tukšam atskaņošanas sarakstam
+    // noklusējuma attēls tukšai kolekcijai
     defaultImage: {
         type: String,
         default: '/images/default-playlist-banner.webp'
@@ -94,7 +94,7 @@ const handleImageError = (event) => {
                 @error="handleImageError"
             >
 
-            <!-- Skaits, cik dziesmas atskaņošanas sarakstā -->
+            <!-- Skaits, cik dziesmas ir kolekcijā -->
             <div v-if="showTrackCount" class="tracks-count-badge">
                 <i class="fa-solid fa-music"></i>
                 <span>{{ tracksCountText }}</span>

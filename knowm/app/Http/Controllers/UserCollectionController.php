@@ -63,11 +63,11 @@ class UserCollectionController extends Controller
     }
 
     /**
-     * Atjaunināt norādīto atskaņošanas sarakstu.
+     * Atjaunināt norādīto kolekciju.
      */
     public function update(Request $request, UserCollection $playlist)
     {
-        // pārbaudīt, vai lietotājam pieder atskaņošanas saraksts
+        // pārbaudīt, vai lietotājam pieder kolekcija
         if ($playlist->user_id !== Auth::id()) {
             return response()->json([
                 'success' => false,
@@ -92,7 +92,7 @@ class UserCollectionController extends Controller
     }
 
     /***
-     * Noņem ierakstu no atskaņošanas saraksta.
+     * Noņem ierakstu no kolekcijas.
      *
      * @param UserCollection $playlist
      * @param Track $track
@@ -129,7 +129,7 @@ class UserCollectionController extends Controller
     }
 
     /**
-     * Iegūst lietotāja atskaņošanas sarakstus priekš AddToPlaylistModal.vue mod. logam.
+     * Iegūst lietotāja kolekcijas priekš AddToPlaylistModal.vue mod. logam.
      */
     public function getUserPlaylists(Request $request)
     {
@@ -161,7 +161,7 @@ class UserCollectionController extends Controller
     }
 
     /**
-     * Pievieno dziesmu esošam atskaņošanas sarakstam.
+     * Pievieno dziesmu esošai kolekcijai.
      */
     public function addTrackToPlaylist(Request $request, UserCollection $playlist)
     {

@@ -140,7 +140,7 @@ const handleTrackClick = (track) => {
     router.get(`/tracks/${track.slug}`);
 };
 
-// izņemt dziesmu no atskaņošanas saraksta
+// izņemt dziesmu no kolekcijas
 const handleRemoveTrack = async (track) => {
     const confirmed = await confirm({
         title: t('user_pages.playlistshow.remove_track_conf_title'),
@@ -264,7 +264,7 @@ const togglePrivacy = () => {
         </template>
 
         <div class="playlist-container">
-            <!-- Atskaņošanas saraksta informācijas sadaļa -->
+            <!-- Kolekcijas informācijas sadaļa -->
             <div class="playlist-info-section">
                 <div class="playlist-image">
                     <img

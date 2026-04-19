@@ -58,12 +58,6 @@ onMounted(() => {
                     </div>
 
                     <div class="feature-card">
-                        <div class="feature-icon">🎧</div>
-                        <h3>{{ t('info_pages.aboutus.feature_playback_title') }}</h3>
-                        <p>{{ t('info_pages.aboutus.feature_playback_desc') }}</p>
-                    </div>
-
-                    <div class="feature-card">
                         <div class="feature-icon">💾</div>
                         <h3>{{ t('info_pages.aboutus.feature_your_music_title') }}</h3>
                         <p>{{ t('info_pages.aboutus.feature_your_music_desc') }}</p>
