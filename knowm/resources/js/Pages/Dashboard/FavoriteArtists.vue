@@ -162,7 +162,7 @@ watch(searchQuery, (newValue) => {
                 </p>
                 <button
                     v-if="!searchQuery"
-                    @click="router.get(route('artists.explore'))"
+                    @click="router.get(route('explore.artists'))"
                     class="explore-button"
                 >
                     <i class="fa-solid fa-compass"></i>

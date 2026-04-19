@@ -84,7 +84,7 @@ class UserCollectionController extends Controller
         if ($validated['name'] !== $playlist->name) {
             $validated['slug'] = $playlist->generateUniqueSlug($validated['name']);
         }
-        // atjaunināt atsk. sarakstu
+        // atjaunināt kolekciju
         $playlist->update($validated);
 
         return redirect()->route('playlists.show', $playlist->fresh())
@@ -174,7 +174,7 @@ class UserCollectionController extends Controller
         $request->validate([
             'track_id' => 'required|exists:tracks,id'
         ]);
-        // pārbaudīt, vai dziesma jau pastāv atsk. sarakstā
+        // pārbaudīt, vai dziesma jau pastāv kolekcijā
         // nestrādā?
         if ($playlist->tracks()->where('track_id', $request->track_id)->exists()) {
             return response()->json([
@@ -198,7 +198,7 @@ class UserCollectionController extends Controller
     }
 
     /**
-     * Izveidot jaunu atsk. sarakstu un pievienot tam dziesmu.
+     * Izveidot jaunu kolekciju un pievienot tam dziesmu.
      */
     public function createPlaylistWithTrack(Request $request)
     {
@@ -208,7 +208,7 @@ class UserCollectionController extends Controller
             'track_id' => 'required|exists:tracks,id'
         ]);
 
-        // izveidot sarakstu
+        // izveidot kolekciju
         $playlist = UserCollection::create([
             'user_id' => Auth::id(),
             'name' => $request->name,

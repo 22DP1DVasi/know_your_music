@@ -88,6 +88,7 @@
         "public": "Public",
         "no_playlists_title": "No playlists yet",
         "no_playlists_description": "Create your first playlist to start organizing your favorite tracks.",
+        "create_first": "Create first playlist",
         "add_to_playlist": "Add to playlist",
         "search_placeholder": "Search playlists...",
         "tracks": "tracks",
