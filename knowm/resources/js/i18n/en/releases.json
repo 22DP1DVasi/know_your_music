@@ -1,0 +1,9 @@
+{
+    "show": {
+        "about_release": "About This Release",
+        "genres": "Genres",
+        "no_genres": "No genres related to this release.",
+        "no_description": "There is no description for this release.",
+        "read_more": "Read more"
+    }
+}

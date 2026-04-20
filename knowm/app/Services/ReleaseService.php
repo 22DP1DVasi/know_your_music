@@ -41,6 +41,7 @@ class ReleaseService
             'type' => $releaseData->type,
             'year' => $releaseData->year,
             'description' => $releaseData->description,
+            'description_lv' => $releaseData->description_lv,
             'release_date' => $releaseData->release_date,
             'release_type' => $releaseData->release_type,
 

@@ -113,7 +113,13 @@ const getArtistImage = (artist, type = 'profile') => {
     return '/images/default-artist-profile.webp';
 };
 
-// Add these computed properties
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
 const currentBiography = computed(() => {
     if (locale.value === 'lv' && props.artist.biography_lv) {
         return props.artist.biography_lv;
@@ -121,11 +127,9 @@ const currentBiography = computed(() => {
     if (locale.value === 'en' && props.artist.biography) {
         return props.artist.biography;
     }
-    // Fallback: if LV but no LV bio, show EN bio
     if (locale.value === 'lv' && !props.artist.biography_lv && props.artist.biography) {
         return props.artist.biography;
     }
-    // Fallback: if EN but no EN bio, show LV bio
     if (locale.value === 'en' && !props.artist.biography && props.artist.biography_lv) {
         return props.artist.biography_lv;
     }
@@ -133,7 +137,7 @@ const currentBiography = computed(() => {
 });
 
 const languageNotice = computed(() => {
-    // Latvian locale, no Latvian bio, but English bio exists
+    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
     if (locale.value === 'lv' && !props.artist.biography_lv && props.artist.biography) {
         return {
             show: true,
@@ -141,7 +145,7 @@ const languageNotice = computed(() => {
             type: 'lv-no-bio'
         };
     }
-    // English locale, no English bio, but Latvian bio exists
+    // angļu locale, nav angļu bio, bet latviešu bio eksistē
     if (locale.value === 'en' && !props.artist.biography && props.artist.biography_lv) {
         return {
             show: true,

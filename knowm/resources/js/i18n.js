@@ -2,6 +2,8 @@ import { createI18n } from 'vue-i18n'
 import dayjs from '@/utils/dayjs'
 import { watch } from 'vue';
 
+// -----------------------------
+
 import enNavbar from './i18n/en/navbar.json'
 import enFooter from './i18n/en/footer.json'
 import enHome from './i18n/en/home.json'
@@ -16,6 +18,7 @@ import enAdmArtists from './i18n/en/adm_artists.json'
 
 import enUserPages from './i18n/en/user_pages.json'
 import enArtists from './i18n/en/artists.json'
+import enReleases from './i18n/en/releases.json'
 
 import enComponents from './i18n/en/components.json';
 
@@ -35,6 +38,7 @@ import lvAdmArtists from './i18n/lv/adm_artists.json'
 
 import lvUserPages from './i18n/lv/user_pages.json'
 import lvArtists from './i18n/lv/artists.json'
+import lvReleases from './i18n/lv/releases.json'
 
 import lvComponents from './i18n/lv/components.json';
 
@@ -56,6 +60,7 @@ const i18n = createI18n({
             user_pages: enUserPages,
 
             artists: enArtists,
+            releases: enReleases,
 
             adm_dashboard: enAdmDashboard,
             adm_layout: enAdmLayout,
@@ -75,6 +80,7 @@ const i18n = createI18n({
             user_pages: lvUserPages,
 
             artists: lvArtists,
+            releases: lvReleases,
 
             adm_dashboard: lvAdmDashboard,
             adm_layout: lvAdmLayout,

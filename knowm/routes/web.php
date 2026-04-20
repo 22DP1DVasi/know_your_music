@@ -103,15 +103,15 @@ Route::get('/artists/{artist}', [ArtistController::class, 'show'])
     ->name('artists.show');
 
 // lapa izpildītāja biogrāfijai
-Route::get('/artists/{artist}/bio', [ArtistController::class, 'showBio'])
+Route::get('/artists/{artist:slug}/bio', [ArtistController::class, 'showBio'])
     ->name('artist.bio');
 
 // izpildītāja visu dziesmu lapa
-Route::get('/artists/{artist}/tracks', [ArtistController::class, 'showAllTracks'])
+Route::get('/artists/{artist:slug}/tracks', [ArtistController::class, 'showAllTracks'])
     ->name('artists.tracks');
 
 // izpildītāja visu albumu lapa
-Route::get('/artists/{artist}/releases', [ArtistController::class, 'showAllReleases'])
+Route::get('/artists/{artist:slug}/releases', [ArtistController::class, 'showAllReleases'])
     ->name('artists.releases');
 
 // komentāri izpildītāja lapai

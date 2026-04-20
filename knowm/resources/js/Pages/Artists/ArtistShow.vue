@@ -295,9 +295,7 @@ const closePlayer = () => {
 };
 
 const redirectToFullBio = (slug) => {
-    window.location.href = `/artists/${slug}/bio`;
-    // var nodot pašreizējo lokalizāciju ja nepieciešams
-    // window.location.href = `/artists/${slug}/bio${locale.value === 'lv' ? '?lang=lv' : ''}`;
+    router.get(`/artists/${slug}/bio`);
 };
 
 const redirectToAllGenres = () => {
@@ -305,15 +303,15 @@ const redirectToAllGenres = () => {
 };
 
 const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
+    router.get(`/genres/${slug}`);
 };
 
 const redirectToAllTracks = (slug) => {
-    window.location.href = `/artists/${slug}/tracks`;
+    router.get(`/artists/${slug}/tracks`);
 };
 
-const handleTrackClick = (track) => {
-    router.get(`/tracks/${track.slug}`);
+const handleTrackClick = (slug) => {
+    router.get(`/tracks/${slug}`);
 };
 
 // const redirectToTrack = (slug) => {
@@ -321,12 +319,13 @@ const handleTrackClick = (track) => {
 // };
 
 const redirectToRelease = (slug) => {
-    window.location.href = `/releases/${slug}`;
+    router.get(`/releases/${slug}`);
 };
 
 const redirectToAllReleases = (slug) => {
-    window.location.href = `/artists/${slug}/releases`;
+    router.get(`/artists/${slug}/releases`);
 };
+
 const capitalize = (value) => {
     if (!value) return 'Unknown';
     return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
@@ -447,7 +446,7 @@ const capitalize = (value) => {
                             :show-artists="true"
                             :menu-open="openMenuId === track.id"
                             @toggle-menu="(id) => openMenuId = openMenuId === id ? null : id"
-                            @track-click="handleTrackClick"
+                            @track-click="handleTrackClick(track.slug)"
                             @add-to-playlist="openAddToPlaylistModal"
                         />
 <!--                        <button-->
