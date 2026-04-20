@@ -5,14 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/releases.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/releases.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseDescription.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/ReleaseService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/ReleaseService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistBio.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistBio.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/releases.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/releases.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/releases.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/releases.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -460,7 +458,7 @@
       <workItem from="1776514365438" duration="2653000" />
       <workItem from="1776595440846" duration="11082000" />
       <workItem from="1776622382089" duration="4034000" />
-      <workItem from="1776705085962" duration="708000" />
+      <workItem from="1776705085962" duration="3674000" />
     </task>
     <servers />
   </component>

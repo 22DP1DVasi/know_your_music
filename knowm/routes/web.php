@@ -138,6 +138,10 @@ Route::delete('/artists/{artist}/favorite', [ArtistController::class, 'removeFav
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
     ->name('releases.show');
 
+// albuma apraksta lapa
+Route::get('/releases/{release:slug}/description', [ReleaseController::class, 'showDescription'])
+    ->name('releases.description');
+
 // komentāri albuma lapai
 Route::prefix('releases/{release}')->group(function () {
     Route::get('/comments', [ReleaseCommentController::class, 'get']);

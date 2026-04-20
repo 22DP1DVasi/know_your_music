@@ -179,7 +179,7 @@ const hasDescription = computed(() => {
 });
 
 const redirectToFullDescription = (slug) => {
-    window.location.href = `/releases/${slug}/description`;
+    router.get(`/releases/${slug}/description`);
 };
 
 // const formatDuration = (timeString) => {
@@ -190,7 +190,7 @@ const redirectToFullDescription = (slug) => {
 // };
 
 const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
+    router.get( `/genres/${slug}`);
 };
 
 const redirectToTrack = (track) => {
