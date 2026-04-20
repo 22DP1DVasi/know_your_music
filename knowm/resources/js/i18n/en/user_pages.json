@@ -1,7 +1,14 @@
 {
     "overview": {
         "account_header": "Your Account",
-        "member_since": "Member since"
+        "member_since": "Member since",
+        "favorite_artists": "Favorite Artists",
+        "collections": "Collections",
+        "top_genres": "Top Genres",
+        "no_listening_data": "No listening data yet",
+        "start_adding": "Start adding tracks or favorites",
+        "genres_not_available": "Genres not available",
+        "coming_soon": "Coming Soon"
     },
     "layout": {
         "overview_label": "Overview",
@@ -81,6 +88,7 @@
         "public": "Public",
         "no_playlists_title": "No playlists yet",
         "no_playlists_description": "Create your first playlist to start organizing your favorite tracks.",
+        "create_first": "Create first playlist",
         "add_to_playlist": "Add to playlist",
         "search_placeholder": "Search playlists...",
         "tracks": "tracks",

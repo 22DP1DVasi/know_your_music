@@ -41,6 +41,13 @@ class ReleaseController extends Controller
         ]);
     }
 
+    public function showDescription(Release $release): \Inertia\Response
+    {
+        return Inertia::render('Releases/ReleaseDescription', [
+            'release' => $release->load(['artists', 'tracks']),
+        ]);
+    }
+
     /**
      * @param Request $request
      * @return \Inertia\Response

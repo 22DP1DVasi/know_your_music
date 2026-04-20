@@ -1,8 +1,12 @@
 <script setup>
-import { Head, router } from "@inertiajs/vue3";
+import { Head, usePage, router } from "@inertiajs/vue3";
+import { ref } from "vue";
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
+import ReleaseCard from '@/Components/Releases/ReleaseCard.vue';
+import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import { route } from 'ziggy-js';
 
 const props = defineProps({
@@ -20,6 +24,10 @@ const props = defineProps({
     metadataMatchesCount: Number,
     lyricsMatchesCount: Number
 });
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
 
 const formatDuration = (timeString) => {
     if (!timeString) return '--:--';
@@ -54,6 +62,35 @@ const redirectToTrack = (slug) => {
     router.get(`/tracks/${slug}`);
 };
 
+// izvēlnes stāvoklis dziesmu kartēm
+const openMenuId = ref(null);
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const toggleTrackMenu = (trackId) => {
+    openMenuId.value = openMenuId.value === trackId ? null : trackId;
+};
+
+const handleTrackClick = (track) => {
+    router.get(`/tracks/${track.slug}`);
+};
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
+};
+
 </script>
 
 <template>
@@ -63,7 +100,7 @@ const redirectToTrack = (slug) => {
         <div class="search-results">
             <h1 class="results-title">Search Results for "{{ searchQuery }}"</h1>
 
-            <!-- artists results -->
+            <!-- Izpildītāji -->
             <section v-if="artists.length > 0" class="results-section artist-section">
                 <div class="section-header">
                     <h2>Artists</h2>
@@ -83,7 +120,7 @@ const redirectToTrack = (slug) => {
                 </div>
             </section>
 
-            <!-- releases results -->
+            <!-- Albumi -->
             <section v-if="releases.length > 0" class="results-section release-section">
                 <div class="section-header">
                     <h2>Releases</h2>
@@ -92,34 +129,17 @@ const redirectToTrack = (slug) => {
                     </a>
                 </div>
                 <div class="release-results">
-                    <div
+                    <ReleaseCard
                         v-for="release in releases"
                         :key="release.id"
-                        class="release-card"
-                        @click="redirectToRelease(release.slug)"
-                    >
-                        <div class="image-wrapper">
-                            <img :src="release.cover_url" :alt="release.title" />
-                        </div>
-                        <div class="release-info">
-                            <h3>{{ release.title }}</h3>
-                            <div v-if="release.artists.length > 1" class="artists-names-container">
-                                <span class="artists-names">
-                                    {{ formatArtists(release.artists) }}
-                                </span>
-                            </div>
-                            <div v-else-if="release.artists.length === 1" class="single-artist">
-                                {{ release.artists[0].name }}
-                            </div>
-                            <p class="release-meta">
-                                {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
-                            </p>
-                        </div>
-                    </div>
+                        :release="release"
+                        :max-artists="3"
+                        @release-click="(release) => redirectToRelease(release.slug)"
+                    />
                 </div>
             </section>
 
-            <!-- tracks results by title or authors -->
+            <!-- Dziesmas pēc nosaukuma vai autora -->
             <section v-if="metadataMatches.length > 0" class="results-section track-section">
                 <div class="section-header">
                     <h2>Tracks</h2>
@@ -130,26 +150,24 @@ const redirectToTrack = (slug) => {
                     </a>
                 </div>
                 <div class="track-list metadata-track-list">
-                    <div v-for="track in metadataMatches" :key="track.id" class="track-card">
-                        <img class="track-image" :src="track.cover_url" :alt="track.title">
-                        <div class="track-info">
-                            <h3>
-                                <a @click="redirectToTrack(track.slug)" class="track-title-link">
-                                    {{ track.title }}
-                                </a>
-                            </h3>
-                            <p class="artists-names">
-                                <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                    {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
-                                </span>
-                            </p>
-                        </div>
-                        <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                    </div>
+                    <TrackCard
+                        v-for="track in metadataMatches"
+                        :key="track.id"
+                        :track="track"
+                        :show-number="false"
+                        :show-artists="true"
+                        :menu-open="openMenuId === track.id"
+                        duration-format="HH:mm:ss"
+                        :can-add="true"
+                        :can-remove="false"
+                        @track-click="handleTrackClick"
+                        @add-to-playlist="openAddToPlaylistModal"
+                        @toggle-menu="toggleTrackMenu"
+                    />
                 </div>
             </section>
 
-            <!-- tracks results by lyrics -->
+            <!-- Dziesmas pēc teksta -->
             <section v-if="lyricsMatches.length > 0" class="results-section track-section">
                 <div class="section-header">
                     <h2>Lyrics Matches</h2>
@@ -160,27 +178,28 @@ const redirectToTrack = (slug) => {
                     </a>
                 </div>
                 <div class="track-list lyric-matches">
-                    <div v-for="track in lyricsMatches" :key="track.id" class="track-card">
-                        <img class="track-image" :src="track.cover_url" :alt="track.title">
-                        <div class="track-info">
-                            <h3>
-                                <a @click="redirectToTrack(track.slug)" class="track-title-link">
-                                    {{ track.title }}
-                                </a>
-                            </h3>
-                            <p class="artists-names">
-                                <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                    {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
-                                </span>
-                            </p>
+                    <TrackCard
+                        v-for="track in lyricsMatches"
+                        :key="track.id"
+                        :track="track"
+                        :show-number="false"
+                        :show-artists="true"
+                        :menu-open="openMenuId === track.id"
+                        duration-format="HH:mm:ss"
+                        :can-add="true"
+                        :can-remove="false"
+                        @track-click="handleTrackClick"
+                        @add-to-playlist="openAddToPlaylistModal"
+                        @toggle-menu="toggleTrackMenu"
+                    >
+                        <template #extra-info>
                             <p class="lyric-snippet" v-html="track.lyric_snippet"></p>
-                        </div>
-                        <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                    </div>
+                        </template>
+                    </TrackCard>
                 </div>
             </section>
 
-            <!-- no results -->
+            <!-- Tukšs stāvoklis -->
             <div v-if="artists.length === 0 && releases.length === 0 && metadataMatches.length === 0
             && lyricsMatches.length === 0" class="no-results">
                 No results found for "{{ searchQuery }}"
@@ -188,6 +207,12 @@ const redirectToTrack = (slug) => {
         </div>
     </main>
     <Footer/>
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>
@@ -267,122 +292,17 @@ const redirectToTrack = (slug) => {
     justify-content: flex-start;
 }
 
-.release-card {
-    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.release-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.release-card .image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.release-card .image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.release-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-/* max two rows for name/title, if overflows - ellipsis */
-.release-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-info p {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.artists-names-container {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.3;
-    height: 2.6em;
-    overflow: hidden;
-}
-
-.release-info .artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
-
-.single-artist {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-meta {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .track-section {
     max-width: 1000px;
-    margin: 0 auto;
-    margin-bottom: 2.5rem;
+    margin: 0 auto 2.5rem;
 }
 
 .track-list {
     background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.track-card {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-    gap: 1rem;
+    border-radius: 16px;
+    overflow: visible;
+    box-shadow: 0 2px 8px rgba(12, 75, 170, 0.08);
+    border: 1px solid rgba(12, 75, 170, 0.08);
 }
 
 .metadata-track-list {
@@ -390,79 +310,9 @@ const redirectToTrack = (slug) => {
     margin: 0 auto;
 }
 
-.track-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 4px;
-    object-fit: cover;
-    flex-shrink: 0;
-    margin: 0;
-    padding: 0;
-}
-
-.track-info {
-    flex: 1;
-    min-width: 0;
-    padding: 0 0.1rem;
-    overflow: hidden;
-}
-
-.track-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 0.95rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    display: block;
-}
-
-.track-info p {
-    margin: 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-info .artists-names {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-    color: #666;
-    font-size: 0.9rem;
-    width: 100%;
-    display: block;
-}
-
-.track-title-link {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.track-title-link:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.track-duration {
-    text-align: right;
-    color: #666;
-    flex: 0 0 80px;
-}
-
-.lyric-matches{
+.lyric-matches {
     max-width: 900px;
     margin: 0 auto;
-}
-
-.lyric-matches .track-card {
-    background: white;
-    padding-left: 0.5rem;
 }
 
 .lyric-snippet {
@@ -471,6 +321,12 @@ const redirectToTrack = (slug) => {
     font-size: 0.85rem;
     line-height: 1.4;
     font-style: italic;
+}
+
+@media (max-width: 645px) {
+    .lyric-snippet {
+        display: none;
+    }
 }
 
 .lyric-snippet mark {
@@ -492,26 +348,6 @@ const redirectToTrack = (slug) => {
         font-size: 1.8rem;
         padding-top: 0.5rem;
     }
-
-    .release-card {
-        flex: 0 0 calc(50% - 0.75rem);
-    }
-
-    .release-info {
-        padding: 1.25rem;
-    }
-
-    .release-info h3 {
-        font-size: 1.05rem;
-    }
-
-    .release-info p {
-        font-size: 0.95rem;
-    }
-
-    .track-info h3 {
-        font-size: 0.9rem;
-    }
 }
 
 @media (max-width: 480px) {
@@ -527,9 +363,6 @@ const redirectToTrack = (slug) => {
     .release-results {
         justify-content: center;
     }
-
-    .release-card {
-        flex: 0 0 80%;
-    }
 }
+
 </style>

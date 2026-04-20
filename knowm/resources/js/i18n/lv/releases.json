@@ -1,0 +1,20 @@
+{
+    "show": {
+        "about_release": "Par šo albumu",
+        "genres": "Žanri",
+        "no_genres": "Nav žanru, kas saistīti ar šo albumu.",
+        "no_description": "Šim albumam nav apraksta.",
+        "read_more": "Lasīt vairāk"
+    },
+    "description": {
+        "back_to_release": "Atpakaļ pie albuma",
+        "details_title": "Informācija",
+        "release_date": "Izdošanas datums",
+        "length": "Garums",
+        "track": "dziesma",
+        "tracks": "dziesmas",
+        "unknown": "Nav zināms",
+        "description_title": "Apraksts",
+        "no_description": "Šim albumam nav apraksta."
+    }
+}

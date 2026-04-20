@@ -10,5 +10,14 @@
         "about": "Par izpildītāju",
         "no_biography": "Šim izpildītājam nav pieejama biogrāfija.",
         "read_more": "Lasīt vairāk"
+    },
+    "bio": {
+        "biography_title": "Biogrāfija",
+        "details_title": "Informācija",
+        "years_active": "Darbības gadi",
+        "present": "pašlaik",
+        "unknown": "Nav zināms",
+        "back_to_artist": "Atpakaļ pie izpildītāja",
+        "no_biography": "Šim izpildītājam nav biogrāfijas."
     }
 }

@@ -129,7 +129,7 @@ class GenreService
                     'duration' => $track->duration->format('H:i:s'),
                     'audio_source' => $track->audio_source,
                     'cover_url' => $track->releases->first()->cover_url ?? '/images/default-release-cover.webp',
-                    'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
+                    'artists' => $track->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name, 'slug' => $a->slug]),
                 ];
             })
             ->toArray();
@@ -146,6 +146,7 @@ class GenreService
             $query->where('genres.id', $genre->id);
         })
             ->with(['artists'])
+            ->withCount('tracks')
             ->orderBy('release_date', 'desc')
             ->limit($limit)
             ->get()
@@ -154,9 +155,10 @@ class GenreService
                     'id' => $release->id,
                     'title' => $release->title,
                     'slug' => $release->slug,
-                    'year' => $release->release_date ? date('Y', strtotime($release->release_date)) : null,
+                    'release_date' => $release->release_date,
                     'type' => $release->release_type,
                     'cover_url' => $release->cover_url ?? '/images/default-release-cover.webp',
+                    'tracks_count' => $release->tracks_count,
                     'artists' => $release->artists->map(fn($a) => ['id' => $a->id, 'name' => $a->name]),
                 ];
             })

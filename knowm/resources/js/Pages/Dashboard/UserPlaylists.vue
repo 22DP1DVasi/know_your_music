@@ -72,7 +72,7 @@ const createNewPlaylist = () => {
                 </div>
             </div>
 
-            <!-- Atskaņošanas sarakstu grid -->
+            <!-- Kolekciju grid -->
             <div v-if="playlists.data && playlists.data.length > 0" class="playlists-grid">
                 <PlaylistCard
                     v-for="playlist in playlists.data"

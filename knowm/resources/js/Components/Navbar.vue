@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount, watch, computed } from "vue";
 import {usePage, router, Link} from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n'
 import { route } from "ziggy-js";
+import axios from "axios";
 
 const page = usePage();
 const { locale, t } = useI18n();
@@ -87,10 +88,14 @@ const performSearch = () => {
     }
 };
 
-const changeLanguage = (lang) => {
-    console.log(`roles: ${roles.value}`);
+const changeLanguage = async (lang) => {
     locale.value = lang;
     localStorage.setItem('locale', lang);
+    await axios.post('/locale', { locale: lang });
+    router.reload({
+        preserveScroll: true,
+        preserveState: true,
+    });
 };
 
 watch(locale, (newLocale) => {

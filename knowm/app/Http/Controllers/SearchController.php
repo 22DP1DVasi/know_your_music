@@ -63,12 +63,12 @@ class SearchController extends Controller
     public function releases(Request $request)
     {
         $query = $request->input('q', '');
-        $type = $request->input('type', 'title');
+        $type = $request->input('type', 'artist');
         $perPage = $request->input('perPage', 24);
 
         $releases = Release::when($type === 'title', function($q) use ($query) {
             $q->where('title', 'like', "%{$query}%");
-        })
+            })
             ->when($type === 'artist', function($q) use ($query) {
                 $q->whereHas('artists', function($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%");

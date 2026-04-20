@@ -1,3 +1,100 @@
+<script setup>
+import { Head, router, usePage } from "@inertiajs/vue3";
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import Navbar from "@/Components/Navbar.vue";
+import Footer from "@/Components/Footer.vue";
+import Pagination from "@/Components/Pagination.vue";
+import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
+import { route } from "ziggy-js";
+
+const props = defineProps({
+    tracks: Array,
+    searchQuery: String,
+    searchType: {
+        type: String,
+        default: 'title'
+    },
+    paginationLinks: Array,
+    currentPage: Number,
+    totalPages: Number,
+    perPage: Number
+});
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
+
+const localSearchQuery = ref(props.searchQuery);
+const searchType = ref(props.searchType || 'title');
+
+const localPerPage = ref(props.perPage || 20);
+
+const checkScreenSize = () => {
+    localPerPage.value = window.innerWidth <= 768 ? 12 : 20;
+};
+
+onMounted(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkScreenSize);
+});
+
+const performSearch = () => {
+    router.visit(`/search/tracks?q=${localSearchQuery.value}&type=${searchType.value}&perPage=${localPerPage.value}`, {
+        preserveState: true,
+        replace: true
+    });
+};
+
+const formatDuration = (timeString) => {
+    if (!timeString) return '--:--';
+    const [hours, minutes, seconds] = timeString.split(':');
+    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
+const redirectToTrack = (slug) => {
+    router.get(`/tracks/${slug}`);
+};
+
+const goBack = () => {
+    router.visit(`/search?q=${props.searchQuery}`);
+};
+
+// izvēlnes stāvoklis dziesmu kartēm
+const openMenuId = ref(null);
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const toggleTrackMenu = (trackId) => {
+    openMenuId.value = openMenuId.value === trackId ? null : trackId;
+};
+
+const handleTrackClick = (track) => {
+    router.get(`/tracks/${track.slug}`);
+};
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
+};
+
+</script>
+
 <template>
     <Head title="Tracks Search Results {{ searchQuery }}" />
     <Navbar />
@@ -50,22 +147,21 @@
             </div>
 
             <div class="track-list metadata-track-list">
-                <div v-for="track in tracks" :key="track.id" class="track-card">
-                    <img :src="track.cover_url" class="track-image" :alt="track.title">
-                    <div class="track-info">
-                        <h3>
-                            <a @click="redirectToTrack(track.slug)" class="track-title-link">
-                                {{ track.title }}
-                            </a>
-                        </h3>
-                        <p class="artists-names">
-                            <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                </div>
+                <TrackCard
+                    v-for="(track, index) in tracks"
+                    :key="track.id"
+                    :track="track"
+                    :index="(currentPage - 1) * perPage + index"
+                    :show-number="true"
+                    :show-artists="true"
+                    :menu-open="openMenuId === track.id"
+                    duration-format="HH:mm:ss"
+                    :can-add="true"
+                    :can-remove="false"
+                    @track-click="handleTrackClick"
+                    @add-to-playlist="openAddToPlaylistModal"
+                    @toggle-menu="toggleTrackMenu"
+                />
             </div>
 
             <div v-if="tracks.length === 0" class="no-results">
@@ -83,67 +179,13 @@
         </div>
     </main>
     <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
-
-<script setup>
-import { Head, router } from "@inertiajs/vue3";
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import Navbar from "@/Components/Navbar.vue";
-import Footer from "@/Components/Footer.vue";
-import Pagination from "@/Components/Pagination.vue";
-
-const props = defineProps({
-    tracks: Array,
-    searchQuery: String,
-    searchType: {
-        type: String,
-        default: 'title'
-    },
-    paginationLinks: Array,
-    currentPage: Number,
-    totalPages: Number,
-    perPage: Number
-});
-
-const localSearchQuery = ref(props.searchQuery);
-const searchType = ref(props.searchType || 'title');
-
-const localPerPage = ref(props.perPage || 20);
-
-const checkScreenSize = () => {
-    localPerPage.value = window.innerWidth <= 768 ? 12 : 20;
-};
-
-onMounted(() => {
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-});
-
-onBeforeUnmount(() => {
-    window.removeEventListener('resize', checkScreenSize);
-});
-
-const performSearch = () => {
-    router.visit(`/search/tracks?q=${localSearchQuery.value}&type=${searchType.value}&perPage=${localPerPage.value}`, {
-        preserveState: true,
-        replace: true
-    });
-};
-
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const [hours, minutes, seconds] = timeString.split(':');
-    return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
-};
-
-const redirectToTrack = (slug) => {
-    router.get(`/tracks/${slug}`);
-};
-
-const goBack = () => {
-    router.visit(`/search?q=${props.searchQuery}`);
-};
-</script>
 
 <style scoped>
 .search-results {
@@ -301,7 +343,7 @@ const goBack = () => {
 .track-list {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 2rem;
 }
@@ -309,70 +351,6 @@ const goBack = () => {
 .metadata-track-list {
     max-width: 800px;
     margin: 0 auto;
-}
-
-.track-card {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-    gap: 1rem;
-}
-
-.track-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 4px;
-    object-fit: cover;
-    flex-shrink: 0;
-    margin: 0;
-    padding: 0;
-}
-
-.track-info {
-    flex: 1;
-    min-width: 0;
-    padding: 0 0.5rem;
-    overflow: hidden;
-}
-
-.track-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 0.95rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    display: block;
-}
-
-.track-title-link {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.track-title-link:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.artists-names {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-    color: #666;
-    font-size: 0.9rem;
-    width: 100%;
-    display: block;
-}
-
-.track-duration {
-    text-align: right;
-    color: #666;
-    flex: 0 0 80px;
 }
 
 .no-results {
@@ -405,20 +383,6 @@ const goBack = () => {
         max-width: 85%;
         margin: 0 auto;
         padding: 0 1.25rem;
-    }
-
-    .track-card {
-        padding: 0.75rem 0;
-        gap: 0.75rem;
-    }
-
-    .track-image {
-        width: 55px;
-        height: 55px;
-    }
-
-    .track-info h3 {
-        max-width: 180px;
     }
 }
 
@@ -459,14 +423,6 @@ const goBack = () => {
     .metadata-track-list {
         max-width: 90%;
         padding: 0 1.75rem;
-    }
-
-    .track-card {
-        padding: 0.75rem 0;
-    }
-
-    .track-info h3 {
-        max-width: 200px;
     }
 }
 
@@ -526,31 +482,8 @@ const goBack = () => {
         font-size: 0.85rem;
     }
 
-    .track-card {
-        padding: 0.75rem 0;
-        gap: 0.75rem;
-    }
-
-    .track-image {
-        width: 50px;
-        height: 50px;
-    }
-
-    .track-info {
-        padding: 0 0.5rem;
-    }
-
     .metadata-track-list {
         padding: 0 0.75rem;
-    }
-
-    .track-info h3 {
-        max-width: 140px;
-    }
-
-    .track-duration {
-        flex: 0 0 60px;
-        font-size: 0.85rem;
     }
 }
 </style>

@@ -103,15 +103,15 @@ Route::get('/artists/{artist}', [ArtistController::class, 'show'])
     ->name('artists.show');
 
 // lapa izpildītāja biogrāfijai
-Route::get('/artists/{artist}/bio', [ArtistController::class, 'showBio'])
+Route::get('/artists/{artist:slug}/bio', [ArtistController::class, 'showBio'])
     ->name('artist.bio');
 
 // izpildītāja visu dziesmu lapa
-Route::get('/artists/{artist}/tracks', [ArtistController::class, 'showAllTracks'])
+Route::get('/artists/{artist:slug}/tracks', [ArtistController::class, 'showAllTracks'])
     ->name('artists.tracks');
 
 // izpildītāja visu albumu lapa
-Route::get('/artists/{artist}/releases', [ArtistController::class, 'showAllReleases'])
+Route::get('/artists/{artist:slug}/releases', [ArtistController::class, 'showAllReleases'])
     ->name('artists.releases');
 
 // komentāri izpildītāja lapai
@@ -137,6 +137,10 @@ Route::delete('/artists/{artist}/favorite', [ArtistController::class, 'removeFav
 // albuma inf. lapa
 Route::get('/releases/{release}', [ReleaseController::class, 'show'])
     ->name('releases.show');
+
+// albuma apraksta lapa
+Route::get('/releases/{release:slug}/description', [ReleaseController::class, 'showDescription'])
+    ->name('releases.description');
 
 // komentāri albuma lapai
 Route::prefix('releases/{release}')->group(function () {
@@ -201,21 +205,17 @@ Route::get('/explore/genres', [GenreController::class, 'explore'])
 
 // lokalizācija / locale
 Route::post('/locale', function (Request $request) {
-    $locale = $request->string('locale')->toString();
-    if (! in_array($locale, ['en', 'lv'])) {
-        abort(400);
-    }
+    $locale = (string) $request->input('locale');
+    abort_unless(in_array($locale, ['en', 'lv'], true), 400);
     session(['locale' => $locale]);
-    \Illuminate\Support\Facades\App::setLocale($locale);
+
     return response()->noContent();
 });
 
 // lietotāja konta ceļi
 Route::middleware('auth')->group(function () {
     // pārskats
-    Route::get('/dashboard', function () {
-        return inertia('Dashboard/Overview');
-    })->name('dashboard');
+    Route::get('/dashboard', [ProfileController::class, 'index'])->name('dashboard');
 
     // profila iestatījumi
     Route::get('/dashboard/settings', [ProfileController::class, 'edit'])->name('settings.edit');

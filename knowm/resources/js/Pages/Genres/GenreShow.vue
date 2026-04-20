@@ -1,11 +1,15 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import AudioPlayer from '@/Components/MiniAudioPlayer.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
+import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
+import ReleaseCard from "@/Components/Releases/ReleaseCard.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
+import { route } from "ziggy-js";
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -136,6 +140,10 @@ const analyzeImage = () => {
     imageStyle.value.opacity = '1';
 };
 
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
+
 const truncatedDescription = computed(() => {
     if (!props.genre.description) return 'There is no background for this genre.';
     if (props.genre.description.length <= descriptionMaxLength) return props.genre.description;
@@ -154,13 +162,13 @@ const redirectToFullDescription = (slug) => {
     window.location.href = `/genres/${slug}/description`;
 };
 
-const playTrack = (source) => {
-    currentAudioSource.value = source;
-    showPlayer.value = true;
-    setTimeout(() => {
-        document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-};
+// const playTrack = (source) => {
+//     currentAudioSource.value = source;
+//     showPlayer.value = true;
+//     setTimeout(() => {
+//         document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
+//     }, 100);
+// };
 
 const closePlayer = () => {
     showPlayer.value = false;
@@ -175,8 +183,8 @@ const redirectToAllArtists = (slug) => {
     window.location.href = `/genres/${slug}/artists`;
 };
 
-const redirectToTrack = (slug) => {
-    window.location.href = `/tracks/${slug}`;
+const redirectToTrack = (track) => {
+    router.get(`/tracks/${track.slug}`);
 };
 
 const redirectToAllTracks = (slug) => {
@@ -195,6 +203,31 @@ const formatDuration = (timeString) => {
     if (!timeString) return '--:--';
     const [hours, minutes, seconds] = timeString.split(':');
     return minutes.padStart(2, '0') + ':' + seconds.padStart(2, '0');
+};
+
+// izvēlnes stāvoklis dziesmu kartēm
+const openMenuId = ref(null);
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const toggleTrackMenu = (trackId) => {
+    openMenuId.value = openMenuId.value === trackId ? null : trackId;
+};
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
 };
 
 </script>
@@ -279,26 +312,24 @@ const formatDuration = (timeString) => {
                         </button>
                     </div>
                     <div class="track-list">
-                        <div v-for="(track, index) in genre.tracks" :key="track.id" class="track-card">
-                            <span class="track-number">{{ index + 1 }}</span>
-                            <img :src="track.cover_url" class="track-image" :alt="track.title">
-                            <div class="track-info">
-                                <h3>
-                                    <a @click="redirectToTrack(track.slug)" class="track-title">
-                                        {{ track.title }}
-                                    </a>
-                                </h3>
-                                <p class="track-artist" @click="redirectToArtist(track.artist_slug)">{{ track.artist_name }}</p>
-                            </div>
-                            <button
-                                v-if="track.audio_source"
-                                @click="playTrack(track.audio_source)"
-                                class="play-button"
-                            >
-                                <i class="fa-regular fa-circle-play"></i>
-                            </button>
-                            <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                        </div>
+                        <TrackCard
+                            v-for="(track, index) in genre.tracks"
+                            :key="track.id"
+                            :track="track"
+                            :index="index"
+                            duration-format="HH:mm:ss"
+                            :show-number="true"
+                            :show-image="true"
+                            :show-artists="true"
+                            :show-duration="true"
+                            :show-context-menu="true"
+                            :can-add="true"
+                            :can-remove="false"
+                            @track-click="redirectToTrack"
+                            :menu-open="openMenuId === track.id"
+                            @add-to-playlist="openAddToPlaylistModal"
+                            @toggle-menu="toggleTrackMenu"
+                        />
                     </div>
                 </section>
 
@@ -314,21 +345,13 @@ const formatDuration = (timeString) => {
                         </button>
                     </div>
                     <div class="release-results">
-                        <div
+                        <ReleaseCard
                             v-for="release in genre.releases"
                             :key="release.id"
-                            class="release-card"
-                            @click="redirectToRelease(release.slug)"
-                        >
-                            <div class="image-wrapper">
-                                <img :src="release.cover_url" :alt="release.title">
-                            </div>
-                            <div class="release-info">
-                                <h3>{{ release.title }}</h3>
-                                <p class="release-artist" @click="redirectToArtist(release.artist_slug)">{{ release.artist_name }}</p>
-                                <p class="release-year">{{ release.year }}</p>
-                            </div>
-                        </div>
+                            :release="release"
+                            :max-artists="3"
+                            @release-click="(release) => redirectToRelease(release.slug)"
+                        />
                     </div>
                 </section>
 
@@ -354,6 +377,12 @@ const formatDuration = (timeString) => {
         />
     </main>
     <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>
@@ -562,95 +591,10 @@ const formatDuration = (timeString) => {
 .track-list {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 2rem;
     max-width: 100%;
-}
-
-.track-card {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-    gap: 0.75rem;
-}
-
-.track-number {
-    color: #666;
-    width: 24px;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-.track-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 4px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.track-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.track-info h3 {
-    text-decoration: none;
-    transition: color 0.2s;
-    font-size: 0.95rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-artist {
-    color: #666;
-    font-size: 0.85rem;
-    margin: 0.25rem 0 0 0;
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-artist:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.track-title {
-    cursor: pointer;
-}
-
-.track-title:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.play-button {
-    background: none;
-    border: none;
-    color: #0c4baa;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0 0.5rem;
-    transition: transform 0.2s, color 0.2s;
-    flex-shrink: 0;
-}
-
-.play-button:hover {
-    color: #1a5fc9;
-    transform: scale(1.1);
-}
-
-.track-duration {
-    color: #666;
-    font-size: 0.9rem;
-    flex: 0 0 50px;
-    text-align: right;
 }
 
 .genre-releases-header {
@@ -668,81 +612,6 @@ const formatDuration = (timeString) => {
     gap: 1.5rem;
     justify-content: flex-start;
     margin-bottom: 2rem;
-}
-
-.release-card {
-    flex: 0 0 calc(25% - 1.125rem);
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.release-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.release-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-.release-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-artist {
-    color: #666;
-    font-size: 0.9rem;
-    margin: 0.25rem 0;
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-artist:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.release-year {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 /* Responsivitāte */
@@ -801,14 +670,6 @@ const formatDuration = (timeString) => {
         background-color: #0c4baa;
         border-radius: 6px;
     }
-
-    .release-card {
-        display: inline-block;
-        vertical-align: top;
-        width: 250px;
-        margin-right: 15px;
-        flex: none;
-    }
 }
 
 @media (max-width: 768px) {
@@ -822,24 +683,6 @@ const formatDuration = (timeString) => {
 
     .artist-image {
         height: 120px;
-    }
-
-    .track-card {
-        padding: 0.75rem;
-        gap: 0.75rem;
-    }
-
-    .track-image {
-        width: 45px;
-        height: 45px;
-    }
-
-    .track-info {
-        padding: 0 0.25rem;
-    }
-
-    .track-duration {
-        flex: 0 0 50px;
     }
 
     .sidebar-space {
@@ -862,41 +705,6 @@ const formatDuration = (timeString) => {
 
     .artist-image {
         height: 100px;
-    }
-
-    .track-card {
-        padding: 0.5rem;
-        gap: 0.5rem;
-    }
-
-    .track-image {
-        width: 40px;
-        height: 40px;
-    }
-
-    .track-number {
-        width: 20px;
-    }
-
-    .track-title {
-        font-size: 0.9rem;
-    }
-
-    .track-duration {
-        font-size: 0.85rem;
-        flex: 0 0 45px;
-    }
-
-    .release-card {
-        flex: 0 0 80%;
-    }
-
-    .release-info h3 {
-        font-size: 0.95rem;
-    }
-
-    .release-year, .release-artist {
-        font-size: 0.85rem;
     }
 }
 

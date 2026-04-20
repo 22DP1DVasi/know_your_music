@@ -10,5 +10,14 @@
         "about": "About",
         "no_biography": "There is no background for this artist.",
         "read_more": "Read more"
+    },
+    "bio": {
+        "biography_title": "Biography",
+        "details_title": "Details",
+        "years_active": "Years Active",
+        "present": "present",
+        "unknown": "Unknown",
+        "back_to_artist": "Back to artist",
+        "no_biography": "There is no background for this artist."
     }
 }

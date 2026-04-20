@@ -1,62 +1,12 @@
-<template>
-    <Head :title="`${artist.name} Biography`" />
-    <Navbar />
-    <main class="artist-page flex-1">
-        <div class="artist-hero" :style="heroStyle">
-            <div class="hero-gradient" v-if="!isLandscape"></div>
-            <div class="hero-image-container">
-                <img
-                    :src="getArtistImage(artist)"
-                    :alt="artist.name"
-                    class="hero-image"
-                    ref="heroImage"
-                    @load="handleImageLoad"
-                    :style="imageStyle"
-                    loading="eager"
-                >
-            </div>
-            <h1 class="artist-name">{{ artist.name }}</h1>
-            <div class="back-button" @click="goBackToArtist">
-                ← Back to artist
-            </div>
-        </div>
-
-        <div class="artist-content">
-            <div class="main-content">
-                <h2 class="section-title">Biography</h2>
-                <div class="bio-wrapper">
-                    <div class="info-card wrapped">
-                        <h3 class="info-title">Details</h3>
-                        <div class="info-flex">
-                            <div class="info-item">
-                                <span class="info-value">
-                                  <b>{{ capitalize(artist.solo_or_band) || 'Unknown' }}</b>
-                                </span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Unknown' }} - {{ artist.disbanded_year || (artist.is_active ? 'present' : 'unknown') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="artist.biography" class="bio-text" v-html="artist.biography"></div>
-                    <div v-else class="bio-text">There is no background for this artist.</div>
-                </div>
-            </div>
-
-            <div class="sidebar-space">
-                <!-- Future content like "Similar Artists" will go here -->
-            </div>
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import ColorThief from 'colorthief';
+
+const { t, locale } = useI18n();
 
 const props = defineProps({
     artist: Object,
@@ -163,6 +113,57 @@ const getArtistImage = (artist, type = 'profile') => {
     return '/images/default-artist-profile.webp';
 };
 
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
+const currentBiography = computed(() => {
+    if (locale.value === 'lv' && props.artist.biography_lv) {
+        return props.artist.biography_lv;
+    }
+    if (locale.value === 'en' && props.artist.biography) {
+        return props.artist.biography;
+    }
+    if (locale.value === 'lv' && !props.artist.biography_lv && props.artist.biography) {
+        return props.artist.biography;
+    }
+    if (locale.value === 'en' && !props.artist.biography && props.artist.biography_lv) {
+        return props.artist.biography_lv;
+    }
+    return '';
+});
+
+const languageNotice = computed(() => {
+    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    if (locale.value === 'lv' && !props.artist.biography_lv && props.artist.biography) {
+        return {
+            show: true,
+            message: 'Biogrāfija pieejama tikai angļu valodā.',
+            type: 'lv-no-bio'
+        };
+    }
+    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    if (locale.value === 'en' && !props.artist.biography && props.artist.biography_lv) {
+        return {
+            show: true,
+            message: 'Biography available only in Latvian.',
+            type: 'en-no-bio'
+        };
+    }
+    return {
+        show: false,
+        message: '',
+        type: null
+    };
+});
+
+const hasBiography = computed(() => {
+    return currentBiography.value !== '';
+});
+
 const goBackToArtist = () => {
     router.visit(`/artists/${props.artist.slug}`);
 };
@@ -173,6 +174,70 @@ const capitalize = (value) => {
 };
 
 </script>
+
+<template>
+    <Head :title="`${artist.name} Biography`" />
+    <Navbar />
+    <main class="artist-page flex-1">
+        <div class="artist-hero" :style="heroStyle">
+            <div class="hero-gradient" v-if="!isLandscape"></div>
+            <div class="hero-image-container">
+                <img
+                    :src="getArtistImage(artist)"
+                    :alt="artist.name"
+                    class="hero-image"
+                    ref="heroImage"
+                    @load="handleImageLoad"
+                    :style="imageStyle"
+                    loading="eager"
+                >
+            </div>
+            <h1 class="artist-name">{{ artist.name }}</h1>
+            <div class="back-button" @click="goBackToArtist">
+                ← {{ t('artists.bio.back_to_artist') }}
+            </div>
+        </div>
+
+        <div class="artist-content">
+            <div class="main-content">
+                <h2 class="section-title">{{ t('artists.bio.biography_title') }}</h2>
+                <div class="bio-wrapper">
+                    <div class="info-card wrapped">
+                        <h3 class="info-title">{{ t('artists.bio.details_title') }}</h3>
+                        <div class="info-flex">
+                            <div class="info-item">
+                            <span class="info-value">
+                              <b>{{ capitalize(artist.solo_or_band) || t('artists.bio.unknown') }}</b>
+                            </span>
+                            </div>
+                            <div class="info-item">
+                            <span class="info-value">
+                                <b>{{ t('artists.bio.years_active') }}:</b>
+                                {{ artist.formed_year || t('artists.bio.unknown') }}
+                                - {{ artist.disbanded_year || (artist.is_active ? t('artists.bio.present') : t('artists.bio.unknown')) }}
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language notice -->
+                    <div v-if="languageNotice.show" class="language-notice" :data-type="languageNotice.type">
+                        {{ languageNotice.message }}
+                    </div>
+
+                    <!-- Biography text -->
+                    <div v-if="hasBiography" class="bio-text" v-html="currentBiography"></div>
+                    <div v-else class="bio-text no-bio">{{ t('artists.bio.no_biography') }}</div>
+                </div>
+            </div>
+
+            <div class="sidebar-space">
+                <!-- Future content like "Similar Artists" will go here -->
+            </div>
+        </div>
+    </main>
+    <Footer />
+</template>
 
 <style scoped>
 .artist-page {
@@ -249,7 +314,7 @@ const capitalize = (value) => {
 .back-button {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     cursor: pointer;
     color: white;
     font-weight: 500;
@@ -356,6 +421,31 @@ const capitalize = (value) => {
     font-weight: 500;
 }
 
+.language-notice {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #999;
+    font-style: italic;
+}
+
+.language-notice[data-type="lv-no-bio"] {
+    border-left-color: #0c4baa;
+}
+
+.language-notice[data-type="en-no-bio"] {
+    border-left-color: #aa0c4b;
+}
+
+.no-bio {
+    color: #666;
+    font-style: italic;
+    padding: 0.5rem 0;
+}
+
 @media (max-width: 1455px) {
     .artist-page {
         width: 90%;
@@ -435,4 +525,5 @@ const capitalize = (value) => {
         padding: 0.4rem 0.8rem;
     }
 }
+
 </style>

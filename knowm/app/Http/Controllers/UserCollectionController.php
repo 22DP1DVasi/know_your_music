@@ -63,11 +63,11 @@ class UserCollectionController extends Controller
     }
 
     /**
-     * Atjaunināt norādīto atskaņošanas sarakstu.
+     * Atjaunināt norādīto kolekciju.
      */
     public function update(Request $request, UserCollection $playlist)
     {
-        // pārbaudīt, vai lietotājam pieder atskaņošanas saraksts
+        // pārbaudīt, vai lietotājam pieder kolekcija
         if ($playlist->user_id !== Auth::id()) {
             return response()->json([
                 'success' => false,
@@ -84,7 +84,7 @@ class UserCollectionController extends Controller
         if ($validated['name'] !== $playlist->name) {
             $validated['slug'] = $playlist->generateUniqueSlug($validated['name']);
         }
-        // atjaunināt atsk. sarakstu
+        // atjaunināt kolekciju
         $playlist->update($validated);
 
         return redirect()->route('playlists.show', $playlist->fresh())
@@ -92,7 +92,7 @@ class UserCollectionController extends Controller
     }
 
     /***
-     * Noņem ierakstu no atskaņošanas saraksta.
+     * Noņem ierakstu no kolekcijas.
      *
      * @param UserCollection $playlist
      * @param Track $track
@@ -129,7 +129,7 @@ class UserCollectionController extends Controller
     }
 
     /**
-     * Iegūst lietotāja atskaņošanas sarakstus priekš AddToPlaylistModal.vue mod. logam.
+     * Iegūst lietotāja kolekcijas priekš AddToPlaylistModal.vue mod. logam.
      */
     public function getUserPlaylists(Request $request)
     {
@@ -161,7 +161,7 @@ class UserCollectionController extends Controller
     }
 
     /**
-     * Pievieno dziesmu esošam atskaņošanas sarakstam.
+     * Pievieno dziesmu esošai kolekcijai.
      */
     public function addTrackToPlaylist(Request $request, UserCollection $playlist)
     {
@@ -174,7 +174,7 @@ class UserCollectionController extends Controller
         $request->validate([
             'track_id' => 'required|exists:tracks,id'
         ]);
-        // pārbaudīt, vai dziesma jau pastāv atsk. sarakstā
+        // pārbaudīt, vai dziesma jau pastāv kolekcijā
         // nestrādā?
         if ($playlist->tracks()->where('track_id', $request->track_id)->exists()) {
             return response()->json([
@@ -198,7 +198,7 @@ class UserCollectionController extends Controller
     }
 
     /**
-     * Izveidot jaunu atsk. sarakstu un pievienot tam dziesmu.
+     * Izveidot jaunu kolekciju un pievienot tam dziesmu.
      */
     public function createPlaylistWithTrack(Request $request)
     {
@@ -208,7 +208,7 @@ class UserCollectionController extends Controller
             'track_id' => 'required|exists:tracks,id'
         ]);
 
-        // izveidot sarakstu
+        // izveidot kolekciju
         $playlist = UserCollection::create([
             'user_id' => Auth::id(),
             'name' => $request->name,

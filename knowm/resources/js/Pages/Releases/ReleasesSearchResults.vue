@@ -1,3 +1,65 @@
+<script setup>
+import { Head, router } from "@inertiajs/vue3";
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import Navbar from "@/Components/Navbar.vue";
+import Footer from "@/Components/Footer.vue";
+import Pagination from "@/Components/Pagination.vue";
+import ReleaseCard from "@/Components/Releases/ReleaseCard.vue";
+
+const props = defineProps({
+    releases: Array,
+    searchQuery: String,
+    searchType: {
+        type: String,
+        default: 'title'
+    },
+    paginationLinks: Array,
+    currentPage: Number,
+    totalPages: Number,
+    perPage: Number
+});
+
+const localSearchQuery = ref(props.searchQuery);
+const searchType = ref(props.searchType || 'title');
+
+const localPerPage = ref(props.perPage || 24);
+
+const checkScreenSize = () => {
+    localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
+};
+
+onMounted(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', checkScreenSize);
+});
+
+const performSearch = () => {
+    router.visit(`/search/releases?q=${localSearchQuery.value}&type=${searchType.value}&perPage=${localPerPage.value}`, {
+        preserveState: true,
+        replace: true
+    });
+};
+
+const formatArtists = (artists) => {
+    if (!artists || artists.length === 0) return '';
+    const names = artists.map(artist => artist.name);
+    return names.join(', ');
+};
+
+const redirectToRelease = (slug) => {
+    router.get(`/releases/${slug}`);
+};
+
+const goBack = () => {
+    router.visit(`/search?q=${props.searchQuery}`);
+};
+
+</script>
+
 <template>
     <Head title="All Releases Search Results {{ searchQuery }}" />
     <Navbar />
@@ -52,30 +114,13 @@
             <section v-if="releases.length > 0" class="results-section">
                 <div class="release-results-wrapper">
                     <div class="release-results">
-                        <div
+                        <ReleaseCard
                             v-for="release in releases"
                             :key="release.id"
-                            class="release-card"
-                            @click="redirectToRelease(release.slug)"
-                        >
-                            <div class="image-wrapper">
-                                <img :src="release.cover_url" :alt="release.title" />
-                            </div>
-                            <div class="release-info">
-                                <h3>{{ release.title }}</h3>
-                                <div v-if="release.artists.length > 1" class="artists-names-container">
-                                    <span class="artists-names">
-                                        {{ formatArtists(release.artists) }}
-                                    </span>
-                                </div>
-                                <div v-else-if="release.artists.length === 1" class="single-artist">
-                                    {{ release.artists[0].name }}
-                                </div>
-                                <p class="release-meta">
-                                    {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
-                                </p>
-                            </div>
-                        </div>
+                            :release="release"
+                            :max-artists="3"
+                            @release-click="(release) => redirectToRelease(release.slug)"
+                        />
                     </div>
                 </div>
             </section>
@@ -96,66 +141,6 @@
     </main>
     <Footer />
 </template>
-
-<script setup>
-import { Head, router } from "@inertiajs/vue3";
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import Navbar from "@/Components/Navbar.vue";
-import Footer from "@/Components/Footer.vue";
-import Pagination from "@/Components/Pagination.vue";
-
-const props = defineProps({
-    releases: Array,
-    searchQuery: String,
-    searchType: {
-        type: String,
-        default: 'title'
-    },
-    paginationLinks: Array,
-    currentPage: Number,
-    totalPages: Number,
-    perPage: Number
-});
-
-const localSearchQuery = ref(props.searchQuery);
-const searchType = ref(props.searchType || 'title');
-
-const localPerPage = ref(props.perPage || 24);
-
-const checkScreenSize = () => {
-    localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
-};
-
-onMounted(() => {
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-});
-
-onBeforeUnmount(() => {
-    window.removeEventListener('resize', checkScreenSize);
-});
-
-const performSearch = () => {
-    router.visit(`/search/releases?q=${localSearchQuery.value}&type=${searchType.value}&perPage=${localPerPage.value}`, {
-        preserveState: true,
-        replace: true
-    });
-};
-
-const formatArtists = (artists) => {
-    if (!artists || artists.length === 0) return '';
-    const names = artists.map(artist => artist.name);
-    return names.join(', ');
-};
-
-const redirectToRelease = (slug) => {
-    router.get(`/releases/${slug}`);
-};
-
-const goBack = () => {
-    router.visit(`/search?q=${props.searchQuery}`);
-};
-</script>
 
 <style scoped>
 .search-results {
@@ -329,108 +314,6 @@ const goBack = () => {
     justify-content: flex-start;
 }
 
-.release-card {
-    flex: 0 0 calc(25% - 1.125rem);
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.release-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.release-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Shows the entire image */
-}
-
-.release-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-.release-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-info p {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.artists-names-container {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.3;
-    height: 2.6em;
-    overflow: hidden;
-}
-
-.artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
-
-.single-artist {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-meta {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .no-results {
     padding: 2rem;
     text-align: center;
@@ -493,10 +376,6 @@ const goBack = () => {
     .release-results-wrapper {
         padding: 0 1rem;
     }
-
-    .release-card {
-        flex: 0 0 calc(50% - 0.75rem);
-    }
 }
 
 @media (max-width: 540px) {
@@ -549,10 +428,6 @@ const goBack = () => {
 
     .release-results {
         justify-content: center;
-    }
-
-    .release-card {
-        flex: 0 0 80%;
     }
 }
 </style>

@@ -26,7 +26,7 @@ const isAddingToPlaylist = ref(null);
 const isCreating = ref(false);
 const showCreateForm = ref(false);
 
-// saraksta izveidošanas forma
+// kolekcijas izveidošanas forma
 const newPlaylistForm = ref({
     name: '',
     is_private: false
@@ -36,7 +36,7 @@ const errors = ref({
     name: null
 });
 
-// ielādēt lietotāja atsk. sarakstus
+// ielādēt lietotāja kolekcijas
 const fetchPlaylists = async () => {
     isLoading.value = true;
     try {
@@ -57,7 +57,7 @@ const close = () => {
     emit('close');
 };
 
-// pievienot dziesmu atsk. sarakstam
+// pievienot dziesmu kolekcijai
 const selectPlaylist = async (playlist) => {
     if (isAddingToPlaylist.value) return;
     // novērst dublikātus
@@ -90,7 +90,7 @@ const closeCreateForm = () => {
     errors.value = { name: null };
 };
 
-// izveidot jaunu atsk. sarakstu un pievienot dziesmu
+// izveidot jaunu kolekciju un pievienot dziesmu
 const createAndAddPlaylist = async () => {
     // Validācija
     if (!newPlaylistForm.value.name.trim()) {
@@ -154,7 +154,7 @@ watch(() => props.show, (newVal) => {
                         <span>{{ t('user_pages.playlists.loading') }}</span>
                     </div>
 
-                    <!-- Atsk. sarakstu saraksts -->
+                    <!-- Kolekciju saraksts -->
                     <template v-else>
                         <div class="playlists-list" :class="{ 'has-search': playlists.length > 5 }">
                             <div
@@ -227,7 +227,7 @@ watch(() => props.show, (newVal) => {
         </div>
     </Teleport>
 
-    <!-- Jauna atsk. saraksta izveides veidlapa -->
+    <!-- Jaunas kolekcijas izveides veidlapa -->
     <Teleport to="body">
         <div v-if="showCreateForm" class="modal-overlay" @click.self="closeCreateForm">
             <div class="modal-container modal-small">

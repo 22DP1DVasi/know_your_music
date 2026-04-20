@@ -64,6 +64,9 @@ const imageUrl = computed(() => {
             <p v-if="showTrackCount && artist.tracks_count !== undefined">
                 {{ trackCountText(artist.tracks_count) }}
             </p>
+
+            <!-- Papildu informācijas slots -->
+            <slot name="extra-info"></slot>
         </div>
     </div>
 </template>

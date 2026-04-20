@@ -6,6 +6,7 @@ import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
 import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
+import ReleaseCard from "@/Components/Releases/ReleaseCard.vue";
 import {ref, computed, watch } from 'vue';
 import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
@@ -294,9 +295,7 @@ const closePlayer = () => {
 };
 
 const redirectToFullBio = (slug) => {
-    window.location.href = `/artists/${slug}/bio`;
-    // var nodot pašreizējo lokalizāciju ja nepieciešams
-    // window.location.href = `/artists/${slug}/bio${locale.value === 'lv' ? '?lang=lv' : ''}`;
+    router.get(`/artists/${slug}/bio`);
 };
 
 const redirectToAllGenres = () => {
@@ -304,15 +303,15 @@ const redirectToAllGenres = () => {
 };
 
 const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
+    router.get(`/genres/${slug}`);
 };
 
 const redirectToAllTracks = (slug) => {
-    window.location.href = `/artists/${slug}/tracks`;
+    router.get(`/artists/${slug}/tracks`);
 };
 
-const handleTrackClick = (track) => {
-    router.get(`/tracks/${track.slug}`);
+const handleTrackClick = (slug) => {
+    router.get(`/tracks/${slug}`);
 };
 
 // const redirectToTrack = (slug) => {
@@ -320,12 +319,13 @@ const handleTrackClick = (track) => {
 // };
 
 const redirectToRelease = (slug) => {
-    window.location.href = `/releases/${slug}`;
+    router.get(`/releases/${slug}`);
 };
 
 const redirectToAllReleases = (slug) => {
-    window.location.href = `/artists/${slug}/releases`;
+    router.get(`/artists/${slug}/releases`);
 };
+
 const capitalize = (value) => {
     if (!value) return 'Unknown';
     return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
@@ -446,7 +446,7 @@ const capitalize = (value) => {
                             :show-artists="true"
                             :menu-open="openMenuId === track.id"
                             @toggle-menu="(id) => openMenuId = openMenuId === id ? null : id"
-                            @track-click="handleTrackClick"
+                            @track-click="handleTrackClick(track.slug)"
                             @add-to-playlist="openAddToPlaylistModal"
                         />
 <!--                        <button-->
@@ -472,21 +472,14 @@ const capitalize = (value) => {
                     </div>
                     <div v-if="!artist.releases.length">No releases found for this artist.</div>
                     <div v-else class="release-results">
-                        <div
+                        <ReleaseCard
                             v-for="release in artist.releases"
                             :key="release.id"
-                            class="release-card"
-                            @click="redirectToRelease(release.slug)"
+                            :release="release"
+                            :show-artists="release.artists && release.artists.length > 1"
+                            @release-click="(release) => redirectToRelease(release.slug)"
                         >
-                            <div class="image-wrapper">
-                                <img :src="release.cover_url" :alt="release.title">
-                            </div>
-                            <div class="release-info">
-                                <h3>{{ release.title }}</h3>
-                                <p class="release-year">{{ release.year }}</p>
-                                <p class="release-type">{{ release.type }}</p>
-                            </div>
-                        </div>
+                        </ReleaseCard>
                     </div>
                 </section>
 
@@ -920,66 +913,6 @@ const capitalize = (value) => {
     justify-content: flex-start;
 }
 
-.release-card {
-    flex: 0 0 calc(25% - 1.125rem);
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.release-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.release-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-.release-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-year, .release-type {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 @media (max-width: 1455px) {
     .artist-page {
         width: 90%;
@@ -1033,14 +966,6 @@ const capitalize = (value) => {
     .release-results::-webkit-scrollbar-thumb {
         background-color: #0c4baa;
         border-radius: 6px;
-    }
-
-    .release-card {
-        display: inline-block;
-        vertical-align: top;
-        width: 250px;
-        margin-right: 15px;
-        flex: none;
     }
 }
 
@@ -1102,18 +1027,6 @@ const capitalize = (value) => {
 
     .release-results {
         justify-content: center;
-    }
-
-    .release-card {
-        flex: 0 0 80%;
-    }
-
-    .release-info h3 {
-        font-size: 0.95rem;
-    }
-
-    .release-year, .release-type {
-        font-size: 0.85rem;
     }
 }
 

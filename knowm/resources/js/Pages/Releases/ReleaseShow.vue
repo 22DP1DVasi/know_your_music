@@ -1,12 +1,18 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
+import TrackCard from '@/Components/Tracks/TrackCard.vue';
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
 import dayjs from 'dayjs';
 import { useDate } from '@/composables/useDate';
+import { useI18n } from 'vue-i18n';
+import { route } from "ziggy-js";
+
+const { t, locale } = useI18n();
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -21,6 +27,7 @@ const props = defineProps({
             type: '',
             year: null,
             description: '',
+            description_lv: '',
             release_date: null,
             release_type: '',
 
@@ -41,6 +48,10 @@ const props = defineProps({
 });
 
 const { formatDuration } = useDate()
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
 
 const heroImage = ref(null);
 const heroStyle = ref({
@@ -100,6 +111,77 @@ const formatDate = (dateString) => {
     return dayjs(dateString).format('DD/MM/YYYY');
 };
 
+const descriptionMaxLength = 500;
+
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
+const currentDescription = computed(() => {
+    if (locale.value === 'lv' && props.release.description_lv) {
+        return props.release.description_lv;
+    }
+    if (locale.value === 'en' && props.release.description) {
+        return props.release.description;
+    }
+    if (locale.value === 'lv' && !props.release.description_lv && props.release.description) {
+        return props.release.description;
+    }
+    if (locale.value === 'en' && !props.release.description && props.release.description_lv) {
+        return props.release.description_lv;
+    }
+    return '';
+});
+
+const languageNotice = computed(() => {
+    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    if (locale.value === 'lv' && !props.release.description_lv && props.release.description) {
+        return {
+            show: true,
+            message: 'Apraksts pieejams tikai angļu valodā.',
+            type: 'lv-no-desc'
+        };
+    }
+    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    if (locale.value === 'en' && !props.release.description && props.release.description_lv) {
+        return {
+            show: true,
+            message: 'Description available only in Latvian.',
+            type: 'en-no-desc'
+        };
+    }
+    return {
+        show: false,
+        message: '',
+        type: null
+    };
+});
+
+const truncatedDescription = computed(() => {
+    const desc = currentDescription.value;
+    if (!desc) {
+        return t('releases.show.no_description');
+    }
+    if (desc.length <= descriptionMaxLength) return desc;
+    return desc.substring(0, descriptionMaxLength) + '...';
+});
+
+const showReadMore = computed(() => {
+    const desc = currentDescription.value;
+    return desc && desc.length > descriptionMaxLength;
+});
+
+const hasDescription = computed(() => {
+    return currentDescription.value !== '';
+});
+
+const redirectToFullDescription = (slug) => {
+    router.get(`/releases/${slug}/description`);
+};
+
 // const formatDuration = (timeString) => {
 //     // console.log(`hey ${timeString}`);
 //     if (!timeString) return '--:--';
@@ -108,11 +190,36 @@ const formatDate = (dateString) => {
 // };
 
 const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
+    router.get( `/genres/${slug}`);
 };
 
-const redirectToTrack = (slug) => {
-    window.location.href = `/tracks/${slug}`;
+const redirectToTrack = (track) => {
+    router.get(`/tracks/${track.slug}`);
+};
+
+// izvēlnes stāvoklis dziesmu kartēm
+const openMenuId = ref(null);
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const toggleTrackMenu = (trackId) => {
+    openMenuId.value = openMenuId.value === trackId ? null : trackId;
+};
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
 };
 
 </script>
@@ -179,28 +286,38 @@ const redirectToTrack = (slug) => {
                                     <span class="meta-value"><b>Release Date:</b> {{ formatDate(release.release_date) }}</span>
                                 </div>
                                 <div class="info-item">
-                                    <span class="meta-value">
-                                        <b>Length:</b> {{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}, {{ formatTotalDuration }}
-                                    </span>
+                    <span class="meta-value">
+                        <b>Length:</b> {{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}, {{ formatTotalDuration }}
+                    </span>
                                 </div>
                             </div>
                         </div>
-                        <h2 class="section-title">About This Release</h2>
-                        <div v-if="release.description" class="description-text" v-html="release.description"></div>
-                        <div v-else class="description-text" style="margin-bottom: 150px;">There is no background for this release.</div>
+
+                        <h2 class="section-title">{{ t('releases.show.about_release') }}</h2>
+
+                        <!-- Language notice -->
+                        <div v-if="languageNotice.show" class="language-notice" :data-type="languageNotice.type">
+                            {{ languageNotice.message }}
+                        </div>
+
+                        <!-- Description text with truncation -->
+                        <div v-if="hasDescription" class="description-text" v-html="truncatedDescription"></div>
+                        <div v-else class="description-text no-description">{{ t('releases.show.no_description') }}</div>
+
+                        <!-- Read more button -->
+                        <button
+                            v-if="showReadMore"
+                            @click="redirectToFullDescription(release.slug)"
+                            class="read-more-button"
+                        >
+                            {{ t('releases.show.read_more') }}
+                        </button>
 
                         <div class="genres-card">
                             <div class="genres-header">
-                                <h3 class="info-title">Genres</h3>
-                                <!--                                <button-->
-                                <!--                                    v-if="release.genres.length > 5"-->
-                                <!--                                    class="see-all-genres"-->
-                                <!--                                    @click="redirectToAllGenres"-->
-                                <!--                                >-->
-                                <!--                                    See all genres-->
-                                <!--                                </button>-->
+                                <h3 class="info-title">{{ t('releases.show.genres') }}</h3>
                             </div>
-                            <div v-if="!release.genres.length">No genres related to this release.</div>
+                            <div v-if="!release.genres.length">{{ t('releases.show.no_genres') }}</div>
                             <div v-else class="genre-tags">
                                 <button
                                     v-for="(genre, index) in release.genres.slice(0, 5)"
@@ -213,7 +330,6 @@ const redirectToTrack = (slug) => {
                                 </button>
                             </div>
                         </div>
-
                     </div>
 
                     <section class="release-tracks">
@@ -222,23 +338,22 @@ const redirectToTrack = (slug) => {
                             <span class="tracks-count">{{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}</span>
                         </div>
                         <div class="track-list">
-                            <div v-for="track in sortedTracks" :key="track.id" class="track-card">
-                                <span class="track-number">{{ track.pivot.track_position }}</span>
-                                <div class="track-info">
-                                    <h3>
-                                        <a @click="redirectToTrack(track.slug)" class="track-title">
-                                            {{ track.title }}
-                                        </a>
-                                    </h3>
-                                    <p class="track-artists" v-if="track.artists.length > 1">
-                                        <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                            <a :href="`/artists/${artist.slug}`">{{ artist.name }}</a>
-                                            <span v-if="index < track.artists.length - 1">, </span>
-                                        </span>
-                                    </p>
-                                </div>
-                                <div class="track-duration">{{ formatDuration(track.duration, 'HH:mm:ss') }}</div>
-                            </div>
+                            <TrackCard
+                                v-for="track in sortedTracks"
+                                :key="track.id"
+                                :track="track"
+                                :index="track.pivot.track_position - 1"
+                                :show-image="false"
+                                :show-artists="track.artists && track.artists.length > 1"
+                                :menu-open="openMenuId === track.id"
+                                duration-format="HH:mm:ss"
+                                :show-context-menu="true"
+                                :can-add="true"
+                                :can-remove="false"
+                                @track-click="redirectToTrack"
+                                @add-to-playlist="openAddToPlaylistModal"
+                                @toggle-menu="toggleTrackMenu"
+                            />
                         </div>
                     </section>
 
@@ -260,6 +375,12 @@ const redirectToTrack = (slug) => {
         </div>
     </main>
     <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>
@@ -431,6 +552,47 @@ const redirectToTrack = (slug) => {
     word-break: break-word;
 }
 
+.language-notice {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #999;
+    font-style: italic;
+}
+
+.language-notice[data-type="lv-no-desc"] {
+    border-left-color: #0c4baa;
+}
+
+.language-notice[data-type="en-no-desc"] {
+    border-left-color: #aa0c4b;
+}
+
+.no-description {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 150px;
+}
+
+.read-more-button {
+    background: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.read-more-button:hover {
+    background: #1a5fc9;
+}
+
 .info-card-wrapped {
     float: right;
     width: fit-content;
@@ -560,71 +722,9 @@ const redirectToTrack = (slug) => {
 .track-list {
     background: white;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-bottom: 2rem;
-}
-
-.track-card {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #eee;
-    gap: 1rem;
-}
-
-.track-number {
-    color: #666;
-    width: 24px;
-    text-align: center;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-}
-
-.track-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.track-info h3 {
-    text-decoration: none;
-    transition: color 0.2s;
-    font-size: 0.95rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-title {
-    cursor: pointer;
-}
-
-.track-title:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.track-artists {
-    margin: 0.25rem 0 0;
-    font-size: 0.85rem;
-    color: #666;
-}
-
-.track-artists a {
-    color: #0c4baa;
-    text-decoration: none;
-}
-
-.track-artists a:hover {
-    text-decoration: underline;
-}
-
-.track-duration {
-    color: #666;
-    font-size: 0.9rem;
-    flex: 0 0 60px;
-    text-align: right;
 }
 
 .similar-item a {
@@ -651,14 +751,6 @@ const redirectToTrack = (slug) => {
 
 .similar-item:hover span {
     color: #0c4baa;
-}
-
-.comments-section {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 3rem;
 }
 
 @media (max-width: 1455px) {
@@ -736,13 +828,16 @@ const redirectToTrack = (slug) => {
         width: 100%;
         padding: 0 10px;
     }
+
     .release-hero {
         height: 260px !important;
     }
+
     .release-title {
         font-size: 2rem;
         bottom: 50px;
     }
+
     .release-artists {
         font-size: 1rem;
         bottom: 26px;
@@ -838,19 +933,6 @@ const redirectToTrack = (slug) => {
     .sidebar-space {
         display: none;
     }
-
-    .track-card {
-        padding: 0.75rem;
-        gap: 0.75rem;
-    }
-
-    .track-info {
-        padding: 0 0.25rem;
-    }
-
-    .track-duration {
-        flex: 0 0 50px;
-    }
 }
 
 @media (max-width: 640px) {
@@ -891,24 +973,6 @@ const redirectToTrack = (slug) => {
 
     .meta-value {
         font-size: 0.9rem;
-    }
-
-    .track-card {
-        padding: 0.5rem;
-        gap: 0.5rem;
-    }
-
-    .track-number {
-        width: 20px;
-    }
-
-    .track-title {
-        font-size: 0.9rem;
-    }
-
-    .track-duration {
-        font-size: 0.85rem;
-        flex: 0 0 45px;
     }
 }
 

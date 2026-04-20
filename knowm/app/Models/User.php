@@ -54,7 +54,7 @@ class User extends Authenticatable
         'deleted_at' => 'datetime:Y-m-d H:i:s',
     ];
 
-    protected $appends = ['avatar_url'];
+    protected $appends = ['avatar_url', 'initial', 'avatar_color_1', 'avatar_color_2'];
 
     /**
      * Remember comment's author's username when they get deleted
@@ -127,6 +127,67 @@ class User extends Authenticatable
             return asset('storage/' . $this->avatar);
         }
         return null;
+    }
+
+    /***
+     * Dabūt 'initial' (sākumburta) atribūtu.
+     *
+     * @return string
+     */
+    public function getInitialAttribute(): string
+    {
+        return strtoupper(substr($this->name, 0, 1));
+    }
+
+    /***
+     * Dabūt 'avatar_color_1' atribūtu.
+     *
+     * @return string
+     */
+    public function getAvatarColor1Attribute(): string
+    {
+        // heksadecimāla jaucējkoda izveide
+        $hash = $this->getHashFromName($this->name);
+
+        // izmantot pirmos baitus tonim (0-360)
+        $hue = hexdec(substr($hash, 0, 4)) % 360;
+
+        // saglabāt piesātinājumu un gaišumu jaukos UI drošos diapazonos
+        $saturation = 65;
+        $lightness = 55;
+        return "hsl($hue, {$saturation}%, {$lightness}%)";
+    }
+
+    /***
+     * Dabūt 'avatar_color_2' atribūtu.
+     *
+     * @return string
+     */
+    public function getAvatarColor2Attribute(): string
+    {
+        // heksadecimāla jaucējkoda izveide
+        $hash = $this->getHashFromName($this->name);
+
+        // izmantot pirmos baitus tonim (0-360)
+        $hue = hexdec(substr($hash, 0, 4)) % 360;
+
+        // nedaudz nobīdīt tonu un palielināt gaišumu otrajai krāsai
+        $hue2 = ($hue + 20) % 360;
+        $saturation = 65;
+        $lightness = 65;
+        return "hsl($hue2, {$saturation}%, {$lightness}%)";
+    }
+
+    /***
+     * Veido heksadecimālo jaucējkodu no dota vārda.
+     *
+     * @param string $name
+     * @return string
+     */
+    private function getHashFromName(string $name): string
+    {
+        // heksadecimāla jaucējkoda izveide
+        return md5($name);
     }
 
     /**
