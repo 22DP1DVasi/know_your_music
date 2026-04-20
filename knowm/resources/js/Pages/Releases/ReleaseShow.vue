@@ -828,13 +828,16 @@ const closeModal = () => {
         width: 100%;
         padding: 0 10px;
     }
+
     .release-hero {
         height: 260px !important;
     }
+
     .release-title {
         font-size: 2rem;
         bottom: 50px;
     }
+
     .release-artists {
         font-size: 1rem;
         bottom: 26px;

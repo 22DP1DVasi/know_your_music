@@ -140,7 +140,6 @@ const getReleaseImage = () => {
     <Navbar />
     <main class="release-page flex-1">
         <div class="release-hero" :style="heroStyle">
-            <div class="hero-gradient" v-if="!isLandscape"></div>
             <div class="hero-image-container">
                 <img
                     :src="getReleaseImage()"
@@ -217,25 +216,26 @@ const getReleaseImage = () => {
 .release-page {
     max-width: 90%;
     width: 80%;
-    margin: 0 auto 0;
+    margin: 0 auto;
     padding: 0 20px;
     border: 1px solid #ddd;
     border-bottom-style: none;
     background: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative;
 }
 
 .release-hero {
-    height: 400px;
+    height: 300px;
     width: 100%;
     overflow: hidden;
     position: relative;
     margin-bottom: 1rem;
     margin-top: 1rem;
-    border-radius: 8px;
     background-color: #f0f0f0;
-    --gradient-color-left: rgba(0,0,0,0.3);
-    --gradient-color-right: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-image-container {
@@ -247,54 +247,47 @@ const getReleaseImage = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: inherit;
 }
 
 .hero-image {
     width: 100%;
-    height: 100%;
+    height: auto;
+    min-height: 100%;
     object-fit: cover;
     object-position: center;
-}
-
-.hero-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        90deg,
-        var(--gradient-color-left) 0%,
-        transparent 20%,
-        transparent 80%,
-        var(--gradient-color-right) 100%
-    );
-    z-index: 1;
+    filter: brightness(0.7);
+    transition: filter 0.3s ease;
 }
 
 .release-title {
     position: absolute;
-    bottom: 0;
+    bottom: 60px;
     left: 0;
-    padding: 1.5rem;
+    padding: 0 1.5rem;
     color: white;
     font-size: 2.5rem;
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
-    margin: 0;
+    max-width: 70%;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .release-artists {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    padding: 1.5rem;
+    bottom: 30px;
+    left: 0;
+    padding: 0 1.5rem;
     color: white;
-    font-size: 1.1rem;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    font-size: 1.2rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
+    max-width: 70%;
 }
 
 .release-artists a {
@@ -310,7 +303,7 @@ const getReleaseImage = () => {
 .back-button {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     cursor: pointer;
     color: white;
     font-weight: 500;
@@ -325,88 +318,24 @@ const getReleaseImage = () => {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-.release-content {
-    display: flex;
-    gap: 40px;
-    margin-top: 0.5rem;
-}
-
 .main-content {
     flex: 1;
-    max-width: 70%;
+    max-width: calc(100% - 100px);
+    padding-right: 20px;
+    margin-left: 20px;
 }
 
-.sidebar-space {
-    width: 300px;
-    flex-shrink: 0;
+.release-content {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    padding-right: 380px;
 }
 
 .section-title {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #0c4baa;
-}
-
-.description-wrapper {
-    background: white;
-    border-radius: 8px;
-    padding: 1.25rem;
-    margin-bottom: 2rem;
-    position: relative;
-}
-
-.info-card.wrapped {
-    float: right;
-    width: fit-content;
-    max-width: 50%;
-    margin: 0 0 1rem 1.5rem;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: none;
-}
-
-.info-title {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    color: #333;
-}
-
-.info-flex {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    flex-direction: column;
-}
-
-.info-item {
-    flex: 1 0 calc(50% - 0.75rem);
-    min-width: 120px;
-    display: flex;
-    flex-direction: row;
-}
-
-.info-value {
-    font-weight: 500;
-}
-
-.description-text {
-    flex: 3;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    white-space: pre-line;
-    word-break: break-word;
-    background: white;
-    border-radius: 8px;
-    padding: 1.25rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    margin-bottom: 1.5rem;
-}
-
-.no-description {
-    color: #666;
-    font-style: italic;
 }
 
 .language-notice {
@@ -428,10 +357,104 @@ const getReleaseImage = () => {
     border-left-color: #aa0c4b;
 }
 
-/* Responsivitāte */
+.info-card.wrapped {
+    float: right;
+    width: fit-content;
+    max-width: 50%;
+    margin: 0 0 1rem 1.5rem;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: none;
+}
+
+.info-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.no-description {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 150px;
+}
+
+.info-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    flex-direction: column;
+}
+
+.info-item {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    flex-direction: row;
+}
+
+.sidebar-space {
+    width: 300px;
+    position: absolute;
+    right: 20px;
+    top: 440px;
+    bottom: 20px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.description-text {
+    flex: 3;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
 @media (max-width: 1455px) {
     .release-page {
         width: 90%;
+    }
+
+    .main-content {
+        max-width: calc(100% - 40px);
+    }
+}
+
+@media (max-width: 1200px) {
+    .release-hero {
+        height: 280px !important;
+    }
+
+    .release-title {
+        font-size: 2.2rem;
+        bottom: 55px;
+    }
+
+    .release-artists {
+        font-size: 1.1rem;
+        bottom: 28px;
+    }
+
+    .release-content {
+        padding-right: 370px;
+    }
+
+    .sidebar-space {
+        top: 390px;
+    }
+}
+
+@media (max-width: 1150px) {
+    .release-content {
+        padding-right: 320px;
+    }
+
+    .sidebar-space {
+        top: 340px;
+        width: 280px;
     }
 }
 
@@ -442,19 +465,54 @@ const getReleaseImage = () => {
         padding: 0 10px;
     }
 
-    .release-content {
-        flex-direction: column;
-        gap: 10px;
+    .release-hero {
+        height: 260px !important;
     }
 
+    .release-title {
+        font-size: 2rem;
+        bottom: 50px;
+    }
+
+    .release-artists {
+        font-size: 1rem;
+        bottom: 26px;
+    }
+
+    .info-card.wrapped {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 900px) {
     .release-hero {
-        margin-bottom: 0.5rem;
+        height: 240px !important;
+    }
+    .release-title {
+        font-size: 1.8rem;
+        bottom: 45px;
+    }
+    .release-artists {
+        font-size: 0.95rem;
+        bottom: 24px;
+    }
+
+    .release-content {
+        padding-right: 0;
+    }
+
+    .main-content {
+        max-width: 100%;
+        padding-right: 0;
+        margin-left: 10px;
+        margin-right: 10px;
     }
 
     .sidebar-space {
+        position: static;
         width: 100%;
-        order: -1;
-        margin-bottom: 1rem;
+        height: auto;
+        margin-top: 2rem;
     }
 
     .info-card.wrapped {
@@ -464,26 +522,17 @@ const getReleaseImage = () => {
 
 @media (max-width: 768px) {
     .release-hero {
-        height: 220px;
+        height: 220px !important;
     }
 
     .release-title {
-        font-size: 2rem;
-        padding: 1rem;
+        font-size: 1.6rem;
+        bottom: 40px;
     }
 
     .release-artists {
         font-size: 0.9rem;
-        padding: 1rem;
-    }
-
-    .main-content {
-        max-width: 100%;
-        width: 100%;
-    }
-
-    .description-wrapper {
-        flex-direction: column;
+        bottom: 22px;
     }
 
     .info-card.wrapped {
@@ -494,27 +543,111 @@ const getReleaseImage = () => {
         line-height: 1.3;
     }
 
-    .info-flex {
-        gap: 0.5rem;
-    }
-
     .sidebar-space {
         display: none;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
+    .release-hero {
+        height: 200px !important;
+    }
+
     .release-title {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
+        bottom: 35px;
     }
 
     .release-artists {
-        display: none;
+        font-size: 0.85rem;
+        bottom: 20px;
+    }
+}
+
+@media (max-width: 580px) {
+    .release-title {
+        font-size: 1.5rem;
+        bottom: 40px;
+        padding: 0 1rem;
+        max-width: 50%;
+    }
+
+    .release-artists {
+        font-size: 0.9rem;
+        bottom: 20px;
+        padding: 0 1rem;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 480px) {
+    .release-hero {
+        height: 180px !important;
+    }
+
+    .release-title {
+        font-size: 1.2rem;
+        bottom: 30px;
+        padding: 0 1rem;
+    }
+
+    .release-artists {
+        font-size: 0.8rem;
+        bottom: 18px;
+        padding: 0 1rem;
     }
 
     .back-button {
         font-size: 0.9rem;
         padding: 0.4rem 0.8rem;
+    }
+}
+
+@media (max-width: 410px) {
+    .info-flex {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .description-text {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .release-hero {
+        height: 160px !important;
+    }
+
+    .release-title {
+        font-size: 1.1rem;
+        bottom: 25px;
+        margin-bottom: 7px;
+    }
+
+    .release-artists {
+        font-size: 0.75rem;
+        bottom: 15px;
+    }
+}
+
+@media (max-width: 320px) {
+    .release-title {
+        font-size: 1rem !important;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 317px) {
+    .release-title {
+        margin-bottom: 23px;
     }
 }
 

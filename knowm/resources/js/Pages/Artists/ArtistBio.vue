@@ -314,7 +314,7 @@ const capitalize = (value) => {
 .back-button {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     cursor: pointer;
     color: white;
     font-weight: 500;
@@ -525,4 +525,5 @@ const capitalize = (value) => {
         padding: 0.4rem 0.8rem;
     }
 }
+
 </style>
