@@ -907,10 +907,9 @@ const capitalize = (value) => {
 }
 
 .release-results {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
-    justify-content: flex-start;
 }
 
 @media (max-width: 1455px) {
@@ -946,13 +945,14 @@ const capitalize = (value) => {
     }
 
     .release-results {
-        display: block;
+        display: flex;
         overflow-x: auto;
-        white-space: nowrap;
-        padding: 10px;
-        margin: 0 -10px;
-        scrollbar-width: thin;
-        scrollbar-color: #0c4baa #f0f0f0;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
+
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scroll-padding-left: 1rem;
     }
 
     .release-results::-webkit-scrollbar {
@@ -964,8 +964,13 @@ const capitalize = (value) => {
     }
 
     .release-results::-webkit-scrollbar-thumb {
-        background-color: #0c4baa;
+        background: #0c4baa;
         border-radius: 6px;
+    }
+
+    .release-results > * {
+        flex: 0 0 clamp(140px, 60vw, 220px);
+        scroll-snap-align: start;
     }
 }
 
@@ -1025,8 +1030,8 @@ const capitalize = (value) => {
         flex: 1 0 100%;
     }
 
-    .release-results {
-        justify-content: center;
+    .release-results > * {
+        flex: 0 0 75%;
     }
 }
 
