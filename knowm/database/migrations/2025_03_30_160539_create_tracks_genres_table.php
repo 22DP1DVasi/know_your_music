@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tracks_genres', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('track_id');
             $table->unsignedBigInteger('genre_id');
             $table->timestamps();
@@ -20,8 +21,8 @@ return new class extends Migration
             $table->index('track_id');
             $table->index('genre_id');
 
-            // composite primary key
-            $table->primary(['track_id', 'genre_id']);
+            // composite unique constraints
+            $table->unique(['track_id', 'genre_id'], 'track_genre_unique');
 
             // foreign keys
             $table->foreign('track_id')

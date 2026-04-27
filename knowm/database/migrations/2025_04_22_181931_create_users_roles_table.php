@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users_roles', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('role_id');
             $table->timestamps();
@@ -20,8 +21,8 @@ return new class extends Migration
             $table->index('user_id');
             $table->index('role_id');
 
-            // composite primary key
-            $table->primary(['user_id', 'role_id']);
+            // composite unique indexes
+            $table->unique(['user_id', 'role_id'], 'user_role_unique');
 
             // foreign keys
             $table->foreign('user_id')

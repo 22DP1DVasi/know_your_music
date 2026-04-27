@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('artists_releases', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('artist_id');
             $table->unsignedBigInteger('release_id');
             // role field with enum options
@@ -22,8 +23,8 @@ return new class extends Migration
             $table->index('artist_id');
             $table->index('release_id');
 
-            // composite primary key
-            $table->primary(['artist_id', 'release_id']);
+            // composite unique constraints
+            $table->unique(['artist_id', 'release_id'], 'artist_release_unique');
 
             // foreign kets
             $table->foreign('artist_id')

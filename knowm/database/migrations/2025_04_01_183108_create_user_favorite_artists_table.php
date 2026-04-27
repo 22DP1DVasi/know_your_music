@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedSmallInteger('sort_order')->default(0);
             $table->timestamps();
 
-            // unique constraint to prevent duplicates
-            $table->unique(['user_id', 'artist_id']);
+            // composite unique constraints
+            $table->unique(['user_id', 'artist_id'], 'user_artist_unique');
 
             // index for sorting performance
             $table->index(['user_id', 'sort_order']);
