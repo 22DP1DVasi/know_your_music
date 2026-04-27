@@ -18,6 +18,7 @@
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
+
         ),
     ),
 );
