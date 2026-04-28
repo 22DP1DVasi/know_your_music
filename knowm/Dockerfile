@@ -35,8 +35,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # Copy dependency files first
-COPY composer.json composer.lock ./
-COPY package.json package-lock.json ./
+COPY knowm/composer.json knowm/composer.lock ./
+COPY knowm/package.json knowm/package-lock.json ./
 
 # Install dependencies
 RUN composer install \
