@@ -1,95 +1,92 @@
 # ============================================
-# Stage 1: Build assets (Node + Composer)
+# Stage 1: Build assets
 # ============================================
 FROM php:8.2-cli AS builder
 
-# Install system packages needed for build
+# System dependencies
 RUN apt-get update && apt-get install -y \
-    curl \
     git \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zlib1g-dev \
-    zip \
+    curl \
     unzip \
+    zip \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions used by Laravel
+# PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql bcmath
+    && docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd
 
-# Install Composer
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Install Node 18 (for Vue / Vite build)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www
 
-# Copy dependency manifests first (better cache usage)
-COPY composer.json composer.lock package.json package-lock.json ./
-RUN composer install --no-dev --no-scripts --prefer-dist --no-interaction --optimize-autoloader
-RUN npm ci
+# Copy dependency files first
+COPY composer.json composer.lock ./
+COPY package.json package-lock.json ./
 
-# Copy the rest of the source code
+# Install dependencies
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
+
+RUN npm install
+
+# Copy project
 COPY . .
 
-# Build frontend (Vite / Vue)
+# Build Vite assets
 RUN npm run build
 
-# Remove node_modules to keep final image small (optional)
-RUN rm -rf node_modules
-
-# Run any necessary artisan commands that can be done at build time
-RUN php artisan event:cache \
-    && php artisan route:cache \
-    && php artisan config:cache \
-    && php artisan view:cache
-
 # ============================================
-# Stage 2: Production runtime image
+# Stage 2: Production
 # ============================================
 FROM php:8.2-fpm
 
-# Install runtime + temporary build dependencies for GD
+# Runtime dependencies
 RUN apt-get update && apt-get install -y \
-    apache2 \
-    libapache2-mod-fcgid \
-    libpng16-16 \
-    libjpeg62-turbo \
-    libfreetype6 \
     libpng-dev \
-    libjpeg-dev \
+    libjpeg62-turbo-dev \
     libfreetype6-dev \
-    zlib1g-dev \
+    libonig-dev \
+    libxml2-dev \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Compile GD and other PHP extensions
+# PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql bcmath
-
-# Remove dev packages
-RUN apt-get purge -y libpng-dev libjpeg-dev libfreetype6-dev zlib1g-dev \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+    && docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd
 
 WORKDIR /var/www
+
+# Copy app from builder
 COPY --from=builder /var/www /var/www
 
+# Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# --- Apache: clear all default sites, use our config ---
-RUN rm -rf /etc/apache2/sites-enabled/* /etc/apache2/sites-available/*
-COPY apache.conf /etc/apache2/sites-available/000-default.conf
-RUN a2ensite 000-default && \
-    a2enmod actions fcgid alias proxy_fcgi
+EXPOSE 3306
 
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
-EXPOSE 80
-CMD ["/start.sh"]
+CMD ["php-fpm"]
