@@ -5,6 +5,9 @@ import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
 import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     artists: Array,
@@ -54,7 +57,7 @@ const redirectToArtist = (slug) => {
     <main class="flex-1">
         <div class="search-results">
             <div class="results-header">
-                <h1 class="results-title">All Artists Matching "{{ searchQuery }}"</h1>
+                <h1 class="results-title">{{ t('search_pages.all_artists_title', {query: searchQuery}) }}</h1>
                 <div class="go-back-arrow-wrapper">
                     <div class="go-back-arrow" @click="goBack">
                         <span class="arrow-icon">←</span>
@@ -92,7 +95,7 @@ const redirectToArtist = (slug) => {
             </div>
 
             <div v-if="artists.length === 0" class="no-results">
-                No artists found for "{{ searchQuery }}"
+                {{ t('search_pages.no_artists_found') }}
             </div>
 
             <Pagination

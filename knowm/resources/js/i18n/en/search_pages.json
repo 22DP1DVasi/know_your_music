@@ -1,0 +1,24 @@
+{
+    "main_results": {
+        "search_results": "Search Results for \"{query}\"",
+        "artists": "Artists",
+        "see_all_artists": "See all {count} artists →",
+        "releases": "Releases",
+        "see_all_releases": "See all {count} releases →",
+        "tracks": "Tracks",
+        "see_all_tracks": "See all {count} tracks →",
+        "lyrics_matches": "Lyrics Matches",
+        "see_all_lyrics": "See all {count} lyrics matches →",
+        "no_results": "No results found"
+    },
+    "all_artists_title": "All Artists Matching \"{query}\"",
+    "all_releases_title": "All Releases Matching \"{query}\"",
+    "all_tracks_title": "All Tracks Matching \"{query}\"",
+    "all_lyrics_title": "All Lyrics Matching \"{query}\"",
+    "by_title": "By Title",
+    "by_artist": "By Artist",
+    "no_artists_found": "No artists found",
+    "no_releases_found": "No releases found",
+    "no_tracks_found": "No tracks found",
+    "no_lyrics_found": "No lyrics found"
+}

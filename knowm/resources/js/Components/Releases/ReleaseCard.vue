@@ -225,7 +225,7 @@ defineExpose({
 
 .release-meta {
     margin: 0;
-    color: #94a3b8;
+    color: #120101;
     font-size: 0.8rem;
     display: flex;
     gap: 0.5rem;

@@ -8,6 +8,9 @@ import ReleaseCard from '@/Components/Releases/ReleaseCard.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
 import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import { route } from 'ziggy-js';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     artists: Array,
@@ -98,14 +101,15 @@ const closeModal = () => {
     <Navbar/>
     <main class="flex-1">
         <div class="search-results">
-            <h1 class="results-title">Search Results for "{{ searchQuery }}"</h1>
+            <h1 class="results-title">{{ t('search_pages.main_results.search_results', {query: searchQuery}) }}</h1>
 
             <!-- Izpildītāji -->
             <section v-if="artists.length > 0" class="results-section artist-section">
                 <div class="section-header">
-                    <h2>Artists</h2>
+                    <h2>{{ t('search_pages.main_results.artists') }}</h2>
                     <a v-if="hasMoreArtists" :href="`/search/artists?q=${searchQuery}`" class="see-all">
-                        See all {{ artistsCount }} artists →
+                        <!--See all {{ artistsCount }} artists →-->
+                        {{ t('search_pages.main_results.see_all_artists', {count: artistsCount}) }}
                     </a>
                 </div>
                 <div class="artist-results">
@@ -123,9 +127,9 @@ const closeModal = () => {
             <!-- Albumi -->
             <section v-if="releases.length > 0" class="results-section release-section">
                 <div class="section-header">
-                    <h2>Releases</h2>
+                    <h2>{{ t('search_pages.main_results.releases') }}</h2>
                     <a v-if="hasMoreReleases" :href="`/search/releases?q=${searchQuery}`" class="see-all">
-                        See all {{ releasesCount }} releases →
+                        {{ t('search_pages.main_results.see_all_releases', {count: releasesCount}) }}
                     </a>
                 </div>
                 <div class="release-results">
@@ -142,11 +146,11 @@ const closeModal = () => {
             <!-- Dziesmas pēc nosaukuma vai autora -->
             <section v-if="metadataMatches.length > 0" class="results-section track-section">
                 <div class="section-header">
-                    <h2>Tracks</h2>
+                    <h2>{{ t('search_pages.main_results.tracks') }}</h2>
                     <a v-if="metadataMatchesCount > metadataMatches.length"
                        :href="`/search/tracks?q=${searchQuery}`"
                        class="see-all">
-                        See all {{ metadataMatchesCount }} tracks →
+                        {{ t('search_pages.main_results.see_all_tracks', {count: metadataMatchesCount}) }}
                     </a>
                 </div>
                 <div class="track-list metadata-track-list">
@@ -170,11 +174,11 @@ const closeModal = () => {
             <!-- Dziesmas pēc teksta -->
             <section v-if="lyricsMatches.length > 0" class="results-section track-section">
                 <div class="section-header">
-                    <h2>Lyrics Matches</h2>
+                    <h2>{{ t('search_pages.main_results.lyrics_matches') }}</h2>
                     <a v-if="lyricsMatchesCount > lyricsMatches.length"
                        :href="`/search/tracks?q=${searchQuery}&type=lyrics`"
                        class="see-all">
-                        See all {{ lyricsMatchesCount }} lyrics matches →
+                        {{ t('search_pages.main_results.see_all_lyrics', {count: lyricsMatchesCount}) }}
                     </a>
                 </div>
                 <div class="track-list lyric-matches">
@@ -202,7 +206,7 @@ const closeModal = () => {
             <!-- Tukšs stāvoklis -->
             <div v-if="artists.length === 0 && releases.length === 0 && metadataMatches.length === 0
             && lyricsMatches.length === 0" class="no-results">
-                No results found for "{{ searchQuery }}"
+                {{ t('search_pages.main_results.no_results') }}
             </div>
         </div>
     </main>
