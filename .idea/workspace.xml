@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/search_pages.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/search_pages.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Releases/ReleaseCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Releases/ReleaseCard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistsSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistsSearchResults.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Lyrics/LyricsSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Lyrics/LyricsSearchResults.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleasesSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleasesSearchResults.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Search.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TracksSearchResults.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TracksSearchResults.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/home.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/home.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistsExplore.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistsExplore.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -476,7 +468,7 @@
       <workItem from="1777354371306" duration="4915000" />
       <workItem from="1777363882855" duration="1278000" />
       <workItem from="1777368706439" duration="2890000" />
-      <workItem from="1777458563135" duration="6724000" />
+      <workItem from="1777458563135" duration="9277000" />
     </task>
     <servers />
   </component>

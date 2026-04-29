@@ -21,6 +21,30 @@ const props = defineProps({
     sortOrder: {
         type: String,
         default: 'asc'
+    },
+    formedFrom: {
+        type: [String, Number],
+        default: null
+    },
+    formedTo: {
+        type: [String, Number],
+        default: null
+    },
+    disbandedFrom: {
+        type: [String, Number],
+        default: null
+    },
+    disbandedTo: {
+        type: [String, Number],
+        default: null
+    },
+    includeEmptyFormed: {
+        type: Boolean,
+        default: false
+    },
+    includeEmptyDisbanded: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -29,6 +53,14 @@ const localPerPage = ref(props.perPage || 24);
 const showGenreModal = ref(false);
 const localSelectedGenres = ref([...props.selectedGenres]);
 const localSortOrder = ref(props.sortOrder);
+
+const localFormedFrom = ref(props.formedFrom || '');
+const localFormedTo = ref(props.formedTo || '');
+const localDisbandedFrom = ref(props.disbandedFrom || '');
+const localDisbandedTo = ref(props.disbandedTo || '');
+const localIncludeEmptyFormed = ref(props.includeEmptyFormed || false);
+const localIncludeEmptyDisbanded = ref(props.includeEmptyDisbanded || false);
+const showYearModal = ref(false);
 
 const checkScreenSize = () => {
     localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
@@ -43,8 +75,30 @@ onBeforeUnmount(() => {
     window.removeEventListener('resize', checkScreenSize);
 });
 
+// Update the existing performSearch function to include year filters
 const performSearch = () => {
-    router.visit(`/explore/artists?q=${localSearchQuery.value}&genres=${localSelectedGenres.value.join(',')}&perPage=${localPerPage.value}&sort=${localSortOrder.value}`, {
+    const params = new URLSearchParams();
+
+    if (localSearchQuery.value) {
+        params.set('q', localSearchQuery.value);
+    }
+
+    if (localSelectedGenres.value.length > 0) {
+        params.set('genres', localSelectedGenres.value.join(','));
+    }
+
+    params.set('perPage', localPerPage.value);
+    params.set('sort', localSortOrder.value);
+
+    // Add year params
+    if (localFormedFrom.value) params.set('formed_from', localFormedFrom.value);
+    if (localFormedTo.value) params.set('formed_to', localFormedTo.value);
+    if (localDisbandedFrom.value) params.set('disbanded_from', localDisbandedFrom.value);
+    if (localDisbandedTo.value) params.set('disbanded_to', localDisbandedTo.value);
+    if (localIncludeEmptyFormed.value) params.set('include_empty_formed', '1');
+    if (localIncludeEmptyDisbanded.value) params.set('include_empty_disbanded', '1');
+
+    router.visit(`/explore/artists?${params.toString()}`, {
         preserveState: true,
         replace: true
     });
@@ -85,6 +139,21 @@ const clearGenres = () => {
 const applyGenreFilters = () => {
     showGenreModal.value = false;
     performSearch();
+};
+
+// Add year filter functions
+const applyYearFilters = () => {
+    showYearModal.value = false;
+    performSearch();
+};
+
+const clearYearFilters = () => {
+    localFormedFrom.value = '';
+    localFormedTo.value = '';
+    localDisbandedFrom.value = '';
+    localDisbandedTo.value = '';
+    localIncludeEmptyFormed.value = false;
+    localIncludeEmptyDisbanded.value = false;
 };
 
 const applySort = () => {
@@ -140,9 +209,15 @@ function lowercaseString(val) {
                         </div>
                     </div>
 
-                    <button class="filter-button" @click="showGenreModal = true">
-                        <i class="fa fa-filter"></i> Filter by Genre
-                    </button>
+                    <div class="filter-buttons">
+                        <button class="filter-button" @click="showGenreModal = true">
+                            <i class="fa fa-filter"></i> Filter by Genre
+                        </button>
+
+                        <button class="filter-button" @click="showYearModal = true">
+                            <i class="fa fa-calendar"></i> Filter by Year
+                        </button>
+                    </div>
                 </div>
 
                 <div class="sort-controls">
@@ -193,6 +268,90 @@ function lowercaseString(val) {
                     <div class="modal-footer">
                         <button class="btn-clear" @click="clearGenres">Clear All</button>
                         <button class="btn-apply" @click="applyGenreFilters">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Year Range Filter Modal -->
+            <div v-if="showYearModal" class="modal-overlay" @click.self="showYearModal = false">
+                <div class="modal-content year-modal">
+                    <div class="modal-header">
+                        <h3>Filter by Year</h3>
+                        <button class="close-modal" @click="showYearModal = false">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="year-range-section">
+                            <h4 class="section-subtitle">Formed Year</h4>
+                            <div class="year-inputs">
+                                <div class="input-group">
+                                    <label>From:</label>
+                                    <input
+                                        type="number"
+                                        v-model.number="localFormedFrom"
+                                        placeholder="e.g., 1990"
+                                        min="1900"
+                                        max="2025"
+                                        class="year-input"
+                                    >
+                                </div>
+                                <div class="input-group">
+                                    <label>To:</label>
+                                    <input
+                                        type="number"
+                                        v-model.number="localFormedTo"
+                                        placeholder="e.g., 2000"
+                                        min="1900"
+                                        max="2025"
+                                        class="year-input"
+                                    >
+                                </div>
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" v-model="localIncludeEmptyFormed">
+                                <span>Include artists with unknown formed year</span>
+                            </label>
+                        </div>
+
+                        <div class="year-range-section">
+                            <h4 class="section-subtitle">Disbanded Year</h4>
+                            <div class="year-inputs">
+                                <div class="input-group">
+                                    <label>From:</label>
+                                    <input
+                                        type="number"
+                                        v-model.number="localDisbandedFrom"
+                                        placeholder="e.g., 1990"
+                                        min="1900"
+                                        max="2025"
+                                        class="year-input"
+                                    >
+                                </div>
+                                <div class="input-group">
+                                    <label>To:</label>
+                                    <input
+                                        type="number"
+                                        v-model.number="localDisbandedTo"
+                                        placeholder="e.g., 2000"
+                                        min="1900"
+                                        max="2025"
+                                        class="year-input"
+                                    >
+                                </div>
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" v-model="localIncludeEmptyDisbanded">
+                                <span>Include artists with unknown disbanded year</span>
+                            </label>
+                        </div>
+
+                        <div class="year-hint">
+                            <i class="fa fa-info-circle"></i>
+                            <span>For active artists, disbanded year is usually empty.</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-clear" @click="clearYearFilters">Clear All</button>
+                        <button class="btn-apply" @click="applyYearFilters">Apply Filters</button>
                     </div>
                 </div>
             </div>
@@ -329,6 +488,11 @@ function lowercaseString(val) {
     margin: 0 auto;
 }
 
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+}
+
 .filter-button {
     background-color: #0c4baa;
     color: white;
@@ -339,9 +503,11 @@ function lowercaseString(val) {
     font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin: 0 auto;
+    margin: 0 1rem;
     transition: background-color 0.2s;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .filter-button:hover {
@@ -521,6 +687,88 @@ function lowercaseString(val) {
     background-color: #14a8df;
 }
 
+.year-modal {
+    max-width: 500px;
+}
+
+.year-range-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.year-range-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.section-subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0c4baa;
+    margin: 0 0 0.75rem 0;
+}
+
+.year-inputs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.input-group {
+    flex: 1;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.year-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.year-input:focus {
+    outline: none;
+    border-color: #0c4baa;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+    cursor: pointer;
+}
+
+.checkbox-label input {
+    cursor: pointer;
+}
+
+.year-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: #f5f5f5;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.year-hint i {
+    color: #0c4baa;
+}
+
 .sort-controls {
     display: flex;
     align-items: center;
@@ -614,6 +862,22 @@ function lowercaseString(val) {
 
     .sort-controls {
         padding: 0 1rem;
+    }
+
+    .year-inputs {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .year-modal {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-buttons {
+        flex-direction: column;
+        gap: 16px;
     }
 }
 
