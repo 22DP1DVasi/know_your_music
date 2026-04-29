@@ -1,0 +1,41 @@
+{
+    "title": "Komentāri",
+    "login": "Pieteicieties",
+    "or": "vai",
+    "signup": "reģistrējieties",
+    "to_add_comment": ", lai pievienotu komentāru.",
+    "add_comment": "Pievienot komentāru...",
+    "cancel": "Atcelt",
+    "posting": "Publicē...",
+    "comment_btn": "Komentēt",
+    "no_comments": "Vēl nav komentāru. Esi pirmais, kas komentē!",
+    "edit": "Rediģēt",
+    "edit_comment_placeh": "Rediģē savu komentāru...",
+    "saving": "Saglabā...",
+    "save_changes": "Saglabāt izmaiņas",
+    "read_less": "Lasīt mazāk",
+    "read_more": "Lasīt vairāk",
+    "reply": "Atbildēt",
+    "write_reply": "Uzraksti atbilid...",
+    "replying": "Atbildē...",
+    "loading": "Lādē...",
+    "show_more": "Rādīt vēl komentārus",
+    "delete_admin": "Dzēst (Admins)",
+    "auth_popup": {
+        "title": "Pieteicieties, lai atbildētu",
+        "message": "Lai atbildētu uz komentāriem, jums ir jāpiesakās.",
+        "login_button": "Pieteikties",
+        "signup_button": "Reģistrēties"
+    },
+    "delete_popup": {
+        "title": "Dzēst komentāru",
+        "admin_title": "Administrators: Dzēst komentāru",
+        "admin_badge": "Administratora darbība",
+        "anonymous": "Anonīms",
+        "cancel_button": "Atcelt",
+        "deleting": "Dzēš...",
+        "delete_as_admin": "Dzēst kā administrators",
+        "delete_permanently": "Dzēst neatgriezeniski",
+        "delete": "Dzēst"
+    }
+}

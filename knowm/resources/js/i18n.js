@@ -23,6 +23,7 @@ import enArtists from './i18n/en/artists.json'
 import enReleases from './i18n/en/releases.json'
 
 import enComponents from './i18n/en/components.json';
+import enComments from './i18n/en/comments.json';
 
 // -----------------------------
 
@@ -45,6 +46,7 @@ import lvArtists from './i18n/lv/artists.json'
 import lvReleases from './i18n/lv/releases.json'
 
 import lvComponents from './i18n/lv/components.json';
+import lvComments from './i18n/lv/comments.json';
 
 const savedLocale = localStorage.getItem('locale') || 'lv'
 dayjs.locale(savedLocale)
@@ -74,7 +76,8 @@ const i18n = createI18n({
             adm_roles: enAdmRoles,
             adm_artists: enAdmArtists,
 
-            components: enComponents
+            components: enComponents,
+            comments: enComments
         },
         lv: {
             navbar: lvNavbar,
@@ -96,7 +99,8 @@ const i18n = createI18n({
             adm_roles: lvAdmRoles,
             adm_artists: lvAdmArtists,
 
-            components: lvComponents
+            components: lvComponents,
+            comments: lvComments
         }
     }
 })

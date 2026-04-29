@@ -1,0 +1,41 @@
+{
+    "title": "Comments",
+    "login": "Log in",
+    "or": "or",
+    "signup": "Sign up",
+    "to_add_comment": " to add a comment.",
+    "add_comment": "Add a comment...",
+    "cancel": "Cancel",
+    "posting": "Posting...",
+    "comment_btn": "Comment",
+    "no_comments": "No comments yet. Be the first to comment!",
+    "edit": "Edit",
+    "edit_comment_placeh": "Edit your comment...",
+    "saving": "Saving...",
+    "save_changes": "Save changes",
+    "read_less": "Read less",
+    "read_more": "Read more",
+    "reply": "Reply",
+    "write_reply": "Write a reply...",
+    "Replying": "Replying...",
+    "loading": "Loading...",
+    "show_more": "Show more comments",
+    "delete_admin": "Delete (Admin)",
+    "auth_popup": {
+        "title": "Sign in to reply",
+        "message": "You need to be signed in to reply to comments.",
+        "login_button": "Log in",
+        "signup_button": "Sign up"
+    },
+    "delete_popup": {
+        "title": "Delete Comment",
+        "admin_title": "Admin: Delete Comment",
+        "admin_badge": "Admin Action",
+        "anonymous": "Anonymous",
+        "cancel_button": "Cancel",
+        "deleting": "Deleting...",
+        "delete_as_admin": "Delete as Admin",
+        "delete_permanently": "Delete Permanently",
+        "delete": "Delete"
+    }
+}
