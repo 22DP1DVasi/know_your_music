@@ -10,6 +10,7 @@ import enHome from './i18n/en/home.json'
 import enAuth from './i18n/en/auth.json'
 import enInfoPages from './i18n/en/info_pages.json'
 import enSearchPages from './i18n/en/search_pages.json'
+import enExplorePages from './i18n/en/explore_pages.json'
 
 import enAdmDashboard from './i18n/en/adm_dashboard.json'
 import enAdmLayout from './i18n/en/adm_layout.json'
@@ -31,6 +32,7 @@ import lvHome from './i18n/lv/home.json'
 import lvAuth from './i18n/lv/auth.json'
 import lvInfoPages from './i18n/lv/info_pages.json'
 import lvSearchPages from './i18n/lv/search_pages.json'
+import lvExplorePages from './i18n/lv/explore_pages.json'
 
 import lvAdmDashboard from './i18n/lv/adm_dashboard.json'
 import lvAdmLayout from './i18n/lv/adm_layout.json'
@@ -59,6 +61,7 @@ const i18n = createI18n({
             auth: enAuth,
             info_pages: enInfoPages,
             search_pages: enSearchPages,
+            explore_pages: enExplorePages,
 
             user_pages: enUserPages,
 
@@ -80,6 +83,7 @@ const i18n = createI18n({
             auth: lvAuth,
             info_pages: lvInfoPages,
             search_pages: lvSearchPages,
+            explore_pages: lvExplorePages,
 
             user_pages: lvUserPages,
 

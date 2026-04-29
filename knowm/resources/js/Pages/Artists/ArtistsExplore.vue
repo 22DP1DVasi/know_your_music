@@ -5,6 +5,9 @@ import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
 import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     artists: Array,
@@ -183,19 +186,19 @@ function lowercaseString(val) {
 </script>
 
 <template>
-    <Head title="Explore Artists" />
+    <Head :title="t('explore_pages.artists.page_title')" />
     <Navbar />
     <main class="flex-1">
         <div class="explore-artists">
             <div class="results-header">
-                <h1 class="results-title">Explore Artists</h1>
+                <h1 class="results-title">{{ t('explore_pages.artists.page_title') }}</h1>
                 <div class="filters-container">
                     <div class="search-controls">
                         <div class="search-container">
                             <input
                                 type="text"
                                 class="searchTerm"
-                                placeholder="Search artists..."
+                                :placeholder="t('explore_pages.artists.search_placeholder')"
                                 v-model="localSearchQuery"
                                 @keyup.enter="performSearch"
                             >
@@ -211,25 +214,25 @@ function lowercaseString(val) {
 
                     <div class="filter-buttons">
                         <button class="filter-button" @click="showGenreModal = true">
-                            <i class="fa fa-filter"></i> Filter by Genre
+                            <i class="fa fa-filter"></i> {{ t('explore_pages.artists.filter_by_genre') }}
                         </button>
 
                         <button class="filter-button" @click="showYearModal = true">
-                            <i class="fa fa-calendar"></i> Filter by Year
+                            <i class="fa fa-calendar"></i> {{ t('explore_pages.artists.filter_by_year') }}
                         </button>
                     </div>
                 </div>
 
                 <div class="sort-controls">
-                    <label>Sort by:</label>
+                    <label>{{ t('explore_pages.artists.sort_by') }}:</label>
                     <select v-model="localSortOrder" @change="applySort">
-                        <option value="asc">A-Z</option>
-                        <option value="desc">Z-A</option>
+                        <option value="asc">{{ t('explore_pages.artists.sort_asc') }}</option>
+                        <option value="desc">{{ t('explore_pages.artists.sort_desc') }}</option>
                     </select>
                 </div>
 
                 <div v-if="selectedGenres.length > 0" class="selected-genres">
-                    <div class="selected-genres-label">Selected genres:</div>
+                    <div class="selected-genres-label">{{ t('explore_pages.artists.selected_genres') }}:</div>
                     <div class="genre-tags">
                         <div v-for="genre in allGenres.filter(g => localSelectedGenres.includes(g.id))"
                              :key="genre.id"
@@ -240,20 +243,23 @@ function lowercaseString(val) {
                     </div>
                 </div>
 
+                <!-- Kaut kur šeit es uzzināju no skolotāja, ka nav obligāts rasktīt komentārus latviešu valodā -->
+                <!-- taču kaut kur kursa sākumā bija teikts otrādi :|. Tagad visi komentāri, protams, angļu valodā. -->
+                <!-- Selected year filters display -->
                 <div v-if="formedFrom || formedTo || disbandedFrom || disbandedTo || includeEmptyFormed || includeEmptyDisbanded" class="selected-filters">
-                    <div class="selected-filters-label">Year filters:</div>
+                    <div class="selected-filters-label">{{ t('explore_pages.artists.year_filters') }}:</div>
                     <div class="filter-tags">
                         <div v-if="formedFrom || formedTo" class="filter-tag">
                             <span class="filter-tag-content">
-                                Formed: {{ formedFrom || 'any' }} - {{ formedTo || 'any' }}
-                                <span v-if="includeEmptyFormed" class="tag-note">(incl. unknown)</span>
+                                {{ t('explore_pages.artists.formed') }}: {{ formedFrom || t('explore_pages.artists.any') }} - {{ formedTo || t('explore_pages.artists.any') }}
+                                <span v-if="includeEmptyFormed" class="tag-note">({{ t('explore_pages.artists.incl_unknown') }})</span>
                             </span>
                             <span class="remove-filter" @click="clearYearFilters">×</span>
                         </div>
                         <div v-if="disbandedFrom || disbandedTo" class="filter-tag">
                             <span class="filter-tag-content">
-                                Disbanded: {{ disbandedFrom || 'any' }} - {{ disbandedTo || 'any' }}
-                                <span v-if="includeEmptyDisbanded" class="tag-note">(incl. unknown)</span>
+                                {{ t('explore_pages.artists.disbanded') }}: {{ disbandedFrom || t('explore_pages.artists.any') }} - {{ disbandedTo || t('explore_pages.artists.any') }}
+                                <span v-if="includeEmptyDisbanded" class="tag-note">({{ t('explore_pages.artists.incl_unknown') }})</span>
                             </span>
                             <span class="remove-filter" @click="clearYearFilters">×</span>
                         </div>
@@ -261,10 +267,11 @@ function lowercaseString(val) {
                 </div>
             </div>
 
+            <!-- Genre Filter Modal -->
             <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>Filter by Genre</h3>
+                        <h3>{{ t('explore_pages.artists.filter_by_genre') }}</h3>
                         <button class="close-modal" @click="showGenreModal = false">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -286,8 +293,8 @@ function lowercaseString(val) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn-clear" @click="clearGenres">Clear All</button>
-                        <button class="btn-apply" @click="applyGenreFilters">Apply Filters</button>
+                        <button class="btn-clear" @click="clearGenres">{{ t('explore_pages.artists.clear_all') }}</button>
+                        <button class="btn-apply" @click="applyGenreFilters">{{ t('explore_pages.artists.apply_filters') }}</button>
                     </div>
                 </div>
             </div>
@@ -296,30 +303,30 @@ function lowercaseString(val) {
             <div v-if="showYearModal" class="modal-overlay" @click.self="showYearModal = false">
                 <div class="modal-content year-modal">
                     <div class="modal-header">
-                        <h3>Filter by Year</h3>
+                        <h3>{{ t('explore_pages.artists.filter_by_year') }}</h3>
                         <button class="close-modal" @click="showYearModal = false">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="year-range-section">
-                            <h4 class="section-subtitle">Formed Year</h4>
+                            <h4 class="section-subtitle">{{ t('explore_pages.artists.formed_year') }}</h4>
                             <div class="year-inputs">
                                 <div class="input-group">
-                                    <label>From:</label>
+                                    <label>{{ t('explore_pages.artists.from') }}:</label>
                                     <input
                                         type="number"
                                         v-model.number="localFormedFrom"
-                                        placeholder="e.g., 1990"
+                                        :placeholder="t('explore_pages.artists.year_placeholder')"
                                         min="1900"
                                         max="2025"
                                         class="year-input"
                                     >
                                 </div>
                                 <div class="input-group">
-                                    <label>To:</label>
+                                    <label>{{ t('explore_pages.artists.to') }}:</label>
                                     <input
                                         type="number"
                                         v-model.number="localFormedTo"
-                                        placeholder="e.g., 2000"
+                                        :placeholder="t('explore_pages.artists.year_placeholder')"
                                         min="1900"
                                         max="2025"
                                         class="year-input"
@@ -328,30 +335,30 @@ function lowercaseString(val) {
                             </div>
                             <label class="checkbox-label">
                                 <input type="checkbox" v-model="localIncludeEmptyFormed">
-                                <span>Include artists with unknown formed year</span>
+                                <span>{{ t('explore_pages.artists.include_empty_formed') }}</span>
                             </label>
                         </div>
 
                         <div class="year-range-section">
-                            <h4 class="section-subtitle">Disbanded Year</h4>
+                            <h4 class="section-subtitle">{{ t('explore_pages.artists.disbanded_year') }}</h4>
                             <div class="year-inputs">
                                 <div class="input-group">
-                                    <label>From:</label>
+                                    <label>{{ t('explore_pages.artists.from') }}:</label>
                                     <input
                                         type="number"
                                         v-model.number="localDisbandedFrom"
-                                        placeholder="e.g., 1990"
+                                        :placeholder="t('explore_pages.artists.year_placeholder')"
                                         min="1900"
                                         max="2025"
                                         class="year-input"
                                     >
                                 </div>
                                 <div class="input-group">
-                                    <label>To:</label>
+                                    <label>{{ t('explore_pages.artists.to') }}:</label>
                                     <input
                                         type="number"
                                         v-model.number="localDisbandedTo"
-                                        placeholder="e.g., 2000"
+                                        :placeholder="t('explore_pages.artists.year_placeholder')"
                                         min="1900"
                                         max="2025"
                                         class="year-input"
@@ -360,18 +367,18 @@ function lowercaseString(val) {
                             </div>
                             <label class="checkbox-label">
                                 <input type="checkbox" v-model="localIncludeEmptyDisbanded">
-                                <span>Include artists with unknown disbanded year</span>
+                                <span>{{ t('explore_pages.artists.include_empty_disbanded') }}</span>
                             </label>
                         </div>
 
                         <div class="year-hint">
                             <i class="fa fa-info-circle"></i>
-                            <span>For active artists, disbanded year is usually empty.</span>
+                            <span>{{ t('explore_pages.artists.year_hint') }}</span>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn-clear" @click="clearYearFilters">Clear All</button>
-                        <button class="btn-apply" @click="applyYearFilters">Apply Filters</button>
+                        <button class="btn-clear" @click="clearYearFilters">{{ t('explore_pages.artists.clear_all') }}</button>
+                        <button class="btn-apply" @click="applyYearFilters">{{ t('explore_pages.artists.apply_filters') }}</button>
                     </div>
                 </div>
             </div>
@@ -383,14 +390,14 @@ function lowercaseString(val) {
                     :artist="artist"
                     :redirect-to="redirectToArtist"
                     :show-track-count="false"
-                    :track-count-text="(count) => `${count} ${count === 1 ? 'track' : 'tracks'}`"
+                    :track-count-text="(count) => `${count} ${count === 1 ? t('explore_pages.artists.track') : t('explore_pages.artists.tracks')}`"
                 />
             </div>
 
             <div v-if="artists.length === 0" class="no-results">
-                No artists found
-                <span v-if="localSearchQuery">for "{{ localSearchQuery }}"</span>
-                <span v-if="selectedGenres.length > 0"> with selected genres</span>
+                {{ t('explore_pages.artists.no_results') }}
+                <span v-if="localSearchQuery">{{ t('explore_pages.artists.for') }} "{{ localSearchQuery }}"</span>
+                <span v-if="selectedGenres.length > 0"> {{ t('explore_pages.artists.with_selected_genres') }}</span>
             </div>
 
             <Pagination

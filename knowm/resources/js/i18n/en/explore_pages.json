@@ -1,0 +1,32 @@
+{
+    "artists": {
+        "page_title": "Explore Artists",
+        "search_placeholder": "Search artists...",
+        "filter_by_genre": "Filter by Genre",
+        "filter_by_year": "Filter by Year",
+        "sort_by": "Sort by",
+        "sort_asc": "A-Z",
+        "sort_desc": "Z-A",
+        "selected_genres": "Selected genres",
+        "year_filters": "Year filters",
+        "formed": "Formed",
+        "disbanded": "Disbanded",
+        "any": "any",
+        "incl_unknown": "incl. unknown",
+        "clear_all": "Clear All",
+        "apply_filters": "Apply Filters",
+        "formed_year": "Formed Year",
+        "disbanded_year": "Disbanded Year",
+        "from": "From",
+        "to": "To",
+        "year_placeholder": "e.g., 1990",
+        "include_empty_formed": "Include artists with unknown formed year",
+        "include_empty_disbanded": "Include artists with unknown disbanded year",
+        "year_hint": "For active artists, disbanded year is usually empty.",
+        "track": "track",
+        "tracks": "tracks",
+        "no_results": "No artists found",
+        "for": "for",
+        "with_selected_genres": "with selected genres"
+    }
+}
