@@ -239,6 +239,26 @@ function lowercaseString(val) {
                         </div>
                     </div>
                 </div>
+
+                <div v-if="formedFrom || formedTo || disbandedFrom || disbandedTo || includeEmptyFormed || includeEmptyDisbanded" class="selected-filters">
+                    <div class="selected-filters-label">Year filters:</div>
+                    <div class="filter-tags">
+                        <div v-if="formedFrom || formedTo" class="filter-tag">
+                            <span class="filter-tag-content">
+                                Formed: {{ formedFrom || 'any' }} - {{ formedTo || 'any' }}
+                                <span v-if="includeEmptyFormed" class="tag-note">(incl. unknown)</span>
+                            </span>
+                            <span class="remove-filter" @click="clearYearFilters">×</span>
+                        </div>
+                        <div v-if="disbandedFrom || disbandedTo" class="filter-tag">
+                            <span class="filter-tag-content">
+                                Disbanded: {{ disbandedFrom || 'any' }} - {{ disbandedTo || 'any' }}
+                                <span v-if="includeEmptyDisbanded" class="tag-note">(incl. unknown)</span>
+                            </span>
+                            <span class="remove-filter" @click="clearYearFilters">×</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
@@ -570,6 +590,61 @@ function lowercaseString(val) {
 }
 
 .genre-tag .remove-genre:hover {
+    background-color: #d1dcff;
+}
+
+.selected-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.selected-filters-label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-tag {
+    background: #e8f0fe;
+    color: #0c4baa;
+    padding: 0.35rem 0.75rem 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-tag-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tag-note {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-left: 0.25rem;
+}
+
+.remove-filter {
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 0.1rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.remove-filter:hover {
     background-color: #d1dcff;
 }
 
