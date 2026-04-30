@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreDescription.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreDescription.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/genres.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/genres.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/genres.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/genres.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -471,7 +468,7 @@
       <workItem from="1777368706439" duration="2890000" />
       <workItem from="1777458563135" duration="18203000" />
       <workItem from="1777541613857" duration="2844000" />
-      <workItem from="1777563215157" duration="9008000" />
+      <workItem from="1777563215157" duration="10577000" />
     </task>
     <servers />
   </component>
