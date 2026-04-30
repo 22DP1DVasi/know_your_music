@@ -121,19 +121,19 @@ function lowercaseString(val) {
 </script>
 
 <template>
-    <Head :title="t('releases.explore.page_title')" />
+    <Head :title="t('explore_pages.releases.page_title')" />
     <Navbar />
     <main class="flex-1">
         <div class="explore-releases">
             <div class="results-header">
-                <h1 class="results-title">{{ t('releases.explore.page_title') }}</h1>
+                <h1 class="results-title">{{ t('explore_pages.releases.page_title') }}</h1>
                 <div class="filters-container">
                     <div class="search-controls">
                         <div class="search-container">
                             <input
                                 type="text"
                                 class="searchTerm"
-                                :placeholder="t('releases.explore.search_placeholder')"
+                                :placeholder="t('explore_pages.releases.search_placeholder')"
                                 v-model="localSearchQuery"
                                 @keyup.enter="performSearch"
                             >
@@ -148,20 +148,20 @@ function lowercaseString(val) {
                     </div>
 
                     <button class="filter-button" @click="showGenreModal = true">
-                        <i class="fa fa-filter"></i> {{ t('releases.explore.filter_by_genre') }}
+                        <i class="fa fa-filter"></i> {{ t('explore_pages.releases.filter_by_genre') }}
                     </button>
                 </div>
 
                 <div class="sort-controls">
-                    <label>{{ t('releases.explore.sort_by') }}:</label>
+                    <label>{{ t('explore_pages.releases.sort_by') }}:</label>
                     <select v-model="localSortOrder" @change="applySort">
-                        <option value="asc">{{ t('releases.explore.sort_asc') }}</option>
-                        <option value="desc">{{ t('releases.explore.sort_desc') }}</option>
+                        <option value="asc">{{ t('explore_pages.releases.sort_asc') }}</option>
+                        <option value="desc">{{ t('explore_pages.releases.sort_desc') }}</option>
                     </select>
                 </div>
 
                 <div v-if="selectedGenres.length > 0" class="selected-genres">
-                    <div class="selected-genres-label">{{ t('releases.explore.selected_genres') }}:</div>
+                    <div class="selected-genres-label">{{ t('explore_pages.releases.selected_genres') }}:</div>
                     <div class="genre-tags">
                         <div v-for="genre in allGenres.filter(g => localSelectedGenres.includes(g.id))"
                              :key="genre.id"
@@ -176,7 +176,7 @@ function lowercaseString(val) {
             <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>{{ t('releases.explore.filter_by_genre') }}</h3>
+                        <h3>{{ t('explore_pages.releases.filter_by_genre') }}</h3>
                         <button class="close-modal" @click="showGenreModal = false">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -198,8 +198,8 @@ function lowercaseString(val) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn-clear" @click="clearGenres">{{ t('releases.explore.clear_all') }}</button>
-                        <button class="btn-apply" @click="applyGenreFilters">{{ t('releases.explore.apply_filters') }}</button>
+                        <button class="btn-clear" @click="clearGenres">{{ t('explore_pages.releases.clear_all') }}</button>
+                        <button class="btn-apply" @click="applyGenreFilters">{{ t('explore_pages.releases.apply_filters') }}</button>
                     </div>
                 </div>
             </div>
@@ -216,9 +216,9 @@ function lowercaseString(val) {
             </div>
 
             <div v-if="releases.length === 0" class="no-results">
-                {{ t('releases.explore.no_results') }}
-                <span v-if="localSearchQuery">{{ t('releases.explore.for') }} "{{ localSearchQuery }}"</span>
-                <span v-if="selectedGenres.length > 0"> {{ t('releases.explore.with_selected_genres') }}</span>
+                {{ t('explore_pages.releases.no_results') }}
+                <span v-if="localSearchQuery">{{ t('explore_pages.releases.for') }} "{{ localSearchQuery }}"</span>
+                <span v-if="selectedGenres.length > 0"> {{ t('explore_pages.releases.with_selected_genres') }}</span>
             </div>
 
             <Pagination
