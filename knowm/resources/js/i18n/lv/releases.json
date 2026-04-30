@@ -28,6 +28,7 @@
         "album": "Albums",
         "ep": "EP",
         "single": "Singls",
-        "compilation": "Kompilācija"
+        "compilation": "Kompilācija",
+        "unknown": "Nezināms tips"
     }
 }

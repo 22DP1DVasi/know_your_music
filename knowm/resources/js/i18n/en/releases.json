@@ -28,6 +28,7 @@
         "album": "Album",
         "ep": "EP",
         "single": "Single",
-        "compilation": "Compilation"
+        "compilation": "Compilation",
+        "unknown": "Unknown type"
     }
 }

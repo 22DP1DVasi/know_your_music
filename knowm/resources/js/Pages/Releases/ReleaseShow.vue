@@ -259,7 +259,7 @@ const closeModal = () => {
                     <div class="top-info-card-wrapped">
                         <div class="info-flex">
                             <div class="info-item">
-                                <span class="meta-value"><b>{{ t(`releases.type.${release.release_type}`) }}</b></span>
+                                <span class="meta-value"><b>{{ t(`releases.type.${release.release_type || 'unknown'}`) }}</b></span>
                             </div>
                             <div class="info-item">
                                 <span class="meta-value"><b>{{ t('releases.global.release_date') }}</b> {{ formatDate(release.release_date) }}</span>

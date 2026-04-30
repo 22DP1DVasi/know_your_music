@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseDescription.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseDescription.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/releases.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/releases.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/releases.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/releases.json" afterDir="false" />
@@ -194,7 +194,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "features/pages-updates",
-    "last_opened_file_path": "C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/en",
+    "last_opened_file_path": "C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/lv",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -213,8 +213,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\en" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\lv" />
+      <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\i18n\en" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\lang\lv" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\resources\js\Pages\Dashboard" />
       <recent name="C:\xampp\htdocs\know_your_music\knowm\lang\lv" />
@@ -470,7 +470,7 @@
       <workItem from="1777363882855" duration="1278000" />
       <workItem from="1777368706439" duration="2890000" />
       <workItem from="1777458563135" duration="18203000" />
-      <workItem from="1777541613857" duration="1799000" />
+      <workItem from="1777541613857" duration="2139000" />
     </task>
     <servers />
   </component>
