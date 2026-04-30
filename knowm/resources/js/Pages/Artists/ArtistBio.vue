@@ -207,7 +207,7 @@ const capitalize = (value) => {
                         <div class="info-flex">
                             <div class="info-item">
                             <span class="info-value">
-                              <b>{{ capitalize(artist.solo_or_band) || t('artists.bio.unknown') }}</b>
+                              <b>{{ t(`artists.type.${artist.solo_or_band || 'unknown'}`) }}</b>
                             </span>
                             </div>
                             <div class="info-item">
