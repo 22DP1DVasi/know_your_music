@@ -1,4 +1,11 @@
 {
+    "global": {
+        "release_date": "Release Date:",
+        "length": "Length:",
+        "track_title": "track",
+        "tracks_title": "tracks",
+        "tracklist": "Tracklist"
+    },
     "show": {
         "about_release": "About This Release",
         "genres": "Genres",
@@ -16,5 +23,11 @@
         "unknown": "Unknown",
         "description_title": "Description",
         "no_description": "There is no description for this release."
+    },
+    "type": {
+        "album": "Album",
+        "ep": "EP",
+        "single": "Single",
+        "compilation": "Compilation"
     }
 }
