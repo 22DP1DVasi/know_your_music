@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseDescription.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseDescription.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleaseShow.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/releases.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/releases.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/releases.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/releases.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Tracks/TrackShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/tracks.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/tracks.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/tracks.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/tracks.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -470,7 +469,7 @@
       <workItem from="1777363882855" duration="1278000" />
       <workItem from="1777368706439" duration="2890000" />
       <workItem from="1777458563135" duration="18203000" />
-      <workItem from="1777541613857" duration="2139000" />
+      <workItem from="1777541613857" duration="2484000" />
     </task>
     <servers />
   </component>

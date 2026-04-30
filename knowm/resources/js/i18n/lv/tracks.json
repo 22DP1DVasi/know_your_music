@@ -1,5 +1,19 @@
 {
     "card": {
         "add_to_playlist": "Pievienot kolekcijai"
+    },
+    "global": {
+        "release_date": "Izdošanas datums:",
+        "length": "Ilgums:"
+    },
+    "show": {
+        "about": "Par šo dziesmu",
+        "no_description": "Šai dziesmai nav apraksta.",
+        "genres_title": "Žanri",
+        "no_genres": "Nav žanru, kas saistīti ar šo dziesmu.",
+        "lyrics_title": "Teksts",
+        "verified_badge": "Apstiprināts",
+        "unverified_badge": "Nepieciešama pārbaude",
+        "no_lyrics": "Šai dziesmai vēl nav pieejams teksts."
     }
 }

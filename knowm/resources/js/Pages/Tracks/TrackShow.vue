@@ -1,12 +1,13 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import Comments from '@/Components/Comments/Comments.vue'
-import { ref, computed } from 'vue'
-import ColorThief from 'colorthief'
+import { Head, router } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import Comments from '@/Components/Comments/Comments.vue';
+import { ref, computed } from 'vue';
+import ColorThief from 'colorthief';
 import dayjs from 'dayjs';
-import { useDate } from '@/composables/useDate'
+import { useDate } from '@/composables/useDate';
+import { useI18n } from 'vue-i18n';
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -41,6 +42,7 @@ const props = defineProps({
     }
 });
 
+const { t } = useI18n();
 const { formatDuration } = useDate()
 
 const heroImage = ref(null);
@@ -112,11 +114,11 @@ const redirectToGenre = (slug) => {
                     <div class="top-info-card-wrapped">
                         <div class="info-flex">
                             <div class="info-item">
-                                <span class="meta-value"><b>Release Date:</b> {{ formatDate(track.release_date) }}</span>
+                                <span class="meta-value"><b>{{ t('tracks.global.release_date') }}</b> {{ formatDate(track.release_date) }}</span>
                             </div>
                             <div class="info-item">
                                 <span class="meta-value">
-                                    <b>Length:</b> {{ formatDuration(track.duration) }}
+                                    <b>{{ t('tracks.global.length') }}</b> {{ formatDuration(track.duration) }}
                                 </span>
                             </div>
                         </div>
@@ -130,22 +132,22 @@ const redirectToGenre = (slug) => {
                         <div class="info-card-wrapped">
                             <div class="info-flex">
                                 <div class="info-item">
-                                    <span class="meta-value"><b>Release Date:</b> {{ formatDate(track.release_date) }}</span>
+                                    <span class="meta-value"><b>{{ t('tracks.global.release_date') }}</b> {{ formatDate(track.release_date) }}</span>
                                 </div>
                                 <div class="info-item">
                                     <span class="meta-value">
-                                        <b>Length:</b> {{ formatDuration(track.duration) }}
+                                        <b>{{ t('tracks.global.length') }}</b> {{ formatDuration(track.duration) }}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <h2 class="section-title">About This Track</h2>
+                        <h2 class="section-title">{{ t('tracks.show.about') }}</h2>
                         <div v-if="track.description" class="description-text" v-html="track.description"></div>
-                        <div v-else class="description-text">There is no background for this track.</div>
+                        <div v-else class="description-text">{{ t('tracks.show.no_description') }}</div>
 
                         <div class="genres-card">
                             <div class="genres-header">
-                                <h3 class="info-title">Genres</h3>
+                                <h3 class="info-title">{{ t('tracks.show.genres_title') }}</h3>
                                 <!--                                <button-->
                                 <!--                                    v-if="release.genres.length > 5"-->
                                 <!--                                    class="see-all-genres"-->
@@ -154,7 +156,7 @@ const redirectToGenre = (slug) => {
                                 <!--                                    See all genres-->
                                 <!--                                </button>-->
                             </div>
-                            <div v-if="!track.genres.length">No genres related to this track.</div>
+                            <div v-if="!track.genres.length">{{ t('tracks.show.no_genres') }}</div>
                             <div v-else class="genre-tags">
                                 <button
                                     v-for="(genre, index) in track.genres.slice(0, 5)"
@@ -170,18 +172,18 @@ const redirectToGenre = (slug) => {
 
                         <section class="track-lyrics">
                             <div class="lyrics-header">
-                                <h2 class="section-title">Lyrics</h2>
+                                <h2 class="section-title">{{ t('tracks.show.lyrics_title') }}</h2>
                                 <span v-if="track.lyrics.status === 'verified'" class="verified-badge">
-                                    Verified
+                                    {{ t('tracks.show.verified_badge') }}
                                 </span>
-                                <span v-else class="unverified-badge">
-                                    Needs Verification
+                                                        <span v-else class="unverified-badge">
+                                    {{ t('tracks.show.unverified_badge') }}
                                 </span>
                             </div>
                             <div class="lyrics-content">
                                 <pre v-if="track.lyrics.text" class="lyrics-text">{{ track.lyrics.text }}</pre>
                                 <div v-else class="no-lyrics">
-                                    No lyrics available for this track yet.
+                                    {{ t('tracks.show.no_lyrics') }}
                                 </div>
                             </div>
                         </section>
