@@ -1,139 +1,10 @@
-<template>
-    <Head title="Explore Releases" />
-    <Navbar />
-    <main class="flex-1">
-        <div class="explore-releases">
-            <div class="results-header">
-                <h1 class="results-title">Explore Releases</h1>
-                <div class="filters-container">
-                    <div class="search-controls">
-                        <div class="search-container">
-                            <input
-                                type="text"
-                                class="searchTerm"
-                                placeholder="Search releases..."
-                                v-model="localSearchQuery"
-                                @keyup.enter="performSearch"
-                            >
-                            <button
-                                type="submit"
-                                class="searchButton"
-                                @click="performSearch"
-                            >
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <button class="filter-button" @click="showGenreModal = true">
-                        <i class="fa fa-filter"></i> Filter by Genre
-                    </button>
-                </div>
-
-                <div class="sort-controls">
-                    <label>Sort by:</label>
-                    <select v-model="localSortOrder" @change="applySort">
-                        <option value="asc">A-Z</option>
-                        <option value="desc">Z-A</option>
-                    </select>
-                </div>
-
-                <div v-if="selectedGenres.length > 0" class="selected-genres">
-                    <div class="selected-genres-label">Selected genres:</div>
-                    <div class="genre-tags">
-                        <div v-for="genre in allGenres.filter(g => localSelectedGenres.includes(g.id))"
-                             :key="genre.id"
-                             class="genre-tag">
-                            <span class="genre-tag-content">{{ lowercaseString(genre.name) }}</span>
-                            <span class="remove-genre" @click="removeGenre(genre.id)">×</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Filter by Genre</h3>
-                        <button class="close-modal" @click="showGenreModal = false">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="genre-list">
-                            <div
-                                v-for="genre in allGenres"
-                                :key="genre.id"
-                                class="genre-item"
-                                @click="toggleGenre(genre.id)"
-                            >
-                                <input
-                                    type="checkbox"
-                                    :id="'genre-' + genre.id"
-                                    :checked="localSelectedGenres.includes(genre.id)"
-                                    @change="toggleGenre(genre.id)"
-                                >
-                                <label :for="'genre-' + genre.id">{{ lowercaseString(genre.name) }}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn-clear" @click="clearGenres">Clear All</button>
-                        <button class="btn-apply" @click="applyGenreFilters">Apply Filters</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="release-results">
-                <div
-                    v-for="release in releases"
-                    :key="release.id"
-                    class="release-card"
-                    @click="redirectToRelease(release.slug)"
-                >
-                    <div class="image-wrapper">
-                        <img :src="release.cover_url" :alt="release.title" />
-                    </div>
-                    <div class="release-info">
-                        <h3>{{ release.title }}</h3>
-                        <div v-if="release.artists.length > 1" class="artists-names-container">
-                            <span class="artists-names">
-                                {{ formatArtists(release.artists) }}
-                            </span>
-                        </div>
-                        <div v-else-if="release.artists.length === 1" class="single-artist">
-                            {{ release.artists[0].name }}
-                        </div>
-                        <p class="release-meta">
-                            {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div v-if="releases.length === 0" class="no-results">
-                No releases found
-                <span v-if="localSearchQuery">for "{{ localSearchQuery }}"</span>
-                <span v-if="selectedGenres.length > 0"> with selected genres</span>
-            </div>
-
-            <Pagination
-                :links="paginationLinks"
-                :current-page="currentPage"
-                :total-pages="totalPages"
-                :search-query="localSearchQuery"
-                :selected-genres="localSelectedGenres"
-                class="pagination"
-            />
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head, Link, router } from "@inertiajs/vue3";
 import {ref, computed, onBeforeUnmount, onMounted, watch} from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     releases: Array,
@@ -152,6 +23,8 @@ const props = defineProps({
         default: 'asc'
     }
 });
+
+const { t } = useI18n();
 
 const localSearchQuery = ref(props.searchQuery || '');
 const localPerPage = ref(props.perPage || 24);
@@ -245,6 +118,136 @@ function lowercaseString(val) {
 }
 
 </script>
+
+<template>
+    <Head :title="t('releases.explore.page_title')" />
+    <Navbar />
+    <main class="flex-1">
+        <div class="explore-releases">
+            <div class="results-header">
+                <h1 class="results-title">{{ t('releases.explore.page_title') }}</h1>
+                <div class="filters-container">
+                    <div class="search-controls">
+                        <div class="search-container">
+                            <input
+                                type="text"
+                                class="searchTerm"
+                                :placeholder="t('releases.explore.search_placeholder')"
+                                v-model="localSearchQuery"
+                                @keyup.enter="performSearch"
+                            >
+                            <button
+                                type="submit"
+                                class="searchButton"
+                                @click="performSearch"
+                            >
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="filter-button" @click="showGenreModal = true">
+                        <i class="fa fa-filter"></i> {{ t('releases.explore.filter_by_genre') }}
+                    </button>
+                </div>
+
+                <div class="sort-controls">
+                    <label>{{ t('releases.explore.sort_by') }}:</label>
+                    <select v-model="localSortOrder" @change="applySort">
+                        <option value="asc">{{ t('releases.explore.sort_asc') }}</option>
+                        <option value="desc">{{ t('releases.explore.sort_desc') }}</option>
+                    </select>
+                </div>
+
+                <div v-if="selectedGenres.length > 0" class="selected-genres">
+                    <div class="selected-genres-label">{{ t('releases.explore.selected_genres') }}:</div>
+                    <div class="genre-tags">
+                        <div v-for="genre in allGenres.filter(g => localSelectedGenres.includes(g.id))"
+                             :key="genre.id"
+                             class="genre-tag">
+                            <span class="genre-tag-content">{{ lowercaseString(genre.name) }}</span>
+                            <span class="remove-genre" @click="removeGenre(genre.id)">×</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>{{ t('releases.explore.filter_by_genre') }}</h3>
+                        <button class="close-modal" @click="showGenreModal = false">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="genre-list">
+                            <div
+                                v-for="genre in allGenres"
+                                :key="genre.id"
+                                class="genre-item"
+                                @click="toggleGenre(genre.id)"
+                            >
+                                <input
+                                    type="checkbox"
+                                    :id="'genre-' + genre.id"
+                                    :checked="localSelectedGenres.includes(genre.id)"
+                                    @change="toggleGenre(genre.id)"
+                                >
+                                <label :for="'genre-' + genre.id">{{ lowercaseString(genre.name) }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-clear" @click="clearGenres">{{ t('releases.explore.clear_all') }}</button>
+                        <button class="btn-apply" @click="applyGenreFilters">{{ t('releases.explore.apply_filters') }}</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="release-results">
+                <div
+                    v-for="release in releases"
+                    :key="release.id"
+                    class="release-card"
+                    @click="redirectToRelease(release.slug)"
+                >
+                    <div class="image-wrapper">
+                        <img :src="release.cover_url" :alt="release.title" />
+                    </div>
+                    <div class="release-info">
+                        <h3>{{ release.title }}</h3>
+                        <div v-if="release.artists.length > 1" class="artists-names-container">
+                            <span class="artists-names">
+                                {{ formatArtists(release.artists) }}
+                            </span>
+                        </div>
+                        <div v-else-if="release.artists.length === 1" class="single-artist">
+                            {{ release.artists[0].name }}
+                        </div>
+                        <p class="release-meta">
+                            {{ release.tracks_count }} {{ release.tracks_count === 1 ? t('releases.explore.track') : t('releases.explore.tracks') }} • {{ release.release_type }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="releases.length === 0" class="no-results">
+                {{ t('releases.explore.no_results') }}
+                <span v-if="localSearchQuery">{{ t('releases.explore.for') }} "{{ localSearchQuery }}"</span>
+                <span v-if="selectedGenres.length > 0"> {{ t('releases.explore.with_selected_genres') }}</span>
+            </div>
+
+            <Pagination
+                :links="paginationLinks"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :search-query="localSearchQuery"
+                :selected-genres="localSelectedGenres"
+                class="pagination"
+            />
+        </div>
+    </main>
+    <Footer />
+</template>
 
 <style scoped>
 .explore-releases {

@@ -30,5 +30,21 @@
         "single": "Single",
         "compilation": "Compilation",
         "unknown": "Unknown type"
+    },
+    "explore": {
+        "page_title": "Explore Releases",
+        "search_placeholder": "Search releases...",
+        "filter_by_genre": "Filter by Genre",
+        "sort_by": "Sort by",
+        "sort_asc": "A-Z",
+        "sort_desc": "Z-A",
+        "selected_genres": "Selected genres",
+        "clear_all": "Clear All",
+        "apply_filters": "Apply Filters",
+        "track": "track",
+        "tracks": "tracks",
+        "no_results": "No releases found",
+        "for": "for",
+        "with_selected_genres": "with selected genres"
     }
 }

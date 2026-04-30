@@ -30,5 +30,21 @@
         "single": "Singls",
         "compilation": "Kompilācija",
         "unknown": "Nezināms tips"
+    },
+    "explore": {
+        "page_title": "Atklāt albumus",
+        "search_placeholder": "Meklēt albumus...",
+        "filter_by_genre": "Filtrēt pēc žanra",
+        "sort_by": "Kārtot pēc",
+        "sort_asc": "A-Z",
+        "sort_desc": "Z-A",
+        "selected_genres": "Atlasītie žanri",
+        "clear_all": "Notīrīt visu",
+        "apply_filters": "Pielietot filtrus",
+        "track": "dziesma",
+        "tracks": "dziesmas",
+        "no_results": "Nav atrasts neviens albums",
+        "for": "priekš",
+        "with_selected_genres": "ar atlasītajiem žanriem"
     }
 }

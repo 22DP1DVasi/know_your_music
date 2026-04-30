@@ -176,11 +176,11 @@ const closePlayer = () => {
 };
 
 const redirectToArtist = (slug) => {
-    window.location.href = `/artists/${slug}`;
+    router.get(`/artists/${slug}`);
 };
 
 const redirectToAllArtists = (slug) => {
-    window.location.href = `/genres/${slug}/artists`;
+    router.get(`/genres/${slug}/artists`);
 };
 
 const redirectToTrack = (track) => {
@@ -188,15 +188,15 @@ const redirectToTrack = (track) => {
 };
 
 const redirectToAllTracks = (slug) => {
-    window.location.href = `/genres/${slug}/tracks`;
+    router.get(`/genres/${slug}/tracks`);
 };
 
 const redirectToRelease = (slug) => {
-    window.location.href = `/releases/${slug}`;
+    router.get(`/releases/${slug}`);
 };
 
 const redirectToAllReleases = (slug) => {
-    window.location.href = `/genres/${slug}/releases`;
+    router.get(`/genres/${slug}/releases`);
 };
 
 const formatDuration = (timeString) => {
