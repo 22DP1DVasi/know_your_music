@@ -137,7 +137,7 @@ const currentDescription = computed(() => {
 });
 
 const languageNotice = computed(() => {
-    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    // latviešu locale, nav latviešu apraksta, bet angļu apraksts eksistē
     if (locale.value === 'lv' && !props.release.description_lv && props.release.description) {
         return {
             show: true,
@@ -145,7 +145,7 @@ const languageNotice = computed(() => {
             type: 'lv-no-desc'
         };
     }
-    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    // angļu locale, nav angļu apraksta, bet latviešu apraksts eksistē
     if (locale.value === 'en' && !props.release.description && props.release.description_lv) {
         return {
             show: true,

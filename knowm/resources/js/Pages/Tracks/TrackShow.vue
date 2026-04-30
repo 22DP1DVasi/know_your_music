@@ -103,7 +103,7 @@ const currentDescription = computed(() => {
 });
 
 const languageNotice = computed(() => {
-    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    // latviešu locale, nav latviešu apraksta, bet angļu apraksts eksistē
     if (locale.value === 'lv' && !props.track.description_lv && props.track.description) {
         return {
             show: true,
@@ -111,7 +111,7 @@ const languageNotice = computed(() => {
             type: 'lv-no-desc'
         };
     }
-    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    // angļu locale, nav angļu apraksta, bet latviešu apraksts eksistē
     if (locale.value === 'en' && !props.track.description && props.track.description_lv) {
         return {
             show: true,

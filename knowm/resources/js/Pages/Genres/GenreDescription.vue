@@ -1,65 +1,16 @@
-<template>
-    <Head :title="`${genre.name} Description`" />
-    <Navbar />
-    <main class="genre-page flex-1">
-        <div class="genre-hero" :style="heroStyle">
-            <div class="hero-gradient" v-if="!isLandscape"></div>
-            <div class="hero-image-container">
-                <img
-                    :src="genre.profile_url"
-                    :alt="genre.name"
-                    class="hero-image"
-                    ref="heroImage"
-                    @load="handleImageLoad"
-                    @error="handleImageError"
-                    :style="imageStyle"
-                    loading="eager"
-                >
-            </div>
-            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>
-            <div class="back-button" @click="goBackToGenre">
-                ← Back to genre
-            </div>
-        </div>
-
-        <div class="genre-content">
-            <div class="main-content">
-                <h2 class="section-title">Description</h2>
-                <div class="description-wrapper">
-                    <div class="info-card wrapped">
-                        <h3 class="info-title">Details</h3>
-                        <div class="info-flex">
-                            <div class="info-item">
-                                <span class="info-value"><b>Origin Year:</b> {{ genre.origin_year || 'Unknown' }}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-value"><b>Origin Country:</b> {{ genre.origin_country || 'Unknown' }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="genre.description" class="description-text" v-html="genre.description"></div>
-                    <div v-else class="description-text">There is no description available for this genre.</div>
-                </div>
-            </div>
-
-            <div class="sidebar-space">
-                <!-- Future content like "Similar Genres" will go here -->
-            </div>
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import ColorThief from 'colorthief';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     genre: Object,
 });
+
+const { t, locale } = useI18n();
 
 // hero image
 const heroImage = ref(null);
@@ -176,7 +127,117 @@ function capitalizeFirstLetter(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
 
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
+const currentDescription = computed(() => {
+    if (locale.value === 'lv' && props.genre.description_lv) {
+        return props.genre.description_lv;
+    }
+    if (locale.value === 'en' && props.genre.description) {
+        return props.genre.description;
+    }
+    if (locale.value === 'lv' && !props.genre.description_lv && props.genre.description) {
+        return props.genre.description;
+    }
+    if (locale.value === 'en' && !props.genre.description && props.genre.description_lv) {
+        return props.genre.description_lv;
+    }
+    return '';
+});
+
+const languageNotice = computed(() => {
+    // latviešu locale, nav latviešu apraksta, bet angļu apraksts eksistē
+    if (locale.value === 'lv' && !props.genre.description_lv && props.genre.description) {
+        return {
+            show: true,
+            message: 'Apraksts pieejams tikai angļu valodā.',
+            type: 'lv-no-desc'
+        };
+    }
+    // angļu locale, nav angļu apraksta, bet latviešu apraksts eksistē
+    if (locale.value === 'en' && !props.genre.description && props.genre.description_lv) {
+        return {
+            show: true,
+            message: 'Description available only in Latvian.',
+            type: 'en-no-desc'
+        };
+    }
+    return {
+        show: false,
+        message: '',
+        type: null
+    };
+});
+
+const hasDescription = computed(() => {
+    return currentDescription.value !== '';
+});
+
 </script>
+
+<template>
+    <Head :title="`${genre.name} - ${t('genres.description.page_title')}`" />
+    <Navbar />
+    <main class="genre-page flex-1">
+        <div class="genre-hero" :style="heroStyle">
+            <div class="hero-gradient" v-if="!isLandscape"></div>
+            <div class="hero-image-container">
+                <img
+                    :src="genre.profile_url"
+                    :alt="genre.name"
+                    class="hero-image"
+                    ref="heroImage"
+                    @load="handleImageLoad"
+                    @error="handleImageError"
+                    :style="imageStyle"
+                    loading="eager"
+                >
+            </div>
+            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>
+            <div class="back-button" @click="goBackToGenre">
+                ← {{ t('genres.description.back_to_genre') }}
+            </div>
+        </div>
+
+        <div class="genre-content">
+            <div class="main-content">
+                <h2 class="section-title">{{ t('genres.description.description_title') }}</h2>
+                <div class="description-wrapper">
+                    <div class="info-card wrapped">
+                        <h3 class="info-title">{{ t('genres.description.details_title') }}</h3>
+                        <div class="info-flex">
+                            <div class="info-item">
+                                <span class="info-value"><b>{{ t('genres.description.origin_year') }}:</b> {{ genre.origin_year || t('genres.description.unknown') }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-value"><b>{{ t('genres.description.origin_country') }}:</b> {{ genre.origin_country || t('genres.description.unknown') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language notice -->
+                    <div v-if="languageNotice.show" class="language-notice" :data-type="languageNotice.type">
+                        {{ languageNotice.message }}
+                    </div>
+
+                    <!-- Description text -->
+                    <div v-if="hasDescription" class="description-text" v-html="currentDescription"></div>
+                    <div v-else class="description-text no-description">{{ t('genres.description.no_description') }}</div>
+                </div>
+            </div>
+
+            <div class="sidebar-space">
+                <!-- Future content like "Similar Genres" will go here -->
+            </div>
+        </div>
+    </main>
+    <Footer />
+</template>
 
 <style scoped>
 .genre-page {
@@ -352,6 +413,30 @@ function capitalizeFirstLetter(val) {
 
 .info-value {
     font-weight: 500;
+}
+
+.language-notice {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #999;
+    font-style: italic;
+}
+
+.language-notice[data-type="lv-no-desc"] {
+    border-left-color: #0c4baa;
+}
+
+.language-notice[data-type="en-no-desc"] {
+    border-left-color: #aa0c4b;
+}
+
+.no-description {
+    color: #666;
+    font-style: italic;
 }
 
 @media (max-width: 1455px) {
