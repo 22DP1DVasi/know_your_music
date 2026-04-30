@@ -42,7 +42,7 @@ const props = defineProps({
     }
 });
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { formatDuration } = useDate()
 
 const heroImage = ref(null);
@@ -75,6 +75,77 @@ const formatDate = (dateString) => {
 
 const redirectToGenre = (slug) => {
     window.location.href = `/genres/${slug}`;
+};
+
+const descriptionMaxLength = 500;
+
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
+const currentDescription = computed(() => {
+    if (locale.value === 'lv' && props.track.description_lv) {
+        return props.track.description_lv;
+    }
+    if (locale.value === 'en' && props.track.description) {
+        return props.track.description;
+    }
+    if (locale.value === 'lv' && !props.track.description_lv && props.track.description) {
+        return props.track.description;
+    }
+    if (locale.value === 'en' && !props.track.description && props.track.description_lv) {
+        return props.track.description_lv;
+    }
+    return '';
+});
+
+const languageNotice = computed(() => {
+    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    if (locale.value === 'lv' && !props.track.description_lv && props.track.description) {
+        return {
+            show: true,
+            message: 'Apraksts pieejams tikai angļu valodā.',
+            type: 'lv-no-desc'
+        };
+    }
+    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    if (locale.value === 'en' && !props.track.description && props.track.description_lv) {
+        return {
+            show: true,
+            message: 'Description available only in Latvian.',
+            type: 'en-no-desc'
+        };
+    }
+    return {
+        show: false,
+        message: '',
+        type: null
+    };
+});
+
+const truncatedDescription = computed(() => {
+    const desc = currentDescription.value;
+    if (!desc) {
+        return '';
+    }
+    if (desc.length <= descriptionMaxLength) return desc;
+    return desc.substring(0, descriptionMaxLength) + '...';
+});
+
+const showReadMore = computed(() => {
+    const desc = currentDescription.value;
+    return desc && desc.length > descriptionMaxLength;
+});
+
+const hasDescription = computed(() => {
+    return currentDescription.value !== '';
+});
+
+const redirectToFullDescription = (slug) => {
+    window.location.href = `/tracks/${slug}/description`;
 };
 
 </script>
@@ -141,9 +212,26 @@ const redirectToGenre = (slug) => {
                                 </div>
                             </div>
                         </div>
+
                         <h2 class="section-title">{{ t('tracks.show.about') }}</h2>
-                        <div v-if="track.description" class="description-text" v-html="track.description"></div>
-                        <div v-else class="description-text">{{ t('tracks.show.no_description') }}</div>
+
+                        <!-- Language notice -->
+                        <div v-if="languageNotice.show" class="language-notice" :data-type="languageNotice.type">
+                            {{ languageNotice.message }}
+                        </div>
+
+                        <!-- Description text with truncation -->
+                        <div v-if="hasDescription" class="description-text" v-html="truncatedDescription"></div>
+                        <div v-else class="description-text no-description">{{ t('tracks.show.no_description') }}</div>
+
+                        <!-- Read more button -->
+                        <button
+                            v-if="showReadMore"
+                            @click="redirectToFullDescription(track.slug)"
+                            class="read-more-button"
+                        >
+                            {{ t('tracks.show.read_more') }}
+                        </button>
 
                         <div class="genres-card">
                             <div class="genres-header">
@@ -364,6 +452,46 @@ const redirectToGenre = (slug) => {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #0c4baa;
+}
+
+.language-notice {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #999;
+    font-style: italic;
+}
+
+.language-notice[data-type="lv-no-desc"] {
+    border-left-color: #0c4baa;
+}
+
+.language-notice[data-type="en-no-desc"] {
+    border-left-color: #aa0c4b;
+}
+
+.no-description {
+    color: #666;
+    font-style: italic;
+}
+
+.read-more-button {
+    background: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.read-more-button:hover {
+    background: #1a5fc9;
 }
 
 .meta-value {

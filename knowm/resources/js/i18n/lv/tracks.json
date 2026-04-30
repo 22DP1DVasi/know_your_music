@@ -14,6 +14,7 @@
         "lyrics_title": "Teksts",
         "verified_badge": "Apstiprināts",
         "unverified_badge": "Nepieciešama pārbaude",
-        "no_lyrics": "Šai dziesmai vēl nav pieejams teksts."
+        "no_lyrics": "Šai dziesmai vēl nav pieejams teksts.",
+        "read_more": "Lasīt vairāk"
     }
 }

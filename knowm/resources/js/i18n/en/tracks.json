@@ -14,6 +14,7 @@
         "lyrics_title": "Lyrics",
         "verified_badge": "Verified",
         "unverified_badge": "Needs Verification",
-        "no_lyrics": "No lyrics available for this track yet."
+        "no_lyrics": "No lyrics available for this track yet.",
+        "read_more": "Read more"
     }
 }
