@@ -574,93 +574,6 @@ function lowercaseString(val) {
     padding: 0 2rem;
 }
 
-.release-card {
-    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.release-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.release-card .image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.release-card .image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.release-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-.release-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.artists-names-container {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.3;
-    height: 2.6em;
-    overflow: hidden;
-}
-
-.release-info .artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
-
-.single-artist {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-meta {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .no-results {
     padding: 2rem;
     text-align: center;
@@ -695,22 +608,6 @@ function lowercaseString(val) {
     .searchTerm {
         font-size: 16px;
         height: 46px;
-    }
-
-    .release-card {
-        flex: 0 0 calc(50% - 0.75rem); /* 2 cards per row */
-    }
-
-    .release-info {
-        padding: 1.25rem;
-    }
-
-    .release-info h3 {
-        font-size: 1.05rem;
-    }
-
-    .release-info p {
-        font-size: 0.95rem;
     }
 
     .filters-container {
@@ -758,10 +655,6 @@ function lowercaseString(val) {
 
     .release-results {
         justify-content: center;
-    }
-
-    .release-card {
-        flex: 0 0 80%;
     }
 
     .genre-item {
