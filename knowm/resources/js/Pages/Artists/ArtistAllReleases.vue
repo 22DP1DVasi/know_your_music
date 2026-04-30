@@ -1,91 +1,3 @@
-<template>
-    <Head :title="`${artist.name} - All Releases`" />
-    <Navbar />
-    <main class="artist-page flex-1">
-        <div class="artist-hero" :style="heroStyle">
-            <div class="hero-gradient" v-if="!isLandscape"></div>
-            <div class="hero-image-container">
-                <img
-                    :src="getArtistImage(artist)"
-                    :alt="artist.name"
-                    class="hero-image"
-                    ref="heroImage"
-                    @load="handleImageLoad"
-                    :style="imageStyle"
-                    loading="eager"
-                >
-            </div>
-            <h1 class="artist-name">{{ artist.name }}</h1>
-            <div class="back-button" @click="goBackToArtist">
-                ← Back to artist
-            </div>
-        </div>
-
-        <div class="artist-content">
-            <div class="main-content">
-                <div class="search-container">
-                    <input
-                        type="text"
-                        class="searchTerm"
-                        placeholder="Search releases..."
-                        v-model="localSearchQuery"
-                        @keyup.enter="performSearch"
-                    >
-                    <button
-                        type="submit"
-                        class="searchButton"
-                        @click="performSearch"
-                    >
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
-                <h2 class="section-title">{{ totalReleases }} {{ totalReleases === 1 ? 'release' : 'releases' }}</h2>
-
-                <section v-if="releases.length > 0" class="results-section">
-                    <div class="release-results-wrapper">
-                        <div class="release-results">
-                            <div
-                                v-for="release in releases"
-                                :key="release.id"
-                                class="release-card"
-                                @click="redirectToRelease(release.slug)"
-                            >
-                                <div class="image-wrapper">
-                                    <img :src="release.cover_url" :alt="release.title" />
-                                </div>
-                                <div class="release-info">
-                                    <h3>{{ release.title }}</h3>
-                                    <div v-if="getCoArtists(release).length > 0" class="artists-names-container">
-                                        <span class="with-text">with</span>
-                                        <span class="artists-names">
-                                            {{ getCoArtists(release).map(a => a.name).join(', ') }}
-                                        </span>
-                                    </div>
-                                    <p class="release-meta">
-                                        {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <Pagination
-                        v-if="totalPages > 1"
-                        :links="paginationLinks"
-                        :current-page="currentPage"
-                        :total-pages="totalPages"
-                        class="pagination"
-                    />
-                </section>
-            </div>
-
-            <div class="sidebar-space">
-                <!-- Future content like "Similar Artists" will go here -->
-            </div>
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue'
@@ -94,6 +6,7 @@ import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue';
 import ColorThief from 'colorthief';
 import { debounce } from 'lodash-es';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     artist: {
@@ -129,6 +42,8 @@ const props = defineProps({
         default: () => ({})
     }
 });
+
+const { t } = useI18n();
 
 // hero image
 const heroImage = ref(null);
@@ -257,6 +172,94 @@ const getCoArtists = (release) => {
 
 </script>
 
+<template>
+    <Head :title="`${artist.name} - All Releases`" />
+    <Navbar />
+    <main class="artist-page flex-1">
+        <div class="artist-hero" :style="heroStyle">
+            <div class="hero-gradient" v-if="!isLandscape"></div>
+            <div class="hero-image-container">
+                <img
+                    :src="getArtistImage(artist)"
+                    :alt="artist.name"
+                    class="hero-image"
+                    ref="heroImage"
+                    @load="handleImageLoad"
+                    :style="imageStyle"
+                    loading="eager"
+                >
+            </div>
+            <h1 class="artist-name">{{ artist.name }}</h1>
+            <div class="back-button" @click="goBackToArtist">
+                {{ t('artists.global.back_to_artist') }}
+            </div>
+        </div>
+
+        <div class="artist-content">
+            <div class="main-content">
+                <div class="search-container">
+                    <input
+                        type="text"
+                        class="searchTerm"
+                        :placeholder="t('artists.global.search_releases')"
+                        v-model="localSearchQuery"
+                        @keyup.enter="performSearch"
+                    >
+                    <button
+                        type="submit"
+                        class="searchButton"
+                        @click="performSearch"
+                    >
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                <h2 class="section-title">{{ totalReleases }} {{ totalReleases === 1 ? t('artists.global.release_title') : t('artists.global.releases_title') }}</h2>
+
+                <section v-if="releases.length > 0" class="results-section">
+                    <div class="release-results-wrapper">
+                        <div class="release-results">
+                            <div
+                                v-for="release in releases"
+                                :key="release.id"
+                                class="release-card"
+                                @click="redirectToRelease(release.slug)"
+                            >
+                                <div class="image-wrapper">
+                                    <img :src="release.cover_url" :alt="release.title" />
+                                </div>
+                                <div class="release-info">
+                                    <h3>{{ release.title }}</h3>
+                                    <div v-if="getCoArtists(release).length > 0" class="artists-names-container">
+                                        <span class="with-text">with</span>
+                                        <span class="artists-names">
+                                            {{ getCoArtists(release).map(a => a.name).join(', ') }}
+                                        </span>
+                                    </div>
+                                    <p class="release-meta">
+                                        {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <Pagination
+                        v-if="totalPages > 1"
+                        :links="paginationLinks"
+                        :current-page="currentPage"
+                        :total-pages="totalPages"
+                        class="pagination"
+                    />
+                </section>
+            </div>
+
+            <div class="sidebar-space">
+                <!-- Future content like "Similar Artists" will go here -->
+            </div>
+        </div>
+    </main>
+    <Footer />
+</template>
+
 <style scoped>
 .artist-page {
     max-width: 90%;
@@ -332,7 +335,7 @@ const getCoArtists = (release) => {
 .back-button {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     cursor: pointer;
     color: white;
     font-weight: 500;

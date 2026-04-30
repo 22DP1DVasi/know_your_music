@@ -8,7 +8,10 @@
         "back_to_artist": "← Atpakaļ pie izpildītāja",
         "search_tracks": "Meklēt dziesmas...",
         "track_title": "dziesma",
-        "tracks_title": "dziesmas"
+        "tracks_title": "dziesmas",
+        "search_releases": "Meklēt albumus...",
+        "release_title": "albums",
+        "releases_title": "albumi"
     },
     "show": {
         "about": "Par izpildītāju",

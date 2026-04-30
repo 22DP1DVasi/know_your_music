@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistAllTracks.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistAllTracks.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistBio.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistBio.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistAllReleases.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Artists/ArtistAllReleases.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/artists.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/artists.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/artists.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/artists.json" afterDir="false" />
     </list>
@@ -471,7 +469,7 @@
       <workItem from="1777363882855" duration="1278000" />
       <workItem from="1777368706439" duration="2890000" />
       <workItem from="1777458563135" duration="18203000" />
-      <workItem from="1777541613857" duration="857000" />
+      <workItem from="1777541613857" duration="1179000" />
     </task>
     <servers />
   </component>

@@ -8,7 +8,10 @@
         "back_to_artist": "← Back to artist",
         "search_tracks": "Search tracks...",
         "track_title": "track",
-        "tracks_title": "tracks"
+        "tracks_title": "tracks",
+        "search_releases": "Search releases...",
+        "release_title": "release",
+        "releases_title": "releases"
     },
     "show": {
         "about": "About",
