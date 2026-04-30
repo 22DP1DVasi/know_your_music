@@ -9,6 +9,7 @@ import { ref } from 'vue';
 import ColorThief from 'colorthief';
 import { debounce } from 'lodash-es';
 import { route } from "ziggy-js";
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     artist: {
@@ -44,6 +45,8 @@ const props = defineProps({
         default: () => ({})
     }
 });
+
+const { t } = useI18n();
 
 // piekļuve koplietojamiem datiem no servera puses
 const page = usePage();
@@ -221,7 +224,7 @@ const closeModal = () => {
             </div>
             <h1 class="artist-name">{{ artist.name }}</h1>
             <div class="back-button" @click="goBackToArtist">
-                ← Back to artist
+                {{ t('artists.global.back_to_artist') }}
             </div>
         </div>
 
@@ -231,7 +234,7 @@ const closeModal = () => {
                     <input
                         type="text"
                         class="searchTerm"
-                        placeholder="Search tracks..."
+                        :placeholder="t('artists.global.search_tracks')"
                         v-model="localSearchQuery"
                         @keyup.enter="performSearch"
                     >
@@ -243,7 +246,7 @@ const closeModal = () => {
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
-                <h2 class="section-title">{{ totalTracks }} {{ totalTracks === 1 ? 'track' : 'tracks' }}</h2>
+                <h2 class="section-title">{{ totalTracks }} {{ totalTracks === 1 ? t('artists.global.track_title') : t('artists.global.tracks_title') }}</h2>
                 <div class="track-list-container">
                     <div class="track-list">
                         <TrackCard
@@ -365,7 +368,7 @@ const closeModal = () => {
 .back-button {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     cursor: pointer;
     color: white;
     font-weight: 500;

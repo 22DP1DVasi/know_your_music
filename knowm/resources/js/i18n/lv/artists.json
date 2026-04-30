@@ -4,7 +4,11 @@
         "featured": "Viesis",
         "producer": "Producents",
         "favorited": "Pievienots izlasei",
-        "add_to_favorites": "Pievienot izlasei"
+        "add_to_favorites": "Pievienot izlasei",
+        "back_to_artist": "← Atpakaļ pie izpildītāja",
+        "search_tracks": "Meklēt dziesmas...",
+        "track_title": "dziesma",
+        "tracks_title": "dziesmas"
     },
     "show": {
         "about": "Par izpildītāju",
@@ -27,7 +31,6 @@
         "years_active": "Darbības gadi",
         "present": "pašlaik",
         "unknown": "Nav zināms",
-        "back_to_artist": "Atpakaļ pie izpildītāja",
         "no_biography": "Šim izpildītājam nav biogrāfijas."
     },
     "type": {

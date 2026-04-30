@@ -4,7 +4,11 @@
         "featured": "Featured",
         "producer": "Producer",
         "favorited": "Favorited",
-        "add_to_favorites": "Add to Favorites"
+        "add_to_favorites": "Add to Favorites",
+        "back_to_artist": "← Back to artist",
+        "search_tracks": "Search tracks...",
+        "track_title": "track",
+        "tracks_title": "tracks"
     },
     "show": {
         "about": "About",
@@ -27,7 +31,6 @@
         "years_active": "Years Active",
         "present": "present",
         "unknown": "Unknown",
-        "back_to_artist": "Back to artist",
         "no_biography": "There is no background for this artist."
     },
     "type": {
