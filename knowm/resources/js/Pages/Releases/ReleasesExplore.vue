@@ -4,6 +4,7 @@ import {ref, computed, onBeforeUnmount, onMounted, watch} from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
+import ReleaseCard from '@/Components/Releases/ReleaseCard.vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
@@ -204,30 +205,14 @@ function lowercaseString(val) {
             </div>
 
             <div class="release-results">
-                <div
+                <ReleaseCard
                     v-for="release in releases"
                     :key="release.id"
-                    class="release-card"
-                    @click="redirectToRelease(release.slug)"
-                >
-                    <div class="image-wrapper">
-                        <img :src="release.cover_url" :alt="release.title" />
-                    </div>
-                    <div class="release-info">
-                        <h3>{{ release.title }}</h3>
-                        <div v-if="release.artists.length > 1" class="artists-names-container">
-                            <span class="artists-names">
-                                {{ formatArtists(release.artists) }}
-                            </span>
-                        </div>
-                        <div v-else-if="release.artists.length === 1" class="single-artist">
-                            {{ release.artists[0].name }}
-                        </div>
-                        <p class="release-meta">
-                            {{ release.tracks_count }} {{ release.tracks_count === 1 ? t('releases.explore.track') : t('releases.explore.tracks') }} • {{ release.release_type }}
-                        </p>
-                    </div>
-                </div>
+                    :release="release"
+                    :artists-label="release.artists.length > 1 ? 'by' : ''"
+                    :max-artists="3"
+                    @release-click="(release) => redirectToRelease(release.slug)"
+                />
             </div>
 
             <div v-if="releases.length === 0" class="no-results">

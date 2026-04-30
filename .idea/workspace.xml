@@ -5,9 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/GenreService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/GenreService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Genres/GenreShow.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleasesExplore.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Releases/ReleasesExplore.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -471,7 +468,7 @@
       <workItem from="1777368706439" duration="2890000" />
       <workItem from="1777458563135" duration="18203000" />
       <workItem from="1777541613857" duration="2844000" />
-      <workItem from="1777563215157" duration="4829000" />
+      <workItem from="1777563215157" duration="5148000" />
     </task>
     <servers />
   </component>
