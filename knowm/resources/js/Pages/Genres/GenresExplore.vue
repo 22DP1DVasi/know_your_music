@@ -5,6 +5,7 @@ import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
 import GenreCard from "@/Components/Genres/GenreCard.vue";
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     genres: Array,
@@ -18,6 +19,8 @@ const props = defineProps({
         default: 'asc'
     }
 });
+
+const { t } = useI18n();
 
 const localSearchQuery = ref(props.searchQuery || '');
 const localPerPage = ref(props.perPage || 24);
@@ -66,19 +69,19 @@ const applySort = () => {
 </script>
 
 <template>
-    <Head title="Explore Genres" />
+    <Head :title="t('explore_pages.genres.page_title')" />
     <Navbar />
     <main class="flex-1">
         <div class="explore-genres">
             <div class="results-header">
-                <h1 class="results-title">Explore Genres</h1>
+                <h1 class="results-title">{{ t('explore_pages.genres.page_title') }}</h1>
                 <div class="filters-container">
                     <div class="search-controls">
                         <div class="search-container">
                             <input
                                 type="text"
                                 class="searchTerm"
-                                placeholder="Search genres..."
+                                :placeholder="t('explore_pages.genres.search_placeholder')"
                                 v-model="localSearchQuery"
                                 @keyup.enter="performSearch"
                             >
@@ -93,10 +96,10 @@ const applySort = () => {
                     </div>
 
                     <div class="sort-controls">
-                        <label>Sort by:</label>
+                        <label>{{ t('explore_pages.genres.sort_by') }}:</label>
                         <select v-model="localSortOrder" @change="applySort">
-                            <option value="asc">A-Z</option>
-                            <option value="desc">Z-A</option>
+                            <option value="asc">{{ t('explore_pages.genres.sort_asc') }}</option>
+                            <option value="desc">{{ t('explore_pages.genres.sort_desc') }}</option>
                         </select>
                     </div>
                 </div>
@@ -112,8 +115,8 @@ const applySort = () => {
             </div>
 
             <div v-if="genres.length === 0" class="no-results">
-                No genres found
-                <span v-if="localSearchQuery">for "{{ localSearchQuery }}"</span>
+                {{ t('explore_pages.genres.no_results') }}
+                <span v-if="localSearchQuery">{{ t('explore_pages.genres.for') }} "{{ localSearchQuery }}"</span>
             </div>
 
             <Pagination

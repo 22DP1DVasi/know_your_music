@@ -44,5 +44,14 @@
         "no_results": "No releases found",
         "for": "for",
         "with_selected_genres": "with selected genres"
+    },
+    "genres": {
+        "page_title": "Explore Genres",
+        "search_placeholder": "Search genres...",
+        "sort_by": "Sort by",
+        "sort_asc": "A-Z",
+        "sort_desc": "Z-A",
+        "no_results": "No genres found",
+        "for": "for"
     }
 }

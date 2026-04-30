@@ -44,5 +44,14 @@
         "no_results": "Nav atrasts neviens albums",
         "for": "priekš",
         "with_selected_genres": "ar atlasītajiem žanriem"
+    },
+    "genres": {
+        "page_title": "Pētīt žanrus",
+        "search_placeholder": "Meklēt žanrus...",
+        "sort_by": "Kārtot pēc",
+        "sort_asc": "A-Z",
+        "sort_desc": "Z-A",
+        "no_results": "Nav atrasts neviens žanrs",
+        "for": "priekš"
     }
 }
