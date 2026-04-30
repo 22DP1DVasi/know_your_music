@@ -1,0 +1,13 @@
+{
+    "show": {
+        "about": "About",
+        "read_more": "Read more",
+        "no_description": "There is no background for this genre.",
+        "representative_artists": "Representative Artists",
+        "see_all_artists": "See all {count} artists",
+        "popular_tracks": "Popular Tracks",
+        "see_all_tracks": "See all {count} tracks",
+        "notable_releases": "Notable Releases",
+        "see_all_releases": "See all {count} releases"
+    }
+}

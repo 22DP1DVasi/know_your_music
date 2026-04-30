@@ -10,6 +10,7 @@ import ReleaseCard from "@/Components/Releases/ReleaseCard.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
+import { useI18n } from 'vue-i18n';
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -43,6 +44,8 @@ const props = defineProps({
         })
     }
 });
+
+const { t, locale } = useI18n();
 
 const showPlayer = ref(false);
 const currentAudioSource = ref('');
@@ -144,14 +147,65 @@ const analyzeImage = () => {
 const page = usePage();
 const user = page.props.auth?.user;
 
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
+const currentDescription = computed(() => {
+    if (locale.value === 'lv' && props.genre.description_lv) {
+        return props.genre.description_lv;
+    }
+    if (locale.value === 'en' && props.genre.description) {
+        return props.genre.description;
+    }
+    if (locale.value === 'lv' && !props.genre.description_lv && props.genre.description) {
+        return props.genre.description;
+    }
+    if (locale.value === 'en' && !props.genre.description && props.genre.description_lv) {
+        return props.genre.description_lv;
+    }
+    return '';
+});
+
+const languageNotice = computed(() => {
+    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    if (locale.value === 'lv' && !props.genre.description_lv && props.genre.description) {
+        return {
+            show: true,
+            message: 'Apraksts pieejams tikai angļu valodā.',
+            type: 'lv-no-desc'
+        };
+    }
+    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    if (locale.value === 'en' && !props.genre.description && props.genre.description_lv) {
+        return {
+            show: true,
+            message: 'Description available only in Latvian.',
+            type: 'en-no-desc'
+        };
+    }
+    return {
+        show: false,
+        message: '',
+        type: null
+    };
+});
+
 const truncatedDescription = computed(() => {
-    if (!props.genre.description) return 'There is no background for this genre.';
-    if (props.genre.description.length <= descriptionMaxLength) return props.genre.description;
-    return props.genre.description.substring(0, descriptionMaxLength) + '...';
+    const desc = currentDescription.value;
+    if (!desc) {
+        return t('genres.show.no_description');
+    }
+    if (desc.length <= descriptionMaxLength) return desc;
+    return desc.substring(0, descriptionMaxLength) + '...';
 });
 
 const showReadMore = computed(() => {
-    return props.genre.description && props.genre.description.length > descriptionMaxLength;
+    const desc = currentDescription.value;
+    return desc && desc.length > descriptionMaxLength;
 });
 
 function capitalizeFirstLetter(val) {
@@ -268,26 +322,32 @@ const closeModal = () => {
 <!--                </section>-->
 
                 <section class="genre-description">
-                    <h2 class="section-title">About</h2>
+                    <h2 class="section-title">{{ t('genres.show.about') }}</h2>
+
+                    <!-- Language notice -->
+                    <div v-if="languageNotice.show" class="language-notice" :data-type="languageNotice.type">
+                        {{ languageNotice.message }}
+                    </div>
+
                     <div class="description-text" v-html="truncatedDescription"></div>
-                        <button
-                            v-if="showReadMore"
-                            @click="redirectToFullDescription(genre.slug)"
-                            class="read-more-button"
-                        >
-                            Read more
-                        </button>
+                    <button
+                        v-if="showReadMore"
+                        @click="redirectToFullDescription(genre.slug)"
+                        class="read-more-button"
+                    >
+                        {{ t('genres.show.read_more') }}
+                    </button>
                 </section>
 
                 <section class="genre-artists">
                     <div class="genre-artists-header">
-                        <h2 class="section-title">Representative Artists</h2>
+                        <h2 class="section-title">{{ t('genres.show.representative_artists') }}</h2>
                         <button
                             v-if="genre.total_artists > genre.artists.length"
                             class="see-all-button"
                             @click="redirectToAllArtists(genre.slug)"
                         >
-                            See all {{ genre.total_artists }} artists
+                            {{ t('genres.show.see_all_artists', { count: genre.total_artists }) }}
                         </button>
                     </div>
                     <div class="artist-list">
@@ -302,13 +362,13 @@ const closeModal = () => {
 
                 <section class="genre-tracks">
                     <div class="genre-tracks-header">
-                        <h2 class="section-title">Popular Tracks</h2>
+                        <h2 class="section-title">{{ t('genres.show.popular_tracks') }}</h2>
                         <button
                             v-if="genre.total_tracks > genre.tracks.length"
                             class="see-all-button"
                             @click="redirectToAllTracks(genre.slug)"
                         >
-                            See all {{ genre.total_tracks }} tracks
+                            {{ t('genres.show.see_all_tracks', { count: genre.total_tracks }) }}
                         </button>
                     </div>
                     <div class="track-list">
@@ -335,13 +395,13 @@ const closeModal = () => {
 
                 <section class="genre-releases">
                     <div class="genre-releases-header">
-                        <h2 class="section-title">Notable Releases</h2>
+                        <h2 class="section-title">{{ t('genres.show.notable_releases') }}</h2>
                         <button
                             v-if="genre.total_releases > genre.releases.length"
                             class="see-all-button"
                             @click="redirectToAllReleases(genre.slug)"
                         >
-                            See all {{ genre.total_releases }} releases
+                            {{ t('genres.show.see_all_releases', { count: genre.total_releases }) }}
                         </button>
                     </div>
                     <div class="release-results">
@@ -476,6 +536,40 @@ const closeModal = () => {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #0c4baa;
+}
+
+.language-notice {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #999;
+    font-style: italic;
+}
+
+.language-notice[data-type="lv-no-desc"] {
+    border-left-color: #0c4baa;
+}
+
+.language-notice[data-type="en-no-desc"] {
+    border-left-color: #aa0c4b;
+}
+
+.read-more-button {
+    background: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.read-more-button:hover {
+    background: #1a5fc9;
 }
 
 .genre-description {

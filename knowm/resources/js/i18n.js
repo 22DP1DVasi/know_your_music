@@ -22,6 +22,7 @@ import enUserPages from './i18n/en/user_pages.json'
 import enArtists from './i18n/en/artists.json'
 import enReleases from './i18n/en/releases.json'
 import enTracks from './i18n/en/tracks.json'
+import enGenres from './i18n/en/genres.json'
 
 import enComponents from './i18n/en/components.json';
 import enComments from './i18n/en/comments.json';
@@ -46,6 +47,7 @@ import lvUserPages from './i18n/lv/user_pages.json'
 import lvArtists from './i18n/lv/artists.json'
 import lvReleases from './i18n/lv/releases.json'
 import lvTracks from './i18n/lv/tracks.json'
+import lvGenres from './i18n/lv/genres.json'
 
 import lvComponents from './i18n/lv/components.json';
 import lvComments from './i18n/lv/comments.json';
@@ -72,6 +74,7 @@ const i18n = createI18n({
             artists: enArtists,
             releases: enReleases,
             tracks: enTracks,
+            genres: enGenres,
 
             adm_dashboard: enAdmDashboard,
             adm_layout: enAdmLayout,
@@ -96,6 +99,7 @@ const i18n = createI18n({
             artists: lvArtists,
             releases: lvReleases,
             tracks: lvTracks,
+            genres: lvGenres,
 
             adm_dashboard: lvAdmDashboard,
             adm_layout: lvAdmLayout,
