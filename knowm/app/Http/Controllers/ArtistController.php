@@ -135,11 +135,21 @@ class ArtistController extends Controller
         $perPage = $request->input('perPage', 24);
         $sortOrder = $request->input('sort', 'asc');
         $selectedGenres = $request->input('genres', []);
+
+        // Year range filter parameters
+        $formedFrom = $request->input('formed_from', null);
+        $formedTo = $request->input('formed_to', null);
+        $disbandedFrom = $request->input('disbanded_from', null);
+        $disbandedTo = $request->input('disbanded_to', null);
+        $includeEmptyFormed = $request->input('include_empty_formed', false);
+        $includeEmptyDisbanded = $request->input('include_empty_disbanded', false);
+
         if (is_string($selectedGenres)) {
             $selectedGenres = $selectedGenres === '' ? [] : explode(',', $selectedGenres);
         }
         $selectedGenres = is_array($selectedGenres) ? $selectedGenres : [];
         $genreIds = array_filter(array_map('intval', $selectedGenres));
+
         $artists = Artist::query()
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where('name', 'like', "%{$searchQuery}%");
@@ -149,12 +159,52 @@ class ArtistController extends Controller
                     $q->whereIn('genres.id', $genreIds);
                 });
             })
+            // Formed year filter - FIXED: Using where with nested conditions instead of orWhere
+            ->when($formedFrom !== null && $formedFrom !== '' || $formedTo !== null && $formedTo !== '', function ($query) use ($formedFrom, $formedTo, $includeEmptyFormed) {
+                $query->where(function ($subQuery) use ($formedFrom, $formedTo, $includeEmptyFormed) {
+                    // Apply the year range condition
+                    $subQuery->where(function ($yearQuery) use ($formedFrom, $formedTo) {
+                        if ($formedFrom !== null && $formedFrom !== '') {
+                            $yearQuery->where('formed_year', '>=', $formedFrom);
+                        }
+                        if ($formedTo !== null && $formedTo !== '') {
+                            $yearQuery->where('formed_year', '<=', $formedTo);
+                        }
+                    });
+
+                    // If include empty is checked, also allow NULL values
+                    if ($includeEmptyFormed) {
+                        $subQuery->orWhereNull('formed_year');
+                    }
+                });
+            })
+            // Disbanded year filter - FIXED: Using where with nested conditions instead of orWhere
+            ->when($disbandedFrom !== null && $disbandedFrom !== '' || $disbandedTo !== null && $disbandedTo !== '', function ($query) use ($disbandedFrom, $disbandedTo, $includeEmptyDisbanded) {
+                $query->where(function ($subQuery) use ($disbandedFrom, $disbandedTo, $includeEmptyDisbanded) {
+                    // Apply the year range condition
+                    $subQuery->where(function ($yearQuery) use ($disbandedFrom, $disbandedTo) {
+                        if ($disbandedFrom !== null && $disbandedFrom !== '') {
+                            $yearQuery->where('disbanded_year', '>=', $disbandedFrom);
+                        }
+                        if ($disbandedTo !== null && $disbandedTo !== '') {
+                            $yearQuery->where('disbanded_year', '<=', $disbandedTo);
+                        }
+                    });
+
+                    // If include empty is checked, also allow NULL values
+                    if ($includeEmptyDisbanded) {
+                        $subQuery->orWhereNull('disbanded_year');
+                    }
+                });
+            })
             ->withCount('tracks')
             ->with('genres')
             ->orderBy('name', $sortOrder)
             ->paginate($perPage)
             ->withQueryString();
+
         $genres = Genre::orderBy('name')->get();
+
         return Inertia::render('Artists/ArtistsExplore', [
             'artists' => $artists->items(),
             'searchQuery' => $searchQuery,
@@ -164,7 +214,14 @@ class ArtistController extends Controller
             'perPage' => $perPage,
             'allGenres' => $genres,
             'selectedGenres' => $genreIds,
-            'sortOrder' => $sortOrder
+            'sortOrder' => $sortOrder,
+            // Year filter values to pass to frontend
+            'formedFrom' => $formedFrom,
+            'formedTo' => $formedTo,
+            'disbandedFrom' => $disbandedFrom,
+            'disbandedTo' => $disbandedTo,
+            'includeEmptyFormed' => $includeEmptyFormed,
+            'includeEmptyDisbanded' => $includeEmptyDisbanded,
         ]);
     }
 

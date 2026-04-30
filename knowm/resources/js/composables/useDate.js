@@ -72,11 +72,7 @@ export function useDate() {
         if (!time) return '';
         // parsēt kā UTC, lai izvairītos no laika joslas maiņām
         let parsed;
-        if (format) {
-            parsed = dayjs.utc(time, format);
-        } else {
-            parsed = dayjs.utc(time);
-        }
+        parsed = dayjs.utc(time, 'HH:mm:ss');
         const hours = parsed.hour();
         const minutes = parsed.minute().toString().padStart(2, '0');
         const seconds = parsed.second().toString().padStart(2, '0');

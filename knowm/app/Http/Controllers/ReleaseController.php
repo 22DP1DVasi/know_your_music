@@ -41,6 +41,12 @@ class ReleaseController extends Controller
         ]);
     }
 
+    /***
+     * Metode priekš ReleaseDescription.vue lapas.
+     *
+     * @param Release $release
+     * @return \Inertia\Response
+     */
     public function showDescription(Release $release): \Inertia\Response
     {
         return Inertia::render('Releases/ReleaseDescription', [

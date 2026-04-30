@@ -27,7 +27,7 @@ class Artist extends Model
         'biography_lv',
         'formed_year',
         'disbanded_year',
-        'image',
+//        'image',
         'is_active',
         'solo_or_band',
         'popularity'

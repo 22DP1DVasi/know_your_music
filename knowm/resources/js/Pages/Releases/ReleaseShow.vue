@@ -137,7 +137,7 @@ const currentDescription = computed(() => {
 });
 
 const languageNotice = computed(() => {
-    // latviešu locale, nav latviešu bio, bet angļu bio eksistē
+    // latviešu locale, nav latviešu apraksta, bet angļu apraksts eksistē
     if (locale.value === 'lv' && !props.release.description_lv && props.release.description) {
         return {
             show: true,
@@ -145,7 +145,7 @@ const languageNotice = computed(() => {
             type: 'lv-no-desc'
         };
     }
-    // angļu locale, nav angļu bio, bet latviešu bio eksistē
+    // angļu locale, nav angļu apraksta, bet latviešu apraksts eksistē
     if (locale.value === 'en' && !props.release.description && props.release.description_lv) {
         return {
             show: true,
@@ -259,14 +259,14 @@ const closeModal = () => {
                     <div class="top-info-card-wrapped">
                         <div class="info-flex">
                             <div class="info-item">
-                                <span class="meta-value"><b>{{ capitalize(release.release_type) }}</b></span>
+                                <span class="meta-value"><b>{{ t(`releases.type.${release.release_type || 'unknown'}`) }}</b></span>
                             </div>
                             <div class="info-item">
-                                <span class="meta-value"><b>Release Date:</b> {{ formatDate(release.release_date) }}</span>
+                                <span class="meta-value"><b>{{ t('releases.global.release_date') }}</b> {{ formatDate(release.release_date) }}</span>
                             </div>
                             <div class="info-item">
                                 <span class="meta-value">
-                                    <b>Length:</b> {{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}, {{ formatTotalDuration }}
+                                    <b>{{ t('releases.global.length') }}</b> {{ release.tracks.length }} {{ release.tracks.length === 1 ? t('releases.global.track_title') : t('releases.global.tracks_title') }}, {{ formatTotalDuration }}
                                 </span>
                             </div>
                         </div>
@@ -280,15 +280,15 @@ const closeModal = () => {
                         <div class="info-card-wrapped">
                             <div class="info-flex">
                                 <div class="info-item">
-                                    <span class="meta-value"><b>{{ capitalize(release.release_type) }}</b></span>
+                                    <span class="meta-value"><b>{{ t(`releases.type.${release.release_type}`) }}</b></span>
                                 </div>
                                 <div class="info-item">
-                                    <span class="meta-value"><b>Release Date:</b> {{ formatDate(release.release_date) }}</span>
+                                    <span class="meta-value"><b>{{ t('releases.global.release_date') }}</b> {{ formatDate(release.release_date) }}</span>
                                 </div>
                                 <div class="info-item">
-                    <span class="meta-value">
-                        <b>Length:</b> {{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}, {{ formatTotalDuration }}
-                    </span>
+                                    <span class="meta-value">
+                                        <b>Length:</b> {{ release.tracks.length }} {{ release.tracks.length === 1 ? t('releases.global.track_title') : t('releases.global.tracks_title') }}, {{ formatTotalDuration }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -334,8 +334,8 @@ const closeModal = () => {
 
                     <section class="release-tracks">
                         <div class="tracks-header">
-                            <h2 class="section-title">Tracklist</h2>
-                            <span class="tracks-count">{{ release.tracks.length }} {{ release.tracks.length === 1 ? 'track' : 'tracks' }}</span>
+                            <h2 class="section-title">{{ t('releases.global.tracklist') }}</h2>
+                            <span class="tracks-count">{{ release.tracks.length }} {{ release.tracks.length === 1 ? t('releases.global.track_title') : t('releases.global.tracks_title') }}</span>
                         </div>
                         <div class="track-list">
                             <TrackCard

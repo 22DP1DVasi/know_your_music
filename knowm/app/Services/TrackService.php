@@ -52,6 +52,7 @@ class TrackService
             'cover_url' => $track->cover_url,
             'duration' => $track->duration,
             'description' => $track->description,
+            'description_lv' => $track->description_lv,
             'release_date' => $track->release_date,
 
             'artists' => $track->artists,

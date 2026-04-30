@@ -4,6 +4,7 @@ import { usePage, Link } from '@inertiajs/vue3'
 import axios from 'axios'
 import { useDate } from '@/composables/useDate'
 import { route } from "ziggy-js";
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     entityType: {
@@ -41,6 +42,8 @@ const props = defineProps({
 
 // piekļuve koplietojamiem datiem no servera puses
 const page = usePage()
+
+const { t } = useI18n();
 
 // iegūt pašreizējo lietotāju un lomas
 const currentUser = page.props.auth?.user
@@ -141,13 +144,13 @@ const canDeleteComment = (comment) => {
 const getDeleteButtonInfo = (comment) => {
     if (isCommentsModerator.value && !isUserComment(comment)) {
         return {
-            label: 'Delete (Admin)',
+            label: t('comments.delete_admin'),
             icon: 'fa-solid fa-shield',
             isAdmin: true
         }
     } else {
         return {
-            label: 'Delete',
+            label: t('comments.delete_popup.delete'),
             icon: 'fa-regular fa-trash-can',
             isAdmin: false
         }
@@ -616,7 +619,7 @@ const confirmDeleteComment = async () => {
 
 <template>
     <section class="comments-section">
-        <h2 class="section-title">Comments ({{ commentsPagination.total }})</h2>
+        <h2 class="section-title">{{ t('comments.title') }} ({{ commentsPagination.total }})</h2>
 
         <!-- Komentāra pievienošanas sekcija -->
         <div class="add-comment-section">
@@ -624,11 +627,11 @@ const confirmDeleteComment = async () => {
             <div v-if="!isAuthenticated" class="auth-prompt">
                 <p class="auth-text">
                     <Link :href="route('login')" class="auth-link">
-                        Log in
-                    </Link> or
+                        {{ t('comments.login') }}
+                    </Link> {{ t('comments.or') }}
                     <Link :href="route('signup')" class="auth-link">
-                        Sign up
-                    </Link> to add a comment.
+                        {{ t('comments.signup') }}
+                    </Link>{{ t('comments.to_add_comment') }}
                 </p>
             </div>
 
@@ -640,7 +643,7 @@ const confirmDeleteComment = async () => {
             >
                 <div class="placeholder-content">
                     <i class="fa-regular fa-comment"></i>
-                    <span>Add a comment...</span>
+                    <span>{{ t('comments.add_comment') }}</span>
                 </div>
                 <div class="placeholder-underline"></div>
             </div>
@@ -651,7 +654,7 @@ const confirmDeleteComment = async () => {
                     <textarea
                         v-model="newCommentText"
                         class="comment-textarea"
-                        placeholder="Add a comment..."
+                        :placeholder="t('comments.add_comment')"
                         rows="1"
                         maxlength="2000"
                         @input="autoResizeTextarea"
@@ -667,7 +670,7 @@ const confirmDeleteComment = async () => {
                         class="comment-action-button cancel-button"
                         :disabled="isSubmittingComment"
                     >
-                        Cancel
+                        {{ t('comments.cancel') }}
                     </button>
                     <button
                         @click="submitComment"
@@ -676,9 +679,9 @@ const confirmDeleteComment = async () => {
                         :class="{ 'loading': isSubmittingComment }"
                     >
                         <span v-if="isSubmittingComment">
-                            <i class="fa-solid fa-spinner fa-spin"></i> Posting...
+                            <i class="fa-solid fa-spinner fa-spin"></i> {{ t('comments.posting') }}
                         </span>
-                        <span v-else>Comment</span>
+                        <span v-else>{{ t('comments.comment_btn') }}</span>
                     </button>
                 </div>
             </div>
@@ -687,7 +690,7 @@ const confirmDeleteComment = async () => {
         <!-- Esošo komentāru sekcija -->
         <div class="comments-section">
             <div v-if="displayComments.length === 0" class="no-comments">
-                <p>No comments yet. Be the first to comment!</p>
+                <p>{{ t('comments.no_comments') }}</p>
             </div>
 
             <div
@@ -756,7 +759,7 @@ const confirmDeleteComment = async () => {
                                     @click="handleEditComment(commentData.comment)"
                                 >
                                     <i class="fa-regular fa-pen-to-square"></i>
-                                    <span>Edit</span>
+                                    <span>{{ t('comments.edit') }}</span>
                                 </button>
                                 <button
                                     v-if="canDeleteComment(commentData.comment)"
@@ -779,7 +782,7 @@ const confirmDeleteComment = async () => {
                         <textarea
                             v-model="editingCommentText"
                             :class="['edit-textarea', `edit-textarea-${commentData.comment.id}`]"
-                            placeholder="Edit your comment..."
+                            :placeholder="t('comments.edit_comment_placeh')"
                             rows="3"
                             maxlength="2000"
                             @input="autoResizeTextarea"
@@ -795,7 +798,7 @@ const confirmDeleteComment = async () => {
                             class="edit-action-button cancel-edit-button"
                             :disabled="isSubmittingEdit"
                         >
-                            Cancel
+                            {{ t('comments.cancel') }}
                         </button>
                         <button
                             @click="submitEditedComment(commentData.comment.id)"
@@ -804,9 +807,9 @@ const confirmDeleteComment = async () => {
                             :class="{ 'loading': isSubmittingEdit }"
                         >
                             <span v-if="isSubmittingEdit">
-                                <i class="fa-solid fa-spinner fa-spin"></i> Saving...
+                                <i class="fa-solid fa-spinner fa-spin"></i> {{ t('comments.saving') }}
                             </span>
-                            <span v-else>Save changes</span>
+                            <span v-else>{{ t('comments.save_changes') }}</span>
                         </button>
                     </div>
                 </div>
@@ -825,7 +828,7 @@ const confirmDeleteComment = async () => {
                         @click="toggleCommentExpansion(commentData.comment.id)"
                         class="read-more-less-button"
                     >
-                        {{ isCommentExpanded(commentData.comment.id) ? 'Read less' : 'Read more' }}
+                        {{ isCommentExpanded(commentData.comment.id) ? t('comments.read_less') : t('comments.read_more') }}
                     </button>
 
                     <button
@@ -833,7 +836,7 @@ const confirmDeleteComment = async () => {
                         @click="startAddingReply(commentData.comment.id)"
                         class="reply-button"
                     >
-                        <i class="fa-regular fa-comment-dots"></i> Reply
+                        <i class="fa-regular fa-comment-dots"></i> {{ t('comments.reply') }}
                     </button>
 
                     <!-- Atbildes veidlapa -->
@@ -845,7 +848,7 @@ const confirmDeleteComment = async () => {
                             <textarea
                                 v-model="replyText"
                                 class="reply-textarea"
-                                placeholder="Write a reply..."
+                                :placeholder="t('comments.write_reply')"
                                 rows="2"
                                 maxlength="2000"
                                 @input="autoResizeTextarea"
@@ -861,7 +864,7 @@ const confirmDeleteComment = async () => {
                                 class="reply-action-button cancel-reply-button"
                                 :disabled="isSubmittingReply"
                             >
-                                Cancel
+                                {{ t('comments.cancel') }}
                             </button>
                             <button
                                 @click="submitReply(commentData.comment.id)"
@@ -870,9 +873,9 @@ const confirmDeleteComment = async () => {
                                 :class="{ 'loading': isSubmittingReply }"
                             >
                                 <span v-if="isSubmittingReply">
-                                    <i class="fa-solid fa-spinner fa-spin"></i> Replying...
+                                    <i class="fa-solid fa-spinner fa-spin"></i> {{ t('comments.replying') }}
                                 </span>
-                                <span v-else>Reply</span>
+                                <span v-else>{{ t('comments.reply') }}</span>
                             </button>
                         </div>
                     </div>
@@ -886,8 +889,8 @@ const confirmDeleteComment = async () => {
                     :disabled="loadingComments"
                     class="load-more-button"
                 >
-                    <span v-if="loadingComments">Loading...</span>
-                    <span v-else>Show more comments</span>
+                    <span v-if="loadingComments">{{ t('comments.loading') }}</span>
+                    <span v-else>{{ t('comments.show_more') }}</span>
                 </button>
             </div>
         </div>
@@ -897,19 +900,19 @@ const confirmDeleteComment = async () => {
     <div v-if="showAuthPopup" class="auth-popup-overlay" @click="closeAuthPopup">
         <div class="auth-popup" @click.stop>
             <div class="auth-popup-header">
-                <h3>Sign in to reply</h3>
+                <h3>{{ t('comments.auth_popup.title') }}</h3>
                 <button @click="closeAuthPopup" class="close-popup-button">
                     <i class="fa-solid fa-times"></i>
                 </button>
             </div>
             <div class="auth-popup-content">
-                <p>You need to be signed in to reply to comments.</p>
+                <p>{{ t('comments.auth_popup.message') }}</p>
                 <div class="auth-popup-actions">
                     <Link :href="route('login')" class="auth-popup-button login-button">
-                        <i class="fa-solid fa-right-to-bracket"></i> Log in
+                        <i class="fa-solid fa-right-to-bracket"></i> {{ t('comments.auth_popup.login_button') }}
                     </Link>
                     <Link :href="route('signup')" class="auth-popup-button signup-button">
-                        <i class="fa-solid fa-user-plus"></i> Sign up
+                        <i class="fa-solid fa-user-plus"></i> {{ t('comments.auth_popup.signup_button') }}
                     </Link>
                 </div>
             </div>
@@ -922,10 +925,10 @@ const confirmDeleteComment = async () => {
             <div class="delete-popup-header" :class="{ 'admin-header': commentToDelete?.isAdminDelete }">
                 <h3>
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    {{ commentToDelete?.isAdminDelete ? 'Admin: Delete Comment' : 'Delete Comment' }}
+                    {{ commentToDelete?.isAdminDelete ? t('comments.delete_popup.admin_title') : t('comments.delete_popup.title') }}
                     <span v-if="commentToDelete?.isAdminDelete" class="admin-badge">
-                        <i class="fa-solid fa-shield"></i> Admin Action
-                    </span>
+                    <i class="fa-solid fa-shield"></i> {{ t('comments.delete_popup.admin_badge') }}
+                </span>
                 </h3>
                 <button @click="cancelDelete" class="close-popup-button">
                     <i class="fa-solid fa-times"></i>
@@ -936,7 +939,7 @@ const confirmDeleteComment = async () => {
 
                 <div v-if="commentToDelete && !isCommentDeleted(commentToDelete)" class="comment-preview">
                     <div class="preview-header">
-                        <strong>{{ commentToDelete.user?.name || 'Anonymous' }}</strong>
+                        <strong>{{ commentToDelete.user?.name || t('comments.delete_popup.anonymous') }}</strong>
                     </div>
                     <div class="preview-text">
                         {{ commentToDelete.text ? (commentToDelete.text.substring(0, 150) + (commentToDelete.text.length > 150 ? '...' : '')) : '' }}
@@ -949,25 +952,29 @@ const confirmDeleteComment = async () => {
                     class="delete-popup-button cancel-delete-button"
                     :disabled="isDeletingComment"
                 >
-                    Cancel
+                    {{ t('comments.delete_popup.cancel_button') }}
                 </button>
                 <button
                     @click="confirmDeleteComment"
                     class="delete-popup-button confirm-delete-button"
                     :disabled="isDeletingComment"
                     :class="{
-                        'loading': isDeletingComment,
-                        'hard-delete': canBeHardDeleted(commentToDelete),
-                        'admin-delete': commentToDelete?.isAdminDelete
-                    }"
+                    'loading': isDeletingComment,
+                    'hard-delete': canBeHardDeleted(commentToDelete),
+                    'admin-delete': commentToDelete?.isAdminDelete
+                }"
                 >
-                    <span v-if="isDeletingComment">
-                        <i class="fa-solid fa-spinner fa-spin"></i> Deleting...
-                    </span>
+                <span v-if="isDeletingComment">
+                    <i class="fa-solid fa-spinner fa-spin"></i> {{ t('comments.delete_popup.deleting') }}
+                </span>
                     <span v-else>
-                        <i :class="commentToDelete?.isAdminDelete ? 'fa-solid fa-shield' : 'fa-solid fa-trash-can'"></i>
-                        {{ commentToDelete?.isAdminDelete ? 'Delete as Admin' : (canBeHardDeleted(commentToDelete) ? 'Delete Permanently' : 'Delete') }}
-                    </span>
+                    <i :class="commentToDelete?.isAdminDelete ? 'fa-solid fa-shield' : 'fa-solid fa-trash-can'"></i>
+                    {{ commentToDelete?.isAdminDelete
+                        ? t('comments.delete_popup.delete_as_admin')
+                        : (canBeHardDeleted(commentToDelete)
+                            ? t('comments.delete_popup.delete_permanently')
+                            : t('comments.delete_popup.delete')) }}
+                </span>
                 </button>
             </div>
         </div>

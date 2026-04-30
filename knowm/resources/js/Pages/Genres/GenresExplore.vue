@@ -1,77 +1,11 @@
-<template>
-    <Head title="Explore Genres" />
-    <Navbar />
-    <main class="flex-1">
-        <div class="explore-genres">
-            <div class="results-header">
-                <h1 class="results-title">Explore Genres</h1>
-                <div class="filters-container">
-                    <div class="search-controls">
-                        <div class="search-container">
-                            <input
-                                type="text"
-                                class="searchTerm"
-                                placeholder="Search genres..."
-                                v-model="localSearchQuery"
-                                @keyup.enter="performSearch"
-                            >
-                            <button
-                                type="submit"
-                                class="searchButton"
-                                @click="performSearch"
-                            >
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="sort-controls">
-                        <label>Sort by:</label>
-                        <select v-model="localSortOrder" @change="applySort">
-                            <option value="asc">A-Z</option>
-                            <option value="desc">Z-A</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="genre-results">
-                <a v-for="genre in genres"
-                   :key="genre.id"
-                   @click="redirectToGenre(genre.slug)"
-                   class="genre-card">
-                    <div class="image-wrapper">
-                        <img :src="genre.banner_url" :alt="genre.name">
-                    </div>
-                    <div class="genre-info">
-                        <h3>{{ genre.name }}</h3>
-                    </div>
-                </a>
-            </div>
-
-            <div v-if="genres.length === 0" class="no-results">
-                No genres found
-                <span v-if="localSearchQuery">for "{{ localSearchQuery }}"</span>
-            </div>
-
-            <Pagination
-                :links="paginationLinks"
-                :current-page="currentPage"
-                :total-pages="totalPages"
-                :search-query="localSearchQuery"
-                class="pagination"
-            />
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head, Link, router } from "@inertiajs/vue3";
 import {ref, computed, onBeforeUnmount, onMounted, watch} from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
+import GenreCard from "@/Components/Genres/GenreCard.vue";
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     genres: Array,
@@ -85,6 +19,8 @@ const props = defineProps({
         default: 'asc'
     }
 });
+
+const { t } = useI18n();
 
 const localSearchQuery = ref(props.searchQuery || '');
 const localPerPage = ref(props.perPage || 24);
@@ -110,8 +46,8 @@ const performSearch = () => {
     });
 };
 
-const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
+const redirectToGenre = (genre) => {
+    router.get(`/genres/${genre.slug}`);
 };
 
 const applySort = () => {
@@ -131,6 +67,69 @@ const applySort = () => {
 };
 
 </script>
+
+<template>
+    <Head :title="t('explore_pages.genres.page_title')" />
+    <Navbar />
+    <main class="flex-1">
+        <div class="explore-genres">
+            <div class="results-header">
+                <h1 class="results-title">{{ t('explore_pages.genres.page_title') }}</h1>
+                <div class="filters-container">
+                    <div class="search-controls">
+                        <div class="search-container">
+                            <input
+                                type="text"
+                                class="searchTerm"
+                                :placeholder="t('explore_pages.genres.search_placeholder')"
+                                v-model="localSearchQuery"
+                                @keyup.enter="performSearch"
+                            >
+                            <button
+                                type="submit"
+                                class="searchButton"
+                                @click="performSearch"
+                            >
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sort-controls">
+                        <label>{{ t('explore_pages.genres.sort_by') }}:</label>
+                        <select v-model="localSortOrder" @change="applySort">
+                            <option value="asc">{{ t('explore_pages.genres.sort_asc') }}</option>
+                            <option value="desc">{{ t('explore_pages.genres.sort_desc') }}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="genre-results">
+                <GenreCard
+                    v-for="genre in genres"
+                    :key="genre.id"
+                    :genre="genre"
+                    @genre-click="redirectToGenre"
+                />
+            </div>
+
+            <div v-if="genres.length === 0" class="no-results">
+                {{ t('explore_pages.genres.no_results') }}
+                <span v-if="localSearchQuery">{{ t('explore_pages.genres.for') }} "{{ localSearchQuery }}"</span>
+            </div>
+
+            <Pagination
+                :links="paginationLinks"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :search-query="localSearchQuery"
+                class="pagination"
+            />
+        </div>
+    </main>
+    <Footer />
+</template>
 
 <style scoped>
 .explore-genres {

@@ -194,7 +194,7 @@ const capitalize = (value) => {
             </div>
             <h1 class="artist-name">{{ artist.name }}</h1>
             <div class="back-button" @click="goBackToArtist">
-                ← {{ t('artists.bio.back_to_artist') }}
+                ← {{ t('artists.global.back_to_artist') }}
             </div>
         </div>
 

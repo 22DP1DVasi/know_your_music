@@ -4,12 +4,29 @@
         "featured": "Featured",
         "producer": "Producer",
         "favorited": "Favorited",
-        "add_to_favorites": "Add to Favorites"
+        "add_to_favorites": "Add to Favorites",
+        "back_to_artist": "← Back to artist",
+        "search_tracks": "Search tracks...",
+        "track_title": "track",
+        "tracks_title": "tracks",
+        "search_releases": "Search releases...",
+        "release_title": "release",
+        "releases_title": "releases"
     },
     "show": {
         "about": "About",
         "no_biography": "There is no background for this artist.",
-        "read_more": "Read more"
+        "read_more": "Read more",
+        "details": "Details",
+        "years_active": "Years Active:",
+        "genres": "Genres",
+        "no_genres": "No genres related to this artist.",
+        "tracks": "Tracks",
+        "see_all_tracks": "See all {count} tracks",
+        "no_tracks": "No tracks found from this artist.",
+        "releases": "Releases",
+        "see_all_releases": "See all {count} releases",
+        "no_releases": "No releases found for this artist."
     },
     "bio": {
         "biography_title": "Biography",
@@ -17,7 +34,16 @@
         "years_active": "Years Active",
         "present": "present",
         "unknown": "Unknown",
-        "back_to_artist": "Back to artist",
         "no_biography": "There is no background for this artist."
+    },
+    "type": {
+        "solo": "Solo",
+        "band": "Band",
+        "unknown": "Unknown"
+    },
+    "dates": {
+        "not_specified_capital": "Not specified",
+        "present": "present",
+        "not_specified": "not specified"
     }
 }

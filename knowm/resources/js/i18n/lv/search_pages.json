@@ -1,0 +1,24 @@
+{
+    "main_results": {
+        "search_results": "Meklēšanas rezultāti \"{query}\"",
+        "artists": "Izpildītāji",
+        "see_all_artists": "Skatīt visus {count} izpildītājus →",
+        "releases": "Albumi",
+        "see_all_releases": "Skatīt visus {count} albumus →",
+        "tracks": "Dziesmas",
+        "see_all_tracks": "Skatīt visas {count} dziesmas →",
+        "lyrics_matches": "Sakritības dziesmu tekstos",
+        "see_all_lyrics": "Skatīt visas {count} sakritības dziesmu tekstos →",
+        "no_results": "Nav atrasts neviens rezultāts"
+    },
+    "all_artists_title": "Visi izpildītāju, kas atbilst \"{query}\"",
+    "all_releases_title": "Visi albumi, kas atbilst \"{query}\"",
+    "all_tracks_title": "Visas dziesmas, kas atbilst \"{query}\"",
+    "all_lyrics_title": "Visu dziesmu teksti, kuros ir \"{query}\"",
+    "by_title": "Pēc nosaukuma",
+    "by_artist": "Pēc izpildītāja",
+    "no_artists_found": "Nav atrasts neviens izpildītājs",
+    "no_releases_found": "Nav atrasts neviens albums",
+    "no_tracks_found": "Nav atrasta neviena dziesma",
+    "no_lyrics_found": "Nav atrasts neviens dziesmas teksts"
+}

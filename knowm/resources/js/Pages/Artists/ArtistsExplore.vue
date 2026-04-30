@@ -5,6 +5,9 @@ import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
 import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     artists: Array,
@@ -21,6 +24,30 @@ const props = defineProps({
     sortOrder: {
         type: String,
         default: 'asc'
+    },
+    formedFrom: {
+        type: [String, Number],
+        default: null
+    },
+    formedTo: {
+        type: [String, Number],
+        default: null
+    },
+    disbandedFrom: {
+        type: [String, Number],
+        default: null
+    },
+    disbandedTo: {
+        type: [String, Number],
+        default: null
+    },
+    includeEmptyFormed: {
+        type: Boolean,
+        default: false
+    },
+    includeEmptyDisbanded: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -29,6 +56,14 @@ const localPerPage = ref(props.perPage || 24);
 const showGenreModal = ref(false);
 const localSelectedGenres = ref([...props.selectedGenres]);
 const localSortOrder = ref(props.sortOrder);
+
+const localFormedFrom = ref(props.formedFrom || '');
+const localFormedTo = ref(props.formedTo || '');
+const localDisbandedFrom = ref(props.disbandedFrom || '');
+const localDisbandedTo = ref(props.disbandedTo || '');
+const localIncludeEmptyFormed = ref(props.includeEmptyFormed || false);
+const localIncludeEmptyDisbanded = ref(props.includeEmptyDisbanded || false);
+const showYearModal = ref(false);
 
 const checkScreenSize = () => {
     localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
@@ -43,8 +78,30 @@ onBeforeUnmount(() => {
     window.removeEventListener('resize', checkScreenSize);
 });
 
+// Update the existing performSearch function to include year filters
 const performSearch = () => {
-    router.visit(`/explore/artists?q=${localSearchQuery.value}&genres=${localSelectedGenres.value.join(',')}&perPage=${localPerPage.value}&sort=${localSortOrder.value}`, {
+    const params = new URLSearchParams();
+
+    if (localSearchQuery.value) {
+        params.set('q', localSearchQuery.value);
+    }
+
+    if (localSelectedGenres.value.length > 0) {
+        params.set('genres', localSelectedGenres.value.join(','));
+    }
+
+    params.set('perPage', localPerPage.value);
+    params.set('sort', localSortOrder.value);
+
+    // Add year params
+    if (localFormedFrom.value) params.set('formed_from', localFormedFrom.value);
+    if (localFormedTo.value) params.set('formed_to', localFormedTo.value);
+    if (localDisbandedFrom.value) params.set('disbanded_from', localDisbandedFrom.value);
+    if (localDisbandedTo.value) params.set('disbanded_to', localDisbandedTo.value);
+    if (localIncludeEmptyFormed.value) params.set('include_empty_formed', '1');
+    if (localIncludeEmptyDisbanded.value) params.set('include_empty_disbanded', '1');
+
+    router.visit(`/explore/artists?${params.toString()}`, {
         preserveState: true,
         replace: true
     });
@@ -87,6 +144,21 @@ const applyGenreFilters = () => {
     performSearch();
 };
 
+// Add year filter functions
+const applyYearFilters = () => {
+    showYearModal.value = false;
+    performSearch();
+};
+
+const clearYearFilters = () => {
+    localFormedFrom.value = '';
+    localFormedTo.value = '';
+    localDisbandedFrom.value = '';
+    localDisbandedTo.value = '';
+    localIncludeEmptyFormed.value = false;
+    localIncludeEmptyDisbanded.value = false;
+};
+
 const applySort = () => {
     const params = new URLSearchParams();
 
@@ -114,19 +186,19 @@ function lowercaseString(val) {
 </script>
 
 <template>
-    <Head title="Explore Artists" />
+    <Head :title="t('explore_pages.artists.page_title')" />
     <Navbar />
     <main class="flex-1">
         <div class="explore-artists">
             <div class="results-header">
-                <h1 class="results-title">Explore Artists</h1>
+                <h1 class="results-title">{{ t('explore_pages.artists.page_title') }}</h1>
                 <div class="filters-container">
                     <div class="search-controls">
                         <div class="search-container">
                             <input
                                 type="text"
                                 class="searchTerm"
-                                placeholder="Search artists..."
+                                :placeholder="t('explore_pages.artists.search_placeholder')"
                                 v-model="localSearchQuery"
                                 @keyup.enter="performSearch"
                             >
@@ -140,21 +212,27 @@ function lowercaseString(val) {
                         </div>
                     </div>
 
-                    <button class="filter-button" @click="showGenreModal = true">
-                        <i class="fa fa-filter"></i> Filter by Genre
-                    </button>
+                    <div class="filter-buttons">
+                        <button class="filter-button" @click="showGenreModal = true">
+                            <i class="fa fa-filter"></i> {{ t('explore_pages.artists.filter_by_genre') }}
+                        </button>
+
+                        <button class="filter-button" @click="showYearModal = true">
+                            <i class="fa fa-calendar"></i> {{ t('explore_pages.artists.filter_by_year') }}
+                        </button>
+                    </div>
                 </div>
 
                 <div class="sort-controls">
-                    <label>Sort by:</label>
+                    <label>{{ t('explore_pages.artists.sort_by') }}:</label>
                     <select v-model="localSortOrder" @change="applySort">
-                        <option value="asc">A-Z</option>
-                        <option value="desc">Z-A</option>
+                        <option value="asc">{{ t('explore_pages.artists.sort_asc') }}</option>
+                        <option value="desc">{{ t('explore_pages.artists.sort_desc') }}</option>
                     </select>
                 </div>
 
                 <div v-if="selectedGenres.length > 0" class="selected-genres">
-                    <div class="selected-genres-label">Selected genres:</div>
+                    <div class="selected-genres-label">{{ t('explore_pages.artists.selected_genres') }}:</div>
                     <div class="genre-tags">
                         <div v-for="genre in allGenres.filter(g => localSelectedGenres.includes(g.id))"
                              :key="genre.id"
@@ -164,12 +242,36 @@ function lowercaseString(val) {
                         </div>
                     </div>
                 </div>
+
+                <!-- Kaut kur šeit es uzzināju no skolotāja, ka nav obligāts rasktīt komentārus latviešu valodā -->
+                <!-- taču kaut kur kursa sākumā bija teikts otrādi :|. Tagad visi komentāri, protams, angļu valodā. -->
+                <!-- Selected year filters display -->
+                <div v-if="formedFrom || formedTo || disbandedFrom || disbandedTo || includeEmptyFormed || includeEmptyDisbanded" class="selected-filters">
+                    <div class="selected-filters-label">{{ t('explore_pages.artists.year_filters') }}:</div>
+                    <div class="filter-tags">
+                        <div v-if="formedFrom || formedTo" class="filter-tag">
+                            <span class="filter-tag-content">
+                                {{ t('explore_pages.artists.formed') }}: {{ formedFrom || t('explore_pages.artists.any') }} - {{ formedTo || t('explore_pages.artists.any') }}
+                                <span v-if="includeEmptyFormed" class="tag-note">({{ t('explore_pages.artists.incl_unknown') }})</span>
+                            </span>
+                            <span class="remove-filter" @click="clearYearFilters">×</span>
+                        </div>
+                        <div v-if="disbandedFrom || disbandedTo" class="filter-tag">
+                            <span class="filter-tag-content">
+                                {{ t('explore_pages.artists.disbanded') }}: {{ disbandedFrom || t('explore_pages.artists.any') }} - {{ disbandedTo || t('explore_pages.artists.any') }}
+                                <span v-if="includeEmptyDisbanded" class="tag-note">({{ t('explore_pages.artists.incl_unknown') }})</span>
+                            </span>
+                            <span class="remove-filter" @click="clearYearFilters">×</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Genre Filter Modal -->
             <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>Filter by Genre</h3>
+                        <h3>{{ t('explore_pages.artists.filter_by_genre') }}</h3>
                         <button class="close-modal" @click="showGenreModal = false">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -191,8 +293,92 @@ function lowercaseString(val) {
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn-clear" @click="clearGenres">Clear All</button>
-                        <button class="btn-apply" @click="applyGenreFilters">Apply Filters</button>
+                        <button class="btn-clear" @click="clearGenres">{{ t('explore_pages.artists.clear_all') }}</button>
+                        <button class="btn-apply" @click="applyGenreFilters">{{ t('explore_pages.artists.apply_filters') }}</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Year Range Filter Modal -->
+            <div v-if="showYearModal" class="modal-overlay" @click.self="showYearModal = false">
+                <div class="modal-content year-modal">
+                    <div class="modal-header">
+                        <h3>{{ t('explore_pages.artists.filter_by_year') }}</h3>
+                        <button class="close-modal" @click="showYearModal = false">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="year-range-section">
+                            <h4 class="section-subtitle">{{ t('explore_pages.artists.formed_year') }}</h4>
+                            <div class="year-inputs">
+                                <div class="input-group">
+                                    <label>{{ t('explore_pages.artists.from') }}:</label>
+                                    <input
+                                        type="number"
+                                        v-model.number="localFormedFrom"
+                                        :placeholder="t('explore_pages.artists.year_placeholder')"
+                                        min="1900"
+                                        max="2025"
+                                        class="year-input"
+                                    >
+                                </div>
+                                <div class="input-group">
+                                    <label>{{ t('explore_pages.artists.to') }}:</label>
+                                    <input
+                                        type="number"
+                                        v-model.number="localFormedTo"
+                                        :placeholder="t('explore_pages.artists.year_placeholder')"
+                                        min="1900"
+                                        max="2025"
+                                        class="year-input"
+                                    >
+                                </div>
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" v-model="localIncludeEmptyFormed">
+                                <span>{{ t('explore_pages.artists.include_empty_formed') }}</span>
+                            </label>
+                        </div>
+
+                        <div class="year-range-section">
+                            <h4 class="section-subtitle">{{ t('explore_pages.artists.disbanded_year') }}</h4>
+                            <div class="year-inputs">
+                                <div class="input-group">
+                                    <label>{{ t('explore_pages.artists.from') }}:</label>
+                                    <input
+                                        type="number"
+                                        v-model.number="localDisbandedFrom"
+                                        :placeholder="t('explore_pages.artists.year_placeholder')"
+                                        min="1900"
+                                        max="2025"
+                                        class="year-input"
+                                    >
+                                </div>
+                                <div class="input-group">
+                                    <label>{{ t('explore_pages.artists.to') }}:</label>
+                                    <input
+                                        type="number"
+                                        v-model.number="localDisbandedTo"
+                                        :placeholder="t('explore_pages.artists.year_placeholder')"
+                                        min="1900"
+                                        max="2025"
+                                        class="year-input"
+                                    >
+                                </div>
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" v-model="localIncludeEmptyDisbanded">
+                                <span>{{ t('explore_pages.artists.include_empty_disbanded') }}</span>
+                            </label>
+                        </div>
+
+                        <div class="year-hint">
+                            <i class="fa fa-info-circle"></i>
+                            <span>{{ t('explore_pages.artists.year_hint') }}</span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-clear" @click="clearYearFilters">{{ t('explore_pages.artists.clear_all') }}</button>
+                        <button class="btn-apply" @click="applyYearFilters">{{ t('explore_pages.artists.apply_filters') }}</button>
                     </div>
                 </div>
             </div>
@@ -204,14 +390,14 @@ function lowercaseString(val) {
                     :artist="artist"
                     :redirect-to="redirectToArtist"
                     :show-track-count="false"
-                    :track-count-text="(count) => `${count} ${count === 1 ? 'track' : 'tracks'}`"
+                    :track-count-text="(count) => `${count} ${count === 1 ? t('explore_pages.artists.track') : t('explore_pages.artists.tracks')}`"
                 />
             </div>
 
             <div v-if="artists.length === 0" class="no-results">
-                No artists found
-                <span v-if="localSearchQuery">for "{{ localSearchQuery }}"</span>
-                <span v-if="selectedGenres.length > 0"> with selected genres</span>
+                {{ t('explore_pages.artists.no_results') }}
+                <span v-if="localSearchQuery">{{ t('explore_pages.artists.for') }} "{{ localSearchQuery }}"</span>
+                <span v-if="selectedGenres.length > 0"> {{ t('explore_pages.artists.with_selected_genres') }}</span>
             </div>
 
             <Pagination
@@ -329,6 +515,11 @@ function lowercaseString(val) {
     margin: 0 auto;
 }
 
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+}
+
 .filter-button {
     background-color: #0c4baa;
     color: white;
@@ -339,9 +530,11 @@ function lowercaseString(val) {
     font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin: 0 auto;
+    margin: 0 1rem;
     transition: background-color 0.2s;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .filter-button:hover {
@@ -404,6 +597,61 @@ function lowercaseString(val) {
 }
 
 .genre-tag .remove-genre:hover {
+    background-color: #d1dcff;
+}
+
+.selected-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.selected-filters-label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-tag {
+    background: #e8f0fe;
+    color: #0c4baa;
+    padding: 0.35rem 0.75rem 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-tag-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tag-note {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    margin-left: 0.25rem;
+}
+
+.remove-filter {
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 0.1rem;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.remove-filter:hover {
     background-color: #d1dcff;
 }
 
@@ -521,6 +769,88 @@ function lowercaseString(val) {
     background-color: #14a8df;
 }
 
+.year-modal {
+    max-width: 500px;
+}
+
+.year-range-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.year-range-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.section-subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0c4baa;
+    margin: 0 0 0.75rem 0;
+}
+
+.year-inputs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.input-group {
+    flex: 1;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.year-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.year-input:focus {
+    outline: none;
+    border-color: #0c4baa;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #666;
+    cursor: pointer;
+}
+
+.checkbox-label input {
+    cursor: pointer;
+}
+
+.year-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: #f5f5f5;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.year-hint i {
+    color: #0c4baa;
+}
+
 .sort-controls {
     display: flex;
     align-items: center;
@@ -614,6 +944,22 @@ function lowercaseString(val) {
 
     .sort-controls {
         padding: 0 1rem;
+    }
+
+    .year-inputs {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .year-modal {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-buttons {
+        flex-direction: column;
+        gap: 16px;
     }
 }
 

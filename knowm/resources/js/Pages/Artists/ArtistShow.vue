@@ -219,6 +219,20 @@ const analyzeImage = () => {
     imageStyle.value.opacity = '1';
 };
 
+const formedYearDisplay = computed(() => {
+    return props.artist.formed_year || t('artists.dates.not_specified_capital')
+})
+
+const disbandedYearDisplay = computed(() => {
+    if (props.artist.disbanded_year) {
+        return props.artist.disbanded_year
+    }
+    if (props.artist.is_active) {
+        return t('artists.dates.present')
+    }
+    return t('artists.dates.not_specified')
+})
+
 /*
 ja locale ir EN un angļu teksts pastāv -> angļu teksts
 ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
@@ -386,22 +400,22 @@ const capitalize = (value) => {
 
                 <div class="artist-side-info">
                     <div class="info-card">
-                        <h3 class="info-title">Details</h3>
+                        <h3 class="info-title">{{ t('artists.show.details') }}</h3>
                         <div class="info-flex">
                             <div class="info-item">
                                 <span class="info-value">
-                                  <b>{{ capitalize(artist.solo_or_band) || 'Unknown' }}</b>
+                                  <b>{{ t(`artists.type.${artist.solo_or_band || 'unknown'}`) }}</b>
                                 </span>
                             </div>
                             <div class="info-item">
-                                <span class="info-value"><b>Years Active:</b> {{ artist.formed_year || 'Not specified' }} - {{ artist.disbanded_year || (artist.is_active ? 'present' : 'not specified') }}</span>
+                                <span class="info-value"><b>{{ t('artists.show.years_active') }}</b> {{ formedYearDisplay }} - {{ disbandedYearDisplay }}</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="info-card genres-card">
                         <div class="genres-header">
-                            <h3 class="info-title">Genres</h3>
+                            <h3 class="info-title">{{ t('artists.show.genres') }}</h3>
 <!--                            <button-->
 <!--                                v-if="artist.genres.length > 5"-->
 <!--                                class="see-all-button"-->
@@ -410,7 +424,7 @@ const capitalize = (value) => {
 <!--                                See all genres-->
 <!--                            </button>-->
                         </div>
-                        <div v-if="!artist.genres.length">No genres related to this artist.</div>
+                        <div v-if="!artist.genres.length">{{ t('artists.show.no_genres') }}</div>
                         <div v-else class="genre-tags">
                             <button
                                 v-for="(genre, index) in artist.genres.slice(0, 5)"
@@ -427,16 +441,17 @@ const capitalize = (value) => {
 
                 <section class="artist-tracks">
                     <div class="tracks-header">
-                        <h2 class="section-title">Tracks</h2>
+                        <h2 class="section-title">{{ t('artists.show.tracks') }}</h2>
                         <button
                             v-if="artist.total_tracks > artist.tracks.length"
                             class="see-all-button"
                             @click="redirectToAllTracks(props.artist.slug)"
                         >
-                            See all {{ artist.total_tracks }} tracks
+                            <!-- artist.total_tracks }} -->
+                            {{ t('artists.show.see_all_tracks', {count: artist.total_tracks}) }}
                         </button>
                     </div>
-                    <div v-if="!artist.tracks.length" style="margin-bottom: 2rem;">No tracks found from this artist.</div>
+                    <div v-if="!artist.tracks.length" style="margin-bottom: 2rem;">{{ t('artists.show.no_tracks') }}</div>
                     <div v-else class="track-list">
                         <TrackCard
                             v-for="(track, index) in artist.tracks"
@@ -461,16 +476,16 @@ const capitalize = (value) => {
 
                 <section class="artist-releases">
                     <div class="releases-header">
-                        <h2 class="section-title">Releases</h2>
+                        <h2 class="section-title">{{ t('artists.show.releases') }}</h2>
                         <button
                             v-if="artist.total_releases > artist.releases.length"
                             class="see-all-button"
                             @click="redirectToAllReleases(artist.slug)"
                         >
-                            See all {{ artist.total_releases }} releases
+                            {{ t('artists.show.see_all_releases', {count: artist.total_releases}) }}
                         </button>
                     </div>
-                    <div v-if="!artist.releases.length">No releases found for this artist.</div>
+                    <div v-if="!artist.releases.length">{{ t('artists.show.no_releases') }}</div>
                     <div v-else class="release-results">
                         <ReleaseCard
                             v-for="release in artist.releases"

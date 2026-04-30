@@ -1,0 +1,27 @@
+{
+    "card": {
+        "add_to_playlist": "Add to playlist"
+    },
+    "global": {
+        "release_date": "Release Date:",
+        "length": "Length:"
+    },
+    "show": {
+        "about": "About This Track",
+        "no_description": "There is no background for this track.",
+        "genres_title": "Genres",
+        "no_genres": "No genres related to this track.",
+        "lyrics_title": "Lyrics",
+        "verified_badge": "Verified",
+        "unverified_badge": "Needs Verification",
+        "no_lyrics": "No lyrics available for this track yet.",
+        "read_more": "Read more"
+    },
+    "description": {
+        "back_to_track": "Back to track",
+        "details_title": "Details",
+        "description_title": "Description",
+        "no_description": "There is no description for this track.",
+        "unknown": "Unknown"
+    }
+}

@@ -1,4 +1,11 @@
 {
+    "global": {
+        "release_date": "Izdošanas datums:",
+        "length": "Ilgums:",
+        "track_title": "dziesma",
+        "tracks_title": "dziesmas",
+        "tracklist": "Dziesmu saraksts"
+    },
     "show": {
         "about_release": "Par šo albumu",
         "genres": "Žanri",
@@ -16,5 +23,12 @@
         "unknown": "Nav zināms",
         "description_title": "Apraksts",
         "no_description": "Šim albumam nav apraksta."
+    },
+    "type": {
+        "album": "Albums",
+        "ep": "EP",
+        "single": "Singls",
+        "compilation": "Kompilācija",
+        "unknown": "Nezināms tips"
     }
 }

@@ -1,0 +1,23 @@
+{
+    "show": {
+        "about": "About",
+        "read_more": "Read more",
+        "no_description": "There is no background for this genre.",
+        "representative_artists": "Representative Artists",
+        "see_all_artists": "See all {count} artists",
+        "popular_tracks": "Popular Tracks",
+        "see_all_tracks": "See all {count} tracks",
+        "notable_releases": "Notable Releases",
+        "see_all_releases": "See all {count} releases"
+    },
+    "description": {
+        "page_title": "Description",
+        "back_to_genre": "Back to genre",
+        "description_title": "Description",
+        "details_title": "Details",
+        "origin_year": "Origin Year",
+        "origin_country": "Origin Country",
+        "unknown": "Unknown",
+        "no_description": "There is no description available for this genre."
+    }
+}

@@ -4,12 +4,29 @@
         "featured": "Viesis",
         "producer": "Producents",
         "favorited": "Pievienots izlasei",
-        "add_to_favorites": "Pievienot izlasei"
+        "add_to_favorites": "Pievienot izlasei",
+        "back_to_artist": "← Atpakaļ pie izpildītāja",
+        "search_tracks": "Meklēt dziesmas...",
+        "track_title": "dziesma",
+        "tracks_title": "dziesmas",
+        "search_releases": "Meklēt albumus...",
+        "release_title": "albums",
+        "releases_title": "albumi"
     },
     "show": {
         "about": "Par izpildītāju",
         "no_biography": "Šim izpildītājam nav pieejama biogrāfija.",
-        "read_more": "Lasīt vairāk"
+        "read_more": "Lasīt vairāk",
+        "details": "Informācija",
+        "years_active": "Darbības gadi:",
+        "genres": "Žanri",
+        "no_genres": "Nav žanru, kas saistīti ar šo izpildītāju.",
+        "tracks": "Dziesmas",
+        "see_all_tracks": "Skatīt visas {count} dziesmas",
+        "no_tracks": "Nav atrasta neviena dziesma no šī izpildītāja.",
+        "releases": "Albumi",
+        "see_all_releases": "Skatīt visus {count} albumus",
+        "no_releases": "Nav atrasts neviens albums šim izpildītājam."
     },
     "bio": {
         "biography_title": "Biogrāfija",
@@ -17,7 +34,16 @@
         "years_active": "Darbības gadi",
         "present": "pašlaik",
         "unknown": "Nav zināms",
-        "back_to_artist": "Atpakaļ pie izpildītāja",
         "no_biography": "Šim izpildītājam nav biogrāfijas."
+    },
+    "type": {
+        "solo": "Solo",
+        "band": "Grupa",
+        "unknown": "Nezināms"
+    },
+    "dates": {
+        "not_specified_capital": "Nav norādīts",
+        "present": "pašlaik",
+        "not_specified": "nav norādīts"
     }
 }

@@ -1,77 +1,12 @@
-<template>
-    <Head title="Lyrics Search Results" />
-    <Navbar />
-    <main class="flex-1">
-        <div class="search-results">
-            <div class="results-header">
-                <h1 class="results-title">Lyrics Matching "{{ searchQuery }}"</h1>
-                <div class="go-back-arrow-wrapper">
-                    <div class="go-back-arrow" @click="goBack">
-                        <span class="arrow-icon">←</span>
-                    </div>
-                </div>
-                <div class="search-controls">
-                    <div class="search-container">
-                        <input
-                            type="text"
-                            class="searchTerm"
-                            placeholder="Search lyrics..."
-                            v-model="localSearchQuery"
-                            @keyup.enter="performSearch"
-                        >
-                        <button
-                            type="submit"
-                            class="searchButton"
-                            @click="performSearch"
-                        >
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="track-list lyric-matches">
-                <div v-for="track in tracks" :key="track.id" class="track-item">
-                    <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
-                    <div class="track-info">
-                        <h3>
-                            <a @click="redirectToTrack(track.slug)" class="track-title-link">
-                                {{ track.title }}
-                            </a>
-                        </h3>
-                        <p class="artists-names">
-                            <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
-                            </span>
-                        </p>
-                        <p class="lyric-snippet" v-html="track.lyric_snippet || 'No lyrics snippet available'"></p>
-                    </div>
-                    <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                </div>
-            </div>
-
-            <div v-if="tracks.length === 0" class="no-results">
-                No lyrics found for "{{ searchQuery }}"
-            </div>
-
-            <Pagination
-                :links="paginationLinks"
-                :current-page="currentPage"
-                :total-pages="totalPages"
-                :search-query="searchQuery"
-                class="pagination"
-            />
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head, router } from "@inertiajs/vue3";
 import { ref, onBeforeUnmount, onMounted } from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     tracks: Array,
@@ -133,6 +68,74 @@ const redirectToTrack = (slug) => {
 };
 
 </script>
+
+<template>
+    <Head title="Lyrics Search Results {{ searchQuery }}" />
+    <Navbar />
+    <main class="flex-1">
+        <div class="search-results">
+            <div class="results-header">
+                <h1 class="results-title">{{ t('search_pages.all_lyricstitle', {query: searchQuery}) }}</h1>
+                <div class="go-back-arrow-wrapper">
+                    <div class="go-back-arrow" @click="goBack">
+                        <span class="arrow-icon">←</span>
+                    </div>
+                </div>
+                <div class="search-controls">
+                    <div class="search-container">
+                        <input
+                            type="text"
+                            class="searchTerm"
+                            placeholder="Search lyrics..."
+                            v-model="localSearchQuery"
+                            @keyup.enter="performSearch"
+                        >
+                        <button
+                            type="submit"
+                            class="searchButton"
+                            @click="performSearch"
+                        >
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="track-list lyric-matches">
+                <div v-for="track in tracks" :key="track.id" class="track-item">
+                    <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
+                    <div class="track-info">
+                        <h3>
+                            <a @click="redirectToTrack(track.slug)" class="track-title-link">
+                                {{ track.title }}
+                            </a>
+                        </h3>
+                        <p class="artists-names">
+                            <span v-for="(artist, index) in track.artists" :key="artist.id">
+                                {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
+                            </span>
+                        </p>
+                        <p class="lyric-snippet" v-html="track.lyric_snippet || 'No lyrics snippet available'"></p>
+                    </div>
+                    <div class="track-duration">{{ formatDuration(track.duration) }}</div>
+                </div>
+            </div>
+
+            <div v-if="tracks.length === 0" class="no-results">
+                {{ t('search_pages.no_lyrics_found') }}
+            </div>
+
+            <Pagination
+                :links="paginationLinks"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :search-query="searchQuery"
+                class="pagination"
+            />
+        </div>
+    </main>
+    <Footer />
+</template>
 
 <style scoped>
 .search-results {

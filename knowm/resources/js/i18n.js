@@ -9,6 +9,8 @@ import enFooter from './i18n/en/footer.json'
 import enHome from './i18n/en/home.json'
 import enAuth from './i18n/en/auth.json'
 import enInfoPages from './i18n/en/info_pages.json'
+import enSearchPages from './i18n/en/search_pages.json'
+import enExplorePages from './i18n/en/explore_pages.json'
 
 import enAdmDashboard from './i18n/en/adm_dashboard.json'
 import enAdmLayout from './i18n/en/adm_layout.json'
@@ -19,8 +21,11 @@ import enAdmArtists from './i18n/en/adm_artists.json'
 import enUserPages from './i18n/en/user_pages.json'
 import enArtists from './i18n/en/artists.json'
 import enReleases from './i18n/en/releases.json'
+import enTracks from './i18n/en/tracks.json'
+import enGenres from './i18n/en/genres.json'
 
 import enComponents from './i18n/en/components.json';
+import enComments from './i18n/en/comments.json';
 
 // -----------------------------
 
@@ -29,6 +34,8 @@ import lvFooter from './i18n/lv/footer.json'
 import lvHome from './i18n/lv/home.json'
 import lvAuth from './i18n/lv/auth.json'
 import lvInfoPages from './i18n/lv/info_pages.json'
+import lvSearchPages from './i18n/lv/search_pages.json'
+import lvExplorePages from './i18n/lv/explore_pages.json'
 
 import lvAdmDashboard from './i18n/lv/adm_dashboard.json'
 import lvAdmLayout from './i18n/lv/adm_layout.json'
@@ -39,8 +46,11 @@ import lvAdmArtists from './i18n/lv/adm_artists.json'
 import lvUserPages from './i18n/lv/user_pages.json'
 import lvArtists from './i18n/lv/artists.json'
 import lvReleases from './i18n/lv/releases.json'
+import lvTracks from './i18n/lv/tracks.json'
+import lvGenres from './i18n/lv/genres.json'
 
 import lvComponents from './i18n/lv/components.json';
+import lvComments from './i18n/lv/comments.json';
 
 const savedLocale = localStorage.getItem('locale') || 'lv'
 dayjs.locale(savedLocale)
@@ -56,11 +66,15 @@ const i18n = createI18n({
             home: enHome,
             auth: enAuth,
             info_pages: enInfoPages,
+            search_pages: enSearchPages,
+            explore_pages: enExplorePages,
 
             user_pages: enUserPages,
 
             artists: enArtists,
             releases: enReleases,
+            tracks: enTracks,
+            genres: enGenres,
 
             adm_dashboard: enAdmDashboard,
             adm_layout: enAdmLayout,
@@ -68,7 +82,8 @@ const i18n = createI18n({
             adm_roles: enAdmRoles,
             adm_artists: enAdmArtists,
 
-            components: enComponents
+            components: enComponents,
+            comments: enComments
         },
         lv: {
             navbar: lvNavbar,
@@ -76,11 +91,15 @@ const i18n = createI18n({
             home: lvHome,
             auth: lvAuth,
             info_pages: lvInfoPages,
+            search_pages: lvSearchPages,
+            explore_pages: lvExplorePages,
 
             user_pages: lvUserPages,
 
             artists: lvArtists,
             releases: lvReleases,
+            tracks: lvTracks,
+            genres: lvGenres,
 
             adm_dashboard: lvAdmDashboard,
             adm_layout: lvAdmLayout,
@@ -88,7 +107,8 @@ const i18n = createI18n({
             adm_roles: lvAdmRoles,
             adm_artists: lvAdmArtists,
 
-            components: lvComponents
+            components: lvComponents,
+            comments: lvComments
         }
     }
 })

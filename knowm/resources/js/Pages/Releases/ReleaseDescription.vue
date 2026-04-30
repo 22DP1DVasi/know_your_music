@@ -171,7 +171,7 @@ const getReleaseImage = () => {
                         <div class="info-flex">
                             <div class="info-item">
                                 <span class="info-value">
-                                    <b>{{ capitalize(release.release_type) || t('releases.description.unknown') }}</b>
+                                    <b>{{ t(`releases.type.${release.release_type || 'unknown'}`) }}</b>
                                 </span>
                             </div>
                             <div class="info-item">

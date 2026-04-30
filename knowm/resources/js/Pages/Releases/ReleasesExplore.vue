@@ -1,139 +1,11 @@
-<template>
-    <Head title="Explore Releases" />
-    <Navbar />
-    <main class="flex-1">
-        <div class="explore-releases">
-            <div class="results-header">
-                <h1 class="results-title">Explore Releases</h1>
-                <div class="filters-container">
-                    <div class="search-controls">
-                        <div class="search-container">
-                            <input
-                                type="text"
-                                class="searchTerm"
-                                placeholder="Search releases..."
-                                v-model="localSearchQuery"
-                                @keyup.enter="performSearch"
-                            >
-                            <button
-                                type="submit"
-                                class="searchButton"
-                                @click="performSearch"
-                            >
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <button class="filter-button" @click="showGenreModal = true">
-                        <i class="fa fa-filter"></i> Filter by Genre
-                    </button>
-                </div>
-
-                <div class="sort-controls">
-                    <label>Sort by:</label>
-                    <select v-model="localSortOrder" @change="applySort">
-                        <option value="asc">A-Z</option>
-                        <option value="desc">Z-A</option>
-                    </select>
-                </div>
-
-                <div v-if="selectedGenres.length > 0" class="selected-genres">
-                    <div class="selected-genres-label">Selected genres:</div>
-                    <div class="genre-tags">
-                        <div v-for="genre in allGenres.filter(g => localSelectedGenres.includes(g.id))"
-                             :key="genre.id"
-                             class="genre-tag">
-                            <span class="genre-tag-content">{{ lowercaseString(genre.name) }}</span>
-                            <span class="remove-genre" @click="removeGenre(genre.id)">×</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Filter by Genre</h3>
-                        <button class="close-modal" @click="showGenreModal = false">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="genre-list">
-                            <div
-                                v-for="genre in allGenres"
-                                :key="genre.id"
-                                class="genre-item"
-                                @click="toggleGenre(genre.id)"
-                            >
-                                <input
-                                    type="checkbox"
-                                    :id="'genre-' + genre.id"
-                                    :checked="localSelectedGenres.includes(genre.id)"
-                                    @change="toggleGenre(genre.id)"
-                                >
-                                <label :for="'genre-' + genre.id">{{ lowercaseString(genre.name) }}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn-clear" @click="clearGenres">Clear All</button>
-                        <button class="btn-apply" @click="applyGenreFilters">Apply Filters</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="release-results">
-                <div
-                    v-for="release in releases"
-                    :key="release.id"
-                    class="release-card"
-                    @click="redirectToRelease(release.slug)"
-                >
-                    <div class="image-wrapper">
-                        <img :src="release.cover_url" :alt="release.title" />
-                    </div>
-                    <div class="release-info">
-                        <h3>{{ release.title }}</h3>
-                        <div v-if="release.artists.length > 1" class="artists-names-container">
-                            <span class="artists-names">
-                                {{ formatArtists(release.artists) }}
-                            </span>
-                        </div>
-                        <div v-else-if="release.artists.length === 1" class="single-artist">
-                            {{ release.artists[0].name }}
-                        </div>
-                        <p class="release-meta">
-                            {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div v-if="releases.length === 0" class="no-results">
-                No releases found
-                <span v-if="localSearchQuery">for "{{ localSearchQuery }}"</span>
-                <span v-if="selectedGenres.length > 0"> with selected genres</span>
-            </div>
-
-            <Pagination
-                :links="paginationLinks"
-                :current-page="currentPage"
-                :total-pages="totalPages"
-                :search-query="localSearchQuery"
-                :selected-genres="localSelectedGenres"
-                class="pagination"
-            />
-        </div>
-    </main>
-    <Footer />
-</template>
-
 <script setup>
 import { Head, Link, router } from "@inertiajs/vue3";
 import {ref, computed, onBeforeUnmount, onMounted, watch} from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
+import ReleaseCard from '@/Components/Releases/ReleaseCard.vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     releases: Array,
@@ -152,6 +24,8 @@ const props = defineProps({
         default: 'asc'
     }
 });
+
+const { t } = useI18n();
 
 const localSearchQuery = ref(props.searchQuery || '');
 const localPerPage = ref(props.perPage || 24);
@@ -245,6 +119,120 @@ function lowercaseString(val) {
 }
 
 </script>
+
+<template>
+    <Head :title="t('explore_pages.releases.page_title')" />
+    <Navbar />
+    <main class="flex-1">
+        <div class="explore-releases">
+            <div class="results-header">
+                <h1 class="results-title">{{ t('explore_pages.releases.page_title') }}</h1>
+                <div class="filters-container">
+                    <div class="search-controls">
+                        <div class="search-container">
+                            <input
+                                type="text"
+                                class="searchTerm"
+                                :placeholder="t('explore_pages.releases.search_placeholder')"
+                                v-model="localSearchQuery"
+                                @keyup.enter="performSearch"
+                            >
+                            <button
+                                type="submit"
+                                class="searchButton"
+                                @click="performSearch"
+                            >
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="filter-button" @click="showGenreModal = true">
+                        <i class="fa fa-filter"></i> {{ t('explore_pages.releases.filter_by_genre') }}
+                    </button>
+                </div>
+
+                <div class="sort-controls">
+                    <label>{{ t('explore_pages.releases.sort_by') }}:</label>
+                    <select v-model="localSortOrder" @change="applySort">
+                        <option value="asc">{{ t('explore_pages.releases.sort_asc') }}</option>
+                        <option value="desc">{{ t('explore_pages.releases.sort_desc') }}</option>
+                    </select>
+                </div>
+
+                <div v-if="selectedGenres.length > 0" class="selected-genres">
+                    <div class="selected-genres-label">{{ t('explore_pages.releases.selected_genres') }}:</div>
+                    <div class="genre-tags">
+                        <div v-for="genre in allGenres.filter(g => localSelectedGenres.includes(g.id))"
+                             :key="genre.id"
+                             class="genre-tag">
+                            <span class="genre-tag-content">{{ lowercaseString(genre.name) }}</span>
+                            <span class="remove-genre" @click="removeGenre(genre.id)">×</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>{{ t('explore_pages.releases.filter_by_genre') }}</h3>
+                        <button class="close-modal" @click="showGenreModal = false">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="genre-list">
+                            <div
+                                v-for="genre in allGenres"
+                                :key="genre.id"
+                                class="genre-item"
+                                @click="toggleGenre(genre.id)"
+                            >
+                                <input
+                                    type="checkbox"
+                                    :id="'genre-' + genre.id"
+                                    :checked="localSelectedGenres.includes(genre.id)"
+                                    @change="toggleGenre(genre.id)"
+                                >
+                                <label :for="'genre-' + genre.id">{{ lowercaseString(genre.name) }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-clear" @click="clearGenres">{{ t('explore_pages.releases.clear_all') }}</button>
+                        <button class="btn-apply" @click="applyGenreFilters">{{ t('explore_pages.releases.apply_filters') }}</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="release-results">
+                <ReleaseCard
+                    v-for="release in releases"
+                    :key="release.id"
+                    :release="release"
+                    :artists-label="release.artists.length > 1 ? 'by' : ''"
+                    :max-artists="3"
+                    @release-click="(release) => redirectToRelease(release.slug)"
+                />
+            </div>
+
+            <div v-if="releases.length === 0" class="no-results">
+                {{ t('explore_pages.releases.no_results') }}
+                <span v-if="localSearchQuery">{{ t('explore_pages.releases.for') }} "{{ localSearchQuery }}"</span>
+                <span v-if="selectedGenres.length > 0"> {{ t('explore_pages.releases.with_selected_genres') }}</span>
+            </div>
+
+            <Pagination
+                :links="paginationLinks"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                :search-query="localSearchQuery"
+                :selected-genres="localSelectedGenres"
+                class="pagination"
+            />
+        </div>
+    </main>
+    <Footer />
+</template>
 
 <style scoped>
 .explore-releases {
@@ -586,93 +574,6 @@ function lowercaseString(val) {
     padding: 0 2rem;
 }
 
-.release-card {
-    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.release-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.release-card .image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.release-card .image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.release-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-.release-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.artists-names-container {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.3;
-    height: 2.6em;
-    overflow: hidden;
-}
-
-.release-info .artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
-
-.single-artist {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-meta {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .no-results {
     padding: 2rem;
     text-align: center;
@@ -707,22 +608,6 @@ function lowercaseString(val) {
     .searchTerm {
         font-size: 16px;
         height: 46px;
-    }
-
-    .release-card {
-        flex: 0 0 calc(50% - 0.75rem); /* 2 cards per row */
-    }
-
-    .release-info {
-        padding: 1.25rem;
-    }
-
-    .release-info h3 {
-        font-size: 1.05rem;
-    }
-
-    .release-info p {
-        font-size: 0.95rem;
     }
 
     .filters-container {
@@ -770,10 +655,6 @@ function lowercaseString(val) {
 
     .release-results {
         justify-content: center;
-    }
-
-    .release-card {
-        flex: 0 0 80%;
     }
 
     .genre-item {

@@ -1,0 +1,23 @@
+{
+    "show": {
+        "about": "Par žanru",
+        "read_more": "Lasīt vairāk",
+        "no_description": "Šim žanram nav apraksta.",
+        "representative_artists": "Žanra pārstāvji",
+        "see_all_artists": "Skatīt visus {count} izpildītājus",
+        "popular_tracks": "Populārākās dziesmas",
+        "see_all_tracks": "Skatīt visas {count} dziesmas",
+        "notable_releases": "Nozīmīgi albumi",
+        "see_all_releases": "Skatīt visus {count} albumus"
+    },
+    "description": {
+        "page_title": "Apraksts",
+        "back_to_genre": "Atpakaļ pie žanra",
+        "description_title": "Apraksts",
+        "details_title": "Informācija",
+        "origin_year": "Izcelsmes gads",
+        "origin_country": "Izcelsmes valsts",
+        "unknown": "Nav zināms",
+        "no_description": "Šim žanram nav pieejams apraksts."
+    }
+}

@@ -1,12 +1,13 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import Comments from '@/Components/Comments/Comments.vue'
-import { ref, computed } from 'vue'
-import ColorThief from 'colorthief'
+import { Head, router } from '@inertiajs/vue3';
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import Comments from '@/Components/Comments/Comments.vue';
+import { ref, computed } from 'vue';
+import ColorThief from 'colorthief';
 import dayjs from 'dayjs';
-import { useDate } from '@/composables/useDate'
+import { useDate } from '@/composables/useDate';
+import { useI18n } from 'vue-i18n';
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -41,6 +42,7 @@ const props = defineProps({
     }
 });
 
+const { t, locale } = useI18n();
 const { formatDuration } = useDate()
 
 const heroImage = ref(null);
@@ -73,6 +75,77 @@ const formatDate = (dateString) => {
 
 const redirectToGenre = (slug) => {
     window.location.href = `/genres/${slug}`;
+};
+
+const descriptionMaxLength = 500;
+
+/*
+ja locale ir EN un angļu teksts pastāv -> angļu teksts
+ja locale ir LV un latviešu teksts pastāv -> latviešu teksts
+ja locale ir EN un angļu teksts nepastāv -> latviešu teksts
+ja locale ir LV un latviešu teksts nepastāv -> angļu teksts
+ja neviens teksts nepastāv -> nekas (tālāk - paziņojums par to)
+ */
+const currentDescription = computed(() => {
+    if (locale.value === 'lv' && props.track.description_lv) {
+        return props.track.description_lv;
+    }
+    if (locale.value === 'en' && props.track.description) {
+        return props.track.description;
+    }
+    if (locale.value === 'lv' && !props.track.description_lv && props.track.description) {
+        return props.track.description;
+    }
+    if (locale.value === 'en' && !props.track.description && props.track.description_lv) {
+        return props.track.description_lv;
+    }
+    return '';
+});
+
+const languageNotice = computed(() => {
+    // latviešu locale, nav latviešu apraksta, bet angļu apraksts eksistē
+    if (locale.value === 'lv' && !props.track.description_lv && props.track.description) {
+        return {
+            show: true,
+            message: 'Apraksts pieejams tikai angļu valodā.',
+            type: 'lv-no-desc'
+        };
+    }
+    // angļu locale, nav angļu apraksta, bet latviešu apraksts eksistē
+    if (locale.value === 'en' && !props.track.description && props.track.description_lv) {
+        return {
+            show: true,
+            message: 'Description available only in Latvian.',
+            type: 'en-no-desc'
+        };
+    }
+    return {
+        show: false,
+        message: '',
+        type: null
+    };
+});
+
+const truncatedDescription = computed(() => {
+    const desc = currentDescription.value;
+    if (!desc) {
+        return '';
+    }
+    if (desc.length <= descriptionMaxLength) return desc;
+    return desc.substring(0, descriptionMaxLength) + '...';
+});
+
+const showReadMore = computed(() => {
+    const desc = currentDescription.value;
+    return desc && desc.length > descriptionMaxLength;
+});
+
+const hasDescription = computed(() => {
+    return currentDescription.value !== '';
+});
+
+const redirectToFullDescription = (slug) => {
+    window.location.href = `/tracks/${slug}/description`;
 };
 
 </script>
@@ -112,11 +185,11 @@ const redirectToGenre = (slug) => {
                     <div class="top-info-card-wrapped">
                         <div class="info-flex">
                             <div class="info-item">
-                                <span class="meta-value"><b>Release Date:</b> {{ formatDate(track.release_date) }}</span>
+                                <span class="meta-value"><b>{{ t('tracks.global.release_date') }}</b> {{ formatDate(track.release_date) }}</span>
                             </div>
                             <div class="info-item">
                                 <span class="meta-value">
-                                    <b>Length:</b> {{ formatDuration(track.duration) }}
+                                    <b>{{ t('tracks.global.length') }}</b> {{ formatDuration(track.duration) }}
                                 </span>
                             </div>
                         </div>
@@ -130,22 +203,39 @@ const redirectToGenre = (slug) => {
                         <div class="info-card-wrapped">
                             <div class="info-flex">
                                 <div class="info-item">
-                                    <span class="meta-value"><b>Release Date:</b> {{ formatDate(track.release_date) }}</span>
+                                    <span class="meta-value"><b>{{ t('tracks.global.release_date') }}</b> {{ formatDate(track.release_date) }}</span>
                                 </div>
                                 <div class="info-item">
                                     <span class="meta-value">
-                                        <b>Length:</b> {{ formatDuration(track.duration) }}
+                                        <b>{{ t('tracks.global.length') }}</b> {{ formatDuration(track.duration) }}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <h2 class="section-title">About This Track</h2>
-                        <div v-if="track.description" class="description-text" v-html="track.description"></div>
-                        <div v-else class="description-text">There is no background for this track.</div>
+
+                        <h2 class="section-title">{{ t('tracks.show.about') }}</h2>
+
+                        <!-- Language notice -->
+                        <div v-if="languageNotice.show" class="language-notice" :data-type="languageNotice.type">
+                            {{ languageNotice.message }}
+                        </div>
+
+                        <!-- Description text with truncation -->
+                        <div v-if="hasDescription" class="description-text" v-html="truncatedDescription"></div>
+                        <div v-else class="description-text no-description">{{ t('tracks.show.no_description') }}</div>
+
+                        <!-- Read more button -->
+                        <button
+                            v-if="showReadMore"
+                            @click="redirectToFullDescription(track.slug)"
+                            class="read-more-button"
+                        >
+                            {{ t('tracks.show.read_more') }}
+                        </button>
 
                         <div class="genres-card">
                             <div class="genres-header">
-                                <h3 class="info-title">Genres</h3>
+                                <h3 class="info-title">{{ t('tracks.show.genres_title') }}</h3>
                                 <!--                                <button-->
                                 <!--                                    v-if="release.genres.length > 5"-->
                                 <!--                                    class="see-all-genres"-->
@@ -154,7 +244,7 @@ const redirectToGenre = (slug) => {
                                 <!--                                    See all genres-->
                                 <!--                                </button>-->
                             </div>
-                            <div v-if="!track.genres.length">No genres related to this track.</div>
+                            <div v-if="!track.genres.length">{{ t('tracks.show.no_genres') }}</div>
                             <div v-else class="genre-tags">
                                 <button
                                     v-for="(genre, index) in track.genres.slice(0, 5)"
@@ -170,18 +260,18 @@ const redirectToGenre = (slug) => {
 
                         <section class="track-lyrics">
                             <div class="lyrics-header">
-                                <h2 class="section-title">Lyrics</h2>
+                                <h2 class="section-title">{{ t('tracks.show.lyrics_title') }}</h2>
                                 <span v-if="track.lyrics.status === 'verified'" class="verified-badge">
-                                    Verified
+                                    {{ t('tracks.show.verified_badge') }}
                                 </span>
-                                <span v-else class="unverified-badge">
-                                    Needs Verification
+                                                        <span v-else class="unverified-badge">
+                                    {{ t('tracks.show.unverified_badge') }}
                                 </span>
                             </div>
                             <div class="lyrics-content">
                                 <pre v-if="track.lyrics.text" class="lyrics-text">{{ track.lyrics.text }}</pre>
                                 <div v-else class="no-lyrics">
-                                    No lyrics available for this track yet.
+                                    {{ t('tracks.show.no_lyrics') }}
                                 </div>
                             </div>
                         </section>
@@ -362,6 +452,46 @@ const redirectToGenre = (slug) => {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #0c4baa;
+}
+
+.language-notice {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border-left: 3px solid #999;
+    font-style: italic;
+}
+
+.language-notice[data-type="lv-no-desc"] {
+    border-left-color: #0c4baa;
+}
+
+.language-notice[data-type="en-no-desc"] {
+    border-left-color: #aa0c4b;
+}
+
+.no-description {
+    color: #666;
+    font-style: italic;
+}
+
+.read-more-button {
+    background: #0c4baa;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.read-more-button:hover {
+    background: #1a5fc9;
 }
 
 .meta-value {

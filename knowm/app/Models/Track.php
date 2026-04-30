@@ -33,7 +33,7 @@ class Track extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'duration' => 'datetime:H:i:s',
+//        'duration' => 'datetime:H:i:s',
         'release_date' => 'date:Y-m-d',
         'popularity' => 'decimal:2',
     ];

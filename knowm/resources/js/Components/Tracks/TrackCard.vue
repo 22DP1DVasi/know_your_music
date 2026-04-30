@@ -2,6 +2,7 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { useDate } from '@/composables/useDate';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     track: {
@@ -83,6 +84,8 @@ const props = defineProps({
         default: ''
     }
 });
+
+const { t } = useI18n();
 
 const { formatDuration } = useDate();
 // definē emitu: saņēm funkciju/vērtību no vecākkomponenta un izmanto šajā
@@ -263,7 +266,7 @@ defineExpose({
                     @click="handleAddToPlaylist"
                 >
                     <i class="fa-regular fa-plus"></i>
-                    Add to playlist
+                    {{ t('tracks.card.add_to_playlist') }}
                 </button>
                 <button
                     v-if="canRemove"

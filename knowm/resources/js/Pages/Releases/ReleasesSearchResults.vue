@@ -5,6 +5,9 @@ import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
 import ReleaseCard from "@/Components/Releases/ReleaseCard.vue";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     releases: Array,
@@ -66,7 +69,7 @@ const goBack = () => {
     <main class="flex-1">
         <div class="search-results">
             <div class="results-header">
-                <h1 class="results-title">All Releases Matching "{{ searchQuery }}"</h1>
+                <h1 class="results-title">{{ t('search_pages.all_releases_title', {query: searchQuery}) }}</h1>
                 <div class="go-back-arrow-wrapper">
                     <div class="go-back-arrow" @click="goBack">
                         <span class="arrow-icon">←</span>
@@ -97,7 +100,7 @@ const goBack = () => {
                                 v-model="searchType"
                                 value="title"
                             />
-                            By Title
+                            {{ t('search_pages.by_title') }}
                         </label>
                         <label>
                             <input
@@ -105,7 +108,7 @@ const goBack = () => {
                                 v-model="searchType"
                                 value="artist"
                             />
-                            By Artist
+                            {{ t('search_pages.by_artist') }}
                         </label>
                     </div>
                 </div>
@@ -126,7 +129,7 @@ const goBack = () => {
             </section>
 
             <div v-else class="no-results">
-                No releases found for "{{ searchQuery }}"
+                {{ t('search_pages.no_releases_found') }}
             </div>
 
             <Pagination
@@ -236,14 +239,12 @@ const goBack = () => {
 }
 
 .filter-options {
-    width: 200px;
     height: 100%;
-    max-width: 300px;
     margin: 0 auto;
     display: flex;
     gap: 1rem;
     background: white;
-    padding: 1rem 0;
+    padding: 1rem;
     border-radius: 7px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     margin-top: 1rem;
