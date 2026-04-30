@@ -16,5 +16,12 @@
         "unverified_badge": "Needs Verification",
         "no_lyrics": "No lyrics available for this track yet.",
         "read_more": "Read more"
+    },
+    "description": {
+        "back_to_track": "Back to track",
+        "details_title": "Details",
+        "description_title": "Description",
+        "no_description": "There is no description for this track.",
+        "unknown": "Unknown"
     }
 }

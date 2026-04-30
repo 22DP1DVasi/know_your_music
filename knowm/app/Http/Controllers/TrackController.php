@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Track;
 use App\Services\TrackService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TrackController extends Controller
 {
@@ -36,6 +37,13 @@ class TrackController extends Controller
 
         return inertia('Tracks/TrackShow', [
             'track' => $trackData
+        ]);
+    }
+
+    public function showDescription(Track $track): \Inertia\Response
+    {
+        return Inertia::render('Tracks/TrackDescription', [
+            'track' => $track->load(['artists']),
         ]);
     }
 }

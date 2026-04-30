@@ -16,5 +16,12 @@
         "unverified_badge": "Nepieciešama pārbaude",
         "no_lyrics": "Šai dziesmai vēl nav pieejams teksts.",
         "read_more": "Lasīt vairāk"
+    },
+    "description": {
+        "back_to_track": "Atpakaļ pie dziesmas",
+        "details_title": "Informācija",
+        "description_title": "Apraksts",
+        "no_description": "Šai dziesmai nav apraksta.",
+        "unknown": "Nav zināms"
     }
 }

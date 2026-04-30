@@ -156,6 +156,8 @@ Route::prefix('releases/{release}')->group(function () {
 // dziesmas inf. lapa
 Route::get('/tracks/{track}', [TrackController::class, 'show'])
     ->name('tracks.show');
+Route::get('/tracks/{track:slug}/description', [TrackController::class, 'showDescription'])
+    ->name('tracks.description');
 
 // komentāri dziesmas lapai
 Route::prefix('tracks/{track}')->group(function () {
