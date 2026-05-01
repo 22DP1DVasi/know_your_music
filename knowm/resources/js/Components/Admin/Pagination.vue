@@ -89,10 +89,10 @@ const shouldShowPagination = computed(() => {
                 v-if="links[0] && links[0].url"
                 :href="links[0].url"
                 class="pagination-link pagination-arrow"
-                :class="{ 'disabled': !links[0].url }"
                 preserve-scroll
-                v-html="links[0].label"
-            />
+            >
+                ‹
+            </Link>
 
             <template v-for="(link, index) in optimizedLinks" :key="index">
                 <Link
@@ -120,10 +120,10 @@ const shouldShowPagination = computed(() => {
                 v-if="links[links.length - 1] && links[links.length - 1].url"
                 :href="links[links.length - 1].url"
                 class="pagination-link pagination-arrow"
-                :class="{ 'disabled': !links[links.length - 1].url }"
                 preserve-scroll
-                v-html="links[links.length - 1].label"
-            />
+            >
+                ›
+            </Link>
         </div>
     </div>
 </template>
