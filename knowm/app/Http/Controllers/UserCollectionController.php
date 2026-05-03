@@ -37,7 +37,14 @@ class UserCollectionController extends Controller
         ]);
     }
 
-    public function show(User $user, UserCollection $playlist)
+    /***
+     * Metode priekš UserPlaylistShow.vue lapas.
+     *
+     * @param User $user
+     * @param UserCollection $playlist
+     * @return \Inertia\Response
+     */
+    public function show(User $user, UserCollection $playlist): \Inertia\Response
     {
         if ($playlist->is_private && $playlist->user_id !== Auth::id()) {
             abort(403, 'This playlist is private.');
@@ -69,7 +76,7 @@ class UserCollectionController extends Controller
     /**
      * Atjaunināt norādīto kolekciju.
      */
-    public function update(Request $request, UserCollection $playlist)
+    public function update(Request $request, User $user, UserCollection $playlist)
     {
         // pārbaudīt, vai lietotājam pieder kolekcija
         if ($playlist->user_id !== Auth::id()) {

@@ -121,13 +121,13 @@ const submit = async () => {
         emit('created', response.data.playlist);
         if (props.redirectAfterCreate) {
             if (props.redirectRoute) {
-                router.get(route(props.redirectRoute, { playlist: response.data.playlist.slug }));
+                router.get(route(props.redirectRoute, { user: user.slug, playlist: response.data.playlist.slug }));
             } else {
-                route('playlists.show', {
-                    user: props.playlist.user.slug,
-                    playlist: props.playlist.slug,
+                router.get(route('playlists.show', {
+                    user: user.slug,
+                    playlist: response.data.playlist.slug,
                     page
-                })
+                }))
             }
         }
         close();

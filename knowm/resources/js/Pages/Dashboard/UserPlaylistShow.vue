@@ -89,7 +89,11 @@ onUnmounted(() => {
 const loadPage = (page) => {
     return new Promise((resolve) => {
         router.get(
-            route('playlists.show', { playlist: props.playlist.slug, page }),
+            route('playlists.show', {
+                user: props.playlist.user.slug,
+                playlist: props.playlist.slug,
+                page
+            }),
             {},
             {
                 preserveState: true,
@@ -220,7 +224,7 @@ const savePlaylistChanges = async () => {
     if (hasErrors) return;
     isSaving.value = true;
     try {
-        await router.put(route('playlists.update', props.playlist.slug), {
+        await router.put(route('playlists.update', {user: props.playlist.user.slug, playlist: props.playlist.slug}), {
             name: editForm.value.name.trim(),
             description: editForm.value.description?.trim() || null,
             is_private: editForm.value.is_private
