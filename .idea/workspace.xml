@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/CreatePlaylistModal.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/AddToPlaylistModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/AddToPlaylistModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/components.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/components.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/UserPlaylists.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/UserPlaylists.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
