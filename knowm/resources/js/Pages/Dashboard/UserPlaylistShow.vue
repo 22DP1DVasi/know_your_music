@@ -225,7 +225,7 @@ const savePlaylistChanges = async () => {
     if (hasErrors) return;
     isSaving.value = true;
     try {
-        await router.put(route('playlists.update', {user: props.playlist.user.slug, playlist: props.playlist.slug}), {
+        router.put(route('playlists.update', {user: props.playlist.user.slug, playlist: props.playlist.slug}), {
             name: editForm.value.name.trim(),
             description: editForm.value.description?.trim() || null,
             is_private: editForm.value.is_private
@@ -248,11 +248,6 @@ const savePlaylistChanges = async () => {
     }
 };
 
-// Pārslēgt privātuma statusu
-const togglePrivacy = () => {
-    editForm.value.is_private = !editForm.value.is_private;
-};
-
 const showDeleteModal = ref(false);
 const isDeleting = ref(false);
 
@@ -270,10 +265,10 @@ const confirmDeletePlaylist = async () => {
     isDeleting.value = true;
 
     try {
-        await router.delete(route('playlists.destroy', {user: props.playlist.user.slug, playlist: props.playlist.slug}), {
+        router.delete(route('playlists.destroy', {user: props.playlist.user.slug, playlist: props.playlist.slug}), {
             preserveScroll: true,
             onSuccess: () => {
-                // Redirect to playlists index page after successful deletion
+                // pēc veiksmīgas dzēšanas novirzīt uz kolekciju lapu
                 router.get(route('dashboard.playlists'));
             },
             onError: (errors) => {
