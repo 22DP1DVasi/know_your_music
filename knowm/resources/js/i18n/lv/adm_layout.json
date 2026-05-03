@@ -2,5 +2,9 @@
     "dashboard": "Informācijas panelis",
     "users": "Lietotāji",
     "roles": "Lomas",
-    "artists": "Izpildītāji"
+    "artists": "Izpildītāji",
+    "releases": "Albumi",
+    "tracks": "Dziesmas",
+    "genres": "Žanri",
+    "comments": "Komentāri"
 }
