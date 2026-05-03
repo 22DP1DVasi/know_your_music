@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { route } from "ziggy-js";
 import { useI18n } from 'vue-i18n';
+import CreatePlaylistModal from "@/Components/Playlists/CreatePlaylistModal.vue";
 
 const showingMobileSidebar = ref(false);
 const expandedMenus = ref([]); // izseko izvērstās sadaļas
@@ -47,6 +48,28 @@ const handleClickOutside = (event) => {
     if (!event.target.closest('.language-switch')) {
         activeLanguageDropdown.value = false;
     }
+};
+
+const showCreateForm = ref(false);
+// kolekcijas izveidošanas forma
+const newPlaylistForm = ref({
+    name: '',
+    description: '',
+    is_private: false
+});
+
+const errors = ref({
+    name: null
+});
+
+const openCreateForm = () => {
+    showCreateForm.value = true;
+};
+
+const closeCreateForm = () => {
+    showCreateForm.value = false;
+    newPlaylistForm.value = { name: '', description: '', is_private: false };
+    errors.value = { name: null };
 };
 
 // Add watch for language
@@ -159,10 +182,17 @@ onBeforeUnmount(() => {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link href="#" class="submenu-link">
+<!--                                    <Link href="#" class="submenu-link">-->
+<!--                                        <i class="fa-regular fa-plus submenu-icon"></i>-->
+<!--                                        {{ t('user_pages.layout.create_new_pl') }}-->
+<!--                                    </Link>-->
+                                    <button
+                                        @click="openCreateForm"
+                                        class="submenu-link"
+                                    >
                                         <i class="fa-regular fa-plus submenu-icon"></i>
                                         {{ t('user_pages.layout.create_new_pl') }}
-                                    </Link>
+                                    </button>
                                 </li>
                             </ul>
                         </li>
@@ -408,6 +438,15 @@ onBeforeUnmount(() => {
             </div>
         </main>
     </div>
+
+    <!-- Jaunas kolekcijas izveides veidlapa -->
+    <CreatePlaylistModal
+        :show="showCreateForm"
+        :show-description="true"
+        :redirect-after-create="true"
+        @close="closeCreateForm"
+        @created="closeCreateForm"
+    />
 </template>
 
 <style scoped>

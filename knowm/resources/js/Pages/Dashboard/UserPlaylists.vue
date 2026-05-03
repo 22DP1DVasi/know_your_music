@@ -51,17 +51,13 @@ const redirectToPlaylist = (slug) => {
     router.get(`/playlists/${slug}`);
 };
 
-const createNewPlaylist = () => {
-    router.get(route('playlists.create'));
-};
-
 const openCreateForm = () => {
     showCreateForm.value = true;
 };
 
 const closeCreateForm = () => {
     showCreateForm.value = false;
-    newPlaylistForm.value = { name: '', is_private: false };
+    newPlaylistForm.value = { name: '', description: '', is_private: false };
     errors.value = { name: null };
 };
 
