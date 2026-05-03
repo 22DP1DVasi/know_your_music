@@ -1,10 +1,11 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
+import {computed, ref} from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import PlaylistCard from '@/Components/Playlists/PlaylistCard.vue';
+import CreatePlaylistModal from '@/Components/Playlists/CreatePlaylistModal.vue';
 import { route } from "ziggy-js";
 
 const { t } = useI18n();
@@ -25,6 +26,22 @@ const props = defineProps({
     }
 });
 
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
+
+const showCreateForm = ref(false);
+// kolekcijas izveidošanas forma
+const newPlaylistForm = ref({
+    name: '',
+    description: '',
+    is_private: false
+});
+
+const errors = ref({
+    name: null
+});
+
 // computed rekvizīts pluralizētam skaitam
 const totalCountText = computed(() => {
     const count = props.playlists.total || 0;
@@ -35,11 +52,17 @@ const totalCountText = computed(() => {
 });
 
 const redirectToPlaylist = (slug) => {
-    router.get(`/playlists/${slug}`);
+    router.get(route('playlists.show', {user: user.slug, playlist: slug}));
 };
 
-const createNewPlaylist = () => {
-    router.get(route('playlists.create'));
+const openCreateForm = () => {
+    showCreateForm.value = true;
+};
+
+const closeCreateForm = () => {
+    showCreateForm.value = false;
+    newPlaylistForm.value = { name: '', description: '', is_private: false };
+    errors.value = { name: null };
 };
 
 </script>
@@ -63,7 +86,7 @@ const createNewPlaylist = () => {
 
                 <div class="header-actions">
                     <button
-                        @click="createNewPlaylist"
+                        @click="openCreateForm"
                         class="create-button"
                     >
                         <i class="fa-solid fa-plus"></i>
@@ -94,7 +117,7 @@ const createNewPlaylist = () => {
                     {{ t('user_pages.playlists.no_playlists_description') }}
                 </p>
                 <button
-                    @click="createNewPlaylist"
+                    @click="openCreateForm"
                     class="create-playlist-button"
                 >
                     <i class="fa-solid fa-plus"></i>
@@ -108,6 +131,15 @@ const createNewPlaylist = () => {
             </div>
         </div>
     </AuthenticatedLayout>
+
+    <!-- Jaunas kolekcijas izveides veidlapa -->
+    <CreatePlaylistModal
+        :show="showCreateForm"
+        :show-description="true"
+        :redirect-after-create="true"
+        @close="closeCreateForm"
+        @created="closeCreateForm"
+    />
 </template>
 
 <style scoped>

@@ -6,5 +6,25 @@
         "default_title": "Apstiprināt darbību",
         "confirm_text": "Labi",
         "cancel_text": "Atcelt"
+    },
+    "playlist_create": {
+        "title": "Izveidot jaunu kolekciju",
+        "edit_title": "Rediģēt kolekciju",
+        "playlist_name": "Kolekcijas nosaukums",
+        "name_placeholder": "Mana superīgā kolekcija",
+        "description_label": "Apraksts (neobligāts)",
+        "description_placeholder": "Manu iecienītāko dziesmu kolekcija...",
+        "privacy_label": "Privātums",
+        "public": "Publisks",
+        "private": "Privāts",
+        "public_desc": "Ikviens var redzēt šo sarakstu",
+        "private_desc": "Tikai jūs varat redzēt šo sarakstu",
+        "cancel": "Atcelt",
+        "create_button": "Izveidot",
+        "creating": "Veido...",
+        "error_name_required": "Kolekcijas nosaukums ir obligāts",
+        "error_name_length": "Kolekcijas nosaukums nedrīkst pārsniegt 100 rakstzīmes",
+        "error_description_length": "Apraksts nedrīkst pārsniegt 255 rakstzīmes",
+        "error_general": "Neizdevās izveidot kolekciju. Lūdzu, mēģiniet vēlreiz."
     }
 }

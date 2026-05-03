@@ -235,19 +235,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
         ->name('dashboard.playlists');
 
-    Route::get('/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
+    Route::get('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
         ->name('playlists.show');
-    Route::put('/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
+    Route::put('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
         ->name('playlists.update');
-    Route::delete('/playlists/{playlist:slug}/tracks/{track:id}', [UserCollectionController::class, 'removeTrack'])
+    Route::delete('/{user:slug}/playlists/{playlist:slug}/tracks/{track:id}', [UserCollectionController::class, 'removeTrack'])
         ->name('playlists.tracks.destroy');
 
     Route::get('/playlists/user/list', [UserCollectionController::class, 'getUserPlaylists'])
         ->name('playlists.user.list');
     Route::post('/playlists/{playlist:slug}/add-track', [UserCollectionController::class, 'addTrackToPlaylist'])
         ->name('playlists.add-track');
-    Route::post('/playlists', [UserCollectionController::class, 'createPlaylistWithTrack'])
+    Route::post('/playlists', [UserCollectionController::class, 'createPlaylist'])
         ->name('playlists.store');
+    Route::post('/playlists/with-track', [UserCollectionController::class, 'createPlaylistWithTrack'])
+        ->name('playlists.store.with-track');
 });
 
 // authentication routes

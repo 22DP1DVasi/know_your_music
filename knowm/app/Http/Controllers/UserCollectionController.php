@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -36,7 +38,14 @@ class UserCollectionController extends Controller
         ]);
     }
 
-    public function show(UserCollection $playlist)
+    /***
+     * Metode priekš UserPlaylistShow.vue lapas.
+     *
+     * @param User $user
+     * @param UserCollection $playlist
+     * @return \Inertia\Response
+     */
+    public function show(User $user, UserCollection $playlist): \Inertia\Response
     {
         if ($playlist->is_private && $playlist->user_id !== Auth::id()) {
             abort(403, 'This playlist is private.');
@@ -56,6 +65,9 @@ class UserCollectionController extends Controller
                 'cover_url' => $playlist->cover_url,
                 'created_at' => $playlist->created_at,
                 'updated_at' => $playlist->updated_at,
+                'user' => [
+                    'slug' => $playlist->user->slug,
+                ],
             ],
             'tracks' => $tracks,
             'canEdit' => $playlist->user_id === Auth::id(),
@@ -65,7 +77,7 @@ class UserCollectionController extends Controller
     /**
      * Atjaunināt norādīto kolekciju.
      */
-    public function update(Request $request, UserCollection $playlist)
+    public function update(Request $request, User $user, UserCollection $playlist)
     {
         // pārbaudīt, vai lietotājam pieder kolekcija
         if ($playlist->user_id !== Auth::id()) {
@@ -87,19 +99,22 @@ class UserCollectionController extends Controller
         // atjaunināt kolekciju
         $playlist->update($validated);
 
-        return redirect()->route('playlists.show', $playlist->fresh())
-            ->with('success', 'Playlist updated successfully.');
+        return redirect()->route('playlists.show', [
+            'user' => $playlist->user->slug,
+            'playlist' => $playlist->slug,
+        ])->with('success', 'Playlist updated successfully.');
     }
 
     /***
      * Noņem ierakstu no kolekcijas.
      *
+     * @param User $user
      * @param UserCollection $playlist
      * @param Track $track
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws Throwable
      */
-    public function removeTrack(UserCollection $playlist, Track $track): \Illuminate\Http\JsonResponse
+    public function removeTrack(User $user, UserCollection $playlist, Track $track): \Illuminate\Http\JsonResponse
     {
         if ($playlist->user_id !== auth()->id()) {
             abort(403);
@@ -197,35 +212,72 @@ class UserCollectionController extends Controller
         ]);
     }
 
-    /**
-     * Izveidot jaunu kolekciju un pievienot tam dziesmu.
+    /***
+     * Creates new playlist.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function createPlaylistWithTrack(Request $request)
+    public function createPlaylist(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
             'is_private' => 'required|boolean',
-            'track_id' => 'required|exists:tracks,id'
         ]);
 
-        // izveidot kolekciju
         $playlist = UserCollection::create([
             'user_id' => Auth::id(),
             'name' => $request->name,
-//            'slug' => Str::slug($request->name) . '-' . Str::random(6),
-            'description' => null,
+            'description' => $request->description,
             'is_private' => $request->is_private,
         ]);
+
+        $playlist->loadCount('tracks');
+        return response()->json([
+            'success' => true,
+            'message' => 'Playlist created successfully.',
+            'playlist' => [
+                'id' => $playlist->id,
+                'name' => $playlist->name,
+                'slug' => $playlist->slug,
+                'description' => $playlist->description,
+                'is_private' => $playlist->is_private,
+                'tracks_count' => $playlist->tracks_count,
+                'cover_url' => $playlist->cover_url,
+                'created_at' => $playlist->created_at,
+                'updated_at' => $playlist->updated_at,
+            ]
+        ]);
+    }
+
+    /***
+     * Creates new playlist and adds selected track to it.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createPlaylistWithTrack(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
+            'is_private' => 'required|boolean',
+            'track_id' => 'required|exists:tracks,id'
+        ]);
+        $playlist = UserCollection::create([
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'description' => $request->description,
+            'is_private' => $request->is_private,
+        ]);
+
         // pievienot dziesmu
         $playlist->tracks()->attach($request->track_id, [
             'track_position' => 1
         ]);
-        // ielādēt dziesmu skaitu atbildei
-        $playlist->loadCount('tracks');
-        // Get cover_url from the added track
-//        $track = Track::find($request->track_id);
-//        $coverUrl = $track->cover_url;
 
+        $playlist->loadCount('tracks');
         return response()->json([
             'success' => true,
             'message' => 'Playlist created and track added successfully.',
@@ -233,9 +285,12 @@ class UserCollectionController extends Controller
                 'id' => $playlist->id,
                 'name' => $playlist->name,
                 'slug' => $playlist->slug,
+                'description' => $playlist->description,
                 'is_private' => $playlist->is_private,
                 'tracks_count' => $playlist->tracks_count,
-                'cover_url' => $playlist->cover_url
+                'cover_url' => $playlist->cover_url,
+                'created_at' => $playlist->created_at,
+                'updated_at' => $playlist->updated_at,
             ]
         ]);
     }
