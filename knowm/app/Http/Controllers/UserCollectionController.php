@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -36,7 +37,7 @@ class UserCollectionController extends Controller
         ]);
     }
 
-    public function show(UserCollection $playlist)
+    public function show(User $user, UserCollection $playlist)
     {
         if ($playlist->is_private && $playlist->user_id !== Auth::id()) {
             abort(403, 'This playlist is private.');
@@ -56,6 +57,9 @@ class UserCollectionController extends Controller
                 'cover_url' => $playlist->cover_url,
                 'created_at' => $playlist->created_at,
                 'updated_at' => $playlist->updated_at,
+                'user' => [
+                    'slug' => $playlist->user->slug,
+                ],
             ],
             'tracks' => $tracks,
             'canEdit' => $playlist->user_id === Auth::id(),
@@ -87,8 +91,10 @@ class UserCollectionController extends Controller
         // atjaunināt kolekciju
         $playlist->update($validated);
 
-        return redirect()->route('playlists.show', $playlist->fresh())
-            ->with('success', 'Playlist updated successfully.');
+        return redirect()->route('playlists.show', [
+            'user' => $playlist->user->slug,
+            'playlist' => $playlist->slug,
+        ])->with('success', 'Playlist updated successfully.');
     }
 
     /***

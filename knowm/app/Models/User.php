@@ -114,6 +114,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Helper method to freely use 'playlist' name in routes.
+     *
+     * @return HasMany
+     */
+    public function playlists()
+    {
+        return $this->hasMany(UserCollection::class);
+    }
+
+    /**
      * @return string|null
      */
     public function getAvatarUrlAttribute(): ?string

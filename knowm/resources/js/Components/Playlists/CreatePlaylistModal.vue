@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 import {route} from "ziggy-js";
 
@@ -42,6 +42,10 @@ const props = defineProps({
         default: null
     }
 });
+
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
 
 const emit = defineEmits(['close', 'created', 'error']);
 
@@ -119,7 +123,11 @@ const submit = async () => {
             if (props.redirectRoute) {
                 router.get(route(props.redirectRoute, { playlist: response.data.playlist.slug }));
             } else {
-                router.get(route('playlists.show', response.data.playlist.slug));
+                route('playlists.show', {
+                    user: props.playlist.user.slug,
+                    playlist: props.playlist.slug,
+                    page
+                })
             }
         }
         close();

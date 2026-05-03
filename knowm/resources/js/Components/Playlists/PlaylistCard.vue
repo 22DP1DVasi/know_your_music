@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
+import {route} from "ziggy-js";
 
 const { t } = useI18n();
 
@@ -38,6 +39,10 @@ const props = defineProps({
     }
 });
 
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
+
 const emit = defineEmits(['playlist-click']);
 
 // helper, lai iegūtu pirmās dziesmas attēlu vai noklusējuma
@@ -69,7 +74,7 @@ const handlePlaylistClick = () => {
             router.get(props.redirectUrl);
         }
     } else {
-        router.get(`/playlists/${props.playlist.slug}`);
+        router.get(route('playlists.show', {user: user.slug, playlist: props.playlist.slug}));
     }
 };
 

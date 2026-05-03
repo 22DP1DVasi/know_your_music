@@ -235,7 +235,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
         ->name('dashboard.playlists');
 
-    Route::get('/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
+    Route::get('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
         ->name('playlists.show');
     Route::put('/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
         ->name('playlists.update');

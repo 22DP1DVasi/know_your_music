@@ -1,5 +1,5 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import {computed, ref} from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -26,6 +26,10 @@ const props = defineProps({
     }
 });
 
+// piekļuve koplietojamiem datiem no servera puses
+const page = usePage();
+const user = page.props.auth?.user;
+
 const showCreateForm = ref(false);
 // kolekcijas izveidošanas forma
 const newPlaylistForm = ref({
@@ -48,7 +52,7 @@ const totalCountText = computed(() => {
 });
 
 const redirectToPlaylist = (slug) => {
-    router.get(`/playlists/${slug}`);
+    router.get(route('playlists.show', {user: user.slug, playlist: slug}));
 };
 
 const openCreateForm = () => {
