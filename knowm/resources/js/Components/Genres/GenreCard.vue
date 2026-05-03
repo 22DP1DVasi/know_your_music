@@ -33,6 +33,18 @@ const imageUrl = computed(() => {
     return props.imageSrc || props.genre.banner_url || props.fallbackImage;
 });
 
+const formattedGenreName = computed(() => {
+    const name = props.genre.name;
+    if (!name) return '';
+    // check if first character is a letter
+    const firstChar = name.charAt(0);
+    if (/[a-zA-Z]/.test(firstChar)) {
+        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    }
+    // if first character is not a letter (number, symbol, etc.), return as is
+    return name;
+});
+
 const handleGenreClick = () => {
     emit('genre-click', props.genre);
 
@@ -68,7 +80,7 @@ defineExpose({
             >
         </div>
         <div class="genre-info">
-            <h3 :title="genre.name">{{ genre.name }}</h3>
+            <h3 :title="genre.name">{{ formattedGenreName }}</h3>
         </div>
     </div>
 </template>

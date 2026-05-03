@@ -274,7 +274,7 @@ defineExpose({
                     @click="handleRemove"
                 >
                     <i class="fa-regular fa-trash-can"></i>
-                    Remove
+                    {{ t('tracks.card.remove') }}
                 </button>
             </div>
         </div>

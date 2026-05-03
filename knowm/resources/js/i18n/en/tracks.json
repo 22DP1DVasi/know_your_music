@@ -1,6 +1,7 @@
 {
     "card": {
-        "add_to_playlist": "Add to playlist"
+        "add_to_playlist": "Add to playlist",
+        "remove": "Remove"
     },
     "global": {
         "release_date": "Release Date:",

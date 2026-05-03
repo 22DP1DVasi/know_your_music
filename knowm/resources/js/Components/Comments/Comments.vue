@@ -226,7 +226,7 @@ const isCommentDeleted = (comment) => {
 
 const getDisplayTextConsideringDeletion = (comment) => {
     if (isCommentDeleted(comment)) {
-        return '<em class="deleted-comment-text">This comment has been deleted.</em>'
+        return `<em class="deleted-comment-text">${t('comments.deleted_comment_text')}</em>`
     }
     return getDisplayText(comment)
 }
@@ -440,7 +440,7 @@ onBeforeUnmount(() => {
 // rediģēšanas metodes
 const handleEditComment = (comment) => {
     if (!canEditComment(comment)) {
-        alert('You can only edit your own comments within 15 minutes of posting.')
+        alert(t('comments.edit_alert'))
         return
     }
     startEditingComment(comment)
@@ -505,11 +505,11 @@ const submitEditedComment = async (commentId) => {
     } catch (error) {
         console.error('Error updating comment:', error)
         if (error.response?.status === 403) {
-            alert('You are not authorized to edit this comment or the edit time limit has expired.')
+            alert(t('comments.edited_submit_alert'))
         } else if (error.response?.status === 422) {
-            alert('Please provide valid comment text.')
+            alert(t('comments.valid_text_alert'))
         } else {
-            alert('Failed to update comment. Please try again.')
+            alert(t('comments.failed_update'))
         }
     } finally {
         isSubmittingEdit.value = false
@@ -541,45 +541,13 @@ const getDeleteConfirmationMessage = () => {
     const isAdminDelete = commentToDelete.value.isAdminDelete
     if (isAdminDelete) {
         if (canBeHardDeleted(commentToDelete.value)) {
-            return 'This comment will be permanently deleted as an administrator action.'
+            return t('comments.admin_delete_permanent_message')
         } else {
-            return 'This comment will be deleted (admin action) but kept for thread continuity.'
+            return t('comments.admin_delete_soft_message')
         }
     } else {
-        return 'Are you sure you want to delete this comment permanently?'
+        return t('comments.user_delete_confirmation')
     }
-}
-
-const markCommentAsDeleted = (commentList, commentId, deletedAt) => {
-    for (let comment of commentList) {
-        if (comment.id === commentId) {
-            comment.deleted_at = deletedAt
-            comment.text = null
-            return true
-        }
-        if (comment.replies?.length) {
-            if (markCommentAsDeleted(comment.replies, commentId, deletedAt)) {
-                return true
-            }
-        }
-    }
-    return false
-}
-
-const removeCommentFromTree = (commentList, commentId) => {
-    const index = commentList.findIndex(c => c.id === commentId)
-    if (index !== -1) {
-        commentList.splice(index, 1)
-        return true
-    }
-    for (let comment of commentList) {
-        if (comment.replies?.length) {
-            if (removeCommentFromTree(comment.replies, commentId)) {
-                return true
-            }
-        }
-    }
-    return false
 }
 
 const confirmDeleteComment = async () => {
@@ -604,9 +572,9 @@ const confirmDeleteComment = async () => {
     } catch (error) {
         console.error('Error deleting comment:', error)
         if (error.response?.status === 403) {
-            alert('You are not authorized to delete this comment.')
+            alert(t('comments.error_unauthorized'))
         } else {
-            alert('Failed to delete comment. Please try again.')
+            alert(t('comments.error_failed'))
         }
     } finally {
         showDeletePopup.value = false
@@ -729,7 +697,7 @@ const confirmDeleteComment = async () => {
                             <span v-if="!isCommentDeleted(commentData.comment) && isCommentEdited(commentData.comment)"
                                   class="edited-badge"
                                   :title="'Edited at ' + formatDateLL(commentData.comment.edited_at)">
-                                <i class="fa-regular fa-pen-to-square"></i> edited
+                                <i class="fa-regular fa-pen-to-square"></i> {{ t('comments.edited') }}
                             </span>
                         </div>
 

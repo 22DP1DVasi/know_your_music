@@ -1,6 +1,7 @@
 {
     "card": {
-        "add_to_playlist": "Pievienot kolekcijai"
+        "add_to_playlist": "Pievienot kolekcijai",
+        "remove": "Noņemt"
     },
     "global": {
         "release_date": "Izdošanas datums:",

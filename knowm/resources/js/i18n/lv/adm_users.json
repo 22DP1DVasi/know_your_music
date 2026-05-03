@@ -30,7 +30,7 @@
         "back_to_users": "Atpakaļ pie lietotājiem",
         "username": "Lietotājvārds",
         "email": "E-pasta adrese",
-        "new_password": "Jauna parole (atstājiet tukšu, lai atjauninātu)",
+        "new_password": "Jauna parole (atstājiet tukšu, lai neatjauninātu)",
         "confirm_password": "Apstiprināt jaunu paroli",
         "status": "Statuss",
         "roles": "Lomas",

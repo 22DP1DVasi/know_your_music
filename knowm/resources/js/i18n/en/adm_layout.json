@@ -2,5 +2,9 @@
     "dashboard": "Dashboard",
     "users": "Users",
     "roles": "Roles",
-    "artists": "Artists"
+    "artists": "Artists",
+    "releases": "Releases",
+    "tracks": "Tracks",
+    "genres": "Genres",
+    "comments": "Comments"
 }
