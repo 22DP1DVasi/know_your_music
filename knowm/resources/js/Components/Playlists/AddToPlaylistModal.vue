@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import axios from 'axios';
 import { route } from "ziggy-js";
+import CreatePlaylistModal from '@/Components/Playlists/CreatePlaylistModal.vue';
 
 const { t } = useI18n();
 
@@ -90,37 +91,8 @@ const closeCreateForm = () => {
     errors.value = { name: null };
 };
 
-// izveidot jaunu kolekciju un pievienot dziesmu
-const createAndAddPlaylist = async () => {
-    // Validācija
-    if (!newPlaylistForm.value.name.trim()) {
-        errors.value.name = t('user_pages.playlists.error_name_required');
-        return;
-    }
-    if (newPlaylistForm.value.name.length > 100) {
-        errors.value.name = t('user_pages.playlists.error_name_length');
-        return;
-    }
-    isCreating.value = true;
-    try {
-        const response = await axios.post(route('playlists.store'), {
-            name: newPlaylistForm.value.name.trim(),
-            is_private: newPlaylistForm.value.is_private,
-            track_id: props.track.id
-        });
-        emit('added', { playlist: response.data.playlist, track: props.track });
-        closeCreateForm();
-        close();
-    } catch (error) {
-        console.error('Error creating playlist:', error);
-        if (error.response?.data?.errors) {
-            errors.value = error.response.data.errors;
-        } else {
-            alert(t('user_pages.playlists.create_error'));
-        }
-    } finally {
-        isCreating.value = false;
-    }
+const createNewPlaylist = () => {
+    openCreateForm();
 };
 
 // kad mod. logs atveras, ielādē sarakstus
@@ -215,7 +187,7 @@ watch(() => props.show, (newVal) => {
                         {{ t('user_pages.playlists.cancel') }}
                     </button>
                     <button
-                        @click="openCreateForm"
+                        @click="createNewPlaylist"
                         class="create-button"
                         :disabled="isAddingToPlaylist || isCreating"
                     >
@@ -228,85 +200,14 @@ watch(() => props.show, (newVal) => {
     </Teleport>
 
     <!-- Jaunas kolekcijas izveides veidlapa -->
-    <Teleport to="body">
-        <div v-if="showCreateForm" class="modal-overlay" @click.self="closeCreateForm">
-            <div class="modal-container modal-small">
-                <div class="modal-header">
-                    <h3 class="modal-title">
-                        <i class="fa-solid fa-plus"></i>
-                        {{ t('user_pages.playlists.create_new_playlist') }}
-                    </h3>
-                    <button @click="closeCreateForm" class="modal-close-button">
-                        <i class="fa-solid fa-times"></i>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label class="form-label">
-                            {{ t('user_pages.playlists.playlist_name') }} <span class="required">*</span>
-                        </label>
-                        <input
-                            v-model="newPlaylistForm.name"
-                            type="text"
-                            class="form-input"
-                            :class="{ 'error': errors.name }"
-                            maxlength="100"
-                            :placeholder="t('user_pages.playlists.playlist_name_placeholder')"
-                            autofocus
-                        >
-                        <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
-                        <div class="char-counter">{{ newPlaylistForm.name.length }}/100</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">{{ t('user_pages.playlists.privacy') }}</label>
-                        <div class="privacy-toggle-compact">
-                            <button
-                                type="button"
-                                class="toggle-option-compact"
-                                :class="{ 'active': !newPlaylistForm.is_private }"
-                                @click="newPlaylistForm.is_private = false"
-                            >
-                                <i class="fa-solid fa-globe"></i>
-                                <span>{{ t('user_pages.playlists.public') }}</span>
-                            </button>
-                            <button
-                                type="button"
-                                class="toggle-option-compact"
-                                :class="{ 'active': newPlaylistForm.is_private }"
-                                @click="newPlaylistForm.is_private = true"
-                            >
-                                <i class="fa-solid fa-lock"></i>
-                                <span>{{ t('user_pages.playlists.private') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button @click="closeCreateForm" class="cancel-button" :disabled="isCreating">
-                        {{ t('user_pages.playlists.cancel') }}
-                    </button>
-                    <button
-                        @click="createAndAddPlaylist"
-                        class="create-button"
-                        :disabled="!newPlaylistForm.name.trim() || isCreating"
-                        :class="{ 'loading': isCreating }"
-                    >
-                        <span v-if="isCreating">
-                            <i class="fa-solid fa-spinner fa-spin"></i>
-                            {{ t('user_pages.playlists.creating') }}
-                        </span>
-                        <span v-else>
-                            <i class="fa-solid fa-plus"></i>
-                            {{ t('user_pages.playlists.create_and_add') }}
-                        </span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </Teleport>
+    <CreatePlaylistModal
+        :show="showCreateForm"
+        :show-description="false"
+        :track-id="props.track?.id"
+        :redirect-after-create="false"
+        @close="closeCreateForm"
+        @created="closeCreateForm"
+    />
 </template>
 
 <style scoped>

@@ -246,8 +246,10 @@ Route::middleware('auth')->group(function () {
         ->name('playlists.user.list');
     Route::post('/playlists/{playlist:slug}/add-track', [UserCollectionController::class, 'addTrackToPlaylist'])
         ->name('playlists.add-track');
-    Route::post('/playlists', [UserCollectionController::class, 'createPlaylistWithTrack'])
+    Route::post('/playlists', [UserCollectionController::class, 'createPlaylist'])
         ->name('playlists.store');
+    Route::post('/playlists/with-track', [UserCollectionController::class, 'createPlaylistWithTrack'])
+        ->name('playlists.store.with-track');
 });
 
 // authentication routes

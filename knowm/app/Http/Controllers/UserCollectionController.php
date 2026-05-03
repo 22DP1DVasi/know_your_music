@@ -197,35 +197,72 @@ class UserCollectionController extends Controller
         ]);
     }
 
-    /**
-     * Izveidot jaunu kolekciju un pievienot tam dziesmu.
+    /***
+     * Creates new playlist.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function createPlaylistWithTrack(Request $request)
+    public function createPlaylist(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
             'is_private' => 'required|boolean',
-            'track_id' => 'required|exists:tracks,id'
         ]);
 
-        // izveidot kolekciju
         $playlist = UserCollection::create([
             'user_id' => Auth::id(),
             'name' => $request->name,
-//            'slug' => Str::slug($request->name) . '-' . Str::random(6),
-            'description' => null,
+            'description' => $request->description,
             'is_private' => $request->is_private,
         ]);
+
+        $playlist->loadCount('tracks');
+        return response()->json([
+            'success' => true,
+            'message' => 'Playlist created successfully.',
+            'playlist' => [
+                'id' => $playlist->id,
+                'name' => $playlist->name,
+                'slug' => $playlist->slug,
+                'description' => $playlist->description,
+                'is_private' => $playlist->is_private,
+                'tracks_count' => $playlist->tracks_count,
+                'cover_url' => $playlist->cover_url,
+                'created_at' => $playlist->created_at,
+                'updated_at' => $playlist->updated_at,
+            ]
+        ]);
+    }
+
+    /***
+     * Creates new playlist and adds selected track to it.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createPlaylistWithTrack(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'description' => 'nullable|string|max:255',
+            'is_private' => 'required|boolean',
+            'track_id' => 'required|exists:tracks,id'
+        ]);
+        $playlist = UserCollection::create([
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'description' => $request->description,
+            'is_private' => $request->is_private,
+        ]);
+
         // pievienot dziesmu
         $playlist->tracks()->attach($request->track_id, [
             'track_position' => 1
         ]);
-        // ielādēt dziesmu skaitu atbildei
-        $playlist->loadCount('tracks');
-        // Get cover_url from the added track
-//        $track = Track::find($request->track_id);
-//        $coverUrl = $track->cover_url;
 
+        $playlist->loadCount('tracks');
         return response()->json([
             'success' => true,
             'message' => 'Playlist created and track added successfully.',
@@ -233,9 +270,12 @@ class UserCollectionController extends Controller
                 'id' => $playlist->id,
                 'name' => $playlist->name,
                 'slug' => $playlist->slug,
+                'description' => $playlist->description,
                 'is_private' => $playlist->is_private,
                 'tracks_count' => $playlist->tracks_count,
-                'cover_url' => $playlist->cover_url
+                'cover_url' => $playlist->cover_url,
+                'created_at' => $playlist->created_at,
+                'updated_at' => $playlist->updated_at,
             ]
         ]);
     }

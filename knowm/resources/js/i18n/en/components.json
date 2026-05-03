@@ -6,5 +6,25 @@
         "default_title": "Confirm Action",
         "confirm_text": "OK",
         "cancel_text": "Cancel"
+    },
+    "playlist_create": {
+        "title": "Create New Playlist",
+        "edit_title": "Edit Playlist",
+        "playlist_name": "Playlist name",
+        "name_placeholder": "My Awesome Playlist",
+        "description_label": "Description (optional)",
+        "description_placeholder": "A collection of my favorite tracks...",
+        "privacy_label": "Privacy",
+        "public": "Public",
+        "private": "Private",
+        "public_desc": "Anyone can see and listen to this playlist",
+        "private_desc": "Only you can see and listen to this playlist",
+        "cancel": "Cancel",
+        "create_button": "Create",
+        "creating": "Creating...",
+        "error_name_required": "Playlist name is required",
+        "error_name_length": "Playlist name must not exceed 100 characters",
+        "error_description_length": "Description must not exceed 255 characters",
+        "error_general": "Failed to create playlist. Please try again."
     }
 }
