@@ -139,6 +139,14 @@
         "remove_track_conf_title": "Noņemt dziesmu",
         "remove_track_conf_message": "Vai tiešām vēlaties noņemt šo dziesmu ({name}) no kolekcijas?",
         "remove_track_conf_confirm": "Noņemt",
-        "remove_track_conf_cancel": "Atcelt"
+        "remove_track_conf_cancel": "Atcelt",
+        "create_error": "Neizdevās izveidot kolekciju. Lūdzu, mēģiniet vēlreiz.",
+        "delete": "Dzēst",
+        "delete_modal_title": "Dzēst kolekciju",
+        "delete_modal_warning": "Vai tiešām vēlaties dzēst šo kolekciju? Šo darbību nevar atsaukt.",
+        "delete_cancel": "Atcelt",
+        "delete_confirm": "Dzēst kolekciju",
+        "deleting": "Dzēš...",
+        "delete_error": "Neizdevās dzēst kolekciju. Lūdzu, mēģiniet vēlreiz."
     }
 }

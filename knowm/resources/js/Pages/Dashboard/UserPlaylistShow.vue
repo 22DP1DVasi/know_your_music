@@ -253,6 +253,43 @@ const togglePrivacy = () => {
     editForm.value.is_private = !editForm.value.is_private;
 };
 
+const showDeleteModal = ref(false);
+const isDeleting = ref(false);
+
+const openDeleteConfirm = () => {
+    showDeleteModal.value = true;
+};
+
+const closeDeleteModal = () => {
+    showDeleteModal.value = false;
+};
+
+const confirmDeletePlaylist = async () => {
+    if (isDeleting.value) return;
+
+    isDeleting.value = true;
+
+    try {
+        await router.delete(route('playlists.destroy', {user: props.playlist.user.slug, playlist: props.playlist.slug}), {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Redirect to playlists index page after successful deletion
+                router.get(route('dashboard.playlists'));
+            },
+            onError: (errors) => {
+                console.error('Error deleting playlist:', errors);
+                alert(t('user_pages.playlistshow.delete_error'));
+            }
+        });
+    } catch (error) {
+        console.error('Error deleting playlist:', error);
+        alert(t('user_pages.playlistshow.delete_error'));
+    } finally {
+        isDeleting.value = false;
+        closeDeleteModal();
+    }
+};
+
 </script>
 
 <template>
@@ -299,6 +336,11 @@ const togglePrivacy = () => {
                             <button v-if="canEdit" @click="openEditModal" class="edit-button">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <span>{{ t('user_pages.playlistshow.edit') }}</span>
+                            </button>
+
+                            <button v-if="canEdit" @click="openDeleteConfirm" class="delete-button">
+                                <i class="fa-regular fa-trash-can"></i>
+                                <span>{{ t('user_pages.playlistshow.delete') }}</span>
                             </button>
                         </div>
                     </div>
@@ -491,6 +533,53 @@ const togglePrivacy = () => {
         </div>
     </Teleport>
 
+    <!-- Dzēšanas apstiprinājuma modālais logs -->
+    <Teleport to="body">
+        <div v-if="showDeleteModal" class="modal-overlay" @click.self="closeDeleteModal">
+            <div class="modal-container modal-small">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fa-solid fa-trash-can"></i>
+                        {{ t('user_pages.playlistshow.delete_modal_title') }}
+                    </h3>
+                    <button @click="closeDeleteModal" class="modal-close-button">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="delete-warning">
+                        {{ t('user_pages.playlistshow.delete_modal_warning') }}
+                    </p>
+                    <p class="delete-confirm-text">
+                        <strong>{{ playlist.name }}</strong>
+                    </p>
+                </div>
+
+                <div class="modal-footer delete-modal-footer">
+                    <button @click="closeDeleteModal" class="cancel-button" :disabled="isDeleting">
+                        {{ t('user_pages.playlistshow.delete_cancel') }}
+                    </button>
+                    <button
+                        @click="confirmDeletePlaylist"
+                        class="delete-confirm-button"
+                        :disabled="isDeleting"
+                        :class="{ 'loading': isDeleting }"
+                    >
+                    <span v-if="isDeleting">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        {{ t('user_pages.playlistshow.deleting') }}
+                    </span>
+                        <span v-else>
+                        <i class="fa-solid fa-trash-can"></i>
+                        {{ t('user_pages.playlistshow.delete_confirm') }}
+                    </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </Teleport>
+
     <AddToPlaylistModal
         :show="showPlaylistModal"
         :track="selectedTrack"
@@ -648,6 +737,82 @@ const togglePrivacy = () => {
 .edit-button:hover {
     background: rgba(12, 75, 170, 0.05);
     border-color: #0c4baa;
+}
+
+.delete-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    background: white;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    border-radius: 30px;
+    color: #dc2626;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-button:hover {
+    background: rgba(220, 38, 38, 0.05);
+    border-color: #dc2626;
+}
+
+.delete-modal-footer {
+    justify-content: flex-end;
+}
+
+.delete-warning {
+    color: #dc2626;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.delete-confirm-text {
+    font-size: 1rem;
+    color: #333;
+    padding: 0.75rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+    text-align: center;
+    word-break: break-word;
+}
+
+.delete-confirm-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1.25rem;
+    background: #dc2626;
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.delete-confirm-button:hover:not(:disabled) {
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.delete-confirm-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.delete-confirm-button.loading {
+    opacity: 0.8;
+}
+
+.delete-confirm-button.loading i {
+    margin-right: 0.35rem;
 }
 
 .playlist-description {
@@ -1142,6 +1307,13 @@ const togglePrivacy = () => {
     .playlist-actions {
         width: 100%;
         justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .edit-button,
+    .delete-button {
+        flex: 1;
+        justify-content: center;
     }
 }
 
@@ -1163,6 +1335,22 @@ const togglePrivacy = () => {
         flex-direction: column;
         align-items: center;
         gap: 0.5rem;
+    }
+
+    .edit-button span,
+    .delete-button span {
+        display: none;
+    }
+
+    .edit-button,
+    .delete-button {
+        padding: 0.4rem;
+        min-width: 40px;
+    }
+
+    .edit-button i,
+    .delete-button i {
+        margin: 0;
     }
 
     .tracklist-section {

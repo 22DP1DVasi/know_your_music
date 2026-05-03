@@ -139,6 +139,13 @@
         "remove_track_conf_title": "Remove track",
         "remove_track_conf_message": "Are you sure you want to remove this track ({name}) from the playlist?",
         "remove_track_conf_confirm": "Remove",
-        "remove_track_conf_cancel": "Cancel"
+        "remove_track_conf_cancel": "Cancel",
+        "delete": "Delete",
+        "delete_modal_title": "Delete Playlist",
+        "delete_modal_warning": "Are you sure you want to delete this playlist? This action cannot be undone.",
+        "delete_cancel": "Cancel",
+        "delete_confirm": "Delete Playlist",
+        "deleting": "Deleting...",
+        "delete_error": "Failed to delete playlist. Please try again."
     }
 }

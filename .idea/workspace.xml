@@ -9,6 +9,8 @@
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/UserCollectionController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/CreatePlaylistModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Playlists/CreatePlaylistModal.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/UserPlaylistShow.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Dashboard/UserPlaylistShow.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/user_pages.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/user_pages.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -474,7 +476,7 @@
       <workItem from="1777541613857" duration="2844000" />
       <workItem from="1777563215157" duration="12242000" />
       <workItem from="1777610863452" duration="11065000" />
-      <workItem from="1777822130247" duration="920000" />
+      <workItem from="1777822130247" duration="3229000" />
     </task>
     <servers />
   </component>

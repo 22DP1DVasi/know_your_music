@@ -360,7 +360,6 @@ const submit = async () => {
     flex-shrink: 0;
 }
 
-/* Form styles */
 .form-group {
     margin-bottom: 1.25rem;
 }
@@ -432,7 +431,6 @@ const submit = async () => {
     font-size: 0.7rem;
 }
 
-/* Privacy toggle */
 .privacy-toggle-compact {
     display: flex;
     gap: 0.5rem;
@@ -478,7 +476,6 @@ const submit = async () => {
     margin: 0.5rem 0 0 0;
 }
 
-/* Button styles */
 .cancel-button {
     padding: 0.45rem 1rem;
     background: white;
@@ -536,7 +533,7 @@ const submit = async () => {
     margin-right: 0.35rem;
 }
 
-/* Animations */
+/* Animācijas */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -553,7 +550,7 @@ const submit = async () => {
     }
 }
 
-/* Mobile responsive */
+/* Responsivitāte */
 @media (max-width: 640px) {
     .modal-container {
         width: 95%;

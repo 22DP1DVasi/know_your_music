@@ -74,10 +74,15 @@ class UserCollectionController extends Controller
         ]);
     }
 
-    /**
+    /***
      * Atjaunināt norādīto kolekciju.
+     *
+     * @param Request $request
+     * @param User $user
+     * @param UserCollection $playlist
+     * @return JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, User $user, UserCollection $playlist)
+    public function update(Request $request, User $user, UserCollection $playlist): JsonResponse|\Illuminate\Http\RedirectResponse
     {
         // pārbaudīt, vai lietotājam pieder kolekcija
         if ($playlist->user_id !== Auth::id()) {
@@ -103,6 +108,27 @@ class UserCollectionController extends Controller
             'user' => $playlist->user->slug,
             'playlist' => $playlist->slug,
         ])->with('success', 'Playlist updated successfully.');
+    }
+
+    /***
+     * Dzēst kolekciju.
+     *
+     * @param User $user
+     * @param UserCollection $playlist
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(User $user, UserCollection $playlist): \Illuminate\Http\RedirectResponse
+    {
+        // pārbaudīt, vai lietotājam pieder atskaņošanas saraksts
+        if ($playlist->user_id !== Auth::id()) {
+            abort(403, 'You are not authorized to delete this playlist.');
+        }
+        // dzēst visas dziesmu relācijas
+        $playlist->tracks()->detach();
+        // dzēst kolekciju
+        $playlist->delete();
+        return redirect()->route('dashboard.playlists')
+            ->with('success', 'Playlist deleted successfully.');
     }
 
     /***
