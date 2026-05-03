@@ -156,6 +156,7 @@ const handleRemoveTrack = async (track) => {
     if (!confirmed) return
     try {
         await axios.delete(route('playlists.tracks.destroy', {
+            user: user.slug,
             playlist: props.playlist.slug,
             track: track.id
         }));

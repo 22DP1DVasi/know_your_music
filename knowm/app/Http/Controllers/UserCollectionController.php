@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -107,12 +108,13 @@ class UserCollectionController extends Controller
     /***
      * Noņem ierakstu no kolekcijas.
      *
+     * @param User $user
      * @param UserCollection $playlist
      * @param Track $track
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws Throwable
      */
-    public function removeTrack(UserCollection $playlist, Track $track): \Illuminate\Http\JsonResponse
+    public function removeTrack(User $user, UserCollection $playlist, Track $track): \Illuminate\Http\JsonResponse
     {
         if ($playlist->user_id !== auth()->id()) {
             abort(403);
