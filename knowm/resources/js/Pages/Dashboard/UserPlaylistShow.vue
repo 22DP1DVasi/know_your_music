@@ -323,79 +323,78 @@ const copyPlaylistLink = async () => {
         <div class="playlist-container">
             <!-- Kolekcijas informācijas sadaļa -->
             <div class="playlist-info-section">
-                <div class="playlist-image">
-                    <img
-                        :src="playlist.cover_url || '/images/default-playlist-banner.webp'"
-                        :alt="playlist.name"
-                    >
+                <div class="playlist-left">
+                    <div class="playlist-image">
+                        <img
+                            :src="playlist.cover_url || '/images/default-playlist-banner.webp'"
+                            :alt="playlist.name"
+                        >
+                    </div>
+                    <div class="playlist-meta">
+                        <span class="meta-item">
+                            <i class="fa-regular fa-calendar"></i>
+                            {{ t('user_pages.playlistshow.created') }} {{ formatDateLL(playlist.created_at) }}
+                        </span>
+                        <span class="meta-item">
+                            <i class="fa-regular fa-clock"></i>
+                            {{ t('user_pages.playlistshow.updated') }} {{ formatDateLL(playlist.updated_at) }}
+                        </span>
+                    </div>
                 </div>
 
-                <div class="playlist-details">
-                    <div class="playlist-header">
-                        <h1 class="playlist-title">{{ playlist.name }}</h1>
+                <div class="playlist-middle">
+                    <h1 class="playlist-title">{{ playlist.name }}</h1>
+                    <div class="playlist-owner">
+                        <i class="fa-regular fa-user"></i>
+                        <span>{{ playlist.user.name }}</span>
                     </div>
+                    <p v-if="playlist.description" class="playlist-description">
+                        {{ playlist.description }}
+                    </p>
+                </div>
 
-                    <div class="playlist-info-row">
-                        <div class="playlist-description-wrapper">
-                            <p v-if="playlist.description" class="playlist-description">
-                                {{ playlist.description }}
-                            </p>
-                            <div class="playlist-meta">
-                                <span class="meta-item">
-                                    <i class="fa-regular fa-calendar"></i>
-                                    {{ t('user_pages.playlistshow.created') }} {{ formatDateLL(playlist.created_at) }}
-                                </span>
-                                <span class="meta-item">
-                                    <i class="fa-regular fa-clock"></i>
-                                    {{ t('user_pages.playlistshow.updated') }} {{ formatDateLL(playlist.updated_at) }}
-                                </span>
-                            </div>
-                        </div>
+                <div class="playlist-right">
+                    <span
+                        class="privacy-badge"
+                        :class="{ 'private': playlist.is_private, 'public': !playlist.is_private }"
+                    >
+                        <i :class="playlist.is_private ? 'fa-solid fa-lock' : 'fa-solid fa-globe'"></i>
+                        <span>
+                            {{ playlist.is_private
+                            ? t('user_pages.playlistshow.private')
+                            : t('user_pages.playlistshow.public')
+                            }}
+                        </span>
+                    </span>
 
-                        <div class="playlist-actions">
-                            <span
-                                class="privacy-badge"
-                                :class="{ 'private': playlist.is_private, 'public': !playlist.is_private }"
-                            >
-                                <i :class="playlist.is_private ? 'fa-solid fa-lock' : 'fa-solid fa-globe'"></i>
-                                <span>
-                                    {{ playlist.is_private
-                                    ? t('user_pages.playlistshow.private')
-                                    : t('user_pages.playlistshow.public')
-                                    }}
-                                </span>
-                            </span>
+                    <button
+                        v-if="playlist.is_private"
+                        class="share-button disabled"
+                        disabled
+                        :title="t('user_pages.playlistshow.share_private_warning')"
+                    >
+                        <i class="fa-solid fa-link"></i>
+                        <span>{{ t('user_pages.playlistshow.share_private') }}</span>
+                    </button>
 
-                            <button
-                                v-if="playlist.is_private"
-                                class="share-button disabled"
-                                disabled
-                                :title="t('user_pages.playlistshow.share_private_warning')"
-                            >
-                                <i class="fa-solid fa-link"></i>
-                                <span>{{ t('user_pages.playlistshow.share_private') }}</span>
-                            </button>
+                    <button
+                        v-else
+                        class="share-button"
+                        @click="copyPlaylistLink"
+                    >
+                        <i class="fa-solid fa-link"></i>
+                        <span>{{ t('user_pages.playlistshow.share_copy_link') }}</span>
+                    </button>
 
-                            <button
-                                v-else
-                                class="share-button"
-                                @click="copyPlaylistLink"
-                            >
-                                <i class="fa-solid fa-link"></i>
-                                <span>{{ t('user_pages.playlistshow.share_copy_link') }}</span>
-                            </button>
+                    <button v-if="canEdit" @click="openEditModal" class="edit-button">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        <span>{{ t('user_pages.playlistshow.edit') }}</span>
+                    </button>
 
-                            <button v-if="canEdit" @click="openEditModal" class="edit-button">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                                <span>{{ t('user_pages.playlistshow.edit') }}</span>
-                            </button>
-
-                            <button v-if="canEdit" @click="openDeleteConfirm" class="delete-button">
-                                <i class="fa-regular fa-trash-can"></i>
-                                <span>{{ t('user_pages.playlistshow.delete') }}</span>
-                            </button>
-                        </div>
-                    </div>
+                    <button v-if="canEdit" @click="openDeleteConfirm" class="delete-button">
+                        <i class="fa-regular fa-trash-can"></i>
+                        <span>{{ t('user_pages.playlistshow.delete') }}</span>
+                    </button>
                 </div>
             </div>
 
@@ -696,14 +695,18 @@ const copyPlaylistLink = async () => {
     box-shadow: 0 4px 12px rgba(12, 75, 170, 0.08);
 }
 
-.playlist-image {
-    position: relative;
-    width: 200px;
-    height: 200px;
+.playlist-left {
     flex-shrink: 0;
+    width: 200px;
+}
+
+.playlist-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1rem;
 }
 
 .playlist-image img {
@@ -712,50 +715,63 @@ const copyPlaylistLink = async () => {
     object-fit: cover;
 }
 
-.playlist-details {
+.playlist-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.meta-item i {
+    color: #0c4baa;
+    font-size: 0.9rem;
+}
+
+.playlist-middle {
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    overflow: hidden;
-}
-
-.playlist-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .playlist-title {
     font-size: 2rem;
     font-weight: 700;
     margin: 0;
-    min-width: 0;
     word-break: break-word;
     overflow-wrap: anywhere;
 }
 
-.playlist-actions {
+.playlist-owner {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #6b7280;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.playlist-owner i {
+    color: #0c4baa;
+    font-size: 0.85rem;
+}
+
+.playlist-right {
+    flex-shrink: 0;
+    width: 210px;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
     gap: 0.75rem;
-    min-width: 180px;
-    flex-shrink: 0;
-}
-
-.playlist-info-row {
-    display: flex;
-    gap: 2rem;
-    justify-content: space-between;
-}
-
-.playlist-description-wrapper {
-    flex: 1;
-    min-width: 0;
+    padding-top: 4rem;
+    align-items: center;
 }
 
 .privacy-badge {
@@ -781,20 +797,26 @@ const copyPlaylistLink = async () => {
     border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
-.share-button {
+.share-button,
+.edit-button,
+.delete-button {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.4rem 1rem;
-    background: white;
-    border: 1px solid rgba(12, 75, 170, 0.2);
     border-radius: 30px;
-    color: #0c4baa;
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    width: fit-content;
+    width: 100%;
+}
+
+.share-button {
+    background: white;
+    border: 1px solid rgba(12, 75, 170, 0.2);
+    color: #0c4baa;
 }
 
 .share-button:hover:not(.disabled) {
@@ -808,21 +830,6 @@ const copyPlaylistLink = async () => {
     border-color: #ddd;
     color: #999;
     cursor: not-allowed;
-}
-
-.edit-button,
-.delete-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 1rem;
-    background: white;
-    border-radius: 30px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: fit-content;
 }
 
 .edit-button {
@@ -905,32 +912,13 @@ const copyPlaylistLink = async () => {
     font-size: 1rem;
     color: #4b5563;
     line-height: 1.6;
-    margin: 0 0 1rem 0;
+    margin: 0.5rem 0 0 0;
     overflow-wrap: anywhere;
     word-break: break-word;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-.playlist-meta {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 0.5rem;
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #6b7280;
-    font-size: 0.9rem;
-}
-
-.meta-item i {
-    color: #0c4baa;
-    font-size: 0.9rem;
 }
 
 .loading-initial {
@@ -1386,48 +1374,30 @@ const copyPlaylistLink = async () => {
         padding: 1.5rem;
     }
 
-    .playlist-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+    .playlist-left {
+        width: 200px;
+        margin-bottom: 1rem;
     }
 
-    .playlist-info-row {
-        flex-direction: column;
-        gap: 1rem;
+    .playlist-middle {
+        width: 100%;
+        text-align: center;
+    }
+
+    .playlist-right {
+        width: 100%;
+        margin-top: 1rem;
+        padding-top: 0;
+    }
+
+    .playlist-owner {
+        justify-content: center;
     }
 
     .playlist-meta {
-        justify-content: center;
-    }
-
-    .playlist-title {
-        font-size: 1.5rem;
-    }
-
-    .playlist-actions {
         flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        width: 100%;
-        min-width: unset;
-        order: 1;
-    }
-
-    .playlist-description-wrapper {
-        order: 2;
-    }
-
-    .share-button,
-    .edit-button,
-    .delete-button {
-        flex: 1;
         justify-content: center;
-        min-width: 100px;
-    }
-
-    .privacy-badge {
-        order: -1;
+        gap: 1rem;
     }
 }
 
@@ -1455,27 +1425,6 @@ const copyPlaylistLink = async () => {
     .save-button {
         min-width: 100px;
     }
-
-    .playlist-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    /*.playlist-actions {
-        width: 100%;
-        justify-content: space-between;
-        flex-wrap: wrap;
-    }*/
-
-    .playlist-actions {
-        gap: 0.5rem;
-    }
-
-    /*.edit-button,
-    .delete-button {
-        flex: 1;
-        justify-content: center;
-    }*/
 
     .share-button,
     .edit-button,
@@ -1506,23 +1455,6 @@ const copyPlaylistLink = async () => {
         gap: 0.5rem;
     }
 
-    /*.edit-button span,
-    .delete-button span {
-        display: none;
-    }*/
-
-    .share-button span,
-    .edit-button span,
-    .delete-button span {
-        display: none;
-    }
-
-    /*.edit-button,
-    .delete-button {
-        padding: 0.4rem;
-        min-width: 40px;
-    }*/
-
     .share-button,
     .edit-button,
     .delete-button {
@@ -1530,12 +1462,6 @@ const copyPlaylistLink = async () => {
         min-width: 40px;
         justify-content: center;
     }
-
-    /*.edit-button i,
-    .delete-button i {
-        margin: 0;
-    }*/
-
     .share-button i,
     .edit-button i,
     .delete-button i {
@@ -1543,24 +1469,27 @@ const copyPlaylistLink = async () => {
         font-size: 1rem;
     }
 
-    .playlist-actions {
-        flex-wrap: wrap;
-        justify-content: flex-start;
-    }
-
     .privacy-badge {
         width: 100%;
         justify-content: center;
     }
 
-    .playlist-meta {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
     .tracklist-section {
         padding: 1rem;
+    }
+
+    .playlist-left {
+        width: 150px;
+    }
+
+    .playlist-title {
+        font-size: 1.5rem;
+    }
+
+    .playlist-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
     }
 }
 

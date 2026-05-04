@@ -155,7 +155,7 @@
         "deleting": "Deleting...",
         "delete_error": "Failed to delete playlist. Please try again.",
         "share_copy_link": "Copy link",
-        "share_private": "Playlist must be public to share",
+        "share_private": "Sharing Disabled",
         "share_private_warning": "Make this playlist public to share it",
         "link_copied": "Link copied!",
         "copy_link_error": "Failed to copy link. Please try again."

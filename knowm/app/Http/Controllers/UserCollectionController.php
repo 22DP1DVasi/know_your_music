@@ -67,6 +67,7 @@ class UserCollectionController extends Controller
                 'updated_at' => $playlist->updated_at,
                 'user' => [
                     'id' => $playlist->user->id,
+                    'name' => $playlist->user->name,
                     'slug' => $playlist->user->slug,
                 ],
             ],
