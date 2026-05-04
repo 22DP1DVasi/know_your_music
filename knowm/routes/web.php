@@ -214,6 +214,10 @@ Route::post('/locale', function (Request $request) {
     return response()->noContent();
 });
 
+// playlist/collection page - out of auth middleware because it is shareable and guests can see it too
+Route::get('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
+    ->name('playlists.show');
+
 // lietotāja konta ceļi
 Route::middleware('auth')->group(function () {
     // pārskats
@@ -235,10 +239,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
         ->name('dashboard.playlists');
 
-    Route::get('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
-        ->name('playlists.show');
     Route::put('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
         ->name('playlists.update');
+    Route::delete('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'destroy'])
+        ->name('playlists.destroy');
     Route::delete('/{user:slug}/playlists/{playlist:slug}/tracks/{track:id}', [UserCollectionController::class, 'removeTrack'])
         ->name('playlists.tracks.destroy');
 
@@ -267,17 +271,26 @@ Route::middleware('auth')->group(function () {
 //});
 
 // admin routes
-//Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])
+        ->name('admin-dashboard');
 
-    Route::get('/admin-users-index', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin-users-index');
-    Route::get('/admin-users-create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('admin-users-create');
-    Route::post('/admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin-users-store');
-    Route::get('/admin-users-edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('admin-users-edit');
-    Route::put('/admin-users-update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin-users-update');
-    Route::post('/admin/users/{user}/roles', [App\Http\Controllers\Admin\UserController::class, 'storeRoles'])->name('admin-users-roles-store');
-    Route::delete('/admin/users/{user}/roles/{role}', [App\Http\Controllers\Admin\UserController::class, 'destroyUserRole'])->name('admin-users-roles-destroy');
-    Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin-users-destroy');
+    Route::get('/admin-users-index', [App\Http\Controllers\Admin\UserController::class, 'index'])
+        ->name('admin-users-index');
+    Route::get('/admin-users-create', [App\Http\Controllers\Admin\UserController::class, 'create'])
+        ->name('admin-users-create');
+    Route::post('/admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])
+        ->name('admin-users-store');
+    Route::get('/admin-users-edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])
+        ->name('admin-users-edit');
+    Route::put('/admin-users-update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])
+        ->name('admin-users-update');
+    Route::post('/admin/users/{user:id}/roles', [App\Http\Controllers\Admin\UserController::class, 'storeRoles'])
+        ->name('admin-users-roles-store');
+    Route::delete('/admin/users/{user}/roles/{role}', [App\Http\Controllers\Admin\UserController::class, 'destroyUserRole'])
+        ->name('admin-users-roles-destroy');
+    Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])
+        ->name('admin-users-destroy');
 
     Route::get('/admin-roles-index', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin-roles-index');
     Route::get('/admin-roles-create', [App\Http\Controllers\Admin\RoleController::class, 'create'])->name('admin-roles-create');
@@ -293,8 +306,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
     Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
     Route::put('/admin/artists/{id}/update-image', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
-
-
+});
 
 //    Route::resource('/admin-users-index', UserController::class)->except(['show']);
 //    Route::resource('roles', RoleController::class)->except(['show']);

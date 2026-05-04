@@ -20,7 +20,14 @@
         "create_new_pl": "Izveido jaunu kolekciju",
         "recommendations": "Rekomendācijas",
         "history_recom": "Rekomendāciju vēsture",
-        "logout": "Atteikties"
+        "logout": "Atteikties",
+        "home": "Sākums",
+        "explore_artists": "Izpildītāji",
+        "explore_releases": "Albumi",
+        "explore_genres": "Žanri",
+        "guest": "Viesis",
+        "login": "Pieteikties",
+        "signup": "Reģistrēties"
     },
     "settings": {
         "profile_header": "Profila iestatījumi",
@@ -139,6 +146,19 @@
         "remove_track_conf_title": "Noņemt dziesmu",
         "remove_track_conf_message": "Vai tiešām vēlaties noņemt šo dziesmu ({name}) no kolekcijas?",
         "remove_track_conf_confirm": "Noņemt",
-        "remove_track_conf_cancel": "Atcelt"
+        "remove_track_conf_cancel": "Atcelt",
+        "create_error": "Neizdevās izveidot kolekciju. Lūdzu, mēģiniet vēlreiz.",
+        "delete": "Dzēst",
+        "delete_modal_title": "Dzēst kolekciju",
+        "delete_modal_warning": "Vai tiešām vēlaties dzēst šo kolekciju? Šo darbību nevar atsaukt.",
+        "delete_cancel": "Atcelt",
+        "delete_confirm": "Dzēst kolekciju",
+        "deleting": "Dzēš...",
+        "delete_error": "Neizdevās dzēst kolekciju. Lūdzu, mēģiniet vēlreiz.",
+        "share_copy_link": "Kopēt saiti",
+        "share_private": "Kopīgošana atspējota",
+        "share_private_warning": "Padariet šo kolekciju publisku, lai to kopīgotu",
+        "link_copied": "Saite nokopēta!",
+        "copy_link_error": "Neizdevās nokopēt saiti. Lūdzu, mēģiniet vēlreiz."
     }
 }

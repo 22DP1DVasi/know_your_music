@@ -242,6 +242,18 @@ class User extends Authenticatable
     }
 
     /***
+     * Check if user can access the admin panel.
+     *
+     * @return bool
+     */
+    public function canAccessAdminPanel(): bool
+    {
+        return $this->roles()
+            ->whereIn('name',['super_admin'])
+            ->exists();
+    }
+
+    /***
      * Pārbauda, vai lietotājam ir komentāru regulētāja loma.
      *
      * @return bool

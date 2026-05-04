@@ -20,7 +20,14 @@
         "create_new_pl": "Create new playlist",
         "recommendations": "Recommendations",
         "history_recom": "History of recommendations",
-        "logout": "Log Out"
+        "logout": "Log Out",
+        "home": "Home",
+        "explore_artists": "Artists",
+        "explore_releases": "Releases",
+        "explore_genres": "Genres",
+        "guest": "Guest",
+        "login": "Log in",
+        "signup": "Sign up"
     },
     "settings": {
         "profile_header": "Profile Settings",
@@ -139,6 +146,18 @@
         "remove_track_conf_title": "Remove track",
         "remove_track_conf_message": "Are you sure you want to remove this track ({name}) from the playlist?",
         "remove_track_conf_confirm": "Remove",
-        "remove_track_conf_cancel": "Cancel"
+        "remove_track_conf_cancel": "Cancel",
+        "delete": "Delete",
+        "delete_modal_title": "Delete Playlist",
+        "delete_modal_warning": "Are you sure you want to delete this playlist? This action cannot be undone.",
+        "delete_cancel": "Cancel",
+        "delete_confirm": "Delete Playlist",
+        "deleting": "Deleting...",
+        "delete_error": "Failed to delete playlist. Please try again.",
+        "share_copy_link": "Copy link",
+        "share_private": "Sharing Disabled",
+        "share_private_warning": "Make this playlist public to share it",
+        "link_copied": "Link copied!",
+        "copy_link_error": "Failed to copy link. Please try again."
     }
 }

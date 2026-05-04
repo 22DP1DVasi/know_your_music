@@ -48,7 +48,7 @@ class UserCollectionController extends Controller
     public function show(User $user, UserCollection $playlist): \Inertia\Response
     {
         if ($playlist->is_private && $playlist->user_id !== Auth::id()) {
-            abort(403, 'This playlist is private.');
+            abort(404);
         }
         $tracks = $playlist->tracks()
             ->with(['artists:id,name,slug'])
@@ -66,18 +66,24 @@ class UserCollectionController extends Controller
                 'created_at' => $playlist->created_at,
                 'updated_at' => $playlist->updated_at,
                 'user' => [
+                    'id' => $playlist->user->id,
+                    'name' => $playlist->user->name,
                     'slug' => $playlist->user->slug,
                 ],
             ],
-            'tracks' => $tracks,
-            'canEdit' => $playlist->user_id === Auth::id(),
+            'tracks' => $tracks
         ]);
     }
 
-    /**
+    /***
      * Atjaunināt norādīto kolekciju.
+     *
+     * @param Request $request
+     * @param User $user
+     * @param UserCollection $playlist
+     * @return JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, User $user, UserCollection $playlist)
+    public function update(Request $request, User $user, UserCollection $playlist): JsonResponse|\Illuminate\Http\RedirectResponse
     {
         // pārbaudīt, vai lietotājam pieder kolekcija
         if ($playlist->user_id !== Auth::id()) {
@@ -106,6 +112,27 @@ class UserCollectionController extends Controller
     }
 
     /***
+     * Dzēst kolekciju.
+     *
+     * @param User $user
+     * @param UserCollection $playlist
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(User $user, UserCollection $playlist): \Illuminate\Http\RedirectResponse
+    {
+        // pārbaudīt, vai lietotājam pieder atskaņošanas saraksts
+        if ($playlist->user_id !== Auth::id()) {
+            abort(403, 'You are not authorized to delete this playlist.');
+        }
+        // dzēst visas dziesmu relācijas
+        $playlist->tracks()->detach();
+        // dzēst kolekciju
+        $playlist->delete();
+        return redirect()->route('dashboard.playlists')
+            ->with('success', 'Playlist deleted successfully.');
+    }
+
+    /***
      * Noņem ierakstu no kolekcijas.
      *
      * @param User $user
@@ -117,7 +144,7 @@ class UserCollectionController extends Controller
     public function removeTrack(User $user, UserCollection $playlist, Track $track): \Illuminate\Http\JsonResponse
     {
         if ($playlist->user_id !== auth()->id()) {
-            abort(403);
+            abort(403, 'You are not authorized to edit this playlist.');
         }
         DB::transaction(function () use ($playlist, $track) {
             // iegūt pašreizējo pozīciju

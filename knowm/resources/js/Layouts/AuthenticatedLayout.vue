@@ -9,7 +9,9 @@ const showingMobileSidebar = ref(false);
 const expandedMenus = ref([]); // izseko izvērstās sadaļas
 const activeLanguageDropdown = ref(false);
 
-const user = usePage().props.auth.user;
+const page = usePage()
+const user = computed(() => page.props.auth?.user ?? null)
+
 const { locale, t } = useI18n();
 
 const toggleMobileSidebar = () => {
@@ -89,8 +91,8 @@ onBeforeUnmount(() => {
 
 <template>
     <div class="app-layout">
-        <!-- Datora darbvirsmas sānjosla -->
-        <aside class="desktop-sidebar">
+        <!-- Datora darbvirsmas sānjosla, tikai autentificētiem lietotājiem -->
+        <aside v-if="user" class="desktop-sidebar">
             <div class="sidebar-content">
                 <!-- Logotips -->
                 <div class="logo-container">
@@ -182,10 +184,6 @@ onBeforeUnmount(() => {
                                     </Link>
                                 </li>
                                 <li>
-<!--                                    <Link href="#" class="submenu-link">-->
-<!--                                        <i class="fa-regular fa-plus submenu-icon"></i>-->
-<!--                                        {{ t('user_pages.layout.create_new_pl') }}-->
-<!--                                    </Link>-->
                                     <button
                                         @click="openCreateForm"
                                         class="submenu-link"
@@ -239,7 +237,88 @@ onBeforeUnmount(() => {
             </div>
         </aside>
 
-        <!-- Mobilā režīma galvene -->
+        <!-- Datora darbvirsmas sānjosla, viesiem -->
+        <aside v-else class="desktop-sidebar guest-sidebar">
+            <div class="sidebar-content">
+                <div class="logo-container">
+                    <Link :href="route('home')" class="logo-link">
+                        <img src="/images/mini-logo.png" alt="Logo" class="logo">
+                    </Link>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <Link :href="route('home')" class="nav-link primary">
+                                <i class="fa-solid fa-house nav-icon"></i>
+                                <span>{{ t('user_pages.layout.home') }}</span>
+                            </Link>
+                        </li>
+                        <li class="nav-item">
+                            <Link :href="route('explore.artists')" class="nav-link primary">
+                                <i class="fa-solid fa-microphone nav-icon"></i>
+                                <span>{{ t('user_pages.layout.explore_artists') }}</span>
+                            </Link>
+                        </li>
+                        <li class="nav-item">
+                            <Link :href="route('explore.releases')" class="nav-link primary">
+                                <i class="fa-solid fa-compact-disc nav-icon"></i>
+                                <span>{{ t('user_pages.layout.explore_releases') }}</span>
+                            </Link>
+                        </li>
+                        <li class="nav-item">
+                            <Link :href="route('explore.genres')" class="nav-link primary">
+                                <i class="fa-solid fa-tag nav-icon"></i>
+                                <span>{{ t('user_pages.layout.explore_genres') }}</span>
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="language-switch-container">
+                    <div class="language-switch" @click.stop>
+                        <button
+                            @click="toggleLanguageDropdown"
+                            class="language-selector"
+                            :class="{ 'active': activeLanguageDropdown }"
+                        >
+                            <i class="fa-solid fa-globe"></i>
+                            <span class="language-code">{{ locale.toUpperCase() }}</span>
+                            <i class="fa fa-caret-down" :class="{ 'rotate': activeLanguageDropdown }"></i>
+                        </button>
+                        <div v-show="activeLanguageDropdown" class="language-dropdown">
+                            <button
+                                @click="changeLanguage('en')"
+                                class="language-option"
+                                :class="{ active: locale === 'en' }"
+                            >
+                                English
+                            </button>
+                            <button
+                                @click="changeLanguage('lv')"
+                                class="language-option"
+                                :class="{ active: locale === 'lv' }"
+                            >
+                                Latviešu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <Link :href="route('login')" class="login-button">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>{{ t('user_pages.layout.login') }}</span>
+                    </Link>
+                    <Link :href="route('signup')" class="signup-button">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>{{ t('user_pages.layout.signup') }}</span>
+                    </Link>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobilā režīma galvene, viesiem un lietotājiem -->
         <header class="mobile-header">
             <div class="mobile-header-content">
                 <div class="mobile-logo">
@@ -264,9 +343,9 @@ onBeforeUnmount(() => {
             ></div>
         </transition>
 
-        <!-- Mobilā režīma sānjosla -->
+        <!-- Mobilā režīma sānjosla, autentificētiem lietotājiem -->
         <transition name="slide-right">
-            <aside v-if="showingMobileSidebar" class="mobile-sidebar">
+            <aside v-if="showingMobileSidebar && user" class="mobile-sidebar">
                 <div class="mobile-sidebar-content">
                     <!-- Mobilās sānjoslas galvene -->
                     <div class="mobile-sidebar-header">
@@ -352,10 +431,10 @@ onBeforeUnmount(() => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href="#" class="submenu-link" @click="closeMobileSidebar">
+                                        <button @click="openCreateForm; closeMobileSidebar()" class="submenu-link">
                                             <i class="fa-regular fa-plus submenu-icon"></i>
                                             {{ t('user_pages.layout.create_new_pl') }}
-                                        </Link>
+                                        </button>
                                     </li>
                                 </ul>
                             </li>
@@ -423,7 +502,96 @@ onBeforeUnmount(() => {
             </aside>
         </transition>
 
-        <!-- Galvenā satura vieta -->
+        <!-- Mobilā režīma sānjosla, viesiem -->
+        <transition name="slide-right">
+            <aside v-if="showingMobileSidebar && !user" class="mobile-sidebar guest-sidebar">
+                <div class="mobile-sidebar-content">
+                    <div class="mobile-sidebar-header">
+                        <div class="mobile-sidebar-user">
+                            <i class="fa-regular fa-circle-user guest-avatar"></i>
+                            <div class="user-details">
+                                <span class="user-name">{{ t('user_pages.layout.guest') }}</span>
+                            </div>
+                        </div>
+                        <button @click="closeMobileSidebar" class="close-sidebar">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+
+                    <nav class="mobile-sidebar-nav">
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <Link :href="route('home')" class="nav-link primary" @click="closeMobileSidebar">
+                                    <i class="fa-solid fa-house nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.home') }}</span>
+                                </Link>
+                            </li>
+                            <li class="nav-item">
+                                <Link :href="route('explore.artists')" class="nav-link primary" @click="closeMobileSidebar">
+                                    <i class="fa-solid fa-microphone nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.explore_artists') }}</span>
+                                </Link>
+                            </li>
+                            <li class="nav-item">
+                                <Link :href="route('explore.releases')" class="nav-link primary" @click="closeMobileSidebar">
+                                    <i class="fa-solid fa-compact-disc nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.explore_releases') }}</span>
+                                </Link>
+                            </li>
+                            <li class="nav-item">
+                                <Link :href="route('explore.genres')" class="nav-link primary" @click="closeMobileSidebar">
+                                    <i class="fa-solid fa-tag nav-icon"></i>
+                                    <span>{{ t('user_pages.layout.explore_genres') }}</span>
+                                </Link>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="mobile-language-switch-container">
+                        <div class="mobile-language-switch" @click.stop>
+                            <button
+                                @click="toggleLanguageDropdown"
+                                class="mobile-language-selector"
+                                :class="{ 'active': activeLanguageDropdown }"
+                            >
+                                <i class="fa-solid fa-globe"></i>
+                                <span class="language-code">{{ locale.toUpperCase() }}</span>
+                                <i class="fa fa-caret-down" :class="{ 'rotate': activeLanguageDropdown }"></i>
+                            </button>
+                            <div v-show="activeLanguageDropdown" class="mobile-language-dropdown">
+                                <button
+                                    @click="changeLanguage('en')"
+                                    class="mobile-language-option"
+                                    :class="{ active: locale === 'en' }"
+                                >
+                                    English
+                                </button>
+                                <button
+                                    @click="changeLanguage('lv')"
+                                    class="mobile-language-option"
+                                    :class="{ active: locale === 'lv' }"
+                                >
+                                    Latviešu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mobile-sidebar-footer">
+                        <Link :href="route('login')" class="login-button">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            <span>{{ t('user_pages.layout.login') }}</span>
+                        </Link>
+                        <Link :href="route('signup')" class="signup-button">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>{{ t('user_pages.layout.signup') }}</span>
+                        </Link>
+                    </div>
+                </div>
+            </aside>
+        </transition>
+
+        <!-- Galvenā satura vieta, vienmēr redzama -->
         <main class="main-content">
             <!-- Lapas galvene (ja ir) -->
             <header v-if="$slots.header" class="page-header">
@@ -439,8 +607,9 @@ onBeforeUnmount(() => {
         </main>
     </div>
 
-    <!-- Jaunas kolekcijas izveides veidlapa -->
+    <!-- Jaunas kolekcijas izveides veidlapa, tikai lietotājiem -->
     <CreatePlaylistModal
+        v-if="user"
         :show="showCreateForm"
         :show-description="true"
         :redirect-after-create="true"
@@ -470,6 +639,61 @@ onBeforeUnmount(() => {
     z-index: 50;
     overflow-y: auto;
     flex-shrink: 0;
+}
+
+.desktop-sidebar.guest-sidebar {
+    display: none;
+}
+
+.guest-avatar {
+    font-size: 2rem;
+    color: #0c4baa;
+}
+
+.login-button,
+.signup-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+}
+
+.login-button {
+    background: white;
+    border: 1px solid rgba(12, 75, 170, 0.2);
+    color: #0c4baa;
+}
+
+.login-button:hover {
+    background: rgba(12, 75, 170, 0.05);
+    border-color: #0c4baa;
+}
+
+.signup-button {
+    background: linear-gradient(135deg, #0c4baa, #20c1f7);
+    color: white;
+    border: none;
+}
+
+.signup-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(12, 75, 170, 0.3);
+}
+
+.mobile-sidebar.guest-sidebar .guest-avatar {
+    font-size: 2.5rem;
+}
+
+.mobile-sidebar.guest-sidebar .login-button,
+.mobile-sidebar.guest-sidebar .signup-button {
+    justify-content: center;
 }
 
 .sidebar-content {
@@ -1047,7 +1271,8 @@ onBeforeUnmount(() => {
 
 /* Responsivitāte */
 @media (min-width: 1024px) {
-    .desktop-sidebar {
+    .desktop-sidebar,
+    .desktop-sidebar.guest-sidebar {
         display: block;
     }
 

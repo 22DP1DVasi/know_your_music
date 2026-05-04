@@ -19,7 +19,7 @@ const props = defineProps({
     },
     statusOptions: {
         type: Array,
-        default: () => ['active', 'banned', 'deleted']
+        default: () => ['active', 'banned']
     }
 });
 
