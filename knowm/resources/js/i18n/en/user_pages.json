@@ -20,7 +20,14 @@
         "create_new_pl": "Create new playlist",
         "recommendations": "Recommendations",
         "history_recom": "History of recommendations",
-        "logout": "Log Out"
+        "logout": "Log Out",
+        "home": "Home",
+        "explore_artists": "Artists",
+        "explore_releases": "Releases",
+        "explore_genres": "Genres",
+        "guest": "Guest",
+        "login": "Log in",
+        "signup": "Sign up"
     },
     "settings": {
         "profile_header": "Profile Settings",
@@ -146,6 +153,11 @@
         "delete_cancel": "Cancel",
         "delete_confirm": "Delete Playlist",
         "deleting": "Deleting...",
-        "delete_error": "Failed to delete playlist. Please try again."
+        "delete_error": "Failed to delete playlist. Please try again.",
+        "share_copy_link": "Copy link",
+        "share_private": "Playlist must be public to share",
+        "share_private_warning": "Make this playlist public to share it",
+        "link_copied": "Link copied!",
+        "copy_link_error": "Failed to copy link. Please try again."
     }
 }

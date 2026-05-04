@@ -15,13 +15,16 @@ const { confirm } = useConfirm();
 
 const props = defineProps({
     playlist: Object,
-    tracks: Object,
-    canEdit: Boolean
+    tracks: Object
 });
 
 // piekļuve koplietojamiem datiem no servera puses
 const page = usePage();
-const user = page.props.auth?.user;
+const user = computed(() => page.props.auth?.user ?? null);
+const canEdit = computed(() => {
+    if (!user.value) return false
+    return user.value.id === props.playlist.user?.id
+})
 
 // stāvoklis bezgalīgai ritināšanai
 const currentPageFromUrl = new URLSearchParams(window.location.search).get('page') || 1;
@@ -53,7 +56,7 @@ const showPlaylistModal = ref(false);
 const selectedTrack = ref(null);
 
 const openAddToPlaylistModal = (track) => {
-    if (!user) {
+    if (!user.value) {
         router.get(route('login'));
         return;
     }
@@ -73,6 +76,8 @@ const editErrors = ref({
     general: null
 });
 
+let observer = null;
+
 onMounted(async () => {
     const targetPage = parseInt(currentPageFromUrl)
     for (let page = 1; page <= targetPage; page++) {
@@ -83,6 +88,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+    observer?.disconnect()
     window.removeEventListener('scroll', handleScroll);
 });
 
@@ -120,14 +126,14 @@ const loadMoreTracks = async () => {
 }
 
 const setupObserver = () => {
-    const observer = new IntersectionObserver((entries) => {
+    if (!loadTrigger.value) return
+    observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
             loadMoreTracks()
         }
     }, {
         rootMargin: '400px'
     })
-
     observer.observe(loadTrigger.value)
 }
 
@@ -156,7 +162,7 @@ const handleRemoveTrack = async (track) => {
     if (!confirmed) return
     try {
         await axios.delete(route('playlists.tracks.destroy', {
-            user: user.slug,
+            user: user.value.slug,
             playlist: props.playlist.slug,
             track: track.id
         }));
@@ -184,11 +190,6 @@ const goBack = () => {
     router.get(route('dashboard.playlists'));
 };
 
-const goToEdit = () => {
-    router.get(route('playlists.edit', props.playlist.slug));
-};
-
-// Atvērt rediģēšanas modāli
 const openEditModal = () => {
     editForm.value = {
         name: props.playlist.name || '',
@@ -199,13 +200,11 @@ const openEditModal = () => {
     showEditModal.value = true;
 };
 
-// Aizvērt rediģēšanas modāli
 const closeEditModal = () => {
     showEditModal.value = false;
     isSaving.value = false;
 };
 
-// Saglabāt izmaiņas
 const savePlaylistChanges = async () => {
     // Validācija
     let hasErrors = false;
@@ -261,9 +260,7 @@ const closeDeleteModal = () => {
 
 const confirmDeletePlaylist = async () => {
     if (isDeleting.value) return;
-
     isDeleting.value = true;
-
     try {
         router.delete(route('playlists.destroy', {user: props.playlist.user.slug, playlist: props.playlist.slug}), {
             preserveScroll: true,
@@ -285,6 +282,29 @@ const confirmDeletePlaylist = async () => {
     }
 };
 
+const showToast = ref(false);
+const toastTimeout = ref(null);
+
+const copyPlaylistLink = async () => {
+    try {
+        const link = `${window.location.origin}/${props.playlist.user.slug}/playlists/${props.playlist.slug}`;
+        await navigator.clipboard.writeText(link);
+        // rādīt uznirstošo paziņojumu
+        showToast.value = true;
+        // notīrīt iepriekšējo taimautu, ja tāds ir
+        if (toastTimeout.value) {
+            clearTimeout(toastTimeout.value);
+        }
+        // paslēpt paziņojumu pēc 3 sekundēm
+        toastTimeout.value = setTimeout(() => {
+            showToast.value = false;
+        }, 3000);
+    } catch (error) {
+        console.error('Failed to copy link:', error);
+        alert(t('user_pages.playlistshow.copy_link_error'));
+    }
+};
+
 </script>
 
 <template>
@@ -293,7 +313,7 @@ const confirmDeletePlaylist = async () => {
     <AuthenticatedLayout>
         <template #header>
             <div class="header-content">
-                <button @click="goBack" class="back-button">
+                <button v-if="user" @click="goBack" class="back-button">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 <h2 class="page-header">{{ playlist.name }}</h2>
@@ -313,6 +333,24 @@ const confirmDeletePlaylist = async () => {
                 <div class="playlist-details">
                     <div class="playlist-header">
                         <h1 class="playlist-title">{{ playlist.name }}</h1>
+                    </div>
+
+                    <div class="playlist-info-row">
+                        <div class="playlist-description-wrapper">
+                            <p v-if="playlist.description" class="playlist-description">
+                                {{ playlist.description }}
+                            </p>
+                            <div class="playlist-meta">
+                                <span class="meta-item">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    {{ t('user_pages.playlistshow.created') }} {{ formatDateLL(playlist.created_at) }}
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fa-regular fa-clock"></i>
+                                    {{ t('user_pages.playlistshow.updated') }} {{ formatDateLL(playlist.updated_at) }}
+                                </span>
+                            </div>
+                        </div>
 
                         <div class="playlist-actions">
                             <span
@@ -328,6 +366,25 @@ const confirmDeletePlaylist = async () => {
                                 </span>
                             </span>
 
+                            <button
+                                v-if="playlist.is_private"
+                                class="share-button disabled"
+                                disabled
+                                :title="t('user_pages.playlistshow.share_private_warning')"
+                            >
+                                <i class="fa-solid fa-link"></i>
+                                <span>{{ t('user_pages.playlistshow.share_private') }}</span>
+                            </button>
+
+                            <button
+                                v-else
+                                class="share-button"
+                                @click="copyPlaylistLink"
+                            >
+                                <i class="fa-solid fa-link"></i>
+                                <span>{{ t('user_pages.playlistshow.share_copy_link') }}</span>
+                            </button>
+
                             <button v-if="canEdit" @click="openEditModal" class="edit-button">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <span>{{ t('user_pages.playlistshow.edit') }}</span>
@@ -338,21 +395,6 @@ const confirmDeletePlaylist = async () => {
                                 <span>{{ t('user_pages.playlistshow.delete') }}</span>
                             </button>
                         </div>
-                    </div>
-
-                    <p v-if="playlist.description" class="playlist-description">
-                        {{ playlist.description }}
-                    </p>
-
-                    <div class="playlist-meta">
-                        <span class="meta-item">
-                            <i class="fa-regular fa-calendar"></i>
-                            {{ t('user_pages.playlistshow.created') }} {{ formatDateLL(playlist.created_at) }}
-                        </span>
-                        <span class="meta-item">
-                            <i class="fa-regular fa-clock"></i>
-                            {{ t('user_pages.playlistshow.updated') }} {{ formatDateLL(playlist.updated_at) }}
-                        </span>
                     </div>
                 </div>
             </div>
@@ -460,7 +502,7 @@ const confirmDeletePlaylist = async () => {
                         </div>
                     </div>
 
-                    <!-- Aprakst -->
+                    <!-- Apraksts -->
                     <div class="form-group">
                         <label for="playlist-description" class="form-label">
                             {{ t('user_pages.playlistshow.edit_description_label') }}
@@ -573,6 +615,16 @@ const confirmDeletePlaylist = async () => {
                 </div>
             </div>
         </div>
+    </Teleport>
+
+    <!-- Kopēšanas paziņojums -->
+    <Teleport to="body">
+        <Transition name="toast">
+            <div v-if="showToast" class="toast-notification">
+                <i class="fa-solid fa-check-circle"></i>
+                <span>{{ t('user_pages.playlistshow.link_copied') }}</span>
+            </div>
+        </Transition>
     </Teleport>
 
     <AddToPlaylistModal
@@ -688,8 +740,22 @@ const confirmDeletePlaylist = async () => {
 
 .playlist-actions {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.75rem;
+    min-width: 180px;
+    flex-shrink: 0;
+}
+
+.playlist-info-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.playlist-description-wrapper {
+    flex: 1;
+    min-width: 0;
 }
 
 .privacy-badge {
@@ -700,6 +766,7 @@ const confirmDeletePlaylist = async () => {
     border-radius: 30px;
     font-size: 0.85rem;
     font-weight: 500;
+    width: fit-content;
 }
 
 .privacy-badge.public {
@@ -714,7 +781,7 @@ const confirmDeletePlaylist = async () => {
     border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
-.edit-button {
+.share-button {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -727,6 +794,40 @@ const confirmDeletePlaylist = async () => {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    width: fit-content;
+}
+
+.share-button:hover:not(.disabled) {
+    background: rgba(12, 75, 170, 0.05);
+    border-color: #0c4baa;
+    transform: translateY(-1px);
+}
+
+.share-button.disabled {
+    background: #f5f5f5;
+    border-color: #ddd;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.edit-button,
+.delete-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    background: white;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: fit-content;
+}
+
+.edit-button {
+    border: 1px solid rgba(12, 75, 170, 0.2);
+    color: #0c4baa;
 }
 
 .edit-button:hover {
@@ -735,18 +836,8 @@ const confirmDeletePlaylist = async () => {
 }
 
 .delete-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 1rem;
-    background: white;
     border: 1px solid rgba(220, 38, 38, 0.3);
-    border-radius: 30px;
     color: #dc2626;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
 }
 
 .delete-button:hover {
@@ -814,7 +905,7 @@ const confirmDeletePlaylist = async () => {
     font-size: 1rem;
     color: #4b5563;
     line-height: 1.6;
-    margin: 0;
+    margin: 0 0 1rem 0;
     overflow-wrap: anywhere;
     word-break: break-word;
     display: -webkit-box;
@@ -826,7 +917,7 @@ const confirmDeletePlaylist = async () => {
 .playlist-meta {
     display: flex;
     gap: 1.5rem;
-    margin-top: auto;
+    margin-top: 0.5rem;
 }
 
 .meta-item {
@@ -1225,6 +1316,46 @@ const confirmDeletePlaylist = async () => {
     margin-right: 0.35rem;
 }
 
+.toast-notification {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0c4baa;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1100;
+    animation: slideUp 0.3s ease;
+}
+
+.toast-notification i {
+    font-size: 1rem;
+}
+
+.toast-enter-active,
+.toast-leave-active {
+    transition: all 0.3s ease;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+}
+
+.toast-enter-to,
+.toast-leave-from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
 /* Animācijas */
 @keyframes fadeIn {
     from {
@@ -1257,7 +1388,13 @@ const confirmDeletePlaylist = async () => {
 
     .playlist-header {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .playlist-info-row {
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .playlist-meta {
@@ -1266,6 +1403,31 @@ const confirmDeletePlaylist = async () => {
 
     .playlist-title {
         font-size: 1.5rem;
+    }
+
+    .playlist-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        width: 100%;
+        min-width: unset;
+        order: 1;
+    }
+
+    .playlist-description-wrapper {
+        order: 2;
+    }
+
+    .share-button,
+    .edit-button,
+    .delete-button {
+        flex: 1;
+        justify-content: center;
+        min-width: 100px;
+    }
+
+    .privacy-badge {
+        order: -1;
     }
 }
 
@@ -1299,16 +1461,28 @@ const confirmDeletePlaylist = async () => {
         align-items: flex-start;
     }
 
-    .playlist-actions {
+    /*.playlist-actions {
         width: 100%;
         justify-content: space-between;
         flex-wrap: wrap;
+    }*/
+
+    .playlist-actions {
+        gap: 0.5rem;
     }
 
-    .edit-button,
+    /*.edit-button,
     .delete-button {
         flex: 1;
         justify-content: center;
+    }*/
+
+    .share-button,
+    .edit-button,
+    .delete-button {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.75rem;
+        min-width: 80px;
     }
 }
 
@@ -1332,20 +1506,57 @@ const confirmDeletePlaylist = async () => {
         gap: 0.5rem;
     }
 
+    /*.edit-button span,
+    .delete-button span {
+        display: none;
+    }*/
+
+    .share-button span,
     .edit-button span,
     .delete-button span {
         display: none;
     }
 
+    /*.edit-button,
+    .delete-button {
+        padding: 0.4rem;
+        min-width: 40px;
+    }*/
+
+    .share-button,
     .edit-button,
     .delete-button {
         padding: 0.4rem;
         min-width: 40px;
+        justify-content: center;
     }
 
+    /*.edit-button i,
+    .delete-button i {
+        margin: 0;
+    }*/
+
+    .share-button i,
     .edit-button i,
     .delete-button i {
         margin: 0;
+        font-size: 1rem;
+    }
+
+    .playlist-actions {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .privacy-badge {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .playlist-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 
     .tracklist-section {

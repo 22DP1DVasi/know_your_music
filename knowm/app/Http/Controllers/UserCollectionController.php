@@ -48,7 +48,7 @@ class UserCollectionController extends Controller
     public function show(User $user, UserCollection $playlist): \Inertia\Response
     {
         if ($playlist->is_private && $playlist->user_id !== Auth::id()) {
-            abort(403, 'This playlist is private.');
+            abort(404);
         }
         $tracks = $playlist->tracks()
             ->with(['artists:id,name,slug'])
@@ -66,11 +66,11 @@ class UserCollectionController extends Controller
                 'created_at' => $playlist->created_at,
                 'updated_at' => $playlist->updated_at,
                 'user' => [
+                    'id' => $playlist->user->id,
                     'slug' => $playlist->user->slug,
                 ],
             ],
-            'tracks' => $tracks,
-            'canEdit' => $playlist->user_id === Auth::id(),
+            'tracks' => $tracks
         ]);
     }
 
@@ -143,7 +143,7 @@ class UserCollectionController extends Controller
     public function removeTrack(User $user, UserCollection $playlist, Track $track): \Illuminate\Http\JsonResponse
     {
         if ($playlist->user_id !== auth()->id()) {
-            abort(403);
+            abort(403, 'You are not authorized to edit this playlist.');
         }
         DB::transaction(function () use ($playlist, $track) {
             // iegūt pašreizējo pozīciju

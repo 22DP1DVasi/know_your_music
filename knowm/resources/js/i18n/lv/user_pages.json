@@ -20,7 +20,14 @@
         "create_new_pl": "Izveido jaunu kolekciju",
         "recommendations": "Rekomendācijas",
         "history_recom": "Rekomendāciju vēsture",
-        "logout": "Atteikties"
+        "logout": "Atteikties",
+        "home": "Sākums",
+        "explore_artists": "Izpildītāji",
+        "explore_releases": "Albumi",
+        "explore_genres": "Žanri",
+        "guest": "Viesis",
+        "login": "Pieteikties",
+        "signup": "Reģistrēties"
     },
     "settings": {
         "profile_header": "Profila iestatījumi",
@@ -147,6 +154,11 @@
         "delete_cancel": "Atcelt",
         "delete_confirm": "Dzēst kolekciju",
         "deleting": "Dzēš...",
-        "delete_error": "Neizdevās dzēst kolekciju. Lūdzu, mēģiniet vēlreiz."
+        "delete_error": "Neizdevās dzēst kolekciju. Lūdzu, mēģiniet vēlreiz.",
+        "share_copy_link": "Kopēt saiti",
+        "share_private": "Kolekcijai jābūt publiskai, lai kopētu saiti",
+        "share_private_warning": "Padariet šo kolekciju publisku, lai to kopīgotu",
+        "link_copied": "Saite nokopēta!",
+        "copy_link_error": "Neizdevās nokopēt saiti. Lūdzu, mēģiniet vēlreiz."
     }
 }

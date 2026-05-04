@@ -214,6 +214,10 @@ Route::post('/locale', function (Request $request) {
     return response()->noContent();
 });
 
+// playlist/collection page - out of auth middleware because it is shareable and guests can see it too
+Route::get('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
+    ->name('playlists.show');
+
 // lietotāja konta ceļi
 Route::middleware('auth')->group(function () {
     // pārskats
@@ -235,8 +239,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
         ->name('dashboard.playlists');
 
-    Route::get('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
-        ->name('playlists.show');
     Route::put('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
         ->name('playlists.update');
     Route::delete('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'destroy'])
