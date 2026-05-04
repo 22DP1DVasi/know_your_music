@@ -27,4 +27,10 @@ return [
     'artist_updated' => 'Artist updated successfully.',
     'artist_deleted' => 'Artist deleted successfully',
     'artist_image_updated' => ' image updated successfully.',
+    'signup' => [
+        'name_unique' => 'This username is already taken. Please choose another one.',
+        'name_regex' => 'Username can only contain letters, numbers and underscores.',
+        'email_unique' => 'This email is already registered. Please login or use a different email.',
+        'password_confirmed' => 'Password confirmation does not match.'
+    ]
 ];

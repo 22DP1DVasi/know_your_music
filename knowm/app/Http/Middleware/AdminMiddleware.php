@@ -15,7 +15,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->role_id === 1) {
+        if (auth()->check() && auth()->user()->canAccessAdminPanel()) {
             return $next($request);
         }
         return redirect('/')->with('error', 'Unauthorized access');

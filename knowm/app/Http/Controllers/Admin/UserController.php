@@ -42,10 +42,9 @@ class UserController extends Controller
                 'search_email',
                 'filter_status'
             ]),
-            'statusOptions' => ['active', 'banned', 'deleted'],
+            'statusOptions' => ['active', 'banned'],
         ]);
     }
-
 
     public function create()
     {
