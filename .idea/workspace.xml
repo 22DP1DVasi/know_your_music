@@ -6,14 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/bootstrap/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/bootstrap/app.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/lang/en/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/en/messages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/lang/lv/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/lv/messages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Users/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Users/Index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/lang/en/messages.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/lang/lv/messages.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Layouts/AdminLayout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Layouts/AdminLayout.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +191,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;features/user-playlists&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/admin-panel&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/know_your_music/knowm/resources/js/i18n/lv&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -480,6 +473,7 @@
       <workItem from="1777610863452" duration="11065000" />
       <workItem from="1777822130247" duration="16373000" />
       <workItem from="1777901474530" duration="9663000" />
+      <workItem from="1778004825663" duration="1470000" />
     </task>
     <servers />
   </component>
