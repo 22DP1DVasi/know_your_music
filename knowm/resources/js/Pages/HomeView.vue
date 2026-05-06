@@ -5,7 +5,7 @@ import Navbar from '@/Components/Navbar.vue';
 import { Head, Link, usePage } from "@inertiajs/vue3";
 import { useI18n } from 'vue-i18n';
 import { route } from "ziggy-js";
-import { onMounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 
 const { t } = useI18n();
 
@@ -56,6 +56,27 @@ const getBarStyle = (index) => {
     };
 };
 
+const windowWidth = ref(window.innerWidth)
+
+const updateWidth = () => {
+    windowWidth.value = window.innerWidth
+}
+
+onMounted(() => {
+    window.addEventListener('resize', updateWidth)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', updateWidth)
+})
+
+const barCount = computed(() => {
+    if (windowWidth.value <= 480) return 14
+    if (windowWidth.value <= 768) return 22
+    if (windowWidth.value <= 1024) return 30
+    return 40
+})
+
 </script>
 
 <template>
@@ -67,7 +88,7 @@ const getBarStyle = (index) => {
             <!-- Ekvalaizera fons -->
             <div class="equalizer">
                 <div
-                    v-for="n in 40"
+                    v-for="n in barCount"
                     :key="n"
                     class="bar"
                     :style="getBarStyle(n)"
@@ -95,7 +116,7 @@ const getBarStyle = (index) => {
             <!-- Atspoguļots ekvalaizers -->
             <div class="equalizer inverted">
                 <div
-                    v-for="n in 40"
+                    v-for="n in barCount"
                     :key="n"
                     class="bar dark"
                     :style="getBarStyle(n)"
@@ -219,7 +240,8 @@ const getBarStyle = (index) => {
 }
 
 .bar {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 8px;
     margin: 0 2px;
     background: rgb(255, 255, 255);
     height: 60px;
@@ -228,7 +250,7 @@ const getBarStyle = (index) => {
 }
 
 .bar.dark {
-    background: rgba(12, 75, 170, 0.25);
+    background: rgba(12, 75, 170, 0.62);
 }
 
 @keyframes equalizerAnim {
@@ -587,6 +609,25 @@ const getBarStyle = (index) => {
         font-size: 2rem;
     }
 
+    .equalizer {
+        padding: 0 20px;
+        gap: 2px;
+    }
+
+    .bar {
+        margin: 0;
+        border-radius: 4px;
+    }
+
+    /*@keyframes equalizerAnim {
+        0%, 100% {
+            height: 40px;
+        }
+        50% {
+            height: 180px;
+        }
+    }*/
+
     .hero-subtitle {
         font-size: 1rem;
     }
@@ -622,6 +663,16 @@ const getBarStyle = (index) => {
     .cta-button {
         width: 100%;
         text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .equalizer {
+        padding: 0 12px;
+    }
+
+    .bar {
+        min-width: 6px;
     }
 }
 

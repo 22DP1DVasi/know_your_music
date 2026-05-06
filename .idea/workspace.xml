@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/bootstrap/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/bootstrap/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -475,7 +476,8 @@
       <workItem from="1777901474530" duration="9663000" />
       <workItem from="1778004825663" duration="1553000" />
       <workItem from="1778067011444" duration="2862000" />
-      <workItem from="1778083926410" duration="3163000" />
+      <workItem from="1778083926410" duration="5516000" />
+      <workItem from="1778093289476" duration="1281000" />
     </task>
     <servers />
   </component>
