@@ -619,15 +619,6 @@ const barCount = computed(() => {
         border-radius: 4px;
     }
 
-    /*@keyframes equalizerAnim {
-        0%, 100% {
-            height: 40px;
-        }
-        50% {
-            height: 180px;
-        }
-    }*/
-
     .hero-subtitle {
         font-size: 1rem;
     }
