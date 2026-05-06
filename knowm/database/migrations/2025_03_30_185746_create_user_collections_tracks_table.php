@@ -48,7 +48,7 @@ return new class extends Migration
                     SET NEW.track_position = (
                         SELECT IFNULL(MAX(track_position), 0) + 1
                         FROM user_collections_tracks
-                        WHERE collection_id = NEW.collection_id
+                        WHERE user_collection_id = NEW.user_collection_id
                     );
                 END IF;
             END

@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/.dockerignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_185746_create_user_collections_tracks_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/database/migrations/2025_03_30_185746_create_user_collections_tracks_table.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -475,7 +474,8 @@
       <workItem from="1777822130247" duration="16373000" />
       <workItem from="1777901474530" duration="9663000" />
       <workItem from="1778004825663" duration="1553000" />
-      <workItem from="1778067011444" duration="211000" />
+      <workItem from="1778067011444" duration="2862000" />
+      <workItem from="1778083926410" duration="593000" />
     </task>
     <servers />
   </component>
