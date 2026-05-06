@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \App\Http\Middleware\SetLocale::class,
+            \App\Http\Middleware\TrustProxies::class
         ]);
         $middleware->alias([
             'admin' => AdminMiddleware::class,
