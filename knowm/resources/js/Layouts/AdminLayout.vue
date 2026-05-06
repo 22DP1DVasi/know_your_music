@@ -140,6 +140,13 @@ watchEffect(() => {
 }
 
 .alert {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    min-width: 300px;
+    max-width: 600px;
     padding: 0.75rem 1rem;
     border-radius: 0.375rem;
     margin-bottom: 1rem;
