@@ -2,7 +2,7 @@
 /node_modules
 /public/build
 /public/hot
-/public/storage
+!/storage/app/public/avatars
 /storage/*.key
 /storage/pail
 /vendor
