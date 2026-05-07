@@ -7,6 +7,7 @@ import { computed, watch, ref } from 'vue';
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import axios from 'axios';
+import GenresModal from '@/Components/Admin/GenresModal.vue';
 
 dayjs.extend(utc);
 
@@ -124,6 +125,10 @@ const getRoleClass = (role) => {
 // notikums, lai novērstu ritināšanu, kad modāls ir atvērts (WIP)
 const handleWheel = (event) => {
     event.stopPropagation();
+};
+
+const handleGenreEditRoute = (genreId) => {
+    // return route('admin-genres-edit', { id: genreId });
 };
 
 // skatīties modālā stāvokļa izmaiņas, lai novērstu ķermeņa ritināšanu (WIP)
@@ -682,51 +687,12 @@ const cancelProfileUpload = () => {
             </form>
         </div>
 
-        <!-- Modālais logs žanriem -->
-        <div v-if="isGenresModalOpen" class="modal-overlay" @wheel="handleWheel" @touchmove.prevent @scroll.prevent>
-            <div class="modal">
-                <div class="modal-header">
-                    <h2>{{ t('adm_artists.edit.genres_modal_title') }}</h2>
-                    <button class="modal-close" @click="isGenresModalOpen = false">×</button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="modal-table-container">
-                        <div class="modal-table-header">
-                            <div class="modal-table-row">
-                                <div class="modal-table-cell modal-table-cell-name">
-                                    {{ t('adm_artists.edit.genre_name') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--  :href="route('admin-genres-edit', { id: genre.id })" -->
-                        <div class="modal-table-body">
-                            <Link
-                                v-for="genre in artist.genres"
-                                :key="genre.id"
-                                :href="route('admin-dashboard')"
-                                class="modal-table-row clickable-row"
-                            >
-                                <div class="modal-table-cell modal-table-cell-name">
-                                    {{ genre.name }}
-                                </div>
-                            </Link>
-
-                            <div v-if="!artist.genres || artist.genres.length === 0" class="modal-table-empty">
-                                {{ t('adm_artists.edit.no_genres') }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-secondary" @click="isGenresModalOpen = false">
-                        {{ t('adm_artists.edit.modal_close') }}
-                    </button>
-                </div>
-            </div>
-        </div>
+        <GenresModal
+            :is-open="isGenresModalOpen"
+            :genres="artist.genres"
+            :genre-edit-route="handleGenreEditRoute"
+            @close="isGenresModalOpen = false"
+        />
 
         <!-- Modālais logs albumiem (releases) -->
         <div v-if="isReleasesModalOpen" class="modal-overlay" @wheel="handleWheel" @touchmove.prevent @scroll.prevent>
@@ -1177,7 +1143,6 @@ select.input-field {
     transform: scale(1.02);
 }
 
-/* Banera kvadrātveida priekšskatījums */
 .image-preview-square {
     flex-shrink: 0;
     width: 250px;
@@ -1189,7 +1154,6 @@ select.input-field {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Profila horizontālais priekšskatījums */
 .image-preview-horizontal {
     flex-shrink: 0;
     width: 250px;
@@ -1215,7 +1179,6 @@ select.input-field {
     margin-bottom: 0.25rem;
 }
 
-/* Attēlu augšupielādes stili */
 .image-upload-section {
     flex: 1;
     display: flex;
@@ -1269,7 +1232,6 @@ select.input-field {
     font-style: italic;
 }
 
-/* Modālo logu stili */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -1326,7 +1288,6 @@ select.input-field {
     color: #374151;
 }
 
-/* Modālu logu tabula */
 .modal-table-container {
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;

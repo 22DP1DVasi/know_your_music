@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/GenresModal.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/HomeView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Artists/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Artists/Edit.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -477,7 +477,9 @@
       <workItem from="1778004825663" duration="1553000" />
       <workItem from="1778067011444" duration="2862000" />
       <workItem from="1778083926410" duration="5516000" />
-      <workItem from="1778093289476" duration="1281000" />
+      <workItem from="1778093289476" duration="2217000" />
+      <workItem from="1778147635541" duration="942000" />
+      <workItem from="1778171256155" duration="7448000" />
     </task>
     <servers />
   </component>
