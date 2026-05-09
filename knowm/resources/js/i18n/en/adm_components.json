@@ -1,0 +1,16 @@
+{
+    "genre_manager": {
+        "title": "Manage Genres - {entity}",
+        "artist": "Artist",
+        "release": "Release",
+        "track": "Track",
+        "selected_genres": "Selected Genres",
+        "no_genres_selected": "No genres selected. Use search to add.",
+        "search_genres": "Search genres",
+        "search_placeholder": "Type to search...",
+        "no_results": "No genres found",
+        "cancel": "Cancel",
+        "save_changes": "Save Changes",
+        "saving": "Saving..."
+    }
+}

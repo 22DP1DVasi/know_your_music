@@ -1,0 +1,16 @@
+{
+    "genre_manager": {
+        "title": "Pārvaldīt žanrus - {entity}",
+        "artist": "Izpildītājs",
+        "release": "Albums",
+        "track": "Dziesma",
+        "selected_genres": "Atlasītie žanri",
+        "no_genres_selected": "Nav atlasīts neviens žanrs",
+        "search_genres": "Meklēt žanrus",
+        "search_placeholder": "Ierakstiet meklēto...",
+        "no_results": "Žanri nav atrasti",
+        "cancel": "Atcelt",
+        "save_changes": "Saglabāt izmaiņas",
+        "saving": "Saglabā..."
+    }
+}

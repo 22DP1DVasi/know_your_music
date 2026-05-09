@@ -95,6 +95,8 @@ Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
     ->name('search.lyrics');
 
 
+Route::get('/genres/all', [GenreController::class, 'getAllGenres'])->name('genres.all');
+
 // informācijas lapas (izpildītāji, žanri, albumi, dziesmas)
 
 
@@ -306,6 +308,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
     Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
     Route::put('/admin/artists/{id}/update-image', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
+
+    Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])->name('admin.genres.sync');
 });
 
 //    Route::resource('/admin-users-index', UserController::class)->except(['show']);

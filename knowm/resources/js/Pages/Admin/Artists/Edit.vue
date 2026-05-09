@@ -3,11 +3,11 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { useI18n } from 'vue-i18n';
-import { computed, watch, ref } from 'vue';
+import {computed, watch, ref, onMounted} from 'vue';
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import axios from 'axios';
-import GenresModal from '@/Components/Admin/GenresModal.vue';
+import GenreManagerModal from '@/Components/Admin/GenreManagerModal.vue';
 
 dayjs.extend(utc);
 
@@ -29,9 +29,12 @@ const form = useForm({
 const { t } = useI18n();
 
 // modālie stāvokļi
-const isGenresModalOpen = ref(false);
+const showGenresModal = ref(false);
 const isReleasesModalOpen = ref(false);
 const isTracksModalOpen = ref(false);
+
+const allGenresList = ref([]);
+const isLoadingGenres = ref(false);
 
 const submit = () => {
     form.put(route('admin-artists-update', { id: props.artist.id }));
@@ -93,7 +96,7 @@ const formattedPopularity = props.artist.popularity ?
 
 // saskaņotais pasaules laiks (UTC), nevis lokāls laiks
 const formatDateTimeUTC = (dateString) => {
-    if (!dateString) return 'Unknown';
+    if (!dateString) return t('adm_artists.edit.unknown');
     return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
 };
 
@@ -127,18 +130,45 @@ const handleWheel = (event) => {
     event.stopPropagation();
 };
 
-const handleGenreEditRoute = (genreId) => {
-    // return route('admin-genres-edit', { id: genreId });
-};
-
 // skatīties modālā stāvokļa izmaiņas, lai novērstu ķermeņa ritināšanu (WIP)
-watch([isGenresModalOpen, isReleasesModalOpen, isTracksModalOpen], () => {
-    const isAnyModalOpen = isGenresModalOpen.value || isReleasesModalOpen.value || isTracksModalOpen.value;
+watch([showGenresModal, isReleasesModalOpen, isTracksModalOpen], () => {
+    const isAnyModalOpen = showGenresModal.value || isReleasesModalOpen.value || isTracksModalOpen.value;
     if (isAnyModalOpen) {
         document.body.style.overflow = 'hidden';
     } else {
         document.body.style.overflow = '';
     }
+});
+
+const fetchAllGenres = async () => {
+    isLoadingGenres.value = true;
+    try {
+        const response = await axios.get(route('genres.all'));
+        allGenresList.value = response.data;
+    } catch (error) {
+        console.error('Failed to fetch genres:', error);
+    } finally {
+        isLoadingGenres.value = false;
+    }
+};
+
+const handleGenresSaved = async (payload) => {
+    try {
+        await axios.post(route('admin.genres.sync'), payload);
+        // atjaunināt izpildītāja žanrus lokāli ar jaunajiem atlasītajiem žanriem
+        props.artist.genres = payload.genre_ids.map(id =>
+            allGenresList.value.find(genre => genre.id === id)
+        ).filter(Boolean);
+        showGenresModal.value = false;
+    } catch (error) {
+        console.error('Failed to sync genres:', error);
+        alert(t('adm_artists.edit.failed_update_genres'));
+    }
+};
+
+// Fetch all genres when component mounts
+onMounted(() => {
+    fetchAllGenres();
 });
 
 // attēlu augšupielādes stāvokļi
@@ -505,7 +535,7 @@ const cancelProfileUpload = () => {
                             <button
                                 type="button"
                                 class="btn-secondary content-button"
-                                @click="isGenresModalOpen = true"
+                                @click="showGenresModal = true"
                             >
                                 <span class="button-icon">🎵</span>
                                 <span class="button-text">{{ t('adm_artists.edit.view_genres') }}</span>
@@ -594,8 +624,8 @@ const cancelProfileUpload = () => {
                                                     {{ t('adm_artists.edit.choose_file') }}
                                                 </label>
                                                 <span v-if="bannerFile" class="file-name">
-                                    {{ bannerFile.name }}
-                                </span>
+                                                    {{ bannerFile.name }}
+                                                </span>
                                             </div>
 
                                             <div class="upload-buttons" v-if="bannerFile">
@@ -687,11 +717,14 @@ const cancelProfileUpload = () => {
             </form>
         </div>
 
-        <GenresModal
-            :is-open="isGenresModalOpen"
-            :genres="artist.genres"
-            :genre-edit-route="handleGenreEditRoute"
-            @close="isGenresModalOpen = false"
+        <GenreManagerModal
+            :visible="showGenresModal"
+            entity-type="artist"
+            :entity-id="artist.id"
+            :current-genres="artist.genres"
+            :all-genres="allGenresList"
+            @close="showGenresModal = false"
+            @saved="handleGenresSaved"
         />
 
         <!-- Modālais logs albumiem (releases) -->

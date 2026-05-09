@@ -91,6 +91,8 @@
         "image_error_no_file": "Vispirms izvēlieties failu",
         "image_error_upload": "Kļūda augšupielādējot attēlu",
         "image_success_banner": "Banera attēls veiksmīgi atjaunināts",
-        "image_success_profile": "Profila attēls veiksmīgi atjaunināts"
+        "image_success_profile": "Profila attēls veiksmīgi atjaunināts",
+        "unknown": "Nezināms",
+        "failed_update_genres": "Neizdevās atjaunināt žanrus. Lūdzu, mēģiniet vēlreiz."
     }
 }
