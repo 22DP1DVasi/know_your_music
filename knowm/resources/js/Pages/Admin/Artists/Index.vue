@@ -76,7 +76,7 @@ const hasActiveFilters = computed(() => {
 });
 
 const deleteArtist = (id) => {
-    if (confirm(t('amd_artists.index.confirm_delete'))) {
+    if (confirm(t('adm_artists.index.confirm_delete'))) {
         router.delete(route('admin-artists-destroy', { id: id }), {
             onSuccess: () => {
             },

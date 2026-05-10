@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Artist;
-use App\Services\ArtistService;
-use App\Services\ReleaseService;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Storage;
 
 class ArtistController extends Controller
@@ -21,7 +18,7 @@ class ArtistController extends Controller
      * @param Request $request
      * @return \Inertia\Response
      */
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
         $artists = Artist::query()
             ->when($request->search_name, function ($query, $search) {
@@ -47,14 +44,25 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function create()
+    /***
+     * Metode priekš Create.vue lapas.
+     *
+     * @return \Inertia\Response
+     */
+    public function create(): \Inertia\Response
     {
         return Inertia::render('Admin/Artists/Create', [
             'soloOrBandOptions' => ['solo', 'band']
         ]);
     }
 
-    public function store(Request $request)
+    /***
+     * Saglabā izpildītāju datubāzē.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $nextYear = date('Y', strtotime('+1 year'));
         $validated = $request->validate([
