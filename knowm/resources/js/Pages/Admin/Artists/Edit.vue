@@ -38,8 +38,9 @@ const showTracksModal = ref(false);
 const allGenresList = ref([]);
 const isLoadingGenres = ref(false);
 
-const releasesList = ref(props.artist.releases);
-const tracksList = ref(props.artist.tracks);
+const genresList = ref([...props.artist.genres]);
+const releasesList = ref([...props.artist.releases]);
+const tracksList = ref([...props.artist.tracks]);
 
 const submit = () => {
     form.put(route('admin-artists-update', { id: props.artist.id }));
@@ -105,27 +106,6 @@ const formatDateTimeUTC = (dateString) => {
     return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
 };
 
-// formatēt rādīšanas datumu
-const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return dayjs(dateString).format('DD/MM/YYYY');
-};
-
-// iegūt CSS klasi lomas žetonam
-const getRoleClass = (role) => {
-    switch (role) {
-        case 'primary': return 'role-badge-primary';
-        case 'featured': return 'role-badge-featured';
-        case 'producer': return 'role-badge-producer';
-        default: return 'role-badge-default';
-    }
-};
-
-// notikums, lai novērstu ritināšanu, kad modāls ir atvērts (WIP)
-const handleWheel = (event) => {
-    event.stopPropagation();
-};
-
 // skatīties modālā stāvokļa izmaiņas, lai novērstu ķermeņa ritināšanu (WIP)
 watch([showGenresModal, showReleasesModal, showTracksModal], () => {
     const isAnyModalOpen = showGenresModal.value || showReleasesModal.value || showTracksModal.value;
@@ -152,9 +132,11 @@ const handleGenresSaved = async (payload) => {
     try {
         await axios.post(route('admin.genres.sync'), payload);
         // atjaunināt izpildītāja žanrus lokāli ar jaunajiem atlasītajiem žanriem
-        props.artist.genres = payload.genre_ids.map(id =>
-            allGenresList.value.find(genre => genre.id === id)
-        ).filter(Boolean);
+        genresList.value = payload.genre_ids
+            .map(id =>
+                allGenresList.value.find(genre => genre.id === id)
+            )
+            .filter(Boolean);
         showGenresModal.value = false;
     } catch (error) {
         console.error('Failed to sync genres:', error);
@@ -535,7 +517,7 @@ const cancelProfileUpload = () => {
                             >
                                 <span class="button-icon">🎵</span>
                                 <span class="button-text">{{ t('adm_artists.edit.view_genres') }}</span>
-                                <span class="button-count">{{ artist.genres.length }}</span>
+                                <span class="button-count">{{ genresList.length }}</span>
                             </button>
                             <button
                                 type="button"
@@ -717,7 +699,7 @@ const cancelProfileUpload = () => {
             :visible="showGenresModal"
             entity-type="artist"
             :entity-id="artist.id"
-            :current-genres="artist.genres"
+            :current-genres="genresList"
             :all-genres="allGenresList"
             @close="showGenresModal = false"
             @saved="handleGenresSaved"
