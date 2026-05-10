@@ -21,6 +21,7 @@
         "view_btn": "View",
         "search_not_found": "No releases match your search criteria.",
         "clear_filters_msg": "Clear filters",
-        "no_releases_found_sys": "No releases found."
+        "no_releases_found_sys": "No releases found.",
+        "failed_delete": "Could not delete release"
     }
 }

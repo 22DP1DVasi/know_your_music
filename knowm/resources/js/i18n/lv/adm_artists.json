@@ -28,7 +28,8 @@
         "view_btn": "Skatīt",
         "search_not_found": "Netika atrasts neviens izpildītājs, kas atbilstu meklēšanas kritērijiem.",
         "clear_filters_msg": "Notīriet filtrus, lai skatītu visus izpildītājus",
-        "no_artists_found_sys": "Sistēmā nav atrasts neviens izpildītājs."
+        "no_artists_found_sys": "Sistēmā nav atrasts neviens izpildītājs.",
+        "failed_delete": "Neizdevās izdzēst izpildītāju"
     },
     "edit": {
         "title": "Rediģēt izpildītāju",

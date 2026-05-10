@@ -81,7 +81,7 @@ const deleteArtist = (id) => {
             onSuccess: () => {
             },
             onError: (errors) => {
-                alert(errors.response.data.message || "Could not delete artist");
+                alert(errors.response.data.message || t('adm_artists.index.failed_delete'));
             },
             preserveScroll: true
         });

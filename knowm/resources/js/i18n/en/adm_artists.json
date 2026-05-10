@@ -28,7 +28,8 @@
         "view_btn": "View",
         "search_not_found": "No artists found matching your search criteria.",
         "clear_filters_msg": "Clear filters to see all artists",
-        "no_artists_found_sys": "No artists found in the system."
+        "no_artists_found_sys": "No artists found in the system.",
+        "failed_delete": "Could not delete artist"
     },
     "edit": {
         "title": "Edit Artist",

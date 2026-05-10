@@ -28,6 +28,7 @@ return [
     'artist_deleted' => 'Artist deleted successfully',
     'artist_image_updated' => ' image updated successfully.',
     'genres_updated' => 'Genres updated successfully.',
+    'release_deleted' => 'Release deleted successfully.',
     'signup' => [
         'name_unique' => 'This username is already taken. Please choose another one.',
         'name_regex' => 'Username can only contain letters, numbers and underscores.',

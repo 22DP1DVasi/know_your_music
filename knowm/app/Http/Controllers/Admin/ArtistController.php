@@ -191,7 +191,13 @@ class ArtistController extends Controller
             ->with('success', __('messages.artist_updated'));
     }
 
-    public function destroy($id)
+    /***
+     * Dzēs izpildītāju.
+     *
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id): \Illuminate\Http\RedirectResponse
     {
         $artist = Artist::findOrFail($id);
         $artist->delete();

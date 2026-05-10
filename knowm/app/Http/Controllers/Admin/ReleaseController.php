@@ -12,6 +12,12 @@ use Inertia\Inertia;
 
 class ReleaseController extends Controller
 {
+    /***
+     * For Index.vue page.
+     *
+     * @param Request $request
+     * @return \Inertia\Response
+     */
     public function index(Request $request): \Inertia\Response
     {
         $releases = Release::query()
@@ -30,5 +36,19 @@ class ReleaseController extends Controller
             'releases' => $releases,
             'filters' => $request->only(['search_title', 'filter_type'])
         ]);
+    }
+
+    /***
+     * Deletes the album.
+     *
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id): \Illuminate\Http\RedirectResponse
+    {
+        $release = Release::findOrFail($id);
+        $release->delete();
+        return redirect()->route('admin-releases-index')
+            ->with('success', __('messages.release_deleted'));
     }
 }

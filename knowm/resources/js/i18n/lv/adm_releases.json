@@ -21,6 +21,7 @@
         "view_btn": "Skatīt",
         "search_not_found": "Nav atrasts neviens albums, kas atbilst meklēšanas kritērijiem.",
         "clear_filters_msg": "Notīrīt filtrus",
-        "no_releases_found_sys": "Nav atrasts neviens albums."
+        "no_releases_found_sys": "Nav atrasts neviens albums.",
+        "failed_delete": "Neizdevās izdzēst albumu"
     }
 }

@@ -28,6 +28,7 @@ return [
     'artist_deleted' => 'Izpildītājs veiksmīgi izdzēsts.',
     'artist_image_updated' => ' attēls veiksmīgi atjaunināts.',
     'genres_updated' => 'Žanri veiksmīgi atjaunināti.',
+    'release_deleted' => 'Albums veiksmīgi izdzēsts.',
     'signup' => [
         'name_unique' => 'Šis lietotājvārds jau ir aizņemts. Lūdzu, izvēlieties citu.',
         'name_regex' => 'Lietotājvārds drīkst saturēt tikai burtus, ciparus un pasvītrojuma zīmes.',

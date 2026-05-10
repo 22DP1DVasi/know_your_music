@@ -73,7 +73,7 @@ const deleteRelease = (id) => {
         router.delete(route('admin-releases-destroy', { id: id }), {
             onSuccess: () => {},
             onError: (errors) => {
-                alert(errors.response?.data?.message || "Could not delete release");
+                alert(errors.response?.data?.message || t('adm_releases.index.failed_delete'));
             },
             preserveScroll: true
         });
