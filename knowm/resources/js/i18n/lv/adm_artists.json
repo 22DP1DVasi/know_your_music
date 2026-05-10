@@ -94,5 +94,27 @@
         "image_success_profile": "Profila attēls veiksmīgi atjaunināts",
         "unknown": "Nezināms",
         "failed_update_genres": "Neizdevās atjaunināt žanrus. Lūdzu, mēģiniet vēlreiz."
+    },
+    "create": {
+        "title": "Izveidot izpildītāju",
+        "back_to_artists": "Atpakaļ pie izpildītājiem",
+        "artist_name": "Izpildītāja nosaukums",
+        "artist_name_placeholder": "piem., Metallica",
+        "artist_type": "Tips",
+        "type_solo": "Solo",
+        "type_band": "Grupa",
+        "formed_year": "Karjeras sākuma gads",
+        "select_year": "Izvēlieties gadu",
+        "disbanded_year": "Karjeras beigu gads",
+        "disbanded_note": "Atstājiet tukšu, ja joprojām darbojas",
+        "activity_status": "Aktivitātes statuss",
+        "active": "Aktīvs",
+        "inactive": "Neaktīvs",
+        "biography_en": "Biogrāfija (angļu)",
+        "biography_lv": "Biogrāfija (latviešu)",
+        "biography_placeholder": "Ierakstiet biogrāfiju šeit...",
+        "reset_btn": "Atiestatīt",
+        "create_artist_btn": "Izveidot izpildītāju",
+        "characters": "rakstzīmes"
     }
 }

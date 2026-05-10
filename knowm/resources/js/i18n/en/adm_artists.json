@@ -94,5 +94,27 @@
         "image_success_profile": "Profile image updated successfully",
         "unknown": "Unknown",
         "failed_update_genres": "Failed to update genres. Please try again."
+    },
+    "create": {
+        "title": "Create Artist",
+        "back_to_artists": "Back to Artists",
+        "artist_name": "Artist Name",
+        "artist_name_placeholder": "e.g. Metallica",
+        "artist_type": "Artist Type",
+        "type_solo": "Solo",
+        "type_band": "Band",
+        "formed_year": "Formed Year",
+        "select_year": "Select year",
+        "disbanded_year": "Disbanded Year",
+        "disbanded_note": "Leave empty if still active",
+        "activity_status": "Activity Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "biography_en": "Biography (English)",
+        "biography_lv": "Biography (Latvian)",
+        "biography_placeholder": "Write the biography here...",
+        "reset_btn": "Reset",
+        "create_artist_btn": "Create Artist",
+        "characters": "characters"
     }
 }

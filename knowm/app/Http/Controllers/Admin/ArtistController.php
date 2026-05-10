@@ -62,15 +62,12 @@ class ArtistController extends Controller
             'biography' => 'nullable|string',
             'biography_lv' => 'nullable|string',
             'formed_year' => "nullable|integer|min:1900|max:{$nextYear}",
-            'disbanded_year' => "nullable|integer|min:1900|max:{$nextYear}|gte:formed_year", // gte -> greater than or equal / lielāks vai vienāds
+            'disbanded_year' => "nullable|integer|min:1900|gte:formed_year",
             'is_active' => 'required|boolean',
-            'solo_or_band' => 'nullable|in:solo,band'
+            'solo_or_band' => 'nullable|in:solo,band',
         ]);
-        // izveidot izpildītāju ar validētiem datiem
+
         $artist = Artist::create($validated);
-        // ģenerēt un saglabāt slug'u
-//        $artist->slug = $artist->generateUniqueSlug();
-        $artist->save();
         return redirect()->route('admin-artists-index')
             ->with('success', __('messages.artist_created'));
     }
