@@ -1,0 +1,26 @@
+{
+    "index": {
+        "title": "Manage Releases",
+        "back_to_website": "Back to Website",
+        "add_new_release": "Add New Release",
+        "search_title": "Release Title",
+        "search_title_placeholder": "Search by title...",
+        "filter_type": "Release Type",
+        "filter_all_types": "All types",
+        "clear_filter_btn": "Clear filters",
+        "confirm_delete": "Are you sure you want to delete this release? This action cannot be undone.",
+        "header_title": "Title",
+        "header_release_date": "Release Date",
+        "header_type": "Type",
+        "header_artists": "Artists",
+        "header_created_at": "Created At",
+        "header_updated_at": "Updated At",
+        "header_actions": "Actions",
+        "edit_btn": "Edit",
+        "delete_btn": "Delete",
+        "view_btn": "View",
+        "search_not_found": "No releases match your search criteria.",
+        "clear_filters_msg": "Clear filters",
+        "no_releases_found_sys": "No releases found."
+    }
+}

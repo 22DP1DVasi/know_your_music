@@ -45,7 +45,7 @@ const goToEdit = () => {
         <div class="release-info">
             <div class="release-main">
                 <span class="release-title">{{ release.title }}</span>
-                <span class="release-badge">{{ release.release_type }}</span>
+                <span class="release-badge">{{ t(`releases.type.${release.release_type || 'unknown'}`) }}</span>
             </div>
             <div class="release-details">
                 <span class="release-artists">

@@ -309,6 +309,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
     Route::put('/admin/artists/{id}/update-image', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
 
+    Route::get('/admin-releases-index', [App\Http\Controllers\Admin\ReleaseController::class, 'index'])->name('admin-releases-index');
+
     Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])->name('admin.genres.sync');
 });
 

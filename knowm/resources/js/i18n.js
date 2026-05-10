@@ -17,6 +17,7 @@ import enAdmLayout from './i18n/en/adm_layout.json'
 import enAdmUsers from './i18n/en/adm_users.json'
 import enAdmRoles from './i18n/en/adm_roles.json'
 import enAdmArtists from './i18n/en/adm_artists.json'
+import enAdmReleases from './i18n/en/adm_releases.json'
 import enAdmComponents from './i18n/en/adm_components.json'
 
 import enUserPages from './i18n/en/user_pages.json'
@@ -43,6 +44,7 @@ import lvAdmLayout from './i18n/lv/adm_layout.json'
 import lvAdmAUsers from './i18n/lv/adm_users.json'
 import lvAdmRoles from './i18n/lv/adm_roles.json'
 import lvAdmArtists from './i18n/lv/adm_artists.json'
+import lvAdmReleases from './i18n/lv/adm_releases.json'
 import lvAdmComponents from './i18n/lv/adm_components.json'
 
 import lvUserPages from './i18n/lv/user_pages.json'
@@ -83,6 +85,7 @@ const i18n = createI18n({
             adm_users: enAdmUsers,
             adm_roles: enAdmRoles,
             adm_artists: enAdmArtists,
+            adm_releases: enAdmReleases,
             adm_components: enAdmComponents,
 
             components: enComponents,
@@ -109,6 +112,7 @@ const i18n = createI18n({
             adm_users: lvAdmAUsers,
             adm_roles: lvAdmRoles,
             adm_artists: lvAdmArtists,
+            adm_releases: lvAdmReleases,
             adm_components: lvAdmComponents,
 
             components: lvComponents,

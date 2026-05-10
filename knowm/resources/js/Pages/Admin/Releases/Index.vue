@@ -6,86 +6,84 @@ import { route } from "ziggy-js";
 import { ref, watch, computed } from 'vue';
 import { debounce } from 'lodash';
 import { useI18n } from 'vue-i18n';
+import dayjs from 'dayjs';
 
 const props = defineProps({
-    artists: Object,
+    releases: Object,
     filters: {
         type: Object,
         default: () => ({
-            search_name: '',
-            filter_type: '',
-            filter_status: ''
+            search_title: '',
+            filter_type: ''
         })
     }
 });
 
-const { t } = useI18n()
-// meklēšanas ievades, inicializēt no props
-const searchName = ref(props.filters.search_name || '');
-const filterType = ref(props.filters.filter_type || '');
-const filterStatus = ref(props.filters.filter_status || '');
+const { t } = useI18n();
 
-// filtru atjaunināšanas funkcija
+// filter reactive state
+const searchTitle = ref(props.filters.search_title || '');
+const filterType = ref(props.filters.filter_type || '');
+
+const formatDate = (dateString) => {
+    if (!dateString) return 'Unknown';
+    return dayjs(dateString).format('DD/MM/YYYY');
+};
+
 const updateFilters = () => {
     const filters = {};
-
-    if (searchName.value) {
-        filters.search_name = searchName.value;
+    if (searchTitle.value) {
+        filters.search_title = searchTitle.value;
     }
-
     if (filterType.value) {
         filters.filter_type = filterType.value;
     }
 
-    if (filterStatus.value !== '') {
-        filters.filter_status = filterStatus.value;
-    }
-
-    router.get(route('admin-artists-index'), filters, {
+    router.get(route('admin-releases-index'), filters, {
         preserveState: true,
         replace: true,
         preserveScroll: true,
-        only: ['artists', 'filters']
+        only: ['releases', 'filters']
     });
 };
 
-/*
-* debounce() ir funkcija, kas aizkavē dotās funkcijas izpildi,
-* līdz ir pagājis norādītais gaidīšanas laiks kopš pēdējās izsaukšanas
-* */
-const debouncedSearchName = debounce(updateFilters, 500);
+// debounced search
+const debouncedSearchTitle = debounce(updateFilters, 500);
 
-watch(searchName, (newValue) => {
+watch(searchTitle, (newValue) => {
     if (newValue === '' || newValue.length >= 1) {
-        debouncedSearchName();
+        debouncedSearchTitle();
     }
 });
 
 watch(filterType, updateFilters);
-watch(filterStatus, updateFilters);
 
 const clearFilters = () => {
-    searchName.value = '';
+    searchTitle.value = '';
     filterType.value = '';
-    filterStatus.value = '';
     updateFilters();
 };
 
 const hasActiveFilters = computed(() => {
-    return searchName.value || filterType.value || filterStatus.value !== '';
+    return searchTitle.value || filterType.value !== '';
 });
 
-const deleteArtist = (id) => {
-    if (confirm(t('adm_artists.index.confirm_delete'))) {
-        router.delete(route('admin-artists-destroy', { id: id }), {
-            onSuccess: () => {
-            },
+const deleteRelease = (id) => {
+    if (confirm(t('adm_releases.index.confirm_delete'))) {
+        router.delete(route('admin-releases-destroy', { id: id }), {
+            onSuccess: () => {},
             onError: (errors) => {
-                alert(errors.response.data.message || "Could not delete artist");
+                alert(errors.response?.data?.message || "Could not delete release");
             },
             preserveScroll: true
         });
     }
+};
+
+// helper to get artists names as comma separated string
+const getArtistNames = (release) => {
+    if (!release.artists || release.artists.length === 0) return '-';
+    return release.artists.map(artist => artist.name).join(', ');
 };
 
 </script>
@@ -93,13 +91,14 @@ const deleteArtist = (id) => {
 <template>
     <AdminLayout>
         <div class="header-container">
-            <h1>{{ t('adm_artists.index.title') }}</h1>
+            <h1>{{ t('adm_releases.index.title') }}</h1>
             <div class="header-actions">
                 <Link :href="route('home')" class="btn-secondary">
-                    {{ t('adm_artists.index.back_to_website') }}
+                    {{ t('adm_releases.index.back_to_website') }}
                 </Link>
-                <Link :href="route('admin-artists-create')" class="btn-primary">
-                    {{ t('adm_artists.index.add_new_artist') }}
+<!--                <Link :href="route('admin-releases-create')" class="btn-primary">-->
+                <Link href="#" class="btn-primary">
+                    {{ t('adm_releases.index.add_new_release') }}
                 </Link>
             </div>
         </div>
@@ -107,22 +106,22 @@ const deleteArtist = (id) => {
         <div class="filters-container">
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="search-name">{{ t('adm_artists.index.search_name') }}</label>
+                    <label for="search-title">{{ t('adm_releases.index.search_title') }}</label>
                     <div class="search-input-wrapper">
                         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                         <input
-                            id="search-name"
-                            v-model="searchName"
+                            id="search-title"
+                            v-model="searchTitle"
                             type="text"
-                            :placeholder="t('adm_artists.index.search_name_placeholder')"
+                            :placeholder="t('adm_releases.index.search_title_placeholder')"
                             class="input-field"
                         />
                         <button
-                            v-if="searchName"
-                            @click="searchName = ''"
+                            v-if="searchTitle"
+                            @click="searchTitle = ''"
                             class="clear-search-btn"
                             type="button"
                         >
@@ -132,28 +131,17 @@ const deleteArtist = (id) => {
                 </div>
 
                 <div class="filter-group">
-                    <label for="filter-type">{{ t('adm_artists.index.filter_type') }}</label>
+                    <label for="filter-type">{{ t('adm_releases.index.filter_type') }}</label>
                     <select
                         id="filter-type"
                         v-model="filterType"
                         class="input-field"
                     >
-                        <option value="">{{ t('adm_artists.index.filter_all_types') }}</option>
-                        <option value="solo">{{ t('adm_artists.index.type_solo') }}</option>
-                        <option value="band">{{ t('adm_artists.index.type_band') }}</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="filter-status">{{ t('adm_artists.index.filter_status') }}</label>
-                    <select
-                        id="filter-status"
-                        v-model="filterStatus"
-                        class="input-field"
-                    >
-                        <option value="">{{ t('adm_artists.index.filter_all_statuses') }}</option>
-                        <option value="1">{{ t('adm_artists.index.status_active') }}</option>
-                        <option value="0">{{ t('adm_artists.index.status_inactive') }}</option>
+                        <option value="">{{ t('adm_releases.index.filter_all_types') }}</option>
+                        <option value="album">{{ t('releases.type.album') }}</option>
+                        <option value="ep">{{ t('releases.type.ep') }}</option>
+                        <option value="single">{{ t('releases.type.single') }}</option>
+                        <option value="compilation">{{ t('releases.type.compilation') }}</option>
                     </select>
                 </div>
 
@@ -164,7 +152,7 @@ const deleteArtist = (id) => {
                         class="btn-clear-filters"
                         type="button"
                     >
-                        {{ t('adm_artists.index.clear_filter_btn') }}
+                        {{ t('adm_releases.index.clear_filter_btn') }}
                     </button>
                 </div>
             </div>
@@ -172,85 +160,74 @@ const deleteArtist = (id) => {
 
         <div class="table-container">
             <div class="table-inner">
-                <!-- Galvenes -->
-                <div class="artists-header">
+                <!-- Header -->
+                <div class="releases-header">
                     <div class="id-cell">ID</div>
-                    <div class="name-cell">{{ t('adm_artists.index.header_name') }}</div>
-                    <div class="slug-cell" style="font-size: 1em;">Slug</div>
-                    <div class="type-cell" style="font-size: 1em;">{{ t('adm_artists.index.header_type') }}</div>
-                    <div class="years-cell">{{ t('adm_artists.index.header_years') }}</div>
-                    <div class="status-cell">{{ t('adm_artists.index.header_status') }}</div>
-                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_created_at') }}</div>
-                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_updated_at') }}</div>
-                    <div class="actions-cell-header">{{ t('adm_artists.index.header_actions') }}</div>
+                    <div class="title-cell">{{ t('adm_releases.index.header_title') }}</div>
+                    <div class="slug-cell">Slug</div>
+                    <div class="date-cell">{{ t('adm_releases.index.header_release_date') }}</div>
+                    <div class="type-cell">{{ t('adm_releases.index.header_type') }}</div>
+                    <div class="artists-cell">{{ t('adm_releases.index.header_artists') }}</div>
+                    <div class="created-at-cell">{{ t('adm_releases.index.header_created_at') }}</div>
+                    <div class="updated-at-cell">{{ t('adm_releases.index.header_updated_at') }}</div>
+                    <div class="actions-cell-header">{{ t('adm_releases.index.header_actions') }}</div>
                 </div>
 
-                <!-- Rindas -->
+                <!-- Rows -->
                 <div
-                    v-for="artist in artists.data"
-                    :key="artist.id"
-                    class="artists-row"
+                    v-for="release in releases.data"
+                    :key="release.id"
+                    class="releases-row"
                 >
-                    <div class="id-cell">{{ artist.id }}</div>
-                    <div class="name-cell">{{ artist.name }}</div>
-                    <div class="slug-cell">{{ artist.slug }}</div>
-                    <div class="type-cell">{{ artist.solo_or_band || '-' }}</div>
-                    <div class="years-cell">
-                        <span v-if="artist.formed_year">
-                            {{ artist.formed_year }}
-                            <span v-if="artist.disbanded_year">- {{ artist.disbanded_year }}</span>
-                            <span v-else>{{ t('adm_artists.index.years_present') }}</span>
-                        </span>
-                        <span v-else>-</span>
-                    </div>
-                    <div class="status-cell">
-                        <span :class="artist.is_active ? 'status-active' : 'status-inactive'">
-                            {{ artist.is_active ? t('adm_artists.index.status_active') : t('adm_artists.index.status_inactive') }}
-                        </span>
-                    </div>
-                    <div class="created-updated-at-table-data">{{ artist.created_at }}</div>
-                    <div class="created-updated-at-table-data">{{ artist.updated_at }}</div>
+                    <div class="id-cell">{{ release.id }}</div>
+                    <div class="title-cell">{{ release.title }}</div>
+                    <div class="slug-cell">{{ release.slug }}</div>
+                    <div class="date-cell">{{ formatDate(release.release_date) }}</div>
+                    <div class="type-cell">{{ t(`releases.type.${release.release_type}`) }}</div>
+                    <div class="artists-cell">{{ getArtistNames(release) }}</div>
+                    <div class="created-at-cell">{{ release.created_at }}</div>
+                    <div class="updated-at-cell">{{ release.updated_at }}</div>
                     <div class="actions-cell">
+<!--                        :href="route('admin-releases-edit', { id: release.id })"-->
                         <Link
-                            :href="route('admin-artists-edit', { id: artist.id })"
+                            href="#"
                             class="btn-edit"
                         >
-                            {{ t('adm_artists.index.edit_btn') }}
+                            {{ t('adm_releases.index.edit_btn') }}
                         </Link>
                         <button
-                            @click="deleteArtist(artist.id)"
+                            @click="deleteRelease(release.id)"
                             class="btn-danger"
                         >
-                            {{ t('adm_artists.index.delete_btn') }}
+                            {{ t('adm_releases.index.delete_btn') }}
                         </button>
                         <Link
-                            :href="`/artists/${artist.slug}`"
+                            :href="`/releases/${release.slug}`"
                             target="_blank"
                             class="btn-view"
                         >
-                            {{ t('adm_artists.index.view_btn') }}
+                            {{ t('adm_releases.index.view_btn') }}
                         </Link>
                     </div>
                 </div>
 
-                <div v-if="artists.data.length === 0" class="no-results">
+                <div v-if="releases.data.length === 0" class="no-results">
                     <template v-if="hasActiveFilters">
-                        <p>{{ t('adm_artists.index.search_not_found') }}</p>
+                        <p>{{ t('adm_releases.index.search_not_found') }}</p>
                         <button @click="clearFilters" class="text-link">
-                            {{ t('adm_artists.index.clear_filters_msg') }}
+                            {{ t('adm_releases.index.clear_filters_msg') }}
                         </button>
                     </template>
                     <template v-else>
-                        <p>{{ t('adm_artists.index.no_artists_found_sys') }}</p>
+                        <p>{{ t('adm_releases.index.no_releases_found_sys') }}</p>
                     </template>
                 </div>
             </div>
 
-            <Pagination :links="artists.links" />
+            <Pagination :links="releases.links" />
         </div>
     </AdminLayout>
 </template>
-
 
 <style scoped>
 .header-container {
@@ -476,30 +453,30 @@ select.input-field {
     min-width: 1100px;
 }
 
-.artists-header,
-.artists-row {
+.releases-header,
+.releases-row {
     display: flex;
     align-items: center;
     min-width: 100%;
 }
 
-.artists-header {
+.releases-header {
     background-color: #f3f4f6;
     font-weight: 600;
     color: #374151;
     border-bottom: 2px solid #d1d5db;
 }
 
-.artists-row {
+.releases-row {
     border-bottom: 1px solid #e5e7eb;
 }
 
-.artists-row:hover {
+.releases-row:hover {
     background-color: #f9fafb;
 }
 
-.artists-header > div,
-.artists-row > div {
+.releases-header > div,
+.releases-row > div {
     padding: 0.75rem 1.5rem;
     min-width: 0;
     display: flex;
@@ -507,16 +484,16 @@ select.input-field {
 }
 
 .id-cell {
-    flex: 0 0 50px;
+    flex: 0 0 60px;
     max-width: 70px;
     font-family: monospace;
     font-size: 0.85rem;
 }
 
-.name-cell {
+.title-cell {
     flex: 2;
     min-width: 150px;
-    max-width: 150px;
+    max-width: 200px;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
@@ -524,36 +501,35 @@ select.input-field {
 .slug-cell {
     flex: 2 0 150px;
     min-width: 150px;
-    max-width: 150px;
+    max-width: 180px;
     font-size: 0.85rem;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
-.type-cell {
-    flex: 0 0 80px;
-    max-width: 100px;
-    font-size: 0.9rem;
-}
-
-.years-cell {
-    flex: 0 0 120px;
-    max-width: 140px;
+.date-cell {
+    flex: 0 0 100px;
+    max-width: 110px;
     font-size: 0.85rem;
 }
 
-.status-cell {
-    flex: 0 0 90px;
-    max-width: 110px;
-}
-
-.created-updated-at-header {
-    flex: 0 0 120px;
-    max-width: 130px;
+.type-cell {
+    flex: 0 0 100px;
+    max-width: 120px;
     font-size: 0.9rem;
 }
 
-.created-updated-at-table-data {
+.artists-cell {
+    flex: 2;
+    min-width: 150px;
+    max-width: 200px;
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.created-at-cell,
+.updated-at-cell {
     flex: 0 0 120px;
     max-width: 130px;
     font-size: 0.8rem;
@@ -570,26 +546,6 @@ select.input-field {
     display: flex;
     gap: 0.5rem;
     align-items: center;
-}
-
-.status-active,
-.status-inactive {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.8rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.status-active {
-    background-color: #d1fae5;
-    color: #065f46;
-}
-
-.status-inactive {
-    background-color: #fee2e2;
-    color: #991b1b;
 }
 
 .no-results {
@@ -614,7 +570,7 @@ select.input-field {
     color: #2563eb;
 }
 
-/* Responsivitāte */
+/* Responsive design */
 @media (max-width: 1260px) {
     .table-container {
         width: clamp(320px, 95vw, 1000px);
@@ -664,8 +620,8 @@ select.input-field {
         align-items: center;
     }
 
-    .artists-header > div,
-    .artists-row > div {
+    .releases-header > div,
+    .releases-row > div {
         padding: 0.5rem 0.75rem;
     }
 
