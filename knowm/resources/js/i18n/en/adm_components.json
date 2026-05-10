@@ -18,5 +18,11 @@
         "search_placeholder": "Search releases...",
         "no_results": "No releases found",
         "close": "Close"
+    },
+    "related_tracks": {
+        "title": "Related Tracks",
+        "search_placeholder": "Search tracks...",
+        "no_results": "No tracks found",
+        "close": "Close"
     }
 }

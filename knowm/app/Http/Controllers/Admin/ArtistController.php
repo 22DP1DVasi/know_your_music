@@ -93,7 +93,11 @@ class ArtistController extends Controller
                         'artists:id,name,slug'
                     ])->select('releases.id', 'title', 'release_date', 'release_type');
                 },
-                'tracks:id,title,duration',
+                'tracks' => function ($query) {
+                $query->with([
+                    'artists:id,name,slug'
+                ])->select('tracks.id', 'title', 'tracks.release_date');
+                }
             ])
             ->findOrFail($id);
 
@@ -136,9 +140,14 @@ class ArtistController extends Controller
                 'tracks' => $artist->tracks->map(fn ($track) => [
                     'id' => $track->id,
                     'title' => $track->title,
-                    'duration' => $track->duration,
+                    'release_date' => $track->release_date,
                     'role' => $track->pivot->role,
                     'cover_url' => $track->cover_url,
+                    'artists' => $track->artists->map(fn ($artist) => [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'slug' => $artist->slug,
+                    ])
                 ]),
             ],
             'soloOrBandOptions' => ['solo', 'band'],

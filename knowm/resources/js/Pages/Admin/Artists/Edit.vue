@@ -9,6 +9,7 @@ import utc from 'dayjs/plugin/utc';
 import axios from 'axios';
 import GenreManagerModal from '@/Components/Admin/GenreManagerModal.vue';
 import RelatedReleasesModal from '@/Components/Admin/RelatedReleasesModal.vue';
+import RelatedTracksModal from '@/Components/Admin/RelatedTracksModal.vue';
 
 dayjs.extend(utc);
 
@@ -32,12 +33,13 @@ const { t } = useI18n();
 // modālie stāvokļi
 const showGenresModal = ref(false);
 const showReleasesModal = ref(false);
-const isTracksModalOpen = ref(false);
+const showTracksModal = ref(false);
 
 const allGenresList = ref([]);
 const isLoadingGenres = ref(false);
 
 const releasesList = ref(props.artist.releases);
+const tracksList = ref(props.artist.tracks);
 
 const submit = () => {
     form.put(route('admin-artists-update', { id: props.artist.id }));
@@ -103,15 +105,6 @@ const formatDateTimeUTC = (dateString) => {
     return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
 };
 
-// formatēt ilgumu kā MM: SS
-const formatDuration = (timeString) => {
-    if (!timeString) return '--:--';
-    const date = new Date(timeString);
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-    return `${minutes}:${seconds}`;
-};
-
 // formatēt rādīšanas datumu
 const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -134,8 +127,8 @@ const handleWheel = (event) => {
 };
 
 // skatīties modālā stāvokļa izmaiņas, lai novērstu ķermeņa ritināšanu (WIP)
-watch([showGenresModal, showReleasesModal, isTracksModalOpen], () => {
-    const isAnyModalOpen = showGenresModal.value || showReleasesModal.value || isTracksModalOpen.value;
+watch([showGenresModal, showReleasesModal, showTracksModal], () => {
+    const isAnyModalOpen = showGenresModal.value || showReleasesModal.value || showTracksModal.value;
     if (isAnyModalOpen) {
         document.body.style.overflow = 'hidden';
     } else {
@@ -556,7 +549,7 @@ const cancelProfileUpload = () => {
                             <button
                                 type="button"
                                 class="btn-secondary content-button"
-                                @click="isTracksModalOpen = true"
+                                @click="showTracksModal = true"
                             >
                                 <span class="button-icon">🎶</span>
                                 <span class="button-text">{{ t('adm_artists.edit.view_tracks') }}</span>
@@ -736,65 +729,12 @@ const cancelProfileUpload = () => {
             @close="showReleasesModal = false"
         />
 
-        <!-- Modālais logs dziesmām -->
-        <div v-if="isTracksModalOpen" class="modal-overlay" @wheel="handleWheel" @touchmove.prevent @scroll.prevent>
-            <div class="modal">
-                <div class="modal-header">
-                    <h2>{{ t('adm_artists.edit.tracks_modal_title') }}</h2>
-                    <button class="modal-close" @click="isTracksModalOpen = false">×</button>
-                </div>
+        <RelatedTracksModal
+            :visible="showTracksModal"
+            :tracks="tracksList"
+            @close="showTracksModal = false"
+        />
 
-                <div class="modal-body">
-                    <div class="modal-table-container">
-                        <div class="modal-table-header">
-                            <div class="modal-table-row">
-                                <div class="modal-table-cell modal-table-cell-name">
-                                    {{ t('adm_artists.edit.track_title') }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-duration">
-                                    {{ t('adm_artists.edit.track_duration') }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-role">
-                                    {{ t('adm_artists.edit.track_role') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--  :href="route('admin-tracks-edit', { id: track.id })" -->
-                        <div class="modal-table-body">
-                            <Link
-                                v-for="track in artist.tracks"
-                                :key="track.id"
-                                :href="route('admin-dashboard')"
-                                class="modal-table-row clickable-row"
-                            >
-                                <div class="modal-table-cell modal-table-cell-name">
-                                    {{ track.title }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-duration">
-                                    {{ formatDuration(track.duration) }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-role">
-                                    <span :class="['role-badge', getRoleClass(track.role)]">
-                                        {{ t(`artists.global.${track.role}`) }}
-                                    </span>
-                                </div>
-                            </Link>
-
-                            <div v-if="!artist.tracks || artist.tracks.length === 0" class="modal-table-empty">
-                                {{ t('adm_artists.edit.no_tracks') }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-secondary" @click="isTracksModalOpen = false">
-                        {{ t('adm_artists.edit.modal_close') }}
-                    </button>
-                </div>
-            </div>
-        </div>
     </AdminLayout>
 </template>
 
@@ -1208,202 +1148,6 @@ select.input-field {
     font-style: italic;
 }
 
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    touch-action: none;
-}
-
-.modal {
-    background: white;
-    width: 100%;
-    max-width: 800px;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh;
-}
-
-.modal-header,
-.modal-footer {
-    padding: 1rem;
-    border-bottom: 1px solid #e5e7eb;
-    flex-shrink: 0;
-}
-
-.modal-footer {
-    border-top: 1px solid #e5e7eb;
-    border-bottom: none;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-}
-
-.modal-body {
-    padding: 1rem;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.25rem;
-    cursor: pointer;
-    color: #6b7280;
-}
-
-.modal-close:hover {
-    color: #374151;
-}
-
-.modal-table-container {
-    border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
-    overflow: hidden;
-    background-color: white;
-}
-
-.modal-table-header {
-    background-color: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-table-body {
-    overflow: visible;
-}
-
-.modal-table-body a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.modal-table-row {
-    display: flex;
-    align-items: center;
-    min-height: 3rem;
-    border-bottom: 1px solid #f3f4f6;
-    position: relative;
-}
-
-.modal-table-row:last-child {
-    border-bottom: none;
-}
-
-.modal-table-row:hover {
-    background-color: #f9fafb;
-}
-
-.clickable-row {
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.clickable-row:hover {
-    background-color: #e0f2fe !important;
-}
-
-.clickable-row .modal-table-cell {
-    text-decoration: none;
-}
-
-.modal-table-cell {
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    color: #374151;
-    display: flex;
-    align-items: center;
-    min-height: 3rem;
-    overflow: hidden;
-}
-
-.modal-table-cell-name {
-    flex: 3;
-    min-width: 250px;
-    max-width: 400px;
-    word-break: break-word;
-}
-
-.modal-table-cell-type {
-    flex: 1;
-    min-width: 100px;
-    max-width: 150px;
-}
-
-.modal-table-cell-date {
-    flex: 1;
-    min-width: 100px;
-    max-width: 120px;
-    font-family: monospace;
-    font-size: 0.8125rem;
-}
-
-.modal-table-cell-role {
-    flex: 1;
-    min-width: 100px;
-    max-width: 120px;
-}
-
-.role-badge {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.role-badge-primary {
-    background-color: #dbeafe;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
-}
-
-.role-badge-featured {
-    background-color: #f0f9ff;
-    color: #0c4a6e;
-    border: 1px solid #bae6fd;
-}
-
-.role-badge-producer {
-    background-color: #f0fdf4;
-    color: #166534;
-    border: 1px solid #bbf7d0;
-}
-
-.role-badge-default {
-    background-color: #f3f4f6;
-    color: #374151;
-    border: 1px solid #e5e7eb;
-}
-
-.modal-table-cell-duration {
-    flex: 1;
-    min-width: 80px;
-    max-width: 100px;
-    font-family: monospace;
-    font-size: 0.8125rem;
-}
-
-.modal-table-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    color: #9ca3af;
-    font-style: italic;
-    font-size: 0.875rem;
-}
-
 /* Responsivitāte */
 @media (max-width: 768px) {
     .header-container {
@@ -1451,56 +1195,6 @@ select.input-field {
 
     .content-buttons-grid {
         grid-template-columns: 1fr;
-    }
-
-    .modal {
-        width: 95%;
-        max-height: 95vh;
-    }
-
-    .modal-table-row {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1rem;
-        gap: 0.5rem;
-    }
-
-    .modal-table-cell {
-        padding: 0.25rem 0;
-        border-bottom: 1px solid #f3f4f6;
-        width: 100%;
-        min-width: 100%;
-        max-width: 100%;
-        flex: none;
-        justify-content: flex-start;
-    }
-
-    .modal-table-cell:last-child {
-        border-bottom: none;
-    }
-
-    .modal-table-cell-name {
-        font-weight: 600;
-        order: 1;
-    }
-
-    .modal-table-cell-type,
-    .modal-table-cell-date,
-    .modal-table-cell-duration {
-        color: #4b5563;
-        order: 2;
-        font-size: 0.75rem;
-    }
-
-    .modal-table-cell-role {
-        min-width: 80px;
-        max-width: 100px;
-        font-size: 0.75rem;
-    }
-
-    .role-badge {
-        padding: 0.125rem 0.375rem;
-        font-size: 0.7rem;
     }
 }
 

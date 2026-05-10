@@ -18,5 +18,11 @@
         "search_placeholder": "Meklēt albumus...",
         "no_results": "Nav atrasts neviens albums",
         "close": "Aizvērt"
+    },
+    "related_tracks": {
+        "title": "Saistītās dziesmas",
+        "search_placeholder": "Meklēt dziesmas...",
+        "no_results": "Nav atrasta neviena dziesma",
+        "close": "Aizvērt"
     }
 }
