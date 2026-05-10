@@ -12,5 +12,11 @@
         "cancel": "Cancel",
         "save_changes": "Save Changes",
         "saving": "Saving..."
+    },
+    "related_releases": {
+        "title": "Related Releases",
+        "search_placeholder": "Search releases...",
+        "no_results": "No releases found",
+        "close": "Close"
     }
 }

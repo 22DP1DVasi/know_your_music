@@ -5,20 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/GenreController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/GenreManagerModal.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_components.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_components.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/RelatedReleasesModal.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/ReleaseRelationRow.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/GenreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/GenreController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/lang/en/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/en/messages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/lang/lv/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/lv/messages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/GenresModal.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/ArtistController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Artists/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Artists/Edit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n.js" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_artists.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_artists.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_artists.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_artists.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_components.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_components.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -491,7 +484,9 @@
       <workItem from="1778093289476" duration="2217000" />
       <workItem from="1778147635541" duration="942000" />
       <workItem from="1778171256155" duration="8375000" />
-      <workItem from="1778330051951" duration="7070000" />
+      <workItem from="1778330051951" duration="10936000" />
+      <workItem from="1778401977315" duration="153000" />
+      <workItem from="1778402183844" duration="1016000" />
     </task>
     <servers />
   </component>

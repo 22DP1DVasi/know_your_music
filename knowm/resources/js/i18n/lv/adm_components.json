@@ -12,5 +12,11 @@
         "cancel": "Atcelt",
         "save_changes": "Saglabāt izmaiņas",
         "saving": "Saglabā..."
+    },
+    "related_releases": {
+        "title": "Saistītie albumi",
+        "search_placeholder": "Meklēt albumus...",
+        "no_results": "Nav atrasts neviens albums",
+        "close": "Aizvērt"
     }
 }

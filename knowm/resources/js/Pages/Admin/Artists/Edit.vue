@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import axios from 'axios';
 import GenreManagerModal from '@/Components/Admin/GenreManagerModal.vue';
+import RelatedReleasesModal from '@/Components/Admin/RelatedReleasesModal.vue';
 
 dayjs.extend(utc);
 
@@ -30,11 +31,13 @@ const { t } = useI18n();
 
 // modālie stāvokļi
 const showGenresModal = ref(false);
-const isReleasesModalOpen = ref(false);
+const showReleasesModal = ref(false);
 const isTracksModalOpen = ref(false);
 
 const allGenresList = ref([]);
 const isLoadingGenres = ref(false);
+
+const releasesList = ref(props.artist.releases);
 
 const submit = () => {
     form.put(route('admin-artists-update', { id: props.artist.id }));
@@ -131,8 +134,8 @@ const handleWheel = (event) => {
 };
 
 // skatīties modālā stāvokļa izmaiņas, lai novērstu ķermeņa ritināšanu (WIP)
-watch([showGenresModal, isReleasesModalOpen, isTracksModalOpen], () => {
-    const isAnyModalOpen = showGenresModal.value || isReleasesModalOpen.value || isTracksModalOpen.value;
+watch([showGenresModal, showReleasesModal, isTracksModalOpen], () => {
+    const isAnyModalOpen = showGenresModal.value || showReleasesModal.value || isTracksModalOpen.value;
     if (isAnyModalOpen) {
         document.body.style.overflow = 'hidden';
     } else {
@@ -166,7 +169,7 @@ const handleGenresSaved = async (payload) => {
     }
 };
 
-// Fetch all genres when component mounts
+// fetch all genres when component mounts
 onMounted(() => {
     fetchAllGenres();
 });
@@ -544,7 +547,7 @@ const cancelProfileUpload = () => {
                             <button
                                 type="button"
                                 class="btn-secondary content-button"
-                                @click="isReleasesModalOpen = true"
+                                @click="showReleasesModal = true"
                             >
                                 <span class="button-icon">💿</span>
                                 <span class="button-text">{{ t('adm_artists.edit.view_releases') }}</span>
@@ -727,71 +730,11 @@ const cancelProfileUpload = () => {
             @saved="handleGenresSaved"
         />
 
-        <!-- Modālais logs albumiem (releases) -->
-        <div v-if="isReleasesModalOpen" class="modal-overlay" @wheel="handleWheel" @touchmove.prevent @scroll.prevent>
-            <div class="modal">
-                <div class="modal-header">
-                    <h2>{{ t('adm_artists.edit.releases_modal_title') }}</h2>
-                    <button class="modal-close" @click="isReleasesModalOpen = false">×</button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="modal-table-container">
-                        <div class="modal-table-header">
-                            <div class="modal-table-row">
-                                <div class="modal-table-cell modal-table-cell-name">
-                                    {{ t('adm_artists.edit.release_title') }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-type">
-                                    {{ t('adm_artists.edit.release_type') }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-date">
-                                    {{ t('adm_artists.edit.release_date') }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-role">
-                                    {{ t('adm_artists.edit.release_role') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--  :href="route('admin-releases-edit', { id: release.id })" -->
-                        <div class="modal-table-body">
-                            <Link
-                                v-for="release in artist.releases"
-                                :key="release.id"
-                                :href="route('admin-dashboard')"
-                                class="modal-table-row clickable-row"
-                            >
-                                <div class="modal-table-cell modal-table-cell-name">
-                                    {{ release.title }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-type">
-                                    {{ release.release_type }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-date">
-                                    {{ formatDate(release.release_date) }}
-                                </div>
-                                <div class="modal-table-cell modal-table-cell-role">
-                                    <span :class="['role-badge', getRoleClass(release.role)]">
-                                        {{ t(`artists.global.${release.role}`) }}
-                                    </span>
-                                </div>
-                            </Link>
-
-                            <div v-if="!artist.releases || artist.releases.length === 0" class="modal-table-empty">
-                                {{ t('adm_artists.edit.no_releases') }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-secondary" @click="isReleasesModalOpen = false">
-                        {{ t('adm_artists.edit.modal_close') }}
-                    </button>
-                </div>
-            </div>
-        </div>
+        <RelatedReleasesModal
+            :visible="showReleasesModal"
+            :releases="releasesList"
+            @close="showReleasesModal = false"
+        />
 
         <!-- Modālais logs dziesmām -->
         <div v-if="isTracksModalOpen" class="modal-overlay" @wheel="handleWheel" @touchmove.prevent @scroll.prevent>

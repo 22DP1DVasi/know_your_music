@@ -88,7 +88,11 @@ class ArtistController extends Controller
         $artist = Artist::query()
             ->with([
                 'genres:id,name',
-                'releases:id,title,release_date,release_type',
+                'releases' => function ($query) {
+                    $query->with([
+                        'artists:id,name,slug'
+                    ])->select('releases.id', 'title', 'release_date', 'release_type');
+                },
                 'tracks:id,title,duration',
             ])
             ->findOrFail($id);
@@ -114,7 +118,7 @@ class ArtistController extends Controller
                     'id' => $genre->id,
                     'name' => $genre->name,
                 ]),
-                // albumi + starptabula
+                // albumi + starptabula + visi mākslinieki
                 'releases' => $artist->releases->map(fn ($release) => [
                     'id' => $release->id,
                     'title' => $release->title,
@@ -122,6 +126,11 @@ class ArtistController extends Controller
                     'release_type' => $release->release_type,
                     'role' => $release->pivot->role,
                     'cover_url' => $release->cover_url,
+                    'artists' => $release->artists->map(fn ($artist) => [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'slug' => $artist->slug,
+                    ]),
                 ]),
                 // dziesmas + starptabula
                 'tracks' => $artist->tracks->map(fn ($track) => [
