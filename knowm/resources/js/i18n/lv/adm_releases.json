@@ -23,5 +23,33 @@
         "clear_filters_msg": "Notīrīt filtrus",
         "no_releases_found_sys": "Nav atrasts neviens albums.",
         "failed_delete": "Neizdevās izdzēst albumu"
+    },
+    "edit": {
+        "title": "Rediģēt albumu",
+        "back_to_releases": "Atpakaļ pie albumiem",
+        "basic_info": "Pamatinformācija",
+        "title_label": "Nosaukums",
+        "release_date_label": "Izdošanas datums",
+        "release_type_label": "Albuma veids",
+        "description_label": "Apraksts (angļu valodā)",
+        "description_lv_label": "Apraksts (latviešu valodā)",
+        "associated_content": "Saistītais saturs",
+        "associated_content_placeholder": "Šeit parādīsies saistītais saturs (mākslinieki, dziesmas u.c.)",
+        "meta_info": "Metadati",
+        "id_label": "ID",
+        "slug_label": "URL adreses daļa",
+        "popularity_label": "Popularitātes rādītājs",
+        "created_at_label": "Izveidots",
+        "updated_at_label": "Atjaunināts",
+        "cover_image": "Vāka attēls",
+        "upload_cover": "Klikšķiniet, lai augšupielādētu",
+        "change_cover": "Mainīt attēlu",
+        "uploading": "Augšupielādē...",
+        "cover_helper": "Kvadrātveida .webp attēls, max 2MB",
+        "cover_error_type": "Atļauti tikai .webp attēli",
+        "cover_error_size": "Attēlam jābūt mazākam par 2MB",
+        "cover_error_upload": "Neizdevās augšupielādēt attēlu. Mēģiniet vēlreiz.",
+        "save_changes": "Saglabāt izmaiņas",
+        "saving": "Saglabā..."
     }
 }

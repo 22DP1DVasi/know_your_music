@@ -188,9 +188,8 @@ const getArtistNames = (release) => {
                     <div class="created-at-cell">{{ release.created_at }}</div>
                     <div class="updated-at-cell">{{ release.updated_at }}</div>
                     <div class="actions-cell">
-<!--                        :href="route('admin-releases-edit', { id: release.id })"-->
                         <Link
-                            href="#"
+                            :href="route('admin-releases-edit', { id: release.id })"
                             class="btn-edit"
                         >
                             {{ t('adm_releases.index.edit_btn') }}

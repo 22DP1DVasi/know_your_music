@@ -311,6 +311,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin-releases-index', [App\Http\Controllers\Admin\ReleaseController::class, 'index'])->name('admin-releases-index');
     Route::delete('/releases/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'destroy'])->name('admin-releases-destroy');
+    Route::get('/admin-releases-edit/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'edit'])->name('admin-releases-edit');
+    Route::put('/admin-releases-update/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'update'])->name('admin-releases-update');
+    Route::post('/admin-releases-update-cover/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'updateCover'])->name('admin-releases-update-cover');
 
     Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])->name('admin.genres.sync');
 });

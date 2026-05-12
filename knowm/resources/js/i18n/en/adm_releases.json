@@ -23,5 +23,33 @@
         "clear_filters_msg": "Clear filters",
         "no_releases_found_sys": "No releases found.",
         "failed_delete": "Could not delete release"
+    },
+    "edit": {
+        "title": "Edit Release",
+        "back_to_releases": "Back to Releases",
+        "basic_info": "Main Information",
+        "title_label": "Title",
+        "release_date_label": "Release Date",
+        "release_type_label": "Release Type",
+        "description_label": "Description (English)",
+        "description_lv_label": "Description (Latvian)",
+        "associated_content": "Associated Content",
+        "associated_content_placeholder": "Associated content will appear here (artists, tracks, etc.)",
+        "meta_info": "Metadata",
+        "id_label": "ID",
+        "slug_label": "URL Slug",
+        "popularity_label": "Popularity Score",
+        "created_at_label": "Created At",
+        "updated_at_label": "Updated At",
+        "cover_image": "Cover Image",
+        "upload_cover": "Click to upload",
+        "change_cover": "Change Cover",
+        "uploading": "Uploading...",
+        "cover_helper": "Square .webp image, max 2MB",
+        "cover_error_type": "Only .webp images are allowed",
+        "cover_error_size": "Image must be smaller than 2MB",
+        "cover_error_upload": "Failed to upload cover image. Please try again.",
+        "save_changes": "Save Changes",
+        "saving": "Saving..."
     }
 }

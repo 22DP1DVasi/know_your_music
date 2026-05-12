@@ -22,7 +22,6 @@ class Release extends Model
         'title',
         'slug',
         'release_date',
-        'cover_image',
         'description',
         'description_lv',
         'release_type',
@@ -47,14 +46,21 @@ class Release extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(function ($artist) {
-            $artist->slug = $artist->generateUniqueSlug();
+        static::creating(function ($release) {
+            $release->slug = $release->generateUniqueSlug();
         });
+        static::updating(function ($release) {
+            if ($release->isDirty('title')) {
+                $release->slug = $release->generateUniqueSlug($release->name);
+            }
+        });
+        // create folder for images when this release is created
         static::created(function ($release) {
-            Storage::makeDirectory("public/releases/{$release->id}");
+            Storage::makeDirectory("public/releases/{$release->release_type}/{$release->id}");
         });
+        // delete folder when this release is deleted
         static::deleted(function ($release) {
-            Storage::deleteDirectory("public/releases/{$release->id}");
+            Storage::deleteDirectory("public/releases/{$release->release_type}/{$release->id}");
         });
     }
 

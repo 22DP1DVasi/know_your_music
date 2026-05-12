@@ -187,7 +187,7 @@ class ArtistController extends Controller
 //        }
         $artist->update($validated);
         return redirect()
-            ->route('admin-artists-index')
+            ->route('admin-artists-edit', $artist->id)
             ->with('success', __('messages.artist_updated'));
     }
 
