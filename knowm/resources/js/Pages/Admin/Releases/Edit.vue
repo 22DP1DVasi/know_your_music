@@ -40,10 +40,6 @@ const submit = () => {
     });
 };
 
-const triggerFileInput = () => {
-    document.getElementById('cover-input')?.click();
-};
-
 const handleCoverFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -113,11 +109,6 @@ const cancelCoverUpload = () => {
     }
 };
 
-const capitalize = (value) => {
-    if (!value) return '';
-    return value.charAt(0).toUpperCase() + value.slice(1);
-};
-
 </script>
 
 <template>
@@ -140,7 +131,12 @@ const capitalize = (value) => {
                     <form @submit.prevent="submit" class="edit-form">
                         <!-- Basic fields -->
                         <div class="form-section">
-                            <h2 class="section-title">{{ t('adm_releases.edit.basic_info') }}</h2>
+                            <div class="main-info-header">
+                                <h2 class="section-title">{{ t('adm_releases.edit.basic_info') }}</h2>
+                                <button type="submit" class="btn-primary" :disabled="form.processing">
+                                    {{ form.processing ? t('adm_releases.edit.saving') : t('adm_releases.edit.save_changes') }}
+                                </button>
+                            </div>
 
                             <div class="form-group">
                                 <label for="title">{{ t('adm_releases.edit.title_label') }} <span class="required">*</span></label>
@@ -240,7 +236,7 @@ const capitalize = (value) => {
                         </div>
                         <div class="info-row">
                             <span class="info-label">{{ t('adm_releases.edit.popularity_label') }}:</span>
-                            <span class="info-value">{{ release.popularity ?? '—' }}</span>
+                            <span class="info-value popularity-value">{{ release.popularity ?? '—' }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">{{ t('adm_releases.edit.created_at_label') }}:</span>
@@ -399,6 +395,11 @@ const capitalize = (value) => {
     margin-bottom: 2rem;
     border-bottom: 1px solid #e5e7eb;
     padding-bottom: 1.5rem;
+}
+
+.main-info-header {
+    display: flex;
+    justify-content: space-between;
 }
 
 .section-title {
@@ -566,6 +567,12 @@ select.input-field.error {
     flex: 1;
     color: #1f2937;
     word-break: break-word;
+}
+
+.popularity-value {
+    font-family: monospace;
+    color: #059669;
+    font-weight: 600;
 }
 
 .cover-container {
