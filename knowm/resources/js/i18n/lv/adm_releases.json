@@ -45,11 +45,16 @@
         "upload_cover": "Klikšķiniet, lai augšupielādētu",
         "change_cover": "Mainīt attēlu",
         "uploading": "Augšupielādē...",
-        "cover_helper": "Kvadrātveida .webp attēls, max 2MB",
+        "cover_size": "Ieteicams: 1000x1000px (Kvadrāts)",
         "cover_error_type": "Atļauti tikai .webp attēli",
         "cover_error_size": "Attēlam jābūt mazākam par 2MB",
         "cover_error_upload": "Neizdevās augšupielādēt attēlu. Mēģiniet vēlreiz.",
         "save_changes": "Saglabāt izmaiņas",
-        "saving": "Saglabā..."
+        "saving": "Saglabā...",
+        "cover_error_no_file": "Lūdzu, vispirms izvēlieties failu.",
+        "cover_success": "Vāka attēls veiksmīgi atjaunināts.",
+        "choose_file": "Izvēlēties .webp failu",
+        "upload": "Augšupielādēt",
+        "cancel": "Atcelt"
     }
 }

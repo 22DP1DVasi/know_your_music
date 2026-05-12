@@ -45,11 +45,16 @@
         "upload_cover": "Click to upload",
         "change_cover": "Change Cover",
         "uploading": "Uploading...",
-        "cover_helper": "Square .webp image, max 2MB",
+        "cover_size": "Recommended: 1000x1000px (Square)",
         "cover_error_type": "Only .webp images are allowed",
         "cover_error_size": "Image must be smaller than 2MB",
         "cover_error_upload": "Failed to upload cover image. Please try again.",
         "save_changes": "Save Changes",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "cover_error_no_file": "Please select a file first.",
+        "cover_success": "Cover image updated successfully.",
+        "choose_file": "Choose .webp file",
+        "upload": "Upload",
+        "cancel": "Cancel"
     }
 }

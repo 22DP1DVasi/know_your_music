@@ -87,7 +87,7 @@
         "banner_alt": "Banera attēls priekš {name}",
         "profile_alt": "Profila attēls priekš {name}",
         "choose_file": "Izvēlēties .webp failu",
-        "upload": "Augšupielādēt attēlu",
+        "upload": "Augšupielādēt",
         "uploading": "Augšupielādē...",
         "cancel": "Atcelt",
         "image_error_webp": "Atļauti tikai .webp faili",

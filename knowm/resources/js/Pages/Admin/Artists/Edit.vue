@@ -915,6 +915,7 @@ label {
     font-size: 0.875rem;
     border-bottom: 1px solid #f3f4f6;
 }
+
 .info-label {
     flex: 0 0 110px;
     font-weight: 500;
@@ -926,6 +927,7 @@ label {
     color: #1f2937;
     word-break: break-word;
 }
+
 .popularity-value {
     font-family: monospace;
     color: #059669;

@@ -87,7 +87,7 @@
         "banner_alt": "Banner image for {name}",
         "profile_alt": "Profile image for {name}",
         "choose_file": "Choose .webp file",
-        "upload": "Upload Image",
+        "upload": "Upload",
         "uploading": "Uploading...",
         "cancel": "Cancel",
         "image_error_webp": "Only .webp files are allowed",

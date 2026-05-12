@@ -27,10 +27,9 @@ const form = useForm({
     description_lv: props.release.description_lv || ''
 });
 
-const coverPreview = ref(props.release.cover_url || null);
 const coverFile = ref(null);
 const isUploadingCover = ref(false);
-const coverError = ref(null);
+const originalCoverUrl = ref(props.release.cover_url || null);
 
 const submit = () => {
     form.put(route('admin-releases-update', { id: props.release.id }), {
@@ -45,40 +44,72 @@ const triggerFileInput = () => {
     document.getElementById('cover-input')?.click();
 };
 
-const handleCoverUpload = async (event) => {
+const handleCoverFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    // extension validation
-    if (!file.type.match(/image\/webp/)) {
-        coverError.value = t('adm_releases.edit.cover_error_type');
+    if (!file.name.toLowerCase().endsWith('.webp')) {
+        alert(t('adm_releases.edit.cover_error_type'));
+        event.target.value = '';
         return;
     }
-    // size validation
-    if (file.size > 2 * 1024 * 1024) {
-        coverError.value = t('adm_releases.edit.cover_error_size');
-        return;
+    coverFile.value = file;
+    if (!originalCoverUrl.value) {
+        originalCoverUrl.value = props.release.cover_url;
     }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById('cover-preview');
+        if (preview) {
+            preview.src = e.target.result;
+        }
+    };
+    reader.readAsDataURL(file);
+};
 
-    coverError.value = null;
+const uploadCover = async () => {
+    if (!coverFile.value) {
+        alert(t('adm_releases.edit.cover_error_no_file'));
+        return;
+    }
     isUploadingCover.value = true;
     const formData = new FormData();
-    formData.append('cover', file);
+    formData.append('cover', coverFile.value);
+    formData.append('_method', 'PUT');
     try {
-        const response = await axios.post(
-            route('admin-releases-update-cover', { id: props.release.id }),
-            formData,
-            { headers: { 'Content-Type': 'multipart/form-data' } }
-        );
+        const response = await axios.post(route('admin-releases-update-cover', { id: props.release.id }), formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
         if (response.data.success) {
-            coverPreview.value = response.data.cover_url;
-            props.release.cover_url = response.data.cover_url;
+            const preview = document.getElementById('cover-preview');
+            if (preview) {
+                preview.src = response.data.cover_url;
+            }
+            originalCoverUrl.value = response.data.cover_url.replace(/\?t=.*$/, '');
+            coverFile.value = null;
+            const fileInput = document.getElementById('cover-file-input');
+            if (fileInput) fileInput.value = '';
+            alert(response.data.message || t('adm_releases.edit.cover_success'));
+        } else {
+            alert(response.data.message || t('adm_releases.edit.cover_error_upload'));
         }
     } catch (error) {
         console.error('Cover upload error:', error);
-        coverError.value = error.response?.data?.message || t('adm_releases.edit.cover_error_upload');
+        alert(error.response?.data?.message || t('adm_releases.edit.cover_error_upload'));
     } finally {
         isUploadingCover.value = false;
-        event.target.value = '';
+    }
+};
+
+const cancelCoverUpload = () => {
+    coverFile.value = null;
+    const preview = document.getElementById('cover-preview');
+    if (preview && originalCoverUrl.value) {
+        preview.src = originalCoverUrl.value + '?t=' + Date.now();
+    }
+    const fileInput = document.getElementById('cover-file-input');
+    if (fileInput) {
+        fileInput.value = '';
+        fileInput.dispatchEvent(new Event('change'));
     }
 };
 
@@ -225,25 +256,48 @@ const capitalize = (value) => {
                     <div class="image-card">
                         <h3 class="info-title">{{ t('adm_releases.edit.cover_image') }}</h3>
                         <div class="cover-container">
-                            <div class="cover-preview" @click="triggerFileInput">
-                                <img v-if="coverPreview" :src="coverPreview" :alt="release.title" />
-                                <div v-else class="cover-placeholder">
-                                    <i class="fa-regular fa-image"></i>
-                                    <span>{{ t('adm_releases.edit.upload_cover') }}</span>
+                            <div class="cover-preview" id="cover-preview-wrapper">
+                                <img
+                                    id="cover-preview"
+                                    :src="originalCoverUrl || '/images/default-release-banner.webp'"
+                                    :alt="release.title"
+                                    @error="(e) => e.target.src = '/images/default-release-banner.webp'"
+                                />
+                            </div>
+                            <div class="image-upload-controls">
+                                <div class="file-input-wrapper">
+                                    <input
+                                        type="file"
+                                        id="cover-file-input"
+                                        accept=".webp"
+                                        class="file-input"
+                                        @change="handleCoverFileChange"
+                                    />
+                                    <label for="cover-file-input" class="btn-secondary btn-file">
+                                        {{ t('adm_releases.edit.choose_file') }}
+                                    </label>
+                                    <span v-if="coverFile" class="file-name">{{ coverFile.name }}</span>
+                                </div>
+                                <div class="upload-buttons" v-if="coverFile">
+                                    <button
+                                        @click="uploadCover"
+                                        :disabled="isUploadingCover"
+                                        class="btn-primary btn-sm"
+                                    >
+                                        {{ isUploadingCover ? t('adm_releases.edit.uploading') : t('adm_releases.edit.upload') }}
+                                    </button>
+                                    <button
+                                        @click="cancelCoverUpload"
+                                        class="btn-secondary btn-sm"
+                                    >
+                                        {{ t('adm_releases.edit.cancel') }}
+                                    </button>
                                 </div>
                             </div>
-                            <input
-                                id="cover-input"
-                                type="file"
-                                accept="image/webp"
-                                style="display: none"
-                                @change="handleCoverUpload"
-                            />
-                            <button type="button" class="btn-secondary" @click="triggerFileInput" :disabled="isUploadingCover">
-                                {{ isUploadingCover ? t('adm_releases.edit.uploading') : t('adm_releases.edit.change_cover') }}
-                            </button>
-                            <div v-if="coverError" class="error-message">{{ coverError }}</div>
-                            <p class="helper-text">{{ t('adm_releases.edit.cover_helper') }}</p>
+                            <div class="image-info">
+                                <div class="image-name">{{ release.cover_url }}</div>
+                                <div class="image-size-info">{{ t('adm_releases.edit.cover_size') }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -434,6 +488,58 @@ select.input-field.error {
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.file-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.file-input {
+    display: none;
+}
+
+.btn-file {
+    cursor: pointer;
+}
+
+.file-name {
+    font-size: 0.8rem;
+    color: #4b5563;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    max-width: 100%;
+    min-width: 0;
+}
+
+.image-info {
+    background: #f8fafc;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+}
+
+.image-name {
+    font-family: monospace;
+    color: #1e293b;
+    word-break: break-all;
+}
+
+.image-size-info {
+    font-size: 0.7rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
 .info-title {
     font-size: 1rem;
     font-weight: 600;
@@ -465,8 +571,11 @@ select.input-field.error {
 .cover-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 1rem;
+}
+
+.cover-container > .cover-preview {
+    align-items: center;
 }
 
 .cover-preview {
@@ -478,9 +587,9 @@ select.input-field.error {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     border: 1px solid #e5e7eb;
     transition: border 0.2s;
+    align-self: center;
 }
 
 .cover-preview:hover {
@@ -493,26 +602,9 @@ select.input-field.error {
     object-fit: cover;
 }
 
-.cover-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #9ca3af;
-    font-size: 0.875rem;
-    text-align: center;
-}
-
 .cover-placeholder i {
     font-size: 2rem;
     margin-bottom: 0.5rem;
-}
-
-.helper-text {
-    font-size: 0.75rem;
-    color: #6b7280;
-    text-align: center;
-    margin-top: 0.5rem;
 }
 
 /* Responsive design */
