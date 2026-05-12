@@ -256,9 +256,10 @@ const capitalize = (value) => {
                     <div class="image-card">
                         <h3 class="info-title">{{ t('adm_releases.edit.cover_image') }}</h3>
                         <div class="cover-container">
-                            <div class="cover-preview" id="cover-preview-wrapper">
+                            <div class="cover-preview-square" id="cover-preview-wrapper">
                                 <img
                                     id="cover-preview"
+                                    class="cover-preview"
                                     :src="originalCoverUrl || '/images/default-release-banner.webp'"
                                     :alt="release.title"
                                     @error="(e) => e.target.src = '/images/default-release-banner.webp'"
@@ -276,7 +277,7 @@ const capitalize = (value) => {
                                     <label for="cover-file-input" class="btn-secondary btn-file">
                                         {{ t('adm_releases.edit.choose_file') }}
                                     </label>
-                                    <span v-if="coverFile" class="file-name">{{ coverFile.name }}</span>
+<!--                                    <span v-if="coverFile" class="file-name">{{ coverFile.name }}</span>-->
                                 </div>
                                 <div class="upload-buttons" v-if="coverFile">
                                     <button
@@ -496,7 +497,6 @@ select.input-field.error {
 .file-input-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 0.5rem;
     min-width: 0;
 }
@@ -574,29 +574,16 @@ select.input-field.error {
     gap: 1rem;
 }
 
-.cover-container > .cover-preview {
-    align-items: center;
+.cover-preview-square {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
 }
 
 .cover-preview {
-    width: 200px;
-    height: 200px;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    background: #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #e5e7eb;
-    transition: border 0.2s;
-    align-self: center;
-}
-
-.cover-preview:hover {
-    border-color: #3b82f6;
-}
-
-.cover-preview img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -625,6 +612,11 @@ select.input-field.error {
     .form-row {
         flex-direction: column;
         gap: 0;
+    }
+
+    .cover-preview-square {
+        max-width: 280px;
+        margin: 0 auto;
     }
 }
 
