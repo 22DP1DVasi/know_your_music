@@ -84,37 +84,22 @@ class ReleaseController extends Controller
     public function updateCover(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $release = Release::findOrFail($id);
-
         $request->validate([
-            'cover' => 'required|image|mimes:webp|max:2048', // 2MB max, only webp
+            'cover' => 'required|file|mimes:webp|max:2048',
         ]);
-
-        // Build directory path: releases/{release_type}/{release_id}
-        $directory = "releases/{$release->release_type}/{$release->id}";
-        $fullPath = Storage::disk('public')->path($directory);
-
-        // Create directory if it doesn't exist
-        if (!file_exists($fullPath)) {
-            mkdir($fullPath, 0755, true);
-        }
-
-        // Store the file as cover.webp
-        $file = $request->file('cover');
         $filename = 'cover.webp';
-        $path = $file->storeAs($directory, $filename, 'public');
-
-        // Update the release's cover_url if needed (optional, but we keep consistent)
-        // The model accessor will automatically return the correct URL based on path.
-        // We can optionally set a 'cover' attribute but it's not required if we always derive.
-
-        // For consistency, you might store the relative path in the DB (e.g., 'cover_path')
-        // but the requirement says cover_url is read-only and derived. So just return the new URL.
-
-        $coverUrl = Storage::disk('public')->url($path);
+        $directory = "releases/{$release->release_type}/{$release->id}";
+        $path = $directory . '/' . $filename;
+        // ensure directory exists
+        Storage::disk('public')->makeDirectory($directory);
+        // get uploaded file
+        $file = $request->file('cover');
+        // store file with fixed name
+        Storage::disk('public')->put($path, file_get_contents($file));
 
         return response()->json([
             'success' => true,
-            'cover_url' => $coverUrl,
+            'cover_url' => Storage::url($path) . '?t=' . time(),
         ]);
     }
 }
