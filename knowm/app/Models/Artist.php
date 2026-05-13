@@ -84,11 +84,11 @@ class Artist extends Model
     /**
      * Get all releases by this artist
      */
-    public function releases(): BelongsToMany
+    public function releases()
     {
-        return $this->belongsToMany(Release::class, 'artists_releases')
-            ->withPivot('role')
-            ->withTimestamps();
+        return $this->belongsToMany(Release::class,'artists_releases',
+            'artist_id','release_id'
+        )->withTimestamps();
     }
 
     /**

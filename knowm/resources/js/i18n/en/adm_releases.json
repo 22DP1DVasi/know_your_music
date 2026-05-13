@@ -57,6 +57,10 @@
         "upload": "Upload",
         "cancel": "Cancel",
         "view_genres": "View Genres",
-        "failed_update_genres": "Failed to update genres. Please try again."
+        "failed_update_genres": "Failed to update genres. Please try again.",
+        "release_artists": "Artists",
+        "release_artists_desc": "Manage artists associated with this release",
+        "search_artists": "Search artists by name...",
+        "save_artists": "Save Artists"
     }
 }

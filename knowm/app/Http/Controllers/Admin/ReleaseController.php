@@ -151,4 +151,20 @@ class ReleaseController extends Controller
             'cover_url' => Storage::url($path) . '?t=' . time(),
         ]);
     }
+
+    public function updateArtists(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $release = Release::findOrFail($id);
+        $validated = $request->validate([
+            'artist_ids' => ['array'],
+            'artist_ids.*' => ['exists:artists,id']
+        ]);
+        $release->artists()->sync(
+            $validated['artist_ids'] ?? []
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }

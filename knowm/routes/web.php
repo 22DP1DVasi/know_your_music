@@ -308,12 +308,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
     Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
     Route::put('/admin/artists/{id}/update-image', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
+    Route::get('/admin/artists/search', [App\Http\Controllers\Admin\ArtistController::class, 'search'])
+        ->name('admin-artists-search');
 
     Route::get('/admin-releases-index', [App\Http\Controllers\Admin\ReleaseController::class, 'index'])->name('admin-releases-index');
     Route::delete('/releases/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'destroy'])->name('admin-releases-destroy');
     Route::get('/admin-releases-edit/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'edit'])->name('admin-releases-edit');
     Route::put('/admin-releases-update/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'update'])->name('admin-releases-update');
     Route::put('/admin-releases-update-cover/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'updateCover'])->name('admin-releases-update-cover');
+    Route::post('/admin/releases/{id}/artists', [App\Http\Controllers\Admin\ReleaseController::class, 'updateArtists'])
+        ->name('admin-releases-artists-update');
 
     Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])->name('admin.genres.sync');
 });

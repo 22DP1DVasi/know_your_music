@@ -133,7 +133,7 @@ class ArtistController extends Controller
                     'title' => $release->title,
                     'release_date' => $release->release_date,
                     'release_type' => $release->release_type,
-                    'role' => $release->pivot->role,
+//                    'role' => $release->pivot->role,
                     'cover_url' => $release->cover_url,
                     'artists' => $release->artists->map(fn ($artist) => [
                         'id' => $artist->id,
@@ -241,5 +241,27 @@ class ArtistController extends Controller
             'message' => ucfirst($type) . __('messages.artist_image_updated'),
             'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
         ]);
+    }
+
+    public function search(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $query = $request->get('q');
+        $artists = Artist::query()
+            ->with(['genres:id,name'])
+            ->where('name', 'like', "%{$query}%")
+            ->limit(10)
+            ->get([
+                'id',
+                'name',
+                'slug',
+                'formed_year'
+            ])
+            ->append('banner_url')
+            ->map(function ($artist) {
+                $artist->first_genre_name = $artist->genres->first()?->name;
+                return $artist;
+            });
+
+        return response()->json($artists);
     }
 }

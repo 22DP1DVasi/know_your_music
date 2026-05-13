@@ -57,6 +57,10 @@
         "upload": "Augšupielādēt",
         "cancel": "Atcelt",
         "view_genres": "Skatīt žanrus",
-        "failed_update_genres": "Neizdevās atjaunināt žanrus. Lūdzu, mēģiniet vēlreiz."
+        "failed_update_genres": "Neizdevās atjaunināt žanrus. Lūdzu, mēģiniet vēlreiz.",
+        "release_artists": "Izpildītāji",
+        "release_artists_desc": "Pārvaldīt izpildītājus, kas saistīti ar šo izdevumu",
+        "search_artists": "Meklēt izpildītājus pēc nosaukuma...",
+        "save_artists": "Saglabāt izpildītājus"
     }
 }
