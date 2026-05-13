@@ -51,11 +51,12 @@ const goToEdit = () => {
                 <span class="release-artists">
                     {{ artistNames }}
                 </span>
+                <span class="role-label">•</span>
                 <span class="release-date">{{ formattedDate }}</span>
-                <span v-if="artistRole" class="release-role">
-                    <span class="role-label">•</span>
-                    {{ t(`artists.global.${artistRole}`) }}
-                </span>
+<!--                <span v-if="artistRole" class="release-role">-->
+<!--                    <span class="role-label">•</span>-->
+<!--                    {{ t(`artists.global.${artistRole}`) }}-->
+<!--                </span>-->
             </div>
         </div>
     </div>
@@ -121,7 +122,7 @@ const goToEdit = () => {
 .release-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.5rem;
     font-size: 0.8rem;
     color: #6b7280;
 }

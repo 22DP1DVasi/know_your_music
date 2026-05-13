@@ -41,6 +41,7 @@ const goToEdit = () => {
             </div>
             <div class="track-details">
                 <span class="track-artists">{{ artistNames }}</span>
+                <span class="role-label">•</span>
                 <span class="track-year">{{ releaseYear }}</span>
                 <span v-if="track.role" class="track-role">
                     <span class="role-label">•</span>
@@ -102,7 +103,7 @@ const goToEdit = () => {
 .track-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.5rem;
     font-size: 0.8rem;
     color: #6b7280;
 }
