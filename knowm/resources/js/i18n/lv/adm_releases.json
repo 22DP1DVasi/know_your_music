@@ -26,6 +26,7 @@
     },
     "edit": {
         "title": "Rediģēt albumu",
+        "reset_btn": "Atiestatīt",
         "back_to_releases": "Atpakaļ pie albumiem",
         "basic_info": "Pamatinformācija",
         "title_label": "Nosaukums",
@@ -63,6 +64,9 @@
         "search_artists": "Meklēt izpildītājus pēc nosaukuma...",
         "save_artists": "Saglabāt izpildītājus",
         "save_artists_success": "Izpildītāji veiksmīgi atjaunināti.",
-        "save_artists_error": "Neizdevās atjaunināt izpildītājus. Mēģiniet vēlreiz."
+        "save_artists_error": "Neizdevās atjaunināt izpildītājus. Mēģiniet vēlreiz.",
+        "characters": "rakstzīmes",
+        "release_title_placeholder": "Ievadiet albuma nosaukumu",
+        "unknown": "Nezināms"
     }
 }

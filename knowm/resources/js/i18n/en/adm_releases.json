@@ -26,6 +26,7 @@
     },
     "edit": {
         "title": "Edit Release",
+        "reset_btn": "Reset",
         "back_to_releases": "Back to Releases",
         "basic_info": "Main Information",
         "title_label": "Title",
@@ -63,6 +64,9 @@
         "search_artists": "Search artists by name...",
         "save_artists": "Save Artists",
         "save_artists_success": "Artists updated successfully.",
-        "save_artists_error": "Failed to update artists. Please try again."
+        "save_artists_error": "Failed to update artists. Please try again.",
+        "characters": "characters",
+        "release_title_placeholder": "Enter release title",
+        "unknown": "Unknown"
     }
 }

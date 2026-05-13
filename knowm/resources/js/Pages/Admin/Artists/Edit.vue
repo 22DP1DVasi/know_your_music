@@ -98,7 +98,7 @@ watch(() => form.formed_year, (newFormedYear) => {
 // formatēt popularitāti priekš UI
 const formattedPopularity = props.artist.popularity ?
     parseFloat(props.artist.popularity).toFixed(2) :
-    '0.00';
+    '—';
 
 // saskaņotais pasaules laiks (UTC), nevis lokāls laiks
 const formatDateTimeUTC = (dateString) => {

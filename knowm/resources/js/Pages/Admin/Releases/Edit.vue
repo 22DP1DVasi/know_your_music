@@ -5,7 +5,8 @@ import {onMounted, ref, computed, watch} from 'vue';
 import { route } from 'ziggy-js';
 import { useI18n } from 'vue-i18n';
 import axios from 'axios';
-import debounce from 'lodash/debounce'
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
 import GenreManagerModal from '@/Components/Admin/GenreManagerModal.vue';
 import ArtistRelationManager from '@/Components/Admin/ArtistRelationManager.vue';
 
@@ -36,11 +37,14 @@ const props = defineProps({
     }
 });
 
+dayjs.extend(utc);
 const { t } = useI18n();
 
 const form = useForm({
     title: props.release.title || '',
-    release_date: props.release.release_date || '',
+    release_date: props.release.release_date
+        ? props.release.release_date.substring(0, 10)
+        : '',
     release_type: props.release.release_type || 'album',
     description: props.release.description || '',
     description_lv: props.release.description_lv || ''
@@ -58,6 +62,26 @@ const submit = () => {
         }
     });
 };
+
+const resetForm = () => {
+    form.reset();
+    form.title = props.release.title || '';
+    form.release_date = props.release.release_date || '';
+    form.release_type = props.release.release_type || 'album';
+    form.description = props.release.description || '';
+    form.description_lv = props.release.description_lv || '';
+};
+
+// saskaņotais pasaules laiks (UTC), nevis lokāls laiks
+const formatDateTimeUTC = (dateString) => {
+    if (!dateString) return t('adm_releases.edit.unknown');
+    return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
+};
+
+// formatēt popularitāti priekš UI
+const formattedPopularity = props.release.popularity ?
+    parseFloat(props.release.popularity).toFixed(2) :
+    '—';
 
 const handleCoverFileChange = (event) => {
     const file = event.target.files[0];
@@ -195,6 +219,13 @@ const handleArtistsUpdate = async (artists) => {
             <div class="edit-header">
                 <h1>{{ t('adm_releases.edit.title') }}</h1>
                 <div class="edit-actions">
+                    <button
+                        type="button"
+                        @click="resetForm"
+                        class="btn-secondary"
+                    >
+                        {{ t('adm_releases.edit.reset_btn') }}
+                    </button>
                     <Link :href="route('admin-releases-index')" class="btn-secondary">
                         {{ t('adm_releases.edit.back_to_releases') }}
                     </Link>
@@ -223,8 +254,12 @@ const handleArtistsUpdate = async (artists) => {
                                     class="input-field"
                                     :class="{ 'error': form.errors.title }"
                                     maxlength="255"
+                                    :placeholder="t('adm_releases.edit.artist_name_placeholder')"
                                 />
                                 <div v-if="form.errors.title" class="error-message">{{ form.errors.title }}</div>
+                                <div class="character-count" :class="{ 'near-limit': form.title.length > 200 }">
+                                    {{ form.title.length }}/255 {{ t('adm_releases.edit.characters') }}
+                                </div>
                             </div>
 
                             <div class="form-row">
@@ -321,15 +356,15 @@ const handleArtistsUpdate = async (artists) => {
                         </div>
                         <div class="info-row">
                             <span class="info-label">{{ t('adm_releases.edit.popularity_label') }}:</span>
-                            <span class="info-value popularity-value">{{ release.popularity ?? '—' }}</span>
+                            <span class="info-value popularity-value">{{ formattedPopularity }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">{{ t('adm_releases.edit.created_at_label') }}:</span>
-                            <span class="info-value">{{ release.created_at }}</span>
+                            <span class="info-value">{{ formatDateTimeUTC(release.created_at) }}</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">{{ t('adm_releases.edit.updated_at_label') }}:</span>
-                            <span class="info-value">{{ release.updated_at }}</span>
+                            <span class="info-value">{{ formatDateTimeUTC(release.updated_at) }}</span>
                         </div>
                     </div>
 
@@ -614,6 +649,17 @@ select.input-field.error {
     color: #ef4444;
     font-size: 0.75rem;
     margin-top: 0.25rem;
+}
+
+.character-count {
+    color: #6b7280;
+    font-size: 0.75rem;
+    text-align: right;
+    margin-top: 0.25rem;
+}
+
+.character-count.near-limit {
+    color: #f59e0b;
 }
 
 .info-card,
