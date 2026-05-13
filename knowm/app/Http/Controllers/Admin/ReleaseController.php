@@ -55,10 +55,59 @@ class ReleaseController extends Controller
 
     public function edit($id): \Inertia\Response
     {
-        $release = Release::findOrFail($id);
+        $release = Release::query()
+            ->with([
+                'genres:id,name',
+                'artists' => function ($query) {
+                    $query->select('artists.id', 'artists.name', 'artists.slug');
+                },
+                'tracks' => function ($query) {
+                    $query->with([
+                        'artists:id,name,slug'
+                    ])->select('tracks.id', 'tracks.title', 'tracks.slug', 'tracks.duration');
+                }
+            ])
+            ->findOrFail($id);
 
         return Inertia::render('Admin/Releases/Edit', [
-            'release' => $release,
+            'release' => [
+                'id' => $release->id,
+                'title' => $release->title,
+                'slug' => $release->slug,
+                'release_date' => $release->release_date,
+                'release_type' => $release->release_type,
+                'description' => $release->description,
+                'description_lv' => $release->description_lv,
+                'popularity' => $release->popularity,
+                'created_at' => $release->created_at,
+                'updated_at' => $release->updated_at,
+                'cover_url' => $release->cover_url,
+
+                'genres' => $release->genres->map(fn ($genre) => [
+                    'id' => $genre->id,
+                    'name' => $genre->name,
+                ]),
+
+                'artists' => $release->artists->map(fn ($artist) => [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'slug' => $artist->slug,
+                    'banner_url' => $artist->banner_url
+                ]),
+
+                'tracks' => $release->tracks->sortBy('pivot.track_position')->values()->map(fn ($track) => [
+                    'id' => $track->id,
+                    'title' => $track->title,
+                    'slug' => $track->slug,
+                    'duration' => $track->duration,
+                    'track_position' => $track->pivot->track_position,
+                    'artists' => $track->artists->map(fn ($artist) => [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'slug' => $artist->slug,
+                    ]),
+                ]),
+            ],
             'releaseTypes' => ['album', 'ep', 'single', 'compilation'],
         ]);
     }

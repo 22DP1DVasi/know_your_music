@@ -55,6 +55,8 @@
         "cover_success": "Vāka attēls veiksmīgi atjaunināts.",
         "choose_file": "Izvēlēties .webp failu",
         "upload": "Augšupielādēt",
-        "cancel": "Atcelt"
+        "cancel": "Atcelt",
+        "view_genres": "Skatīt žanrus",
+        "failed_update_genres": "Neizdevās atjaunināt žanrus. Lūdzu, mēģiniet vēlreiz."
     }
 }

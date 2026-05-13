@@ -55,6 +55,8 @@
         "cover_success": "Cover image updated successfully.",
         "choose_file": "Choose .webp file",
         "upload": "Upload",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "view_genres": "View Genres",
+        "failed_update_genres": "Failed to update genres. Please try again."
     }
 }

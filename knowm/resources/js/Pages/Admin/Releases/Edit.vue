@@ -1,15 +1,32 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import {Head, useForm, router, Link} from '@inertiajs/vue3';
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import { route } from 'ziggy-js';
 import { useI18n } from 'vue-i18n';
 import axios from 'axios';
+import GenreManagerModal from '@/Components/Admin/GenreManagerModal.vue';
 
 const props = defineProps({
     release: {
         type: Object,
-        required: true
+        required: true,
+        default: () => ({
+            id: null,
+            title: '',
+            slug: '',
+            release_date: '',
+            release_type: 'album',
+            description: '',
+            description_lv: '',
+            popularity: null,
+            created_at: '',
+            updated_at: '',
+            cover_url: null,
+            genres: [],
+            artists: [],
+            tracks: []
+        })
     },
     releaseTypes: {
         type: Array,
@@ -109,6 +126,44 @@ const cancelCoverUpload = () => {
     }
 };
 
+const showGenresModal = ref(false);
+const genresList = ref([...props.release.genres]);
+const allGenresList = ref([]);
+const isLoadingGenres = ref(false);
+
+const fetchAllGenres = async () => {
+    isLoadingGenres.value = true;
+    try {
+        const response = await axios.get(route('genres.all'));
+        allGenresList.value = response.data;
+    } catch (error) {
+        console.error('Failed to fetch genres:', error);
+    } finally {
+        isLoadingGenres.value = false;
+    }
+};
+
+// fetch all genres when component mounts
+onMounted(() => {
+    fetchAllGenres();
+});
+
+const handleGenresSaved = async (payload) => {
+    try {
+        await axios.post(route('admin.genres.sync'), payload);
+        // atjaunināt albuma žanrus lokāli ar jaunajiem atlasītajiem žanriem
+        genresList.value = payload.genre_ids
+            .map(id =>
+                allGenresList.value.find(genre => genre.id === id)
+            )
+            .filter(Boolean);
+        showGenresModal.value = false;
+    } catch (error) {
+        console.error('Failed to sync genres:', error);
+        alert(t('adm_releases.edit.failed_update_genres'));
+    }
+};
+
 </script>
 
 <template>
@@ -205,17 +260,16 @@ const cancelCoverUpload = () => {
                             </div>
                         </div>
 
-                        <!-- Placeholder for "Associated content" -->
                         <div class="form-section">
                             <h2 class="section-title">{{ t('adm_releases.edit.associated_content') }}</h2>
-                            <div class="placeholder-box">
-                                {{ t('adm_releases.edit.associated_content_placeholder') }}
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary" :disabled="form.processing">
-                                {{ form.processing ? t('adm_releases.edit.saving') : t('adm_releases.edit.save_changes') }}
+                            <button
+                                type="button"
+                                class="content-button"
+                                @click="showGenresModal = true"
+                            >
+                                <span class="button-icon">🎵</span>
+                                <span class="button-text">{{ t('adm_releases.edit.view_genres') }}</span>
+                                <span class="button-count">{{ genresList.length }}</span>
                             </button>
                         </div>
                     </form>
@@ -300,6 +354,16 @@ const cancelCoverUpload = () => {
                 </div>
             </div>
         </div>
+
+        <GenreManagerModal
+            :visible="showGenresModal"
+            entity-type="release"
+            :entity-id="release.id"
+            :current-genres="genresList"
+            :all-genres="allGenresList"
+            @close="showGenresModal = false"
+            @saved="handleGenresSaved"
+        />
     </AdminLayout>
 </template>
 
@@ -377,6 +441,61 @@ const cancelCoverUpload = () => {
 .edit-main {
     flex: 2;
     min-width: 0;
+}
+
+.content-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.content-button:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    background: #fdfdfd;
+}
+
+.button-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.button-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.button-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.75rem;
+    border-radius: 9999px;
+    background: #334155;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .edit-sidebar {
@@ -464,21 +583,6 @@ select.input-field.error {
     color: #ef4444;
     font-size: 0.75rem;
     margin-top: 0.25rem;
-}
-
-.placeholder-box {
-    background: #f9fafb;
-    border: 1px dashed #d1d5db;
-    border-radius: 0.5rem;
-    padding: 2rem;
-    text-align: center;
-    color: #6b7280;
-    font-style: italic;
-}
-
-.form-actions {
-    margin-top: 1rem;
-    text-align: right;
 }
 
 .info-card,
