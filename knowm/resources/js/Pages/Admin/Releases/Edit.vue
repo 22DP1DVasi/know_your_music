@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 import axios from 'axios';
 import debounce from 'lodash/debounce'
 import GenreManagerModal from '@/Components/Admin/GenreManagerModal.vue';
+import ArtistRelationManager from '@/Components/Admin/ArtistRelationManager.vue';
 
 const props = defineProps({
     release: {
@@ -165,64 +166,22 @@ const handleGenresSaved = async (payload) => {
     }
 };
 
-const releaseArtists = ref([...props.release.artists])
-const artistSearch = ref('')
-const artistResults = ref([])
-const artistSearchLoading = ref(false)
-const savingArtists = ref(false)
-
-const searchArtists = debounce(async () => {
-    const query = artistSearch.value.trim()
-    if (query.length < 2) {
-        artistResults.value = []
-        return
-    }
-    artistSearchLoading.value = true
+const handleArtistsUpdate = async (artists) => {
     try {
-        const response = await axios.get(route('admin-artists-search'), {
-            params: {
-                q: query
-            }
-        })
-        // exclude already attached artists
-        artistResults.value = response.data.filter(result =>
-            !releaseArtists.value.some(artist => artist.id === result.id)
-        )
-    } catch (e) {
-        console.error(e)
-    } finally {
-        artistSearchLoading.value = false
-    }
-}, 300)
-
-watch(artistSearch, () => {
-    searchArtists()
-})
-
-const addArtist = (artist) => {
-    releaseArtists.value.push(artist)
-    artistSearch.value = ''
-    artistResults.value = []
-}
-
-const removeArtist = (artistId) => {
-    releaseArtists.value =
-        releaseArtists.value.filter(a => a.id !== artistId)
-}
-
-const saveArtists = async () => {
-    savingArtists.value = true
-    try {
-        await axios.post(
-            route('admin-releases-artists-update', {id: props.release.id}),
+        const response = await axios.post(
+            route('admin-releases-artists-update', {
+                id: props.release.id
+            }),
             {
-                artist_ids: releaseArtists.value.map(a => a.id)
+                artist_ids: artists.map(a => a.id)
             }
         )
-    } catch (e) {
-        console.error(e)
-    } finally {
-        savingArtists.value = false
+        if (response.data.success) {
+            alert(response.data.message || t('adm_releases.edit.save_artists_success'));
+        }
+    } catch (error) {
+        console.error('Artists update error:', error);
+        alert(error.response?.data?.message || t('adm_releases.edit.save_artists_error'));
     }
 }
 
@@ -334,127 +293,15 @@ const saveArtists = async () => {
                                 <span class="button-count">{{ genresList.length }}</span>
                             </button>
 
-                            <div class="management-card">
-                                <div class="management-header">
-                                    <div>
-                                        <h3 class="management-title">
-                                            {{ t('adm_releases.edit.release_artists') }}
-                                        </h3>
-                                        <p class="management-subtitle">
-                                            {{ t('adm_releases.edit.release_artists_desc') }}
-                                        </p>
-                                    </div>
-
-                                    <span class="management-count">
-                                        {{ releaseArtists.length }}
-                                    </span>
-                                </div>
-
-                                <!-- Search -->
-                                <div class="artist-search-wrapper">
-                                    <input
-                                        v-model="artistSearch"
-                                        type="text"
-                                        class="input-field"
-                                        :placeholder="t('adm_releases.edit.search_artists')"
-                                    />
-
-                                    <!-- Dropdown -->
-                                    <div
-                                        v-if="artistResults.length > 0"
-                                        class="artist-results-dropdown"
-                                    >
-                                        <button
-                                            v-for="artist in artistResults"
-                                            :key="artist.id"
-                                            type="button"
-                                            class="artist-result-row"
-                                            @click="addArtist(artist)"
-                                        >
-                                            <img
-                                                :src="artist.banner_url"
-                                                :alt="artist.name"
-                                                class="artist-result-image"
-                                            />
-
-                                            <div class="artist-result-content">
-                                                <div class="artist-result-top">
-                                                    <span class="artist-name">
-                                                        {{ artist.name }}
-                                                    </span>
-                                                    <span class="artist-slug">
-                                                        {{ artist.slug }}
-                                                    </span>
-                                                    <span class="artist-formed-year">
-                                                        {{ artist.formed_year }}
-                                                    </span>
-                                                    <span class="artist-genre">
-                                                        {{ artist.first_genre_name }}
-                                                    </span>
-                                                </div>
-
-                                                <div class="artist-meta">
-                                                    #{{ artist.id }}
-                                                </div>
-                                            </div>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Attached artists -->
-                                <div
-                                    v-if="releaseArtists.length"
-                                    class="attached-artists"
-                                >
-                                    <div
-                                        v-for="artist in releaseArtists"
-                                        :key="artist.id"
-                                        class="attached-artist-row"
-                                    >
-                                        <div class="attached-artist-left">
-                                            <img
-                                                :src="artist.banner_url"
-                                                :alt="artist.name"
-                                                class="attached-artist-image"
-                                            />
-
-                                            <div class="attached-artist-info">
-                                                <div class="attached-artist-name">
-                                                    {{ artist.name }}
-                                                </div>
-
-                                                <div class="attached-artist-slug">
-                                                    {{ artist.slug }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            class="remove-artist-btn"
-                                            @click="removeArtist(artist.id)"
-                                        >
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Save -->
-                                <div class="management-actions">
-                                    <button
-                                        type="button"
-                                        class="btn-primary"
-                                        @click="saveArtists"
-                                        :disabled="savingArtists"
-                                    >
-                                        {{
-                                            savingArtists
-                                                ? t('adm_releases.edit.saving')
-                                                : t('adm_releases.edit.save_artists')
-                                        }}
-                                    </button>
-                                </div>
-                            </div>
+                            <ArtistRelationManager
+                                :title="t('adm_releases.edit.release_artists')"
+                                :subtitle="t('adm_releases.edit.release_artists_desc')"
+                                :initial-artists="release.artists"
+                                :search-route="route('admin-artists-search')"
+                                :search-placeholder="t('adm_releases.edit.search_artists')"
+                                :save-button-text="t('adm_releases.edit.save_artists')"
+                                @update="handleArtistsUpdate"
+                            />
                         </div>
                     </form>
                 </div>
@@ -680,188 +527,6 @@ const saveArtists = async () => {
     font-size: 0.8rem;
     font-weight: 700;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-.management-card {
-    margin-top: 1.5rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    background: #ffffff;
-}
-
-.management-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-    gap: 1rem;
-}
-
-.management-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #111827;
-}
-
-.management-subtitle {
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin-top: 0.25rem;
-}
-
-.management-count {
-    background: #e2e8f0;
-    color: #334155;
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.artist-search-wrapper {
-    position: relative;
-}
-
-.artist-results-dropdown {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 0;
-    right: 0;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    max-height: 320px;
-    overflow-y: auto;
-    z-index: 50;
-}
-
-.artist-result-row {
-    width: 100%;
-    display: flex;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.artist-result-row:hover {
-    background: #f8fafc;
-}
-
-.artist-result-image {
-    width: 52px;
-    height: 52px;
-    border-radius: 0.5rem;
-    object-fit: cover;
-}
-
-.artist-result-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.artist-result-top {
-    display: flex;
-    justify-content: flex-start;
-    gap: 1rem;
-}
-
-.artist-name {
-    font-weight: 600;
-    color: #111827;
-}
-
-.artist-slug {
-    color: #64748b;
-    font-size: 0.8rem;
-}
-
-.artist-formed-year {
-    color: #64748b;
-    font-size: 0.8rem;
-}
-
-.artist-genre {
-    color: #64748b;
-    font-size: 0.8rem;
-}
-
-.artist-meta {
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 0.25rem;
-    font-size: 0.75rem;
-    color: #9ca3af;
-}
-
-.attached-artists {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.attached-artist-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    background: #f8fafc;
-}
-
-.attached-artist-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.attached-artist-image {
-    width: 52px;
-    height: 52px;
-    border-radius: 0.5rem;
-    object-fit: cover;
-}
-
-.attached-artist-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.attached-artist-name {
-    font-weight: 600;
-    color: #111827;
-}
-
-.attached-artist-slug {
-    font-size: 0.8rem;
-    color: #64748b;
-}
-
-.remove-artist-btn {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: 999px;
-    background: #fee2e2;
-    color: #dc2626;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.remove-artist-btn:hover {
-    background: #fecaca;
-}
-
-.management-actions {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: flex-end;
 }
 
 .edit-sidebar {
