@@ -292,7 +292,7 @@ const handleArtistsUpdate = async (artists) => {
                             </div>
 
                             <div class="form-group">
-                                <label for="description">{{ t('adm_releases.edit.description_label') }} (EN)</label>
+                                <label for="description">{{ t('adm_releases.edit.description_label') }}</label>
                                 <textarea
                                     id="description"
                                     v-model="form.description"
@@ -304,7 +304,7 @@ const handleArtistsUpdate = async (artists) => {
                             </div>
 
                             <div class="form-group">
-                                <label for="description_lv">{{ t('adm_releases.edit.description_lv_label') }} (LV)</label>
+                                <label for="description_lv">{{ t('adm_releases.edit.description_lv_label') }}</label>
                                 <textarea
                                     id="description_lv"
                                     v-model="form.description_lv"
@@ -315,7 +315,9 @@ const handleArtistsUpdate = async (artists) => {
                                 <div v-if="form.errors.description_lv" class="error-message">{{ form.errors.description_lv }}</div>
                             </div>
                         </div>
+                    </form>
 
+                    <div class="edit-form">
                         <div class="form-section">
                             <h2 class="section-title">{{ t('adm_releases.edit.associated_content') }}</h2>
                             <button
@@ -338,7 +340,7 @@ const handleArtistsUpdate = async (artists) => {
                                 @update="handleArtistsUpdate"
                             />
                         </div>
-                    </form>
+                    </div>
                 </div>
 
                 <!-- Right column: read-only info & cover image -->
@@ -507,6 +509,10 @@ const handleArtistsUpdate = async (artists) => {
 .edit-main {
     flex: 2;
     min-width: 0;
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .content-button {
@@ -567,13 +573,6 @@ const handleArtistsUpdate = async (artists) => {
 .edit-sidebar {
     flex: 1;
     min-width: 280px;
-}
-
-.edit-form {
-    background: white;
-    border-radius: 0.75rem;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .form-section {
