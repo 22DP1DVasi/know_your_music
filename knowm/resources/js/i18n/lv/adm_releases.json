@@ -67,6 +67,13 @@
         "save_artists_error": "Neizdevās atjaunināt izpildītājus. Mēģiniet vēlreiz.",
         "characters": "rakstzīmes",
         "release_title_placeholder": "Ievadiet albuma nosaukumu",
-        "unknown": "Nezināms"
+        "unknown": "Nezināms",
+        "tracklist": "Dziesmu saraksts",
+        "tracklist_desc": "Pārvaldīt dziesmas šajā albumā",
+        "search_tracks": "Meklēt dziesmas pēc nosaukuma...",
+        "no_tracks_added": "Šim albumam vēl nav pievienotas dziesmas",
+        "save_tracklist": "Saglabāt dziesmu sarakstu",
+        "save_tracklist_success": "Dziesmu saraksts veiksmīgi atjaunināts.",
+        "save_tracklist_error": "Neizdevās atjaunināt dziesmu sarakstu. Mēģiniet vēlreiz."
     }
 }

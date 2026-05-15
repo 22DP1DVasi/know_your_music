@@ -167,4 +167,33 @@ class ReleaseController extends Controller
             'success' => true
         ]);
     }
+
+    public function updateTracks(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $release = Release::findOrFail($id);
+        $validated = $request->validate([
+            'tracks' => ['array'],
+            'tracks.*.id' => [
+                'required',
+                'exists:tracks,id'
+            ],
+            'tracks.*.track_position' => [
+                'required',
+                'integer',
+                'min:1'
+            ],
+        ]);
+
+        $syncData = [];
+        foreach ($validated['tracks'] as $track) {
+            $syncData[$track['id']] = [
+                'track_position' => $track['track_position']
+            ];
+        }
+        $release->tracks()->sync($syncData);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }

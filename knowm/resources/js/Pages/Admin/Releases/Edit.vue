@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import GenreManagerModal from '@/Components/Admin/GenreManagerModal.vue';
 import ArtistRelationManager from '@/Components/Admin/ArtistRelationManager.vue';
+import TracklistManager from '@/Components/Admin/TracklistManager.vue';
 
 const props = defineProps({
     release: {
@@ -209,6 +210,12 @@ const handleArtistsUpdate = async (artists) => {
     }
 }
 
+const tracklist = ref([...props.release.tracks])
+
+const handleTracklistUpdated = (updatedTracklist) => {
+    tracklist.value = updatedTracklist
+}
+
 </script>
 
 <template>
@@ -338,6 +345,13 @@ const handleArtistsUpdate = async (artists) => {
                                 :search-placeholder="t('adm_releases.edit.search_artists')"
                                 :save-button-text="t('adm_releases.edit.save_artists')"
                                 @update="handleArtistsUpdate"
+                            />
+
+                            <TracklistManager
+                                :release="release"
+                                :search-route="route('admin-tracks-search')"
+                                :save-route="route('admin-releases-tracks-update', { id: release.id })"
+                                @updated="handleTracklistUpdated"
                             />
                         </div>
                     </div>

@@ -318,6 +318,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin-releases-update-cover/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'updateCover'])->name('admin-releases-update-cover');
     Route::post('/admin/releases/{id}/artists', [App\Http\Controllers\Admin\ReleaseController::class, 'updateArtists'])
         ->name('admin-releases-artists-update');
+    Route::post('/admin/releases/{id}/tracks', [App\Http\Controllers\Admin\ReleaseController::class, 'updateTracks'])
+        ->name('admin-releases-tracks-update');
+
+    Route::get('/admin/tracks/search', [App\Http\Controllers\Admin\TrackController::class, 'search'])
+        ->name('admin-tracks-search');
 
     Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])->name('admin.genres.sync');
 });

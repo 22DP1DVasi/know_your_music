@@ -67,6 +67,13 @@
         "save_artists_error": "Failed to update artists. Please try again.",
         "characters": "characters",
         "release_title_placeholder": "Enter release title",
-        "unknown": "Unknown"
+        "unknown": "Unknown",
+        "tracklist": "Tracklist",
+        "tracklist_desc": "Manage tracks in this release",
+        "search_tracks": "Search tracks by title...",
+        "no_tracks_added": "No tracks added to this release yet",
+        "save_tracklist": "Save Tracklist",
+        "save_tracklist_success": "Tracklist updated successfully.",
+        "save_tracklist_error": "Failed to update tracklist. Please try again."
     }
 }
