@@ -8,6 +8,7 @@ use App\Models\Release;
 use App\Models\Track;
 use App\Models\Genre;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Storage;
 
@@ -168,6 +169,14 @@ class ReleaseController extends Controller
         ]);
     }
 
+    /***
+     * Updates release's tracklist.
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
+     */
     public function updateTracks(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $release = Release::findOrFail($id);
@@ -184,13 +193,53 @@ class ReleaseController extends Controller
             ],
         ]);
 
-        $syncData = [];
-        foreach ($validated['tracks'] as $track) {
-            $syncData[$track['id']] = [
-                'track_position' => $track['track_position']
-            ];
-        }
-        $release->tracks()->sync($syncData);
+        DB::transaction(function () use ($release, $validated) {
+            $submittedTrackIds = collect($validated['tracks'])
+                                ->pluck('id')
+                                ->toArray();
+
+            // step 1: remove tracks deleted from UI
+            $release->tracks()
+                ->whereNotIn('tracks.id', $submittedTrackIds)
+                ->detach();
+
+            // step 2: attach newly added tracks
+            $existingTrackIds = $release->tracks()
+                                ->pluck('tracks.id')
+                                ->toArray();
+            foreach ($validated['tracks'] as $trackData) {
+                if (!in_array($trackData['id'], $existingTrackIds)) {
+                    $release->tracks()->attach(
+                        $trackData['id'],
+                        [
+                            'track_position' =>
+                                $trackData['track_position']
+                        ]
+                    );
+                }
+            }
+
+            // step 3: move all positions away temporarily
+            foreach ($release->tracks as $track) {
+                $release->tracks()->updateExistingPivot(
+                    $track->id,
+                    [
+                        'track_position' =>
+                            $track->pivot->track_position + 1000
+                    ]
+                );
+            }
+            // step 4: apply final positions
+            foreach ($validated['tracks'] as $trackData) {
+                $release->tracks()->updateExistingPivot(
+                    $trackData['id'],
+                    [
+                        'track_position' =>
+                            $trackData['track_position']
+                    ]
+                );
+            }
+        });
 
         return response()->json([
             'success' => true
