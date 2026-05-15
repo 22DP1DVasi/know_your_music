@@ -215,7 +215,6 @@ watch(
                         </div>
 
                         <div
-                            v-if="track.artists?.length > 1"
                             class="track-result-artists"
                         >
                             {{ track.artists.map(a => a.name).join(', ') }}
@@ -461,6 +460,7 @@ select.input-field.error {
 }
 
 .tracklist-row {
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -501,6 +501,7 @@ select.input-field.error {
 }
 
 .track-main-info {
+    flex: 1;
     min-width: 0;
 }
 
@@ -517,9 +518,13 @@ select.input-field.error {
     margin-top: 0.2rem;
     font-size: 0.8rem;
     color: #64748b;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .tracklist-right {
@@ -527,6 +532,7 @@ select.input-field.error {
     align-items: center;
     gap: 1rem;
     flex-shrink: 0;
+    margin-left: auto;
 }
 
 .track-duration {
@@ -619,6 +625,22 @@ select.input-field.error {
 .btn-primary:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+@media (max-width: 1100px) {
+    .tracklist-row {
+        align-items: flex-start;
+    }
+
+    .tracklist-right {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+    }
+
+    .track-duration {
+        font-size: 0.8rem;
+    }
 }
 
 @media (max-width: 768px) {
