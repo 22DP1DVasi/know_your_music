@@ -273,7 +273,7 @@ const handleTracklistUpdated = (updatedTracklist) => {
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="release_date">{{ t('adm_releases.edit.release_date_label') }}</label>
+                                    <label for="release_date">{{ t('adm_releases.edit.release_date_label') }} <span class="required">*</span></label>
                                     <input
                                         id="release_date"
                                         type="date"
@@ -637,6 +637,10 @@ const handleTracklistUpdated = (updatedTracklist) => {
 .form-row .form-group {
     flex: 1;
     min-width: 0;
+}
+
+.required {
+    color: #ef4444;
 }
 
 label {

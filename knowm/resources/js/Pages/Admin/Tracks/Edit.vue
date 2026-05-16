@@ -1,7 +1,7 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { route } from 'ziggy-js';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
@@ -41,18 +41,14 @@ const form = useForm({
     description_lv: props.track.description_lv || ''
 });
 
-// Parse duration for display/editing (HH:MM:SS)
-// The input will be a text field expecting format "HH:MM:SS"
-// We can also split into three separate number inputs, but for simplicity we'll use a single text input
-// with a placeholder and pattern hint.
-// Alternative: three separate fields for hours, minutes, seconds.
-// I'll use three separate fields for better UX.
 
+// parse duration for display/editing HH:MM:SS
+// the input will be a text field expecting format HH:MM:SS
 const durationHours = ref('');
 const durationMinutes = ref('');
 const durationSeconds = ref('');
 
-// Initialize duration fields from track.duration (format "HH:MM:SS")
+// initialize duration fields from track.duration (format HH:MM:SS)
 const initDurationFields = () => {
     if (props.track.duration) {
         const parts = props.track.duration.split(':');
@@ -61,7 +57,7 @@ const initDurationFields = () => {
             durationMinutes.value = parts[1];
             durationSeconds.value = parts[2];
         } else if (parts.length === 2) {
-            // If format "MM:SS", assume hours = 0
+            // if format "MM:SS", hours = 0
             durationHours.value = '0';
             durationMinutes.value = parts[0];
             durationSeconds.value = parts[1];
@@ -78,11 +74,11 @@ const initDurationFields = () => {
 };
 initDurationFields();
 
-// Combine hours, minutes, seconds into HH:MM:SS string for form data
+// combine hours, minutes, seconds into HH:MM:SS string for form data
 const updateDurationString = () => {
-    const hours = durationHours.value.padStart(2, '0');
-    const minutes = durationMinutes.value.padStart(2, '0');
-    const seconds = durationSeconds.value.padStart(2, '0');
+    const hours = String(durationHours.value || 0).padStart(2, '0');
+    const minutes = String(durationMinutes.value || 0).padStart(2, '0');
+    const seconds = String(durationSeconds.value || 0).padStart(2, '0');
     if (hours === '00' && minutes === '00' && seconds === '00') {
         form.duration = '';
     } else {
@@ -90,19 +86,18 @@ const updateDurationString = () => {
     }
 };
 
-// Watch each duration field to update the combined duration
-import { watch } from 'vue';
+// watch each duration field to update the combined duration
 watch([durationHours, durationMinutes, durationSeconds], () => {
     updateDurationString();
 });
 
-// Format timestamps in UTC
+// format timestamps in UTC
 const formatDateTimeUTC = (dateString) => {
     if (!dateString) return t('adm_tracks.edit.unknown');
     return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
 };
 
-// Format popularity for display
+// format popularity for display
 const formattedPopularity = props.track.popularity ?
     parseFloat(props.track.popularity).toFixed(2) :
     '—';
@@ -182,7 +177,7 @@ const resetForm = () => {
 
                             <!-- Release Date -->
                             <div class="form-group">
-                                <label for="release_date">{{ t('adm_tracks.edit.release_date_label') }}</label>
+                                <label for="release_date">{{ t('adm_tracks.edit.release_date_label') }} <span class="required">*</span></label>
                                 <input
                                     id="release_date"
                                     type="date"
@@ -195,7 +190,7 @@ const resetForm = () => {
 
                             <!-- Duration (three separate fields) -->
                             <div class="form-group">
-                                <label>{{ t('adm_tracks.edit.duration_label') }}</label>
+                                <label>{{ t('adm_tracks.edit.duration_label') }} <span class="required">*</span></label>
                                 <div class="duration-fields">
                                     <div class="duration-field">
                                         <input
@@ -204,7 +199,6 @@ const resetForm = () => {
                                             class="input-field duration-input"
                                             placeholder="HH"
                                             min="0"
-                                            max="23"
                                             step="1"
                                         />
                                         <span class="duration-sep">:</span>
@@ -318,7 +312,6 @@ const resetForm = () => {
 </template>
 
 <style scoped>
-/* Re-use the exact same styles as Releases/Edit – copy all styles from there */
 .edit-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -448,6 +441,10 @@ const resetForm = () => {
 .form-row .form-group {
     flex: 1;
     min-width: 0;
+}
+
+.required {
+    color: #ef4444;
 }
 
 label {
@@ -642,7 +639,7 @@ input[type="date"] {
     margin-top: 0.25rem;
 }
 
-/* Responsive */
+/* Responsive design */
 @media (max-width: 1115px) {
     .edit-header {
         flex-direction: column;

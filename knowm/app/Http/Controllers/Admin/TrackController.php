@@ -46,6 +46,12 @@ class TrackController extends Controller
             ->with('success', __('messages.track_deleted'));
     }
 
+    /***
+     * Method for Edit.vue page.
+     *
+     * @param $id
+     * @return \Inertia\Response
+     */
     public function edit($id): \Inertia\Response
     {
         $track = Track::findOrFail($id);
@@ -67,14 +73,21 @@ class TrackController extends Controller
         ]);
     }
 
+    /***
+     * Updates the track (only text attributes).
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id): \Illuminate\Http\RedirectResponse
     {
         $track = Track::findOrFail($id);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'release_date' => 'nullable|date',
-            'duration' => 'nullable|date_format:H:i:s',
+            'release_date' => 'required|date',
+            'duration' => 'required|date_format:H:i:s',
             'description' => 'nullable|string',
             'description_lv' => 'nullable|string',
         ]);

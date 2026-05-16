@@ -371,7 +371,7 @@ const cancelProfileUpload = () => {
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="name">{{ t('adm_artists.edit.artist_name') }}</label>
+                                <label for="name">{{ t('adm_artists.edit.artist_name') }} <span class="required">*</span></label>
                                 <input
                                     v-model="form.name"
                                     id="name"
@@ -771,6 +771,10 @@ const cancelProfileUpload = () => {
 .form-row .form-group {
     flex: 1;
     min-width: 0;
+}
+
+.required {
+    color: #ef4444;
 }
 
 label {

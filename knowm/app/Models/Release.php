@@ -51,7 +51,7 @@ class Release extends Model
         });
         static::updating(function ($release) {
             if ($release->isDirty('title')) {
-                $release->slug = $release->generateUniqueSlug($release->name);
+                $release->slug = $release->generateUniqueSlug();
             }
         });
         // create folder for images when this release is created

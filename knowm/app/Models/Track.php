@@ -49,12 +49,17 @@ class Track extends Model
         static::creating(function ($track) {
             $track->slug = $track->generateUniqueSlug();
         });
-        static::created(function ($track) {
-            Storage::makeDirectory("public/tracks/{$track->id}");
+        static::updating(function ($track) {
+            if ($track->isDirty('title')) {
+                $track->slug = $track->generateUniqueSlug();
+            }
         });
-        static::deleted(function ($track) {
-            Storage::deleteDirectory("public/tracks/{$track->id}");
-        });
+//        static::created(function ($track) {
+//            Storage::makeDirectory("public/tracks/{$track->id}");
+//        });
+//        static::deleted(function ($track) {
+//            Storage::deleteDirectory("public/tracks/{$track->id}");
+//        });
     }
 
     /**
