@@ -344,6 +344,7 @@ const handleTracklistUpdated = (updatedTracklist) => {
                                 :search-route="route('admin-artists-search')"
                                 :search-placeholder="t('adm_releases.edit.search_artists')"
                                 :save-button-text="t('adm_releases.edit.save_artists')"
+                                entity-type="release"
                                 @update="handleArtistsUpdate"
                             />
 

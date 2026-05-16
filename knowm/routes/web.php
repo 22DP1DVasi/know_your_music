@@ -323,6 +323,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/releases/{id}/tracks', [App\Http\Controllers\Admin\ReleaseController::class, 'updateTracks'])
         ->name('admin-releases-tracks-update');
 
+
+
     Route::get('/admin/tracks/search', [App\Http\Controllers\Admin\TrackController::class, 'search'])
         ->name('admin-tracks-search');
 

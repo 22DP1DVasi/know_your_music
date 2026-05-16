@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import {computed, ref, watch} from 'vue'
 import axios from 'axios'
 import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n';
@@ -9,30 +9,30 @@ const props = defineProps({
         type: String,
         default: 'Artists'
     },
-
     subtitle: {
         type: String,
         default: ''
     },
-
     initialArtists: {
         type: Array,
         default: () => []
     },
-
     searchRoute: {
         type: String,
         required: true
     },
-
     searchPlaceholder: {
         type: String,
         default: 'Search artists...'
     },
-
     saveButtonText: {
         type: String,
         default: 'Save'
+    },
+    entityType: {
+        type: String,
+        required: true,
+        validator: (value) => ['release', 'track'].includes(value)
     }
 })
 
@@ -41,6 +41,10 @@ const { t } = useI18n();
 const emit = defineEmits([
     'update'
 ])
+
+const artistsDesc = computed(() => {
+    return t(`adm_components.artist_relation_manager.${props.entityType}_artists_desc`);
+});
 
 const relatedArtists = ref([...props.initialArtists])
 
@@ -108,16 +112,16 @@ watch(
         <div class="management-header">
             <div>
                 <h3 class="management-title">
-                    {{ t('adm_releases.edit.release_artists') }}
+                    {{ t('adm_components.artist_relation_manager.release_artists') }}
                 </h3>
                 <p class="management-subtitle">
-                    {{ t('adm_releases.edit.release_artists_desc') }}
+                    {{ artistsDesc }}
                 </p>
             </div>
 
             <span class="management-count">
-                                        {{ relatedArtists.length }}
-                                    </span>
+                {{ relatedArtists.length }}
+            </span>
         </div>
 
         <!-- Search -->
@@ -126,7 +130,7 @@ watch(
                 v-model="artistSearch"
                 type="text"
                 class="input-field"
-                :placeholder="t('adm_releases.edit.search_artists')"
+                :placeholder="t('adm_components.artist_relation_manager.search_artists')"
             />
 
             <!-- Dropdown -->
@@ -216,7 +220,7 @@ watch(
                 class="btn-primary"
                 @click="emitUpdate"
             >
-                {{ t('adm_releases.edit.save_artists') }}
+                {{ t('adm_components.artist_relation_manager.save_artists') }}
             </button>
         </div>
     </div>

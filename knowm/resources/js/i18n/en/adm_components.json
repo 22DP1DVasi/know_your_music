@@ -24,5 +24,12 @@
         "search_placeholder": "Search tracks...",
         "no_results": "No tracks found",
         "close": "Close"
+    },
+    "artist_relation_manager": {
+        "release_artists": "Artists",
+        "release_artists_desc": "Manage artists associated with this release",
+        "track_artists_desc": "Manage artists associated with this track",
+        "search_artists": "Search artists by name...",
+        "save_artists": "Save Artists"
     }
 }

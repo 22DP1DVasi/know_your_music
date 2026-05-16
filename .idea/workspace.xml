@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="" />
+    <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/ArtistRelationManager.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/ArtistRelationManager.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Releases/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Releases/Edit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_components.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_components.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_releases.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_releases.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -489,7 +497,7 @@
       <workItem from="1778675656834" duration="16727000" />
       <workItem from="1778748687519" duration="5764000" />
       <workItem from="1778865978860" duration="6272000" />
-      <workItem from="1778922655855" duration="3986000" />
+      <workItem from="1778922655855" duration="5660000" />
     </task>
     <servers />
   </component>

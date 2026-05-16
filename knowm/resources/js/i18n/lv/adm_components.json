@@ -24,5 +24,12 @@
         "search_placeholder": "Meklēt dziesmas...",
         "no_results": "Nav atrasta neviena dziesma",
         "close": "Aizvērt"
+    },
+    "artist_relation_manager": {
+        "release_artists": "Izpildītāji",
+        "release_artists_desc": "Pārvaldīt izpildītājus, kas saistīti ar šo albumu",
+        "track_artists_desc": "Pārvaldīt izpildītājus, kas saistīti ar šo dziesmu",
+        "search_artists": "Meklēt izpildītājus pēc nosaukuma...",
+        "save_artists": "Saglabāt izpildītājus"
     }
 }
