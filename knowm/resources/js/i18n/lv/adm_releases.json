@@ -75,5 +75,20 @@
         "save_tracklist": "Saglabāt dziesmu sarakstu",
         "save_tracklist_success": "Dziesmu saraksts veiksmīgi atjaunināts.",
         "save_tracklist_error": "Neizdevās atjaunināt dziesmu sarakstu. Mēģiniet vēlreiz."
+    },
+    "create": {
+        "title": "Izveidot jaunu albumu",
+        "back_to_releases": "Atpakaļ pie albumiem",
+        "title_label": "Nosaukums",
+        "title_placeholder": "piemēram, Thriller",
+        "characters": "rakstzīmes",
+        "release_date_label": "Izdošanas datums",
+        "release_date_help": "Varat izvēlēties nākotnes datumu",
+        "release_type_label": "Albuma tips",
+        "description_en": "Apraksts (angļu)",
+        "description_lv": "Apraksts (latviešu)",
+        "description_placeholder": "Rakstiet aprakstu šim albumam...",
+        "reset_btn": "Atiestatīt",
+        "create_release_btn": "Izveidot albumu"
     }
 }

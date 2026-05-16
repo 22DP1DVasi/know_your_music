@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artist;
 use App\Models\Release;
-use App\Models\Track;
-use App\Models\Genre;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Storage;
 
@@ -38,6 +36,28 @@ class ReleaseController extends Controller
             'releases' => $releases,
             'filters' => $request->only(['search_title', 'filter_type'])
         ]);
+    }
+
+    public function create(): \Inertia\Response
+    {
+        return Inertia::render('Admin/Releases/Create', [
+            'releaseTypes' => ['album', 'ep', 'single', 'compilation'],
+        ]);
+    }
+
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'release_date' => 'required|date',
+            'release_type' => 'required|in:album,ep,single,compilation',
+            'description' => 'nullable|string',
+            'description_lv' => 'nullable|string',
+        ]);
+
+        Release::create($validated);
+        return redirect()->route('admin-releases-index')
+            ->with('success', __('messages.release_created'));
     }
 
     /***
@@ -128,7 +148,7 @@ class ReleaseController extends Controller
         $release->update($validated);
 
         return redirect()->route('admin-releases-edit', $release->id)
-            ->with('success', 'Release updated successfully.');
+            ->with('success', __('messages.release_updated'));
     }
 
     public function updateCover(Request $request, $id): \Illuminate\Http\JsonResponse

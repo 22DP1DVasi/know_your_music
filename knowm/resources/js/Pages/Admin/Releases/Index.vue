@@ -96,8 +96,7 @@ const getArtistNames = (release) => {
                 <Link :href="route('home')" class="btn-secondary">
                     {{ t('adm_releases.index.back_to_website') }}
                 </Link>
-<!--                <Link :href="route('admin-releases-create')" class="btn-primary">-->
-                <Link href="#" class="btn-primary">
+                <Link :href="route('admin-releases-create')" class="btn-primary">
                     {{ t('adm_releases.index.add_new_release') }}
                 </Link>
             </div>
