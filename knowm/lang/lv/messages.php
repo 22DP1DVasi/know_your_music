@@ -31,6 +31,7 @@ return [
     'release_created' => 'Albums veiksmīgi izveidots.',
     'release_deleted' => 'Albums veiksmīgi izdzēsts.',
     'release_updated' => 'Albums veiksmīgi atjaunināts.',
+    'track_deleted' => 'Dziesma veiksmīgi izdzēsta.',
     'signup' => [
         'name_unique' => 'Šis lietotājvārds jau ir aizņemts. Lūdzu, izvēlieties citu.',
         'name_regex' => 'Lietotājvārds drīkst saturēt tikai burtus, ciparus un pasvītrojuma zīmes.',

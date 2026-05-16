@@ -61,7 +61,7 @@ class ReleaseController extends Controller
     }
 
     /***
-     * Deletes the album.
+     * Deletes the release.
      *
      * @param $id
      * @return \Illuminate\Http\RedirectResponse

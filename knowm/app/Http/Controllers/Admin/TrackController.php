@@ -33,6 +33,20 @@ class TrackController extends Controller
     }
 
     /***
+     * Deletes the track.
+     *
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id): \Illuminate\Http\RedirectResponse
+    {
+        $track = Track::findOrFail($id);
+        $track->delete();
+        return redirect()->route('admin-tracks-index')
+            ->with('success', __('messages.track_deleted'));
+    }
+
+    /***
      * Search for tracks whose titles match the given query.
      *
      * @param Request $request
