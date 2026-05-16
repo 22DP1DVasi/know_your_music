@@ -3,16 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artist;
-use App\Models\Release;
 use App\Models\Track;
-use App\Models\Genre;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Storage;
 
 class TrackController extends Controller
 {
+    /***
+     * Method for Index.vue page.
+     *
+     * @param Request $request
+     * @return \Inertia\Response
+     */
+    public function index(Request $request): \Inertia\Response
+    {
+        $tracks = Track::query()
+            ->with('artists:id,name')
+            ->when($request->search_title, function ($query, $search) {
+                $query->where('title', 'like', "%{$search}%");
+            })
+            ->orderBy('title')
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('Admin/Tracks/Index', [
+            'tracks' => $tracks,
+            'filters' => $request->only(['search_title'])
+        ]);
+    }
+
     /***
      * Search for tracks whose titles match the given query.
      *

@@ -36,6 +36,8 @@ class Track extends Model
 //        'duration' => 'datetime:H:i:s',
         'release_date' => 'date:Y-m-d',
         'popularity' => 'decimal:2',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
 
     // explicit attribute for covers URL

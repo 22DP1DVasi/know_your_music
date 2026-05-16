@@ -1,0 +1,25 @@
+{
+    "index": {
+        "title": "Pārvaldīt dziesmas",
+        "back_to_website": "Atpakaļ uz vietni",
+        "add_new_track": "Pievienot jaunu dziesmu",
+        "search_title": "Dziesmas nosaukums",
+        "search_title_placeholder": "Meklēt pēc nosaukuma...",
+        "clear_filter_btn": "Notīrīt filtrus",
+        "confirm_delete": "Vai tiešām vēlaties dzēst šo dziesmu? Šo darbību nevar atsaukt.",
+        "failed_delete": "Neizdevās dzēst dziesmu",
+        "header_title": "Nosaukums",
+        "header_release_date": "Izdošanas datums",
+        "header_duration": "Garums",
+        "header_artists": "Mākslinieki",
+        "header_created_at": "Izveidots",
+        "header_updated_at": "Atjaunināts",
+        "header_actions": "Darbības",
+        "edit_btn": "Rediģēt",
+        "delete_btn": "Dzēst",
+        "view_btn": "Skatīt",
+        "search_not_found": "Nav atrasta neviena dziesma, kas atbilst meklēšanas kritērijiem.",
+        "clear_filters_msg": "Notīrīt filtrus",
+        "no_tracks_found_sys": "Nav atrasta neviena dziesma."
+    }
+}
