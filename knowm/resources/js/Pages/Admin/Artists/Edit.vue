@@ -343,13 +343,6 @@ const cancelProfileUpload = () => {
             <div class="edit-header">
                 <h1>{{ t('adm_artists.edit.title') }}</h1>
                 <div class="edit-actions">
-                    <button
-                        type="button"
-                        @click="resetForm"
-                        class="btn-secondary"
-                    >
-                        {{ t('adm_artists.edit.reset_btn') }}
-                    </button>
                     <Link :href="route('admin-artists-index')" class="btn-secondary">
                         {{ t('adm_artists.edit.back_to_artists') }}
                     </Link>
@@ -364,9 +357,18 @@ const cancelProfileUpload = () => {
                         <div class="form-section">
                             <div class="main-info-header">
                                 <h2 class="section-title">{{ t('adm_artists.edit.main_info') }}</h2>
-                                <button type="submit" class="btn-primary" :disabled="form.processing">
-                                    {{ form.processing ? t('adm_artists.edit.saving') : t('adm_artists.edit.save_changes') }}
-                                </button>
+                                <div class="header-buttons">
+                                    <button
+                                        type="button"
+                                        @click="resetForm"
+                                        class="btn-secondary"
+                                    >
+                                        {{ t('adm_artists.edit.reset_btn') }}
+                                    </button>
+                                    <button type="submit" class="btn-primary" :disabled="form.processing">
+                                        {{ form.processing ? t('adm_artists.edit.saving') : t('adm_artists.edit.save_changes') }}
+                                    </button>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="name">{{ t('adm_artists.edit.artist_name') }}</label>
@@ -748,6 +750,11 @@ const cancelProfileUpload = () => {
     font-weight: 600;
     color: #1f2937;
     margin-bottom: 1.25rem;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 1rem;
 }
 
 .form-group {

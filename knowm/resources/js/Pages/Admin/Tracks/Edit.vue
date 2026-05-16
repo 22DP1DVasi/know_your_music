@@ -135,13 +135,6 @@ const resetForm = () => {
             <div class="edit-header">
                 <h1>{{ t('adm_tracks.edit.title') }}</h1>
                 <div class="edit-actions">
-                    <button
-                        type="button"
-                        @click="resetForm"
-                        class="btn-secondary"
-                    >
-                        {{ t('adm_tracks.edit.reset_btn') }}
-                    </button>
                     <Link :href="route('admin-tracks-index')" class="btn-secondary">
                         {{ t('adm_tracks.edit.back_to_tracks') }}
                     </Link>
@@ -155,9 +148,18 @@ const resetForm = () => {
                         <div class="form-section">
                             <div class="main-info-header">
                                 <h2 class="section-title">{{ t('adm_tracks.edit.basic_info') }}</h2>
-                                <button type="submit" class="btn-primary" :disabled="form.processing">
-                                    {{ form.processing ? t('adm_tracks.edit.saving') : t('adm_tracks.edit.save_changes') }}
-                                </button>
+                                <div class="header-buttons">
+                                    <button
+                                        type="button"
+                                        @click="resetForm"
+                                        class="btn-secondary"
+                                    >
+                                        {{ t('adm_tracks.edit.reset_btn') }}
+                                    </button>
+                                    <button type="submit" class="btn-primary" :disabled="form.processing">
+                                        {{ form.processing ? t('adm_tracks.edit.saving') : t('adm_tracks.edit.save_changes') }}
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Title -->
@@ -425,6 +427,11 @@ const resetForm = () => {
     font-weight: 600;
     color: #1f2937;
     margin-bottom: 1.25rem;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 1rem;
 }
 
 .form-group {

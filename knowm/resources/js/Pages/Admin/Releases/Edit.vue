@@ -226,13 +226,6 @@ const handleTracklistUpdated = (updatedTracklist) => {
             <div class="edit-header">
                 <h1>{{ t('adm_releases.edit.title') }}</h1>
                 <div class="edit-actions">
-                    <button
-                        type="button"
-                        @click="resetForm"
-                        class="btn-secondary"
-                    >
-                        {{ t('adm_releases.edit.reset_btn') }}
-                    </button>
                     <Link :href="route('admin-releases-index')" class="btn-secondary">
                         {{ t('adm_releases.edit.back_to_releases') }}
                     </Link>
@@ -247,9 +240,18 @@ const handleTracklistUpdated = (updatedTracklist) => {
                         <div class="form-section">
                             <div class="main-info-header">
                                 <h2 class="section-title">{{ t('adm_releases.edit.basic_info') }}</h2>
-                                <button type="submit" class="btn-primary" :disabled="form.processing">
-                                    {{ form.processing ? t('adm_releases.edit.saving') : t('adm_releases.edit.save_changes') }}
-                                </button>
+                                <div class="header-buttons">
+                                    <button
+                                        type="button"
+                                        @click="resetForm"
+                                        class="btn-secondary"
+                                    >
+                                        {{ t('adm_releases.edit.reset_btn') }}
+                                    </button>
+                                    <button type="submit" class="btn-primary" :disabled="form.processing">
+                                        {{ form.processing ? t('adm_releases.edit.saving') : t('adm_releases.edit.save_changes') }}
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -614,6 +616,11 @@ const handleTracklistUpdated = (updatedTracklist) => {
     font-weight: 600;
     color: #1f2937;
     margin-bottom: 1.25rem;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 1rem;
 }
 
 .form-group {
