@@ -251,6 +251,30 @@ select.input-field {
     padding-right: 2.5rem;
 }
 
+/* make entire date input field clickable */
+input[type="date"] {
+    position: relative;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    color: transparent;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
+}
+
+input[type="date"] {
+    cursor: pointer;
+}
+
 .character-count {
     color: #6b7280;
     font-size: 0.75rem;
