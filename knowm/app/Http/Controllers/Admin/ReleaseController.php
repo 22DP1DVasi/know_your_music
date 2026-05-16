@@ -74,6 +74,12 @@ class ReleaseController extends Controller
             ->with('success', __('messages.release_deleted'));
     }
 
+    /***
+     * Method for Edit.vue page that loads release info and its relations.
+     *
+     * @param $id
+     * @return \Inertia\Response
+     */
     public function edit($id): \Inertia\Response
     {
         $release = Release::query()
@@ -133,6 +139,13 @@ class ReleaseController extends Controller
         ]);
     }
 
+    /***
+     * Updates the release (only text attributes).
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id): \Illuminate\Http\RedirectResponse
     {
         $release = Release::findOrFail($id);
@@ -151,6 +164,13 @@ class ReleaseController extends Controller
             ->with('success', __('messages.release_updated'));
     }
 
+    /***
+     * Updates cover image of the given release.
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateCover(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $release = Release::findOrFail($id);
@@ -173,6 +193,13 @@ class ReleaseController extends Controller
         ]);
     }
 
+    /***
+     * Updates artists related to the release.
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateArtists(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $release = Release::findOrFail($id);

@@ -31,6 +31,7 @@ return [
     'release_created' => 'Release created successfully.',
     'release_deleted' => 'Release deleted successfully.',
     'release_updated' => 'Release updated successfully.',
+    'track_updated' => 'Track updated successfully.',
     'track_deleted' => 'Track deleted successfully.',
     'signup' => [
         'name_unique' => 'This username is already taken. Please choose another one.',

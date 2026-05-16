@@ -21,5 +21,30 @@
         "search_not_found": "No tracks match your search criteria.",
         "clear_filters_msg": "Clear filters",
         "no_tracks_found_sys": "No tracks found."
+    },
+    "edit": {
+        "title": "Edit Track",
+        "reset_btn": "Reset",
+        "back_to_tracks": "Back to Tracks",
+        "basic_info": "Basic Information",
+        "save_changes": "Save Changes",
+        "saving": "Saving...",
+        "title_label": "Title",
+        "title_placeholder": "e.g., Bohemian Rhapsody",
+        "characters": "characters",
+        "release_date_label": "Release Date",
+        "duration_label": "Duration",
+        "duration_help": "Format: HH:MM:SS (hours, minutes, seconds)",
+        "description_label": "Description (English)",
+        "description_lv_label": "Description (Latvian)",
+        "meta_info": "Track Information",
+        "id_label": "ID",
+        "slug_label": "URL Slug",
+        "popularity_label": "Popularity Score",
+        "created_at_label": "Created At",
+        "updated_at_label": "Updated At",
+        "cover_image": "Cover Image",
+        "cover_readonly": "Cover image is read-only.",
+        "unknown": "Unknown"
     }
 }

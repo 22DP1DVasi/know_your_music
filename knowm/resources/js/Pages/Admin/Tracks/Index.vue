@@ -167,9 +167,8 @@ const getArtistNames = (track) => {
                     <div class="created-at-cell">{{ track.created_at }}</div>
                     <div class="updated-at-cell">{{ track.updated_at }}</div>
                     <div class="actions-cell">
-<!--                            :href="route('admin-tracks-edit', { id: track.id })"-->
                         <Link
-                            href="#"
+                            :href="route('admin-tracks-edit', { id: track.id })"
                             class="btn-edit"
                         >
                             {{ t('adm_tracks.index.edit_btn') }}

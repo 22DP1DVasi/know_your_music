@@ -516,14 +516,22 @@ const handleTracklistUpdated = (updatedTracklist) => {
 }
 
 .edit-layout {
-    display: flex;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
     gap: 2rem;
-    flex-wrap: wrap;
+    align-items: start;
 }
 
 .edit-main {
     flex: 2;
     min-width: 0;
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.edit-form {
     background: white;
     border-radius: 0.75rem;
     padding: 1.5rem;
@@ -587,7 +595,7 @@ const handleTracklistUpdated = (updatedTracklist) => {
 
 .edit-sidebar {
     flex: 1;
-    min-width: 280px;
+    min-width: 0;
 }
 
 .form-section {
@@ -616,10 +624,12 @@ const handleTracklistUpdated = (updatedTracklist) => {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
+    margin-bottom: 0;
 }
 
 .form-row .form-group {
     flex: 1;
+    min-width: 0;
 }
 
 label {
@@ -690,11 +700,22 @@ select.input-field.error {
     font-size: 0.75rem;
 }
 
+.image-upload-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 .file-input-wrapper {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     min-width: 0;
+}
+
+.upload-buttons {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .file-input {
@@ -798,10 +819,6 @@ select.input-field.error {
 
 /* Responsive design */
 @media (max-width: 1115px) {
-    .edit-layout {
-        flex-direction: column;
-    }
-
     .edit-header {
         flex-direction: column;
         align-items: stretch;
@@ -819,6 +836,12 @@ select.input-field.error {
     .cover-preview-square {
         max-width: 280px;
         margin: 0 auto;
+    }
+}
+
+@media (max-width: 1024px) {
+    .edit-layout {
+        grid-template-columns: 1fr;
     }
 }
 

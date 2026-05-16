@@ -5,10 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Tracks/Edit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/ReleaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/ReleaseController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/TrackController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/TrackController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/lang/en/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/en/messages.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/lang/lv/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/lv/messages.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Artists/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Artists/Edit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Releases/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Releases/Edit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Tracks/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Tracks/Index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_tracks.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_tracks.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_tracks.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_tracks.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -496,7 +503,8 @@
       <workItem from="1778748687519" duration="5764000" />
       <workItem from="1778865978860" duration="6272000" />
       <workItem from="1778922655855" duration="5660000" />
-      <workItem from="1778935181975" duration="1840000" />
+      <workItem from="1778935181975" duration="5543000" />
+      <workItem from="1778953420975" duration="2142000" />
     </task>
     <servers />
   </component>

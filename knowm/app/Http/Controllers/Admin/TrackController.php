@@ -46,6 +46,45 @@ class TrackController extends Controller
             ->with('success', __('messages.track_deleted'));
     }
 
+    public function edit($id): \Inertia\Response
+    {
+        $track = Track::findOrFail($id);
+
+        return Inertia::render('Admin/Tracks/Edit', [
+            'track' => [
+                'id' => $track->id,
+                'title' => $track->title,
+                'slug' => $track->slug,
+                'release_date' => $track->release_date,
+                'duration' => $track->duration ? $track->duration/*->format('H:i:s')*/ : null,
+                'description' => $track->description,
+                'description_lv' => $track->description_lv,
+                'popularity' => $track->popularity,
+                'created_at' => $track->created_at,
+                'updated_at' => $track->updated_at,
+                'cover_url' => $track->cover_url,
+            ]
+        ]);
+    }
+
+    public function update(Request $request, $id): \Illuminate\Http\RedirectResponse
+    {
+        $track = Track::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'release_date' => 'nullable|date',
+            'duration' => 'nullable|date_format:H:i:s',
+            'description' => 'nullable|string',
+            'description_lv' => 'nullable|string',
+        ]);
+
+        $track->update($validated);
+
+        return redirect()->route('admin-tracks-edit', $track->id)
+            ->with('success', __('messages.track_updated'));
+    }
+
     /***
      * Search for tracks whose titles match the given query.
      *

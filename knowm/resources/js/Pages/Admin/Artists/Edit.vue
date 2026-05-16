@@ -1021,23 +1021,32 @@ label {
     margin-top: 0.25rem;
 }
 
-.btn-primary,
 .btn-secondary {
-    display: inline-block;
+    background-color: #6b7280;
+    color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
-    font-weight: 500;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-    font-size: 0.875rem;
     text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
 }
 
 .btn-primary {
     background-color: #3b82f6;
     color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -1049,21 +1058,8 @@ label {
     cursor: not-allowed;
 }
 
-.btn-secondary {
-    background-color: #6b7280;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background-color: #4b5563;
-}
-
 /* Responsive design */
 @media (max-width: 1115px) {
-    .edit-layout {
-        flex-direction: column;
-    }
-
     .edit-header {
         flex-direction: column;
         align-items: stretch;
