@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('artist_id');
             $table->unsignedBigInteger('release_id');
             // role field with enum options
-            $table->enum('role', ['primary', 'featured', 'producer'])->default('primary');
+            $table->enum('role', ['primary', 'featured', 'producer'])->nullable();
             $table->timestamps();
 
             // explicitly add indexes

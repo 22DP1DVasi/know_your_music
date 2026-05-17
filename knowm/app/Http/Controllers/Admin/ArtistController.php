@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Artist;
-use App\Services\ArtistService;
-use App\Services\ReleaseService;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Storage;
 
 class ArtistController extends Controller
@@ -21,7 +18,7 @@ class ArtistController extends Controller
      * @param Request $request
      * @return \Inertia\Response
      */
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
         $artists = Artist::query()
             ->when($request->search_name, function ($query, $search) {
@@ -47,14 +44,25 @@ class ArtistController extends Controller
         ]);
     }
 
-    public function create()
+    /***
+     * Metode priekš Create.vue lapas.
+     *
+     * @return \Inertia\Response
+     */
+    public function create(): \Inertia\Response
     {
         return Inertia::render('Admin/Artists/Create', [
             'soloOrBandOptions' => ['solo', 'band']
         ]);
     }
 
-    public function store(Request $request)
+    /***
+     * Saglabā izpildītāju datubāzē.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $nextYear = date('Y', strtotime('+1 year'));
         $validated = $request->validate([
@@ -62,15 +70,12 @@ class ArtistController extends Controller
             'biography' => 'nullable|string',
             'biography_lv' => 'nullable|string',
             'formed_year' => "nullable|integer|min:1900|max:{$nextYear}",
-            'disbanded_year' => "nullable|integer|min:1900|max:{$nextYear}|gte:formed_year", // gte -> greater than or equal / lielāks vai vienāds
+            'disbanded_year' => "nullable|integer|min:1900|gte:formed_year",
             'is_active' => 'required|boolean',
-            'solo_or_band' => 'nullable|in:solo,band'
+            'solo_or_band' => 'nullable|in:solo,band',
         ]);
-        // izveidot izpildītāju ar validētiem datiem
+
         $artist = Artist::create($validated);
-        // ģenerēt un saglabāt slug'u
-//        $artist->slug = $artist->generateUniqueSlug();
-        $artist->save();
         return redirect()->route('admin-artists-index')
             ->with('success', __('messages.artist_created'));
     }
@@ -88,8 +93,16 @@ class ArtistController extends Controller
         $artist = Artist::query()
             ->with([
                 'genres:id,name',
-                'releases:id,title,release_date,release_type',
-                'tracks:id,title,duration',
+                'releases' => function ($query) {
+                    $query->with([
+                        'artists:id,name,slug'
+                    ])->select('releases.id', 'title', 'release_date', 'release_type');
+                },
+                'tracks' => function ($query) {
+                $query->with([
+                    'artists:id,name,slug'
+                ])->select('tracks.id', 'title', 'tracks.release_date');
+                }
             ])
             ->findOrFail($id);
 
@@ -114,22 +127,31 @@ class ArtistController extends Controller
                     'id' => $genre->id,
                     'name' => $genre->name,
                 ]),
-                // albumi + starptabula
+                // albumi + starptabula + visi mākslinieki
                 'releases' => $artist->releases->map(fn ($release) => [
                     'id' => $release->id,
                     'title' => $release->title,
                     'release_date' => $release->release_date,
                     'release_type' => $release->release_type,
-                    'role' => $release->pivot->role,
                     'cover_url' => $release->cover_url,
+                    'artists' => $release->artists->map(fn ($artist) => [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'slug' => $artist->slug,
+                    ]),
                 ]),
                 // dziesmas + starptabula
                 'tracks' => $artist->tracks->map(fn ($track) => [
                     'id' => $track->id,
                     'title' => $track->title,
-                    'duration' => $track->duration,
+                    'release_date' => $track->release_date,
                     'role' => $track->pivot->role,
                     'cover_url' => $track->cover_url,
+                    'artists' => $track->artists->map(fn ($artist) => [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'slug' => $artist->slug,
+                    ])
                 ]),
             ],
             'soloOrBandOptions' => ['solo', 'band'],
@@ -164,11 +186,17 @@ class ArtistController extends Controller
 //        }
         $artist->update($validated);
         return redirect()
-            ->route('admin-artists-index')
+            ->route('admin-artists-edit', $artist->id)
             ->with('success', __('messages.artist_updated'));
     }
 
-    public function destroy($id)
+    /***
+     * Dzēs izpildītāju.
+     *
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id): \Illuminate\Http\RedirectResponse
     {
         $artist = Artist::findOrFail($id);
         $artist->delete();
@@ -212,5 +240,27 @@ class ArtistController extends Controller
             'message' => ucfirst($type) . __('messages.artist_image_updated'),
             'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
         ]);
+    }
+
+    public function search(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $query = $request->get('q');
+        $artists = Artist::query()
+            ->with(['genres:id,name'])
+            ->where('name', 'like', "%{$query}%")
+            ->limit(10)
+            ->get([
+                'id',
+                'name',
+                'slug',
+                'formed_year'
+            ])
+            ->append('banner_url')
+            ->map(function ($artist) {
+                $artist->first_genre_name = $artist->genres->first()?->name;
+                return $artist;
+            });
+
+        return response()->json($artists);
     }
 }

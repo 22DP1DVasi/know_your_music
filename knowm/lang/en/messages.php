@@ -27,6 +27,13 @@ return [
     'artist_updated' => 'Artist updated successfully.',
     'artist_deleted' => 'Artist deleted successfully',
     'artist_image_updated' => ' image updated successfully.',
+    'genres_updated' => 'Genres updated successfully.',
+    'release_created' => 'Release created successfully.',
+    'release_deleted' => 'Release deleted successfully.',
+    'release_updated' => 'Release updated successfully.',
+    'track_created' => 'Track created successfully.',
+    'track_updated' => 'Track updated successfully.',
+    'track_deleted' => 'Track deleted successfully.',
     'signup' => [
         'name_unique' => 'This username is already taken. Please choose another one.',
         'name_regex' => 'Username can only contain letters, numbers and underscores.',

@@ -27,6 +27,13 @@ return [
     'artist_updated' => 'Izpildītājs veiksmīgi atjaunināts.',
     'artist_deleted' => 'Izpildītājs veiksmīgi izdzēsts.',
     'artist_image_updated' => ' attēls veiksmīgi atjaunināts.',
+    'genres_updated' => 'Žanri veiksmīgi atjaunināti.',
+    'release_created' => 'Albums veiksmīgi izveidots.',
+    'release_deleted' => 'Albums veiksmīgi izdzēsts.',
+    'release_updated' => 'Albums veiksmīgi atjaunināts.',
+    'track_created' => 'Dziesma veiksmīgi izveidots.',
+    'track_updated' => 'Dziesma veiksmīgi atjaunināta.',
+    'track_deleted' => 'Dziesma veiksmīgi izdzēsta.',
     'signup' => [
         'name_unique' => 'Šis lietotājvārds jau ir aizņemts. Lūdzu, izvēlieties citu.',
         'name_regex' => 'Lietotājvārds drīkst saturēt tikai burtus, ciparus un pasvītrojuma zīmes.',

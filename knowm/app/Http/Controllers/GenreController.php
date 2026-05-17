@@ -103,4 +103,15 @@ class GenreController extends Controller
             'sortOrder' => $sortOrder,
         ]);
     }
+
+    /***
+     * Dod visus esošos žanrus.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAllGenres(): \Illuminate\Http\JsonResponse
+    {
+        $genres = Genre::orderBy('name')->get(['id', 'name']);
+        return response()->json($genres);
+    }
 }

@@ -95,6 +95,8 @@ Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
     ->name('search.lyrics');
 
 
+Route::get('/genres/all', [GenreController::class, 'getAllGenres'])->name('genres.all');
+
 // informācijas lapas (izpildītāji, žanri, albumi, dziesmas)
 
 
@@ -306,6 +308,39 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
     Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
     Route::put('/admin/artists/{id}/update-image', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
+    Route::get('/admin/artists/search', [App\Http\Controllers\Admin\ArtistController::class, 'search'])
+        ->name('admin-artists-search');
+
+    Route::get('/admin-releases-index', [App\Http\Controllers\Admin\ReleaseController::class, 'index'])->name('admin-releases-index');
+    Route::get('/admin-releases-create', [App\Http\Controllers\Admin\ReleaseController::class, 'create'])->name('admin-releases-create');
+    Route::post('/admin-releases-store', [App\Http\Controllers\Admin\ReleaseController::class, 'store'])->name('admin-releases-store');
+    Route::delete('/releases/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'destroy'])->name('admin-releases-destroy');
+    Route::get('/admin-releases-edit/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'edit'])->name('admin-releases-edit');
+    Route::put('/admin-releases-update/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'update'])->name('admin-releases-update');
+    Route::put('/admin-releases-update-cover/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'updateCover'])->name('admin-releases-update-cover');
+    Route::post('/admin/releases/{id}/artists', [App\Http\Controllers\Admin\ReleaseController::class, 'updateArtists'])
+        ->name('admin-releases-artists-update');
+    Route::post('/admin/releases/{id}/tracks', [App\Http\Controllers\Admin\ReleaseController::class, 'updateTracks'])
+        ->name('admin-releases-tracks-update');
+
+    Route::get('/admin-tracks-index', [App\Http\Controllers\Admin\TrackController::class, 'index'])
+        ->name('admin-tracks-index');
+    Route::get('/admin-tracks-create', [App\Http\Controllers\Admin\TrackController::class, 'create'])
+        ->name('admin-tracks-create');
+    Route::post('/admin-tracks-store', [App\Http\Controllers\Admin\TrackController::class, 'store'])
+        ->name('admin-tracks-store');
+    Route::delete('/tracks/{id}', [App\Http\Controllers\Admin\TrackController::class, 'destroy'])
+        ->name('admin-tracks-destroy');
+    Route::get('/admin-tracks-edit/{id}', [App\Http\Controllers\Admin\TrackController::class, 'edit'])
+        ->name('admin-tracks-edit');
+    Route::put('/admin-tracks-update/{id}', [App\Http\Controllers\Admin\TrackController::class, 'update'])
+        ->name('admin-tracks-update');
+    Route::post('/admin/tracks/{id}/artists', [App\Http\Controllers\Admin\TrackController::class, 'updateArtists'])
+        ->name('admin-tracks-artists-update');
+    Route::get('/admin/tracks/search', [App\Http\Controllers\Admin\TrackController::class, 'search'])
+        ->name('admin-tracks-search');
+
+    Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])->name('admin.genres.sync');
 });
 
 //    Route::resource('/admin-users-index', UserController::class)->except(['show']);

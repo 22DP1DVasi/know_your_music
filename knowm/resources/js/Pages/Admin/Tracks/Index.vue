@@ -6,86 +6,78 @@ import { route } from "ziggy-js";
 import { ref, watch, computed } from 'vue';
 import { debounce } from 'lodash';
 import { useI18n } from 'vue-i18n';
+import dayjs from 'dayjs';
+import {useDate} from '@/composables/useDate.js';
 
 const props = defineProps({
-    artists: Object,
+    tracks: Object,
     filters: {
         type: Object,
         default: () => ({
-            search_name: '',
-            filter_type: '',
-            filter_status: ''
+            search_title: ''
         })
     }
 });
 
-const { t } = useI18n()
-// meklēšanas ievades, inicializēt no props
-const searchName = ref(props.filters.search_name || '');
-const filterType = ref(props.filters.filter_type || '');
-const filterStatus = ref(props.filters.filter_status || '');
+const { t } = useI18n();
+const { formatDuration } = useDate();
 
-// filtru atjaunināšanas funkcija
+// filter reactive state
+const searchTitle = ref(props.filters.search_title || '');
+
+const formatDate = (dateString) => {
+    if (!dateString) return 'Unknown';
+    return dayjs(dateString).format('DD/MM/YYYY');
+};
+
 const updateFilters = () => {
     const filters = {};
-
-    if (searchName.value) {
-        filters.search_name = searchName.value;
+    if (searchTitle.value) {
+        filters.search_title = searchTitle.value;
     }
 
-    if (filterType.value) {
-        filters.filter_type = filterType.value;
-    }
-
-    if (filterStatus.value !== '') {
-        filters.filter_status = filterStatus.value;
-    }
-
-    router.get(route('admin-artists-index'), filters, {
+    router.get(route('admin-tracks-index'), filters, {
         preserveState: true,
         replace: true,
         preserveScroll: true,
-        only: ['artists', 'filters']
+        only: ['tracks', 'filters']
     });
 };
 
-/*
-* debounce() ir funkcija, kas aizkavē dotās funkcijas izpildi,
-* līdz ir pagājis norādītais gaidīšanas laiks kopš pēdējās izsaukšanas
-* */
-const debouncedSearchName = debounce(updateFilters, 500);
+// debounced search
+const debouncedSearchTitle = debounce(updateFilters, 500);
 
-watch(searchName, (newValue) => {
+watch(searchTitle, (newValue) => {
     if (newValue === '' || newValue.length >= 1) {
-        debouncedSearchName();
+        debouncedSearchTitle();
     }
 });
 
-watch(filterType, updateFilters);
-watch(filterStatus, updateFilters);
-
 const clearFilters = () => {
-    searchName.value = '';
-    filterType.value = '';
-    filterStatus.value = '';
+    searchTitle.value = '';
     updateFilters();
 };
 
 const hasActiveFilters = computed(() => {
-    return searchName.value || filterType.value || filterStatus.value !== '';
+    return searchTitle.value !== '';
 });
 
-const deleteArtist = (id) => {
-    if (confirm(t('adm_artists.index.confirm_delete'))) {
-        router.delete(route('admin-artists-destroy', { id: id }), {
-            onSuccess: () => {
-            },
+const deleteTrack = (id) => {
+    if (confirm(t('adm_tracks.index.confirm_delete'))) {
+        router.delete(route('admin-tracks-destroy', { id: id }), {
+            onSuccess: () => {},
             onError: (errors) => {
-                alert(errors.response.data.message || t('adm_artists.index.failed_delete'));
+                alert(errors.response?.data?.message || t('adm_tracks.index.failed_delete'));
             },
             preserveScroll: true
         });
     }
+};
+
+// helper to get artists names as comma-separated string
+const getArtistNames = (track) => {
+    if (!track.artists || track.artists.length === 0) return '-';
+    return track.artists.map(artist => artist.name).join(', ');
 };
 
 </script>
@@ -93,13 +85,13 @@ const deleteArtist = (id) => {
 <template>
     <AdminLayout>
         <div class="header-container">
-            <h1>{{ t('adm_artists.index.title') }}</h1>
+            <h1>{{ t('adm_tracks.index.title') }}</h1>
             <div class="header-actions">
                 <Link :href="route('home')" class="btn-secondary">
-                    {{ t('adm_artists.index.back_to_website') }}
+                    {{ t('adm_tracks.index.back_to_website') }}
                 </Link>
-                <Link :href="route('admin-artists-create')" class="btn-primary">
-                    {{ t('adm_artists.index.add_new_artist') }}
+                <Link :href="route('admin-tracks-create')" class="btn-primary">
+                    {{ t('adm_tracks.index.add_new_track') }}
                 </Link>
             </div>
         </div>
@@ -107,54 +99,28 @@ const deleteArtist = (id) => {
         <div class="filters-container">
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="search-name">{{ t('adm_artists.index.search_name') }}</label>
+                    <label for="search-title">{{ t('adm_tracks.index.search_title') }}</label>
                     <div class="search-input-wrapper">
                         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                         <input
-                            id="search-name"
-                            v-model="searchName"
+                            id="search-title"
+                            v-model="searchTitle"
                             type="text"
-                            :placeholder="t('adm_artists.index.search_name_placeholder')"
+                            :placeholder="t('adm_tracks.index.search_title_placeholder')"
                             class="input-field"
                         />
                         <button
-                            v-if="searchName"
-                            @click="searchName = ''"
+                            v-if="searchTitle"
+                            @click="searchTitle = ''"
                             class="clear-search-btn"
                             type="button"
                         >
                             ×
                         </button>
                     </div>
-                </div>
-
-                <div class="filter-group">
-                    <label for="filter-type">{{ t('adm_artists.index.filter_type') }}</label>
-                    <select
-                        id="filter-type"
-                        v-model="filterType"
-                        class="input-field"
-                    >
-                        <option value="">{{ t('adm_artists.index.filter_all_types') }}</option>
-                        <option value="solo">{{ t('adm_artists.index.type_solo') }}</option>
-                        <option value="band">{{ t('adm_artists.index.type_band') }}</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="filter-status">{{ t('adm_artists.index.filter_status') }}</label>
-                    <select
-                        id="filter-status"
-                        v-model="filterStatus"
-                        class="input-field"
-                    >
-                        <option value="">{{ t('adm_artists.index.filter_all_statuses') }}</option>
-                        <option value="1">{{ t('adm_artists.index.status_active') }}</option>
-                        <option value="0">{{ t('adm_artists.index.status_inactive') }}</option>
-                    </select>
                 </div>
 
                 <div class="filter-group filter-actions">
@@ -164,7 +130,7 @@ const deleteArtist = (id) => {
                         class="btn-clear-filters"
                         type="button"
                     >
-                        {{ t('adm_artists.index.clear_filter_btn') }}
+                        {{ t('adm_tracks.index.clear_filter_btn') }}
                     </button>
                 </div>
             </div>
@@ -172,85 +138,73 @@ const deleteArtist = (id) => {
 
         <div class="table-container">
             <div class="table-inner">
-                <!-- Galvenes -->
-                <div class="artists-header">
+                <!-- Header -->
+                <div class="tracks-header">
                     <div class="id-cell">ID</div>
-                    <div class="name-cell">{{ t('adm_artists.index.header_name') }}</div>
-                    <div class="slug-cell" style="font-size: 1em;">Slug</div>
-                    <div class="type-cell" style="font-size: 1em;">{{ t('adm_artists.index.header_type') }}</div>
-                    <div class="years-cell">{{ t('adm_artists.index.header_years') }}</div>
-                    <div class="status-cell">{{ t('adm_artists.index.header_status') }}</div>
-                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_created_at') }}</div>
-                    <div class="created-updated-at-header">{{ t('adm_artists.index.header_updated_at') }}</div>
-                    <div class="actions-cell-header">{{ t('adm_artists.index.header_actions') }}</div>
+                    <div class="title-cell">{{ t('adm_tracks.index.header_title') }}</div>
+                    <div class="slug-cell">Slug</div>
+                    <div class="date-cell">{{ t('adm_tracks.index.header_release_date') }}</div>
+                    <div class="duration-cell">{{ t('adm_tracks.index.header_duration') }}</div>
+                    <div class="artists-cell">{{ t('adm_tracks.index.header_artists') }}</div>
+                    <div class="created-at-cell">{{ t('adm_tracks.index.header_created_at') }}</div>
+                    <div class="updated-at-cell">{{ t('adm_tracks.index.header_updated_at') }}</div>
+                    <div class="actions-cell-header">{{ t('adm_tracks.index.header_actions') }}</div>
                 </div>
 
-                <!-- Rindas -->
+                <!-- Rows -->
                 <div
-                    v-for="artist in artists.data"
-                    :key="artist.id"
-                    class="artists-row"
+                    v-for="track in tracks.data"
+                    :key="track.id"
+                    class="tracks-row"
                 >
-                    <div class="id-cell">{{ artist.id }}</div>
-                    <div class="name-cell">{{ artist.name }}</div>
-                    <div class="slug-cell">{{ artist.slug }}</div>
-                    <div class="type-cell">{{ artist.solo_or_band || '-' }}</div>
-                    <div class="years-cell">
-                        <span v-if="artist.formed_year">
-                            {{ artist.formed_year }}
-                            <span v-if="artist.disbanded_year">- {{ artist.disbanded_year }}</span>
-                            <span v-else>{{ t('adm_artists.index.years_present') }}</span>
-                        </span>
-                        <span v-else>-</span>
-                    </div>
-                    <div class="status-cell">
-                        <span :class="artist.is_active ? 'status-active' : 'status-inactive'">
-                            {{ artist.is_active ? t('adm_artists.index.status_active') : t('adm_artists.index.status_inactive') }}
-                        </span>
-                    </div>
-                    <div class="created-updated-at-table-data">{{ artist.created_at }}</div>
-                    <div class="created-updated-at-table-data">{{ artist.updated_at }}</div>
+                    <div class="id-cell">{{ track.id }}</div>
+                    <div class="title-cell">{{ track.title }}</div>
+                    <div class="slug-cell">{{ track.slug }}</div>
+                    <div class="date-cell">{{ formatDate(track.release_date) }}</div>
+                    <div class="duration-cell">{{ formatDuration(track.duration) }}</div>
+                    <div class="artists-cell">{{ getArtistNames(track) }}</div>
+                    <div class="created-at-cell">{{ track.created_at }}</div>
+                    <div class="updated-at-cell">{{ track.updated_at }}</div>
                     <div class="actions-cell">
                         <Link
-                            :href="route('admin-artists-edit', { id: artist.id })"
+                            :href="route('admin-tracks-edit', { id: track.id })"
                             class="btn-edit"
                         >
-                            {{ t('adm_artists.index.edit_btn') }}
+                            {{ t('adm_tracks.index.edit_btn') }}
                         </Link>
                         <button
-                            @click="deleteArtist(artist.id)"
+                            @click="deleteTrack(track.id)"
                             class="btn-danger"
                         >
-                            {{ t('adm_artists.index.delete_btn') }}
+                            {{ t('adm_tracks.index.delete_btn') }}
                         </button>
                         <Link
-                            :href="`/artists/${artist.slug}`"
+                            :href="`/tracks/${track.slug}`"
                             target="_blank"
                             class="btn-view"
                         >
-                            {{ t('adm_artists.index.view_btn') }}
+                            {{ t('adm_tracks.index.view_btn') }}
                         </Link>
                     </div>
                 </div>
 
-                <div v-if="artists.data.length === 0" class="no-results">
+                <div v-if="tracks.data.length === 0" class="no-results">
                     <template v-if="hasActiveFilters">
-                        <p>{{ t('adm_artists.index.search_not_found') }}</p>
+                        <p>{{ t('adm_tracks.index.search_not_found') }}</p>
                         <button @click="clearFilters" class="text-link">
-                            {{ t('adm_artists.index.clear_filters_msg') }}
+                            {{ t('adm_tracks.index.clear_filters_msg') }}
                         </button>
                     </template>
                     <template v-else>
-                        <p>{{ t('adm_artists.index.no_artists_found_sys') }}</p>
+                        <p>{{ t('adm_tracks.index.no_tracks_found_sys') }}</p>
                     </template>
                 </div>
             </div>
 
-            <Pagination :links="artists.links" />
+            <Pagination :links="tracks.links" />
         </div>
     </AdminLayout>
 </template>
-
 
 <style scoped>
 .header-container {
@@ -476,30 +430,30 @@ select.input-field {
     min-width: 1100px;
 }
 
-.artists-header,
-.artists-row {
+.tracks-header,
+.tracks-row {
     display: flex;
     align-items: center;
     min-width: 100%;
 }
 
-.artists-header {
+.tracks-header {
     background-color: #f3f4f6;
     font-weight: 600;
     color: #374151;
     border-bottom: 2px solid #d1d5db;
 }
 
-.artists-row {
+.tracks-row {
     border-bottom: 1px solid #e5e7eb;
 }
 
-.artists-row:hover {
+.tracks-row:hover {
     background-color: #f9fafb;
 }
 
-.artists-header > div,
-.artists-row > div {
+.tracks-header > div,
+.tracks-row > div {
     padding: 0.75rem 1.5rem;
     min-width: 0;
     display: flex;
@@ -507,16 +461,16 @@ select.input-field {
 }
 
 .id-cell {
-    flex: 0 0 50px;
+    flex: 0 0 60px;
     max-width: 70px;
     font-family: monospace;
     font-size: 0.85rem;
 }
 
-.name-cell {
+.title-cell {
     flex: 2;
     min-width: 150px;
-    max-width: 150px;
+    max-width: 200px;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
@@ -524,36 +478,36 @@ select.input-field {
 .slug-cell {
     flex: 2 0 150px;
     min-width: 150px;
-    max-width: 150px;
+    max-width: 180px;
     font-size: 0.85rem;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
-.type-cell {
-    flex: 0 0 80px;
-    max-width: 100px;
-    font-size: 0.9rem;
-}
-
-.years-cell {
-    flex: 0 0 120px;
-    max-width: 140px;
+.date-cell {
+    flex: 0 0 100px;
+    max-width: 110px;
     font-size: 0.85rem;
 }
 
-.status-cell {
-    flex: 0 0 90px;
-    max-width: 110px;
+.duration-cell {
+    flex: 0 0 80px;
+    max-width: 90px;
+    font-size: 0.85rem;
+    font-family: monospace;
 }
 
-.created-updated-at-header {
-    flex: 0 0 120px;
-    max-width: 130px;
-    font-size: 0.9rem;
+.artists-cell {
+    flex: 2;
+    min-width: 150px;
+    max-width: 200px;
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
-.created-updated-at-table-data {
+.created-at-cell,
+.updated-at-cell {
     flex: 0 0 120px;
     max-width: 130px;
     font-size: 0.8rem;
@@ -570,26 +524,6 @@ select.input-field {
     display: flex;
     gap: 0.5rem;
     align-items: center;
-}
-
-.status-active,
-.status-inactive {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.8rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: capitalize;
-}
-
-.status-active {
-    background-color: #d1fae5;
-    color: #065f46;
-}
-
-.status-inactive {
-    background-color: #fee2e2;
-    color: #991b1b;
 }
 
 .no-results {
@@ -614,7 +548,7 @@ select.input-field {
     color: #2563eb;
 }
 
-/* Responsivitāte */
+/* Responsive design */
 @media (max-width: 1260px) {
     .table-container {
         width: clamp(320px, 95vw, 1000px);
@@ -664,8 +598,8 @@ select.input-field {
         align-items: center;
     }
 
-    .artists-header > div,
-    .artists-row > div {
+    .tracks-header > div,
+    .tracks-row > div {
         padding: 0.5rem 0.75rem;
     }
 

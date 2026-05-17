@@ -1,0 +1,38 @@
+{
+    "genre_manager": {
+        "title": "Pārvaldīt žanrus - {entity}",
+        "artist": "Izpildītājs",
+        "release": "Albums",
+        "track": "Dziesma",
+        "selected_genres": "Atlasītie žanri",
+        "no_genres_selected": "Nav atlasīts neviens žanrs",
+        "search_genres": "Meklēt žanrus",
+        "search_placeholder": "Ierakstiet meklēto...",
+        "no_results": "Žanri nav atrasti",
+        "cancel": "Atcelt",
+        "save_changes": "Saglabāt izmaiņas",
+        "saving": "Saglabā...",
+        "success_message": "Žanri veiksmīgi atjaunināti."
+    },
+    "related_releases": {
+        "title": "Saistītie albumi",
+        "search_placeholder": "Meklēt albumus...",
+        "no_results": "Nav atrasts neviens albums",
+        "close": "Aizvērt"
+    },
+    "related_tracks": {
+        "title": "Saistītās dziesmas",
+        "search_placeholder": "Meklēt dziesmas...",
+        "no_results": "Nav atrasta neviena dziesma",
+        "close": "Aizvērt"
+    },
+    "artist_relation_manager": {
+        "release_artists": "Izpildītāji",
+        "release_artists_desc": "Pārvaldīt izpildītājus, kas saistīti ar šo albumu",
+        "track_artists_desc": "Pārvaldīt izpildītājus, kas saistīti ar šo dziesmu",
+        "search_artists": "Meklēt izpildītājus pēc nosaukuma...",
+        "save_artists": "Saglabāt izpildītājus",
+        "save_artists_success": "Izpildītāji veiksmīgi atjaunināti.",
+        "save_artists_error": "Neizdevās atjaunināt izpildītājus. Mēģiniet vēlreiz."
+    }
+}

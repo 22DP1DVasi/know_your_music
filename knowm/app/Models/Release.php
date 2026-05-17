@@ -22,7 +22,6 @@ class Release extends Model
         'title',
         'slug',
         'release_date',
-        'cover_image',
         'description',
         'description_lv',
         'release_type',
@@ -36,7 +35,9 @@ class Release extends Model
      */
     protected $casts = [
         'release_date' => 'date:Y-m-d',
-        'popularity' => 'decimal:2'
+        'popularity' => 'decimal:2',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
 
     // explicit attributes for covers URL
@@ -45,25 +46,32 @@ class Release extends Model
     protected static function boot()
     {
         parent::boot();
-        static::creating(function ($artist) {
-            $artist->slug = $artist->generateUniqueSlug();
+        static::creating(function ($release) {
+            $release->slug = $release->generateUniqueSlug();
         });
+        static::updating(function ($release) {
+            if ($release->isDirty('title')) {
+                $release->slug = $release->generateUniqueSlug();
+            }
+        });
+        // create folder for images when this release is created
         static::created(function ($release) {
-            Storage::makeDirectory("public/releases/{$release->id}");
+            Storage::makeDirectory("public/releases/{$release->release_type}/{$release->id}");
         });
+        // delete folder when this release is deleted
         static::deleted(function ($release) {
-            Storage::deleteDirectory("public/releases/{$release->id}");
+            Storage::deleteDirectory("public/releases/{$release->release_type}/{$release->id}");
         });
     }
 
     /**
      * Get the artist that owns this release
      */
-    public function artists(): BelongsToMany
+    public function artists()
     {
-        return $this->belongsToMany(Artist::class, 'artists_releases')
-            ->withPivot('role')
-            ->withTimestamps();
+        return $this->belongsToMany(Artist::class,'artists_releases',
+            'release_id','artist_id'
+        )->withTimestamps();
     }
 
     /**
