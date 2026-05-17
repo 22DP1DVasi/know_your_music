@@ -6,10 +6,9 @@ import { route } from 'ziggy-js';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import ArtistRelationManager from "@/Components/Admin/ArtistRelationManager.vue";
-import TracklistManager from "@/Components/Admin/TracklistManager.vue";
-import GenreManagerModal from "@/Components/Admin/GenreManagerModal.vue";
 import axios from "axios";
+import ArtistRelationManager from "@/Components/Admin/ArtistRelationManager.vue";
+import GenreManagerModal from "@/Components/Admin/GenreManagerModal.vue";
 
 const props = defineProps({
     track: {
@@ -172,7 +171,10 @@ const handleArtistsUpdate = async (artists) => {
                 id: props.track.id
             }),
             {
-                artist_ids: artists.map(a => a.id)
+                artists: artists.map(a => ({
+                    id: a.id,
+                    role: a.role || 'primary'
+                }))
             }
         )
         if (response.data.success) {

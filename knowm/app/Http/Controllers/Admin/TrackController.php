@@ -58,7 +58,15 @@ class TrackController extends Controller
             ->with([
                 'genres:id,name',
                 'artists' => function ($query) {
-                    $query->select('artists.id', 'artists.name', 'artists.slug');
+                    $query->select('artists.id', 'artists.name', 'artists.slug')
+                        ->orderByRaw("
+                            CASE artists_tracks.role
+                                WHEN 'primary' THEN 1
+                                WHEN 'featured' THEN 2
+                                WHEN 'producer' THEN 3
+                                ELSE 4
+                            END
+                            ");
                 }
             ])
             ->findOrFail($id);
@@ -86,7 +94,8 @@ class TrackController extends Controller
                     'id' => $artist->id,
                     'name' => $artist->name,
                     'slug' => $artist->slug,
-                    'banner_url' => $artist->banner_url
+                    'banner_url' => $artist->banner_url,
+                    'role' => $artist->pivot->role
                 ]),
             ]
         ]);
@@ -121,12 +130,21 @@ class TrackController extends Controller
     {
         $track = Track::findOrFail($id);
         $validated = $request->validate([
-            'artist_ids' => ['array'],
-            'artist_ids.*' => ['exists:artists,id']
+            'artists' => ['array'],
+            'artists.*.id' => ['exists:artists,id'],
+            'artists.*.role' => ['in:primary,featured,producer'],
         ]);
-        $track->artists()->sync(
-            $validated['artist_ids'] ?? []
-        );
+
+        $syncData = collect($validated['artists'])
+            ->mapWithKeys(function ($artist) {
+                return [
+                    $artist['id'] => [
+                        'role' => $artist['role']
+                    ]
+                ];
+            })
+            ->toArray();
+        $track->artists()->sync($syncData ?? []);
 
         return response()->json([
             'success' => true

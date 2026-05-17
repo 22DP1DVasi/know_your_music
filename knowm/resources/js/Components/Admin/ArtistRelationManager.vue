@@ -18,23 +18,29 @@ const props = defineProps({
         required: true,
         validator: (value) => ['release', 'track'].includes(value)
     }
-})
+});
 
 const { t } = useI18n();
 
 const emit = defineEmits([
     'update'
-])
+]);
 
 const artistsDesc = computed(() => {
     return t(`adm_components.artist_relation_manager.${props.entityType}_artists_desc`);
 });
 
-const relatedArtists = ref([...props.initialArtists])
+const relatedArtists = ref([...props.initialArtists]);
 
-const artistSearch = ref('')
-const artistResults = ref([])
-const artistSearchLoading = ref(false)
+const artistSearch = ref('');
+const artistResults = ref([]);
+const artistSearchLoading = ref(false);
+
+const artistRoles = [
+    'primary',
+    'featured',
+    'producer'
+];
 
 const searchArtists = debounce(async () => {
     const query = artistSearch.value.trim()
@@ -59,35 +65,47 @@ const searchArtists = debounce(async () => {
     } finally {
         artistSearchLoading.value = false
     }
-}, 300)
+}, 300);
 
 watch(artistSearch, () => {
     searchArtists()
-})
+});
 
 const addArtist = (artist) => {
-    relatedArtists.value.push(artist)
-    artistSearch.value = ''
-    artistResults.value = []
+    relatedArtists.value.push({
+        ...artist,
+        role: artist.role || 'primary'
+    });
+    artistSearch.value = '';
+    artistResults.value = [];
+};
+
+const updateArtistRole = (artistId, role) => {
+    const artist = relatedArtists.value.find(
+        a => a.id === artistId
+    )
+    if (artist) {
+        artist.role = role
+    }
 }
 
 const removeArtist = (artistId) => {
     relatedArtists.value =
         relatedArtists.value.filter(
             artist => artist.id !== artistId
-        )
-}
+        );
+};
 
 const emitUpdate = () => {
-    emit('update', relatedArtists.value)
-}
+    emit('update', relatedArtists.value);
+};
 
 watch(
     () => props.initialArtists,
     (newArtists) => {
-        relatedArtists.value = [...newArtists]
+        relatedArtists.value = [...newArtists];
     }
-)
+);
 
 </script>
 
@@ -187,13 +205,37 @@ watch(
                     </div>
                 </div>
 
-                <button
-                    type="button"
-                    class="remove-artist-btn"
-                    @click="removeArtist(artist.id)"
-                >
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <div class="attached-artist-actions">
+                    <!-- Track roles only -->
+                    <div class="artist-role-wrapper" v-if="entityType === 'track'">
+                        <select
+                            class="artist-role-select"
+                            :value="artist.role || 'primary'"
+                            @change="updateArtistRole(
+                            artist.id,
+                            $event.target.value
+                        )"
+                        >
+                            <option
+                                v-for="role in artistRoles"
+                                :key="role"
+                                :value="role"
+                            >
+                                {{ t(`artists.global.${role}`) }}
+                            </option>
+                        </select>
+
+                        <i class="fa-solid fa-caret-down artist-role-icon"></i>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="remove-artist-btn"
+                        @click="removeArtist(artist.id)"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -393,6 +435,44 @@ select.input-field.error {
 .attached-artist-slug {
     font-size: 0.8rem;
     color: #64748b;
+}
+
+.attached-artist-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.artist-role-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.artist-role-select {
+    padding: 0.45rem 1.2rem 0.45rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background: white;
+    font-size: 0.82rem;
+    color: #374151;
+    transition: all 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.artist-role-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+.artist-role-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
 }
 
 .remove-artist-btn {
