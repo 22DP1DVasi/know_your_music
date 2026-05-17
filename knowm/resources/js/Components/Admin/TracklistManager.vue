@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
 import { useDate } from '@/composables/useDate';
@@ -38,10 +38,31 @@ const trackResults = ref([]);
 const searchingTracks = ref(false);
 const savingTracklist = ref(false);
 
+const trackSearchWrapper = ref(null);
+const showTrackResults = ref(false);
+
+const handleOutsideClick = (event) => {
+    if (
+        trackSearchWrapper.value &&
+        !trackSearchWrapper.value.contains(event.target)
+    ) {
+        showTrackResults.value = false
+    }
+};
+
+const handleTrackInputFocus = () => {
+    if (
+        trackResults.value.length > 0
+    ) {
+        showTrackResults.value = true
+    }
+};
+
 const searchTracks = debounce(async () => {
     const query = trackSearch.value.trim()
     if (query.length < 2) {
         trackResults.value = []
+        showTrackResults.value = false
         return
     }
     searchingTracks.value = true
@@ -59,6 +80,7 @@ const searchTracks = debounce(async () => {
                 track => track.id === result.id
             )
         )
+        showTrackResults.value = trackResults.value.length > 0
     } catch (error) {
         console.error(error)
     } finally {
@@ -80,6 +102,7 @@ const addTrack = (track) => {
     // clear search
     trackSearch.value = ''
     trackResults.value = []
+    showTrackResults.value = false
 }
 
 const removeTrack = (trackId) => {
@@ -155,6 +178,20 @@ const saveTracklist = async () => {
     }
 }
 
+onMounted(() => {
+    document.addEventListener(
+        'click',
+        handleOutsideClick
+    )
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener(
+        'click',
+        handleOutsideClick
+    )
+});
+
 // sync when parent changes
 watch(
     () => props.release.tracks,
@@ -188,17 +225,18 @@ watch(
         </div>
 
         <!-- Search -->
-        <div class="track-search-wrapper">
+        <div class="track-search-wrapper" ref="trackSearchWrapper">
             <input
                 v-model="trackSearch"
                 type="text"
                 class="input-field"
                 :placeholder="t('adm_releases.edit.search_tracks')"
+                @focus="handleTrackInputFocus"
             />
 
             <!-- Dropdown -->
             <div
-                v-if="trackResults.length > 0"
+                v-if="showTrackResults && trackResults.length > 0"
                 class="track-results-dropdown"
             >
                 <button
