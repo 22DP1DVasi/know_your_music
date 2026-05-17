@@ -19,6 +19,7 @@ import enAdmRoles from './i18n/en/adm_roles.json'
 import enAdmArtists from './i18n/en/adm_artists.json'
 import enAdmReleases from './i18n/en/adm_releases.json'
 import enAdmTracks from './i18n/en/adm_tracks.json'
+import enAdmGenres from './i18n/en/adm_genres.json'
 import enAdmComponents from './i18n/en/adm_components.json'
 
 import enUserPages from './i18n/en/user_pages.json'
@@ -47,6 +48,7 @@ import lvAdmRoles from './i18n/lv/adm_roles.json'
 import lvAdmArtists from './i18n/lv/adm_artists.json'
 import lvAdmReleases from './i18n/lv/adm_releases.json'
 import lvAdmTracks from './i18n/lv/adm_tracks.json'
+import lvAdmGenres from './i18n/lv/adm_genres.json'
 import lvAdmComponents from './i18n/lv/adm_components.json'
 
 import lvUserPages from './i18n/lv/user_pages.json'
@@ -89,6 +91,7 @@ const i18n = createI18n({
             adm_artists: enAdmArtists,
             adm_releases: enAdmReleases,
             adm_tracks: enAdmTracks,
+            adm_genres: enAdmGenres,
             adm_components: enAdmComponents,
 
             components: enComponents,
@@ -117,6 +120,7 @@ const i18n = createI18n({
             adm_artists: lvAdmArtists,
             adm_releases: lvAdmReleases,
             adm_tracks: lvAdmTracks,
+            adm_genres: lvAdmGenres,
             adm_components: lvAdmComponents,
 
             components: lvComponents,

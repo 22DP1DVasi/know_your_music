@@ -489,7 +489,7 @@ const cancelProfileUpload = () => {
                             </div>
                         </div>
 
-                        <!-- Associated content buttons (placeholder) -->
+                        <!-- Associated content buttons -->
                         <div class="form-section">
                             <h2 class="section-title">{{ t('adm_artists.edit.associated_content') }}</h2>
                             <div class="content-buttons-grid">
@@ -521,12 +521,6 @@ const cancelProfileUpload = () => {
                                     <span class="button-count">{{ artist.tracks.length }}</span>
                                 </button>
                             </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary" :disabled="form.processing">
-                                {{ form.processing ? t('adm_artists.edit.saving') : t('adm_artists.edit.save_changes') }}
-                            </button>
                         </div>
                     </form>
                 </div>

@@ -24,7 +24,8 @@
         "title": "Related Tracks",
         "search_placeholder": "Search tracks...",
         "no_results": "No tracks found",
-        "close": "Close"
+        "close": "Close",
+        "searching": "Searching..."
     },
     "artist_relation_manager": {
         "release_artists": "Artists",
@@ -34,5 +35,12 @@
         "save_artists": "Save Artists",
         "save_artists_success": "Artists updated successfully.",
         "save_artists_error": "Failed to update artists. Please try again."
+    },
+    "related_artists": {
+        "title": "Related Artists",
+        "search_placeholder": "Search artists...",
+        "no_results": "No artists found",
+        "close": "Close",
+        "searching": "Searching..."
     }
 }

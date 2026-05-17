@@ -34,6 +34,9 @@ return [
     'track_created' => 'Dziesma veiksmīgi izveidots.',
     'track_updated' => 'Dziesma veiksmīgi atjaunināta.',
     'track_deleted' => 'Dziesma veiksmīgi izdzēsta.',
+    'genre_created' => 'Žanrs veiksmīgi izveidots.',
+    'genre_updated' => 'Žanrs veiksmīgi atjaunināts.',
+    'genre_deleted' => 'Žanrs veiksmīgi izdzēsts.',
     'signup' => [
         'name_unique' => 'Šis lietotājvārds jau ir aizņemts. Lūdzu, izvēlieties citu.',
         'name_regex' => 'Lietotājvārds drīkst saturēt tikai burtus, ciparus un pasvītrojuma zīmes.',

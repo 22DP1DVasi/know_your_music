@@ -24,7 +24,8 @@
         "title": "Saistītās dziesmas",
         "search_placeholder": "Meklēt dziesmas...",
         "no_results": "Nav atrasta neviena dziesma",
-        "close": "Aizvērt"
+        "close": "Aizvērt",
+        "searching": "Meklē..."
     },
     "artist_relation_manager": {
         "release_artists": "Izpildītāji",
@@ -34,5 +35,12 @@
         "save_artists": "Saglabāt izpildītājus",
         "save_artists_success": "Izpildītāji veiksmīgi atjaunināti.",
         "save_artists_error": "Neizdevās atjaunināt izpildītājus. Mēģiniet vēlreiz."
+    },
+    "related_artists": {
+        "title": "Saistītie izpildītāji",
+        "search_placeholder": "Meklēt izpildīājus...",
+        "no_results": "Nav atrasts neviens izpildītājs",
+        "close": "Aizvērt",
+        "searching": "Meklē..."
     }
 }

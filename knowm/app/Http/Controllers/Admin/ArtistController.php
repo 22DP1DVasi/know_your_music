@@ -64,12 +64,13 @@ class ArtistController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $nextYear = date('Y', strtotime('+1 year'));
+        $currentYear = (int) date('Y');
+        $maxYear = $currentYear + 10;
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
             'biography_lv' => 'nullable|string',
-            'formed_year' => "nullable|integer|min:1900|max:{$nextYear}",
+            'formed_year' => "nullable|integer|min:1900|max:{$maxYear}",
             'disbanded_year' => "nullable|integer|min:1900|gte:formed_year",
             'is_active' => 'required|boolean',
             'solo_or_band' => 'nullable|in:solo,band',
@@ -99,9 +100,9 @@ class ArtistController extends Controller
                     ])->select('releases.id', 'title', 'release_date', 'release_type');
                 },
                 'tracks' => function ($query) {
-                $query->with([
-                    'artists:id,name,slug'
-                ])->select('tracks.id', 'title', 'tracks.release_date');
+                    $query->with([
+                        'artists:id,name,slug'
+                    ])->select('tracks.id', 'title', 'tracks.release_date');
                 }
             ])
             ->findOrFail($id);
@@ -180,10 +181,6 @@ class ArtistController extends Controller
             'is_active' => 'required|boolean',
             'solo_or_band' => 'nullable|in:solo,band',
         ]);
-        // automātiski atjaunināt slug'u tikai tad, ja ir mainīts nosaukums
-//        if ($artist->name !== $validated['name']) {
-//            $validated['slug'] = $artist->generateUniqueSlug($validated['name']);
-//        }
         $artist->update($validated);
         return redirect()
             ->route('admin-artists-edit', $artist->id)
@@ -237,7 +234,7 @@ class ArtistController extends Controller
         // Artisan::call('cache:clear'); // Optional
         return response()->json([
             'success' => true,
-            'message' => ucfirst($type) . __('messages.artist_image_updated'),
+//            'message' => ucfirst($type) . __('messages.artist_image_updated'),
             'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
         ]);
     }
