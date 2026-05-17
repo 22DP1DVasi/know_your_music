@@ -170,9 +170,8 @@ const deleteGenre = (id) => {
                     <div class="created-at-cell">{{ genre.created_at }}</div>
                     <div class="updated-at-cell">{{ genre.updated_at }}</div>
                     <div class="actions-cell">
-<!--                        :href="route('admin-genres-edit', { id: genre.id })"-->
                         <Link
-                            href="#"
+                            :href="route('admin-genres-edit', { id: genre.id })"
                             class="btn-edit"
                         >
                             {{ t('adm_genres.index.edit_btn') }}

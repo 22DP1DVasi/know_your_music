@@ -180,10 +180,6 @@ class ArtistController extends Controller
             'is_active' => 'required|boolean',
             'solo_or_band' => 'nullable|in:solo,band',
         ]);
-        // automātiski atjaunināt slug'u tikai tad, ja ir mainīts nosaukums
-//        if ($artist->name !== $validated['name']) {
-//            $validated['slug'] = $artist->generateUniqueSlug($validated['name']);
-//        }
         $artist->update($validated);
         return redirect()
             ->route('admin-artists-edit', $artist->id)
@@ -237,7 +233,7 @@ class ArtistController extends Controller
         // Artisan::call('cache:clear'); // Optional
         return response()->json([
             'success' => true,
-            'message' => ucfirst($type) . __('messages.artist_image_updated'),
+//            'message' => ucfirst($type) . __('messages.artist_image_updated'),
             'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
         ]);
     }

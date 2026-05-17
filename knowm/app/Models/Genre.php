@@ -23,7 +23,6 @@ class Genre extends Model
         'description_lv',
         'origin_year',
         'origin_country',
-//        'image',
         'popularity'
     ];
 

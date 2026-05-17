@@ -307,7 +307,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin-artists-edit/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'edit'])->name('admin-artists-edit');
     Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
     Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
-    Route::put('/admin/artists/{id}/update-image', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
+    Route::put('/admin-artists-update-image/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
     Route::get('/admin/artists/search', [App\Http\Controllers\Admin\ArtistController::class, 'search'])
         ->name('admin-artists-search');
 
@@ -342,6 +342,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin-genres-index', [App\Http\Controllers\Admin\GenreController::class, 'index'])
         ->name('admin-genres-index');
+    Route::get('/admin-genres-edit/{id}', [App\Http\Controllers\Admin\GenreController::class, 'edit'])
+        ->name('admin-genres-edit');
+    Route::put('/admin-genres-update/{id}', [App\Http\Controllers\Admin\GenreController::class, 'update'])
+        ->name('admin-genres-update');
+    Route::put('/admin-genres-update-image/{id}', [App\Http\Controllers\Admin\GenreController::class, 'updateImage'])
+        ->name('admin-genres-update-image');
     Route::delete('/genres/{id}', [App\Http\Controllers\Admin\GenreController::class, 'destroy'])
         ->name('admin-genres-destroy');
 

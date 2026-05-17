@@ -522,12 +522,6 @@ const cancelProfileUpload = () => {
                                 </button>
                             </div>
                         </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn-primary" :disabled="form.processing">
-                                {{ form.processing ? t('adm_artists.edit.saving') : t('adm_artists.edit.save_changes') }}
-                            </button>
-                        </div>
                     </form>
                 </div>
 
