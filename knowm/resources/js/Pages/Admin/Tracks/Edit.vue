@@ -7,8 +7,9 @@ import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import axios from "axios";
-import ArtistRelationManager from "@/Components/Admin/ArtistRelationManager.vue";
 import GenreManagerModal from "@/Components/Admin/GenreManagerModal.vue";
+import ArtistRelationManager from "@/Components/Admin/ArtistRelationManager.vue";
+import RelatedReleasesModal from '@/Components/Admin/RelatedReleasesModal.vue';
 
 const props = defineProps({
     track: {
@@ -27,7 +28,8 @@ const props = defineProps({
             updated_at: '',
             cover_url: null,
             genres: [],
-            artists: []
+            artists: [],
+            releases: []
         })
     }
 });
@@ -185,6 +187,9 @@ const handleArtistsUpdate = async (artists) => {
         alert(error.response?.data?.message || t('adm_components.artist_relation_manager.save_artists_error'));
     }
 }
+
+const showReleasesModal = ref(false);
+const releasesList = ref([...props.track.releases]);
 
 </script>
 
@@ -344,6 +349,16 @@ const handleArtistsUpdate = async (artists) => {
                                 entity-type="track"
                                 @update="handleArtistsUpdate"
                             />
+
+                            <button
+                                type="button"
+                                class="content-button"
+                                @click="showReleasesModal = true"
+                            >
+                                <span class="button-icon">💿</span>
+                                <span class="button-text">{{ t('adm_tracks.edit.view_releases') }}</span>
+                                <span class="button-count">{{ track.releases.length }}</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -405,6 +420,12 @@ const handleArtistsUpdate = async (artists) => {
             :all-genres="allGenresList"
             @close="showGenresModal = false"
             @saved="handleGenresSaved"
+        />
+
+        <RelatedReleasesModal
+            :visible="showReleasesModal"
+            :releases="releasesList"
+            @close="showReleasesModal = false"
         />
     </AdminLayout>
 </template>

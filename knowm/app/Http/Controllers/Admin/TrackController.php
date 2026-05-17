@@ -67,7 +67,12 @@ class TrackController extends Controller
                                 ELSE 4
                             END
                             ");
-                }
+                },
+                'releases' => function ($query) {
+                    $query->with([
+                        'artists:id,name,slug'
+                    ])->select('releases.id', 'title', 'release_date', 'release_type');
+                },
             ])
             ->findOrFail($id);
 
@@ -96,6 +101,19 @@ class TrackController extends Controller
                     'slug' => $artist->slug,
                     'banner_url' => $artist->banner_url,
                     'role' => $artist->pivot->role
+                ]),
+
+                'releases' => $track->releases->map(fn ($release) => [
+                    'id' => $release->id,
+                    'title' => $release->title,
+                    'release_date' => $release->release_date,
+                    'release_type' => $release->release_type,
+                    'cover_url' => $release->cover_url,
+                    'artists' => $release->artists->map(fn ($artist) => [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'slug' => $artist->slug,
+                    ]),
                 ]),
             ]
         ]);

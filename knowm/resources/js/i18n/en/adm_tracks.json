@@ -48,6 +48,7 @@
         "unknown": "Unknown",
         "associated_content": "Associated Content",
         "view_genres": "View Genres",
-        "failed_update_genres": "Failed to update genres. Please try again."
+        "failed_update_genres": "Failed to update genres. Please try again.",
+        "view_releases": "View Releases"
     }
 }
