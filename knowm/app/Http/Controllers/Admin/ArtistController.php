@@ -99,9 +99,9 @@ class ArtistController extends Controller
                     ])->select('releases.id', 'title', 'release_date', 'release_type');
                 },
                 'tracks' => function ($query) {
-                $query->with([
-                    'artists:id,name,slug'
-                ])->select('tracks.id', 'title', 'tracks.release_date');
+                    $query->with([
+                        'artists:id,name,slug'
+                    ])->select('tracks.id', 'title', 'tracks.release_date');
                 }
             ])
             ->findOrFail($id);

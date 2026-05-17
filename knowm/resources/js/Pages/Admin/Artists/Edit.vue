@@ -489,7 +489,7 @@ const cancelProfileUpload = () => {
                             </div>
                         </div>
 
-                        <!-- Associated content buttons (placeholder) -->
+                        <!-- Associated content buttons -->
                         <div class="form-section">
                             <h2 class="section-title">{{ t('adm_artists.edit.associated_content') }}</h2>
                             <div class="content-buttons-grid">

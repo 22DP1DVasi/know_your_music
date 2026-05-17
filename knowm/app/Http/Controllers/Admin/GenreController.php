@@ -65,6 +65,10 @@ class GenreController extends Controller
                 'tracks' => fn ($query) => $query
                     ->with('artists:id,name,slug')
                     ->latest()
+                    ->limit(25),
+                'releases' => fn ($query) => $query
+                    ->with('artists:id,name,slug')
+                    ->latest()
                     ->limit(25)
             ])
             ->findOrFail($id);
@@ -83,6 +87,20 @@ class GenreController extends Controller
                 'updated_at' => $genre->updated_at,
                 'banner_url' => $genre->banner_url,
                 'profile_url' => $genre->profile_url,
+
+                'initial_releases' => $genre->releases->map(fn ($release) => [
+                    'id' => $release->id,
+                    'title' => $release->title,
+                    'slug' => $release->slug,
+                    'release_type' => $release->release_type,
+                    'release_date' => $release->release_date,
+                    'cover_url' => $release->cover_url,
+                    'artists' => $release->artists->map(fn ($artist) => [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'slug' => $artist->slug,
+                    ])
+                ]),
 
                 'initial_tracks' => $genre->tracks->map(fn ($track) => [
                     'id' => $track->id,
@@ -152,6 +170,39 @@ class GenreController extends Controller
             'success' => true,
             'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
         ]);
+    }
+
+    public function searchReleases(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $genre = Genre::findOrFail($id);
+        $query = trim($request->get('q', ''));
+        if (mb_strlen($query) < 2) {
+            return response()->json([]);
+        }
+        $releases = $genre->releases()
+            ->with([
+                'artists:id,name,slug'
+            ])
+            ->where('title', 'like', "%{$query}%")
+            ->orderBy('title')
+            ->limit(50)
+            ->get();
+
+        return response()->json(
+            $releases->map(fn ($release) => [
+                'id' => $release->id,
+                'title' => $release->title,
+                'slug' => $release->slug,
+                'release_type' => $release->release_type,
+                'release_date' => $release->release_date,
+                'cover_url' => $release->cover_url,
+                'artists' => $release->artists->map(fn ($artist) => [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'slug' => $artist->slug,
+                ])
+            ])
+        );
     }
 
     /***

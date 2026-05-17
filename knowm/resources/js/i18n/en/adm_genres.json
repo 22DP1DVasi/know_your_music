@@ -63,6 +63,7 @@
         "image_success_profile": "Profile image updated successfully",
         "unknown": "Unknown",
         "associated_content": "Associated Content",
+        "view_releases": "View Releases",
         "view_tracks": "View Tracks"
     }
 }

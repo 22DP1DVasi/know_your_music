@@ -1,5 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, watch } from 'vue';
+import axios from 'axios';
+import debounce from 'lodash/debounce';
 import { useI18n } from 'vue-i18n';
 import ReleaseRelationRow from './ReleaseRelationRow.vue';
 
@@ -15,26 +17,83 @@ const props = defineProps({
         required: true,
         default: () => []
     },
+    // remote search mode
+    remoteSearch: {
+        type: Boolean,
+        default: false
+    },
+
+    searchRoute: {
+        type: String,
+        default: null
+    }
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits([
+    'close'
+]);
 
 const searchQuery = ref('');
-
-const filteredReleases = computed(() => {
-    if (!searchQuery.value.trim()) {
-        return props.releases;
-    }
-    const query = searchQuery.value.toLowerCase().trim();
-    return props.releases.filter(release =>
-        release.title.toLowerCase().includes(query)
-    );
-});
+const displayedReleases = ref([...props.releases]);
+const searching = ref(false);
 
 const close = () => {
     emit('close');
     searchQuery.value = '';
+    displayedReleases.value = [...props.releases];
 };
+
+// local / remote search
+watch(
+    searchQuery,
+    debounce(async (value) => {
+        const query = value.trim();
+        // local mode
+        if (!props.remoteSearch) {
+            if (!query) {
+                displayedReleases.value = [...props.releases];
+                return;
+            }
+            displayedReleases.value =
+                props.releases.filter(release =>
+                    release.title.toLowerCase().includes(
+                        query.toLowerCase()
+                    )
+                );
+            return;
+        }
+
+        // remote mode
+        if (!query) {
+            displayedReleases.value = [...props.releases];
+            return;
+        }
+        searching.value = true;
+        try {
+            const response = await axios.get(
+                props.searchRoute,
+                { params: {q: query}
+                }
+            );
+            displayedReleases.value = response.data;
+        } catch (error) {
+            console.error(error);
+        } finally {
+            searching.value = false;
+        }
+    }, 300)
+);
+
+// sync releases from parent
+watch(
+    () => props.releases,
+    (newReleases) => {
+        displayedReleases.value = [...newReleases];
+    },
+    {
+        immediate: true
+    }
+);
 
 </script>
 
@@ -62,12 +121,17 @@ const close = () => {
 
                     <!-- Releases list -->
                     <div class="releases-list">
+                        <div v-if="searching" class="loading-state">
+                            {{ t('adm_components.related_tracks.searching') }}
+                        </div>
+
                         <ReleaseRelationRow
-                            v-for="release in filteredReleases"
+                            v-for="release in displayedReleases"
                             :key="release.id"
                             :release="release"
                         />
-                        <div v-if="filteredReleases.length === 0" class="empty-state">
+
+                        <div v-if="!searching && displayedReleases.length === 0" class="empty-state">
                             {{ t('adm_components.related_releases.no_results') }}
                         </div>
                     </div>
@@ -166,6 +230,13 @@ const close = () => {
     border-radius: 0.5rem;
     overflow-y: auto;
     max-height: 400px;
+}
+
+.loading-state {
+    padding: 1rem;
+    text-align: center;
+    color: #64748b;
+    font-size: 0.9rem;
 }
 
 .empty-state {

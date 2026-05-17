@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import axios from 'axios';
 import RelatedTracksModal from '@/Components/Admin/RelatedTracksModal.vue';
+import RelatedReleasesModal from "@/Components/Admin/RelatedReleasesModal.vue";
 
 dayjs.extend(utc);
 
@@ -28,6 +29,7 @@ const props = defineProps({
             updated_at: '',
             banner_url: null,
             profile_url: null,
+            initial_releases: [],
             initial_tracks: []
         })
     }
@@ -232,7 +234,7 @@ const cancelProfileUpload = () => {
 
 // modālie stāvokļi
 const showTracksModal = ref(false);
-
+const showReleasesModal = ref(false);
 
 </script>
 
@@ -346,36 +348,38 @@ const showTracksModal = ref(false);
                         </div>
                     </form>
 
-                    <div class="form-section">
-                        <h2 class="section-title">{{ t('adm_artists.edit.associated_content') }}</h2>
-                        <div class="content-buttons-grid">
-<!--                            <button-->
-<!--                                type="button"-->
-<!--                                class="content-button"-->
-<!--                                @click="showGenresModal = true"-->
-<!--                            >-->
-<!--                                <span class="button-icon">🎵</span>-->
-<!--                                <span class="button-text">{{ t('adm_artists.edit.view_genres') }}</span>-->
-<!--                                <span class="button-count">{{ genresList.length }}</span>-->
-<!--                            </button>-->
-<!--                            <button-->
-<!--                                type="button"-->
-<!--                                class="content-button"-->
-<!--                                @click="showReleasesModal = true"-->
-<!--                            >-->
-<!--                                <span class="button-icon">💿</span>-->
-<!--                                <span class="button-text">{{ t('adm_artists.edit.view_releases') }}</span>-->
-<!--                                <span class="button-count">{{ artist.releases.length }}</span>-->
-<!--                            </button>-->
-                            <button
-                                type="button"
-                                class="content-button"
-                                @click="showTracksModal = true"
-                            >
-                                <span class="button-icon">🎶</span>
-                                <span class="button-text">{{ t('adm_genres.edit.view_tracks') }}</span>
-                                <span class="button-count">{{ genre.initial_tracks.length }}</span>
-                            </button>
+                    <div class="edit-form">
+                        <div class="form-section">
+                            <h2 class="section-title">{{ t('adm_artists.edit.associated_content') }}</h2>
+                            <div class="content-buttons-grid">
+    <!--                            <button-->
+    <!--                                type="button"-->
+    <!--                                class="content-button"-->
+    <!--                                @click="showGenresModal = true"-->
+    <!--                            >-->
+    <!--                                <span class="button-icon">🎵</span>-->
+    <!--                                <span class="button-text">{{ t('adm_artists.edit.view_genres') }}</span>-->
+    <!--                                <span class="button-count">{{ genresList.length }}</span>-->
+    <!--                            </button>-->
+                                <button
+                                    type="button"
+                                    class="content-button"
+                                    @click="showReleasesModal = true"
+                                >
+                                    <span class="button-icon">💿</span>
+                                    <span class="button-text">{{ t('adm_genres.edit.view_releases') }}</span>
+                                    <span class="button-count">{{ genre.initial_releases.length }}</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="content-button"
+                                    @click="showTracksModal = true"
+                                >
+                                    <span class="button-icon">🎶</span>
+                                    <span class="button-text">{{ t('adm_genres.edit.view_tracks') }}</span>
+                                    <span class="button-count">{{ genre.initial_tracks.length }}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -495,6 +499,14 @@ const showTracksModal = ref(false);
                 </div>
             </div>
         </div>
+
+        <RelatedReleasesModal
+            :visible="showReleasesModal"
+            :releases="genre.initial_releases"
+            :remote-search="true"
+            :search-route="route('admin-genres-search-releases', genre.id)"
+            @close="showReleasesModal = false"
+        />
 
         <RelatedTracksModal
             :visible="showTracksModal"
