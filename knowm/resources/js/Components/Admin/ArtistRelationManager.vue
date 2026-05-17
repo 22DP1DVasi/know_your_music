@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref, watch} from 'vue'
+import {computed, ref, watch, onMounted, onBeforeUnmount} from 'vue'
 import axios from 'axios'
 import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n';
@@ -42,6 +42,9 @@ const artistRoles = [
     'producer'
 ];
 
+const searchWrapper = ref(null)
+const showResults = ref(false)
+
 const searchArtists = debounce(async () => {
     const query = artistSearch.value.trim()
     if (query.length < 2) {
@@ -60,6 +63,7 @@ const searchArtists = debounce(async () => {
                 artist => artist.id === result.id
             )
         )
+        showResults.value = true;
     } catch (error) {
         console.error(error)
     } finally {
@@ -78,6 +82,7 @@ const addArtist = (artist) => {
     });
     artistSearch.value = '';
     artistResults.value = [];
+    showResults.value = false;
 };
 
 const updateArtistRole = (artistId, role) => {
@@ -95,6 +100,35 @@ const removeArtist = (artistId) => {
             artist => artist.id !== artistId
         );
 };
+
+const handleClickOutside = (event) => {
+    if (
+        searchWrapper.value &&
+        !searchWrapper.value.contains(event.target)
+    ) {
+        showResults.value = false;
+    }
+};
+
+const handleInputFocus = () => {
+    if (artistResults.value.length > 0) {
+        showResults.value = true;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener(
+        'click',
+        handleClickOutside
+    )
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener(
+        'click',
+        handleClickOutside
+    )
+});
 
 const emitUpdate = () => {
     emit('update', relatedArtists.value);
@@ -127,17 +161,21 @@ watch(
         </div>
 
         <!-- Search -->
-        <div class="artist-search-wrapper">
+        <div
+            class="artist-search-wrapper"
+            ref="searchWrapper"
+        >
             <input
                 v-model="artistSearch"
                 type="text"
                 class="input-field"
                 :placeholder="t('adm_components.artist_relation_manager.search_artists')"
+                @focus="handleInputFocus"
             />
 
             <!-- Dropdown -->
             <div
-                v-if="artistResults.length > 0"
+                v-if="showResults && artistResults.length > 0"
                 class="artist-results-dropdown"
             >
                 <button

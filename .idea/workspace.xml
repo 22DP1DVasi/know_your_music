@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/TrackController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/TrackController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Tracks/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Tracks/Edit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_tracks.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_tracks.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_tracks.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_tracks.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/ArtistRelationManager.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/ArtistRelationManager.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -498,7 +495,7 @@
       <workItem from="1778922655855" duration="5660000" />
       <workItem from="1778935181975" duration="5543000" />
       <workItem from="1778953420975" duration="6365000" />
-      <workItem from="1779000046999" duration="8560000" />
+      <workItem from="1779000046999" duration="9182000" />
     </task>
     <servers />
   </component>
