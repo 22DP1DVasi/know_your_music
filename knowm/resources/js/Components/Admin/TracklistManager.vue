@@ -4,6 +4,8 @@ import axios from 'axios';
 import debounce from 'lodash/debounce';
 import { useDate } from '@/composables/useDate';
 import { useI18n } from 'vue-i18n';
+import {Link} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
 
 const props = defineProps({
     release: {
@@ -286,15 +288,31 @@ watch(
 
                     <!-- Info -->
                     <div class="track-main-info">
-                        <div class="track-title">
-                            {{ track.title }}
-                        </div>
+                        <Link :href="route('admin-tracks-edit', { id: track.id })" class="text-link">
+                            <div class="track-title">
+                                {{ track.title }}
+                            </div>
+                        </Link>
 
                         <div
                             v-if="track.artists?.length > 1"
                             class="track-artists"
                         >
-                            {{ track.artists.map(a => a.name).join(', ') }}
+                            <template
+                                v-for="(artist, index) in track.artists"
+                                :key="artist.id"
+                            >
+                                <Link
+                                    :href="route('admin-artists-edit', { id: artist.id })"
+                                    class="artist-link"
+                                >
+                                    {{ artist.name }}
+                                </Link>
+
+                                <span v-if="index < track.artists.length - 1">
+                                    ,
+                                </span>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -543,6 +561,19 @@ select.input-field.error {
     min-width: 0;
 }
 
+.text-link {
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.text-link:hover {
+    color: #2563eb;
+    background-color: rgba(37, 99, 235, 0.08);
+    text-decoration: underline;
+}
+
 .track-title {
     font-size: 0.95rem;
     font-weight: 600;
@@ -563,6 +594,17 @@ select.input-field.error {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.artist-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.artist-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
 }
 
 .tracklist-right {

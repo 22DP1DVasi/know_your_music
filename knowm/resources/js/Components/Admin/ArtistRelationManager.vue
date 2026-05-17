@@ -3,6 +3,8 @@ import {computed, ref, watch, onMounted, onBeforeUnmount} from 'vue'
 import axios from 'axios'
 import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n';
+import {Link} from "@inertiajs/vue3";
+import {route} from "ziggy-js";
 
 const props = defineProps({
     initialArtists: {
@@ -233,9 +235,11 @@ watch(
                     />
 
                     <div class="attached-artist-info">
-                        <div class="attached-artist-name">
-                            {{ artist.name }}
-                        </div>
+                        <Link :href="route('admin-artists-edit', { id: artist.id })" class="text-link">
+                            <div class="attached-artist-name">
+                                {{ artist.name }}
+                            </div>
+                        </Link>
 
                         <div class="attached-artist-slug">
                             {{ artist.slug }}
@@ -463,6 +467,19 @@ select.input-field.error {
 .attached-artist-info {
     display: flex;
     flex-direction: column;
+}
+
+.text-link {
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.text-link:hover {
+    color: #2563eb;
+    background-color: rgba(37, 99, 235, 0.08);
+    text-decoration: underline;
 }
 
 .attached-artist-name {
