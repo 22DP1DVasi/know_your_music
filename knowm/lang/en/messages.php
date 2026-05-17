@@ -34,6 +34,7 @@ return [
     'track_created' => 'Track created successfully.',
     'track_updated' => 'Track updated successfully.',
     'track_deleted' => 'Track deleted successfully.',
+    'genre_deleted' => 'Genre deleted successfully.',
     'signup' => [
         'name_unique' => 'This username is already taken. Please choose another one.',
         'name_regex' => 'Username can only contain letters, numbers and underscores.',

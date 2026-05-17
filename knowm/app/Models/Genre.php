@@ -35,6 +35,8 @@ class Genre extends Model
     protected $casts = [
         'origin_year' => 'integer',
         'popularity' => 'decimal:2',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s'
     ];
 
     // explicit attributes for images URL
@@ -45,6 +47,11 @@ class Genre extends Model
         parent::boot();
         static::creating(function ($genre) {
             $genre->slug = $genre->generateUniqueSlug();
+        });
+        static::updating(function ($genre) {
+            if ($genre->isDirty('name')) {
+                $genre->slug = $genre->generateUniqueSlug();
+            }
         });
         // create folder for images when this genre is created
         static::created(function ($genre) {

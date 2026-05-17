@@ -1,0 +1,26 @@
+{
+    "index": {
+        "title": "Genre Management",
+        "back_to_website": "Back to Website",
+        "add_new_genre": "Add New Genre",
+        "search_name": "Genre Name",
+        "search_name_placeholder": "Search by name...",
+        "origin_year": "Origin Year",
+        "origin_year_placeholder": "Exact year",
+        "clear_filter_btn": "Clear filters",
+        "confirm_delete": "Are you sure you want to delete this genre? This action cannot be undone.",
+        "failed_delete": "Could not delete genre",
+        "header_name": "Name",
+        "header_origin_year": "Origin Year",
+        "header_origin_country": "Origin Country",
+        "header_created_at": "Created At",
+        "header_updated_at": "Updated At",
+        "header_actions": "Actions",
+        "edit_btn": "Edit",
+        "delete_btn": "Delete",
+        "view_btn": "View",
+        "search_not_found": "No genres match your search criteria.",
+        "clear_filters_msg": "Clear filters",
+        "no_genres_found_sys": "No genres found."
+    }
+}
