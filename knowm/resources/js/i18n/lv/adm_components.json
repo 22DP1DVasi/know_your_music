@@ -35,5 +35,12 @@
         "save_artists": "Saglabāt izpildītājus",
         "save_artists_success": "Izpildītāji veiksmīgi atjaunināti.",
         "save_artists_error": "Neizdevās atjaunināt izpildītājus. Mēģiniet vēlreiz."
+    },
+    "related_artists": {
+        "title": "Saistītie izpildītāji",
+        "search_placeholder": "Meklēt izpildīājus...",
+        "no_results": "Nav atrasts neviens izpildītājs",
+        "close": "Aizvērt",
+        "searching": "Meklē..."
     }
 }

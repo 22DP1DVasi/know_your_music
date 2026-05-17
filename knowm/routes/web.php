@@ -351,6 +351,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/genres/{id}', [App\Http\Controllers\Admin\GenreController::class, 'destroy'])
         ->name('admin-genres-destroy');
 
+    Route::get('/admin/genres/{id}/search-artists', [App\Http\Controllers\Admin\GenreController::class, 'searchArtists'])
+        ->name('admin-genres-search-artists');
     Route::get('/admin/genres/{id}/search-tracks', [App\Http\Controllers\Admin\GenreController::class, 'searchTracks'])
         ->name('admin-genres-search-tracks');
     Route::get('/admin/genres/{id}/search-releases', [App\Http\Controllers\Admin\GenreController::class, 'searchReleases'])

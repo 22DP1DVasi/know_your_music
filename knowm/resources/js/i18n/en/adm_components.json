@@ -35,5 +35,12 @@
         "save_artists": "Save Artists",
         "save_artists_success": "Artists updated successfully.",
         "save_artists_error": "Failed to update artists. Please try again."
+    },
+    "related_artists": {
+        "title": "Related Artists",
+        "search_placeholder": "Search artists...",
+        "no_results": "No artists found",
+        "close": "Close",
+        "searching": "Searching..."
     }
 }

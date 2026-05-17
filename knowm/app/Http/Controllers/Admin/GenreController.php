@@ -62,11 +62,14 @@ class GenreController extends Controller
     {
         $genre = Genre::query()
             ->with([
-                'tracks' => fn ($query) => $query
-                    ->with('artists:id,name,slug')
+                'artists' => fn ($query) => $query
                     ->latest()
                     ->limit(25),
                 'releases' => fn ($query) => $query
+                    ->with('artists:id,name,slug')
+                    ->latest()
+                    ->limit(25),
+                'tracks' => fn ($query) => $query
                     ->with('artists:id,name,slug')
                     ->latest()
                     ->limit(25)
@@ -87,6 +90,14 @@ class GenreController extends Controller
                 'updated_at' => $genre->updated_at,
                 'banner_url' => $genre->banner_url,
                 'profile_url' => $genre->profile_url,
+
+                'initial_artists' => $genre->artists->map(fn ($artist) => [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'slug' => $artist->slug,
+                    'formed_year' => $artist->formed_year,
+                    'banner_url' => $artist->banner_url,
+                ]),
 
                 'initial_releases' => $genre->releases->map(fn ($release) => [
                     'id' => $release->id,
@@ -172,6 +183,69 @@ class GenreController extends Controller
         ]);
     }
 
+    /***
+     * Sinhronizē žanrus dotajam entitījam.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sync(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->validate([
+            'entity_type' => 'required|in:artist,release,track',
+            'entity_id' => 'required|integer',
+            'genre_ids' => 'array',
+            'genre_ids.*' => 'exists:genres,id'
+        ]);
+
+        $model = match ($data['entity_type']) {
+            'artist' => Artist::class,
+            'release' => Release::class,
+            'track' => Track::class,
+        };
+        $entity = $model::findOrFail($data['entity_id']);
+        $entity->genres()->sync($data['genre_ids']);
+        return response()->json(['success' => true]);
+    }
+
+    /***
+     * Searches for artists related to the genre.
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchArtists(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $genre = Genre::findOrFail($id);
+        $query = trim($request->get('q', ''));
+        if (mb_strlen($query) < 2) {
+            return response()->json([]);
+        }
+        $artists = $genre->artists()
+            ->where('name', 'like', "%{$query}%")
+            ->orderBy('name')
+            ->limit(50)
+            ->get();
+
+        return response()->json(
+            $artists->map(fn ($artist) => [
+                'id' => $artist->id,
+                'name' => $artist->name,
+                'slug' => $artist->slug,
+                'formed_year' => $artist->formed_year,
+                'banner_url' => $artist->banner_url,
+            ])
+        );
+    }
+
+    /***
+     * Searches for releases related to the genre.
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function searchReleases(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $genre = Genre::findOrFail($id);
@@ -203,31 +277,6 @@ class GenreController extends Controller
                 ])
             ])
         );
-    }
-
-    /***
-     * Sinhronizē žanrus dotajam entitījam.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function sync(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $data = $request->validate([
-            'entity_type' => 'required|in:artist,release,track',
-            'entity_id' => 'required|integer',
-            'genre_ids' => 'array',
-            'genre_ids.*' => 'exists:genres,id'
-        ]);
-
-        $model = match ($data['entity_type']) {
-            'artist' => Artist::class,
-            'release' => Release::class,
-            'track' => Track::class,
-        };
-        $entity = $model::findOrFail($data['entity_id']);
-        $entity->genres()->sync($data['genre_ids']);
-        return response()->json(['success' => true]);
     }
 
     /***
