@@ -38,6 +38,11 @@ class ReleaseController extends Controller
         ]);
     }
 
+    /***
+     * Method for Create.vue page.
+     *
+     * @return \Inertia\Response
+     */
     public function create(): \Inertia\Response
     {
         return Inertia::render('Admin/Releases/Create', [
@@ -45,6 +50,12 @@ class ReleaseController extends Controller
         ]);
     }
 
+    /***
+     * Stores a new release.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validate([

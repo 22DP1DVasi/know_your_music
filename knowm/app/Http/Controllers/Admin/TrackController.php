@@ -33,6 +33,38 @@ class TrackController extends Controller
     }
 
     /***
+     * Method for Create.vue page.
+     *
+     * @return \Inertia\Response
+     */
+    public function create(): \Inertia\Response
+    {
+        return Inertia::render('Admin/Tracks/Create');
+    }
+
+    /***
+     * Stores a new track.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'release_date' => 'required|date',
+            'duration' => 'required|date_format:H:i:s',
+            'description' => 'nullable|string',
+            'description_lv' => 'nullable|string',
+        ]);
+
+        Track::create($validated);
+
+        return redirect()->route('admin-tracks-index')
+            ->with('success', __('messages.track_created'));
+    }
+
+    /***
      * Deletes the track.
      *
      * @param $id

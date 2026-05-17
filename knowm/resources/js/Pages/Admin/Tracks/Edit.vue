@@ -37,7 +37,7 @@ const props = defineProps({
 dayjs.extend(utc);
 const { t } = useI18n();
 
-// Main form for editable fields
+// main form for editable fields
 const form = useForm({
     title: props.track.title || '',
     release_date: props.track.release_date
@@ -47,7 +47,6 @@ const form = useForm({
     description: props.track.description || '',
     description_lv: props.track.description_lv || ''
 });
-
 
 // parse duration for display/editing HH:MM:SS
 // the input will be a text field expecting format HH:MM:SS

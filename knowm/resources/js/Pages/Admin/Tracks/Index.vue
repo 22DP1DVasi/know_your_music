@@ -90,8 +90,7 @@ const getArtistNames = (track) => {
                 <Link :href="route('home')" class="btn-secondary">
                     {{ t('adm_tracks.index.back_to_website') }}
                 </Link>
-<!--                <Link :href="route('admin-tracks-create')" class="btn-primary">-->
-                <Link href="#" class="btn-primary">
+                <Link :href="route('admin-tracks-create')" class="btn-primary">
                     {{ t('adm_tracks.index.add_new_track') }}
                 </Link>
             </div>

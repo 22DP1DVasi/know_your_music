@@ -31,6 +31,7 @@ return [
     'release_created' => 'Release created successfully.',
     'release_deleted' => 'Release deleted successfully.',
     'release_updated' => 'Release updated successfully.',
+    'track_created' => 'Track created successfully.',
     'track_updated' => 'Track updated successfully.',
     'track_deleted' => 'Track deleted successfully.',
     'signup' => [

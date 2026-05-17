@@ -50,5 +50,21 @@
         "view_genres": "Skatīt žanrus",
         "failed_update_genres": "Neizdevās atjaunināt žanrus. Lūdzu, mēģiniet vēlreiz.",
         "view_releases": "Skatīt albumus"
+    },
+    "create": {
+        "title": "Izveidot jaunu dziesmu",
+        "back_to_tracks": "Atpakaļ pie dziesmām",
+        "title_label": "Nosaukums",
+        "title_placeholder": "piem., Bohemian Rhapsody",
+        "characters": "rakstzīmes",
+        "release_date_label": "Izdošanas datums",
+        "release_date_help": "Varat izvēlēties nākotnes datumu",
+        "duration_label": "Ilgums",
+        "duration_help": "Formāts: HH:MM:SS (stundas, minūtes, sekundes)",
+        "description_en": "Apraksts (angļu)",
+        "description_lv": "Apraksts (latviešu)",
+        "description_placeholder": "Rakstiet aprakstu šai dziesmai...",
+        "reset_btn": "Atiestatīt",
+        "create_track_btn": "Izveidot dziesmu"
     }
 }

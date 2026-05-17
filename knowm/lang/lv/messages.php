@@ -31,6 +31,7 @@ return [
     'release_created' => 'Albums veiksmīgi izveidots.',
     'release_deleted' => 'Albums veiksmīgi izdzēsts.',
     'release_updated' => 'Albums veiksmīgi atjaunināts.',
+    'track_created' => 'Dziesma veiksmīgi izveidots.',
     'track_updated' => 'Dziesma veiksmīgi atjaunināta.',
     'track_deleted' => 'Dziesma veiksmīgi izdzēsta.',
     'signup' => [

@@ -325,6 +325,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin-tracks-index', [App\Http\Controllers\Admin\TrackController::class, 'index'])
         ->name('admin-tracks-index');
+    Route::get('/admin-tracks-create', [App\Http\Controllers\Admin\TrackController::class, 'create'])
+        ->name('admin-tracks-create');
+    Route::post('/admin-tracks-store', [App\Http\Controllers\Admin\TrackController::class, 'store'])
+        ->name('admin-tracks-store');
     Route::delete('/tracks/{id}', [App\Http\Controllers\Admin\TrackController::class, 'destroy'])
         ->name('admin-tracks-destroy');
     Route::get('/admin-tracks-edit/{id}', [App\Http\Controllers\Admin\TrackController::class, 'edit'])

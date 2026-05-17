@@ -133,7 +133,6 @@ class ArtistController extends Controller
                     'title' => $release->title,
                     'release_date' => $release->release_date,
                     'release_type' => $release->release_type,
-//                    'role' => $release->pivot->role,
                     'cover_url' => $release->cover_url,
                     'artists' => $release->artists->map(fn ($artist) => [
                         'id' => $artist->id,

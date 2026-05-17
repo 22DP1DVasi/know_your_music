@@ -50,5 +50,21 @@
         "view_genres": "View Genres",
         "failed_update_genres": "Failed to update genres. Please try again.",
         "view_releases": "View Releases"
+    },
+    "create": {
+        "title": "Create New Track",
+        "back_to_tracks": "Back to Tracks",
+        "title_label": "Title",
+        "title_placeholder": "e.g., Bohemian Rhapsody",
+        "characters": "characters",
+        "release_date_label": "Release Date",
+        "release_date_help": "You can select a future date",
+        "duration_label": "Duration",
+        "duration_help": "Format: HH:MM:SS (hours, minutes, seconds)",
+        "description_en": "Description (English)",
+        "description_lv": "Description (Latvian)",
+        "description_placeholder": "Write a description for this track...",
+        "reset_btn": "Reset",
+        "create_track_btn": "Create Track"
     }
 }
