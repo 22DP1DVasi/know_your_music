@@ -31,6 +31,8 @@
         "release_artists_desc": "Pārvaldīt izpildītājus, kas saistīti ar šo albumu",
         "track_artists_desc": "Pārvaldīt izpildītājus, kas saistīti ar šo dziesmu",
         "search_artists": "Meklēt izpildītājus pēc nosaukuma...",
-        "save_artists": "Saglabāt izpildītājus"
+        "save_artists": "Saglabāt izpildītājus",
+        "save_artists_success": "Izpildītāji veiksmīgi atjaunināti.",
+        "save_artists_error": "Neizdevās atjaunināt izpildītājus. Mēģiniet vēlreiz."
     }
 }

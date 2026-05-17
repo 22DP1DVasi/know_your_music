@@ -203,11 +203,11 @@ const handleArtistsUpdate = async (artists) => {
             }
         )
         if (response.data.success) {
-            alert(response.data.message || t('adm_releases.edit.save_artists_success'));
+            alert(response.data.message || t('adm_components.artist_relation_manager.save_artists_success'));
         }
     } catch (error) {
         console.error('Artists update error:', error);
-        alert(error.response?.data?.message || t('adm_releases.edit.save_artists_error'));
+        alert(error.response?.data?.message || t('adm_components.artist_relation_manager.save_artists_error'));
     }
 }
 
@@ -341,12 +341,8 @@ const handleTracklistUpdated = (updatedTracklist) => {
                             </button>
 
                             <ArtistRelationManager
-                                :title="t('adm_releases.edit.release_artists')"
-                                :subtitle="t('adm_releases.edit.release_artists_desc')"
                                 :initial-artists="release.artists"
                                 :search-route="route('admin-artists-search')"
-                                :search-placeholder="t('adm_releases.edit.search_artists')"
-                                :save-button-text="t('adm_releases.edit.save_artists')"
                                 entity-type="release"
                                 @update="handleArtistsUpdate"
                             />

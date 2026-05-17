@@ -5,14 +5,6 @@ import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
-    title: {
-        type: String,
-        default: 'Artists'
-    },
-    subtitle: {
-        type: String,
-        default: ''
-    },
     initialArtists: {
         type: Array,
         default: () => []
@@ -20,14 +12,6 @@ const props = defineProps({
     searchRoute: {
         type: String,
         required: true
-    },
-    searchPlaceholder: {
-        type: String,
-        default: 'Search artists...'
-    },
-    saveButtonText: {
-        type: String,
-        default: 'Save'
     },
     entityType: {
         type: String,

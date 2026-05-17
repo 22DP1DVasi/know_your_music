@@ -31,6 +31,8 @@
         "release_artists_desc": "Manage artists associated with this release",
         "track_artists_desc": "Manage artists associated with this track",
         "search_artists": "Search artists by name...",
-        "save_artists": "Save Artists"
+        "save_artists": "Save Artists",
+        "save_artists_success": "Artists updated successfully.",
+        "save_artists_error": "Failed to update artists. Please try again."
     }
 }

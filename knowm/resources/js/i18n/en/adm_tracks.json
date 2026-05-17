@@ -47,6 +47,7 @@
         "cover_readonly": "Cover image is read-only.",
         "unknown": "Unknown",
         "associated_content": "Associated Content",
-        "view_genres": "View Genres"
+        "view_genres": "View Genres",
+        "failed_update_genres": "Failed to update genres. Please try again."
     }
 }

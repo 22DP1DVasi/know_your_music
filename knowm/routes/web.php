@@ -331,6 +331,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin-tracks-edit');
     Route::put('/admin-tracks-update/{id}', [App\Http\Controllers\Admin\TrackController::class, 'update'])
         ->name('admin-tracks-update');
+    Route::post('/admin/tracks/{id}/artists', [App\Http\Controllers\Admin\TrackController::class, 'updateArtists'])
+        ->name('admin-tracks-artists-update');
     Route::get('/admin/tracks/search', [App\Http\Controllers\Admin\TrackController::class, 'search'])
         ->name('admin-tracks-search');
 

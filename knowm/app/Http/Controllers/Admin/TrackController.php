@@ -56,7 +56,10 @@ class TrackController extends Controller
     {
         $track = Track::query()
             ->with([
-                'genres:id,name'
+                'genres:id,name',
+                'artists' => function ($query) {
+                    $query->select('artists.id', 'artists.name', 'artists.slug');
+                }
             ])
             ->findOrFail($id);
 
@@ -77,6 +80,13 @@ class TrackController extends Controller
                 'genres' => $track->genres->map(fn ($genre) => [
                     'id' => $genre->id,
                     'name' => $genre->name
+                ]),
+
+                'artists' => $track->artists->map(fn ($artist) => [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'slug' => $artist->slug,
+                    'banner_url' => $artist->banner_url
                 ]),
             ]
         ]);
@@ -105,6 +115,22 @@ class TrackController extends Controller
 
         return redirect()->route('admin-tracks-edit', $track->id)
             ->with('success', __('messages.track_updated'));
+    }
+
+    public function updateArtists(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $track = Track::findOrFail($id);
+        $validated = $request->validate([
+            'artist_ids' => ['array'],
+            'artist_ids.*' => ['exists:artists,id']
+        ]);
+        $track->artists()->sync(
+            $validated['artist_ids'] ?? []
+        );
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 
     /***

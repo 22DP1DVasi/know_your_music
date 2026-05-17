@@ -26,7 +26,9 @@ const props = defineProps({
             popularity: null,
             created_at: '',
             updated_at: '',
-            cover_url: null
+            cover_url: null,
+            genres: [],
+            artists: []
         })
     }
 });
@@ -159,9 +161,28 @@ const handleGenresSaved = async (payload) => {
         alert(t('adm_components.genre_manager.success_message'))
     } catch (error) {
         console.error('Failed to sync genres:', error);
-        alert(t('adm_releases.edit.failed_update_genres'));
+        alert(t('adm_tracks.edit.failed_update_genres'));
     }
 };
+
+const handleArtistsUpdate = async (artists) => {
+    try {
+        const response = await axios.post(
+            route('admin-tracks-artists-update', {
+                id: props.track.id
+            }),
+            {
+                artist_ids: artists.map(a => a.id)
+            }
+        )
+        if (response.data.success) {
+            alert(response.data.message || t('adm_components.artist_relation_manager.save_artists_success'));
+        }
+    } catch (error) {
+        console.error('Artists update error:', error);
+        alert(error.response?.data?.message || t('adm_components.artist_relation_manager.save_artists_error'));
+    }
+}
 
 </script>
 
@@ -315,7 +336,12 @@ const handleGenresSaved = async (payload) => {
                                 <span class="button-count">{{ genresList.length }}</span>
                             </button>
 
-
+                            <ArtistRelationManager
+                                :initial-artists="track.artists"
+                                :search-route="route('admin-artists-search')"
+                                entity-type="track"
+                                @update="handleArtistsUpdate"
+                            />
                         </div>
                     </div>
                 </div>
