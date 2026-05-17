@@ -7,6 +7,7 @@ import { ref, watch } from 'vue';
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import axios from 'axios';
+import RelatedTracksModal from '@/Components/Admin/RelatedTracksModal.vue';
 
 dayjs.extend(utc);
 
@@ -26,14 +27,15 @@ const props = defineProps({
             created_at: '',
             updated_at: '',
             banner_url: null,
-            profile_url: null
+            profile_url: null,
+            initial_tracks: []
         })
     }
 });
 
 const { t } = useI18n();
 
-// Main form
+// main form
 const form = useForm({
     name: props.genre.name || '',
     origin_year: props.genre.origin_year || '',
@@ -42,7 +44,7 @@ const form = useForm({
     description_lv: props.genre.description_lv || ''
 });
 
-// Limit input length helper
+// limit input length helper
 const limitInput = (field, maxLength) => {
     if (form[field].length > maxLength) {
         form[field] = form[field].substring(0, maxLength);
@@ -52,7 +54,7 @@ const limitInput = (field, maxLength) => {
 watch(() => form.name, () => limitInput('name', 100));
 watch(() => form.origin_country, () => limitInput('origin_country', 100));
 
-// Year options (1900 to current year + 10)
+// year options (1900 to current year + 10)
 const currentYear = new Date().getFullYear();
 const yearOptions = Array.from({ length: currentYear + 10 - 1900 + 1 }, (_, i) => 1900 + i).reverse();
 
@@ -80,7 +82,7 @@ const formatDateTimeUTC = (dateString) => {
     return dayjs.utc(dateString).format('YYYY-MM-DD HH:mm:ss');
 };
 
-// Image upload states
+// image upload states
 const bannerFile = ref(null);
 const profileFile = ref(null);
 const isUploadingBanner = ref(false);
@@ -88,7 +90,6 @@ const isUploadingProfile = ref(false);
 const originalBannerUrl = ref(props.genre.banner_url);
 const originalProfileUrl = ref(props.genre.profile_url);
 
-// Handle image errors (fallback to default)
 const handleImageError = (event, type) => {
     const defaultImages = {
         banner: '/images/default-genre-banner.webp',
@@ -97,7 +98,6 @@ const handleImageError = (event, type) => {
     event.target.src = defaultImages[type];
 };
 
-// Banner file handling
 const handleBannerFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -118,7 +118,6 @@ const handleBannerFileChange = (event) => {
     reader.readAsDataURL(file);
 };
 
-// Profile file handling
 const handleProfileFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -139,7 +138,6 @@ const handleProfileFileChange = (event) => {
     reader.readAsDataURL(file);
 };
 
-// Upload banner
 const uploadBanner = async () => {
     if (!bannerFile.value) {
         alert(t('adm_genres.edit.image_error_no_file'));
@@ -173,7 +171,6 @@ const uploadBanner = async () => {
     }
 };
 
-// Upload profile
 const uploadProfile = async () => {
     if (!profileFile.value) {
         alert(t('adm_genres.edit.image_error_no_file'));
@@ -207,7 +204,6 @@ const uploadProfile = async () => {
     }
 };
 
-// Cancel uploads
 const cancelBannerUpload = () => {
     bannerFile.value = null;
     const preview = document.getElementById('banner-preview');
@@ -233,6 +229,10 @@ const cancelProfileUpload = () => {
         fileInput.dispatchEvent(new Event('change'));
     }
 };
+
+// modālie stāvokļi
+const showTracksModal = ref(false);
+
 
 </script>
 
@@ -345,6 +345,39 @@ const cancelProfileUpload = () => {
                             </div>
                         </div>
                     </form>
+
+                    <div class="form-section">
+                        <h2 class="section-title">{{ t('adm_artists.edit.associated_content') }}</h2>
+                        <div class="content-buttons-grid">
+<!--                            <button-->
+<!--                                type="button"-->
+<!--                                class="content-button"-->
+<!--                                @click="showGenresModal = true"-->
+<!--                            >-->
+<!--                                <span class="button-icon">🎵</span>-->
+<!--                                <span class="button-text">{{ t('adm_artists.edit.view_genres') }}</span>-->
+<!--                                <span class="button-count">{{ genresList.length }}</span>-->
+<!--                            </button>-->
+<!--                            <button-->
+<!--                                type="button"-->
+<!--                                class="content-button"-->
+<!--                                @click="showReleasesModal = true"-->
+<!--                            >-->
+<!--                                <span class="button-icon">💿</span>-->
+<!--                                <span class="button-text">{{ t('adm_artists.edit.view_releases') }}</span>-->
+<!--                                <span class="button-count">{{ artist.releases.length }}</span>-->
+<!--                            </button>-->
+                            <button
+                                type="button"
+                                class="content-button"
+                                @click="showTracksModal = true"
+                            >
+                                <span class="button-icon">🎶</span>
+                                <span class="button-text">{{ t('adm_genres.edit.view_tracks') }}</span>
+                                <span class="button-count">{{ genre.initial_tracks.length }}</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right column: read-only info and images -->
@@ -462,6 +495,14 @@ const cancelProfileUpload = () => {
                 </div>
             </div>
         </div>
+
+        <RelatedTracksModal
+            :visible="showTracksModal"
+            :tracks="genre.initial_tracks"
+            :remote-search="true"
+            :search-route="route('admin-genres-search-tracks', genre.id)"
+            @close="showTracksModal = false"
+        />
     </AdminLayout>
 </template>
 
@@ -607,6 +648,68 @@ label {
 
 .character-count.near-limit {
     color: #f59e0b;
+}
+
+.content-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.content-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.content-button:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    background: #fdfdfd;
+}
+
+.button-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.button-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+
+    text-align: center;
+    line-height: 1.3;
+}
+
+.button-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.75rem;
+    border-radius: 9999px;
+    background: #334155;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .form-actions {

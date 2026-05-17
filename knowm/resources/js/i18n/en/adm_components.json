@@ -24,7 +24,8 @@
         "title": "Related Tracks",
         "search_placeholder": "Search tracks...",
         "no_results": "No tracks found",
-        "close": "Close"
+        "close": "Close",
+        "searching": "Searching..."
     },
     "artist_relation_manager": {
         "release_artists": "Artists",

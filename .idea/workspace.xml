@@ -5,19 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Genres/Edit.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/ArtistController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/GenreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/Admin/GenreController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Models/Genre.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Models/Genre.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/lang/en/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/en/messages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/lang/lv/messages.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/lang/lv/messages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/public/storage/genres/2/banner/banner.webp" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/public/storage/genres/2/banner/banner.webp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Genres/Index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Genres/Index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/RelatedTracksModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Components/Admin/RelatedTracksModal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Genres/Edit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/Pages/Admin/Genres/Edit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_components.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_genres.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/en/adm_genres.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_components.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_components.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_genres.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/resources/js/i18n/lv/adm_genres.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/routes/web.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/storage/app/public/genres/2/banner/banner.webp" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/storage/app/public/genres/2/banner/banner.webp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -507,7 +503,7 @@
       <workItem from="1778935181975" duration="5543000" />
       <workItem from="1778953420975" duration="6365000" />
       <workItem from="1779000046999" duration="12169000" />
-      <workItem from="1779023297718" duration="7310000" />
+      <workItem from="1779023297718" duration="11641000" />
     </task>
     <servers />
   </component>

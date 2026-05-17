@@ -61,6 +61,8 @@
         "image_error_upload": "Failed to upload image. Please try again.",
         "image_success_banner": "Banner image updated successfully",
         "image_success_profile": "Profile image updated successfully",
-        "unknown": "Unknown"
+        "unknown": "Unknown",
+        "associated_content": "Associated Content",
+        "view_tracks": "View Tracks"
     }
 }

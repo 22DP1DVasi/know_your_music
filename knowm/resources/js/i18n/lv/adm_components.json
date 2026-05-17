@@ -24,7 +24,8 @@
         "title": "Saistītās dziesmas",
         "search_placeholder": "Meklēt dziesmas...",
         "no_results": "Nav atrasta neviena dziesma",
-        "close": "Aizvērt"
+        "close": "Aizvērt",
+        "searching": "Meklē..."
     },
     "artist_relation_manager": {
         "release_artists": "Izpildītāji",

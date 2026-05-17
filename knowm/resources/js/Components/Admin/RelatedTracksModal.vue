@@ -1,5 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, watch } from 'vue';
+import axios from 'axios';
+import debounce from 'lodash/debounce';
 import { useI18n } from 'vue-i18n';
 import TrackRelationRow from './TrackRelationRow.vue';
 
@@ -14,27 +16,83 @@ const props = defineProps({
         type: Array,
         required: true,
         default: () => []
+    },
+    // remote search mode
+    remoteSearch: {
+        type: Boolean,
+        default: false
+    },
+    searchRoute: {
+        type: String,
+        default: null
     }
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits([
+    'close'
+]);
 
 const searchQuery = ref('');
-
-const filteredTracks = computed(() => {
-    if (!searchQuery.value.trim()) {
-        return props.tracks;
-    }
-    const query = searchQuery.value.toLowerCase().trim();
-    return props.tracks.filter(track =>
-        track.title.toLowerCase().includes(query)
-    );
-});
+const displayedTracks = ref([...props.tracks]);
+const searching = ref(false);
 
 const close = () => {
     emit('close');
     searchQuery.value = '';
+    displayedTracks.value = [...props.tracks];
 };
+
+// local/remote search
+watch(
+    searchQuery,
+    debounce(async (value) => {
+        const query = value.trim();
+        // local mode
+        if (!props.remoteSearch) {
+            if (!query) {
+                displayedTracks.value = [...props.tracks];
+                return;
+            }
+            displayedTracks.value =
+                props.tracks.filter(track =>
+                    track.title.toLowerCase().includes(
+                        query.toLowerCase()
+                    )
+                );
+            return;
+        }
+
+        // remote mode
+        if (!query) {
+            displayedTracks.value = [...props.tracks];
+            return;
+        }
+        searching.value = true;
+        try {
+            const response = await axios.get(
+                props.searchRoute,
+                {params: {q: query}
+                }
+            );
+            displayedTracks.value = response.data;
+        } catch (error) {
+            console.error(error);
+        } finally {
+            searching.value = false;
+        }
+    }, 300)
+);
+
+// sync initial tracks
+watch(
+    () => props.tracks,
+    (newTracks) => {
+        displayedTracks.value = [...newTracks];
+    },
+    {
+        immediate: true
+    }
+);
 
 </script>
 
@@ -62,12 +120,20 @@ const close = () => {
 
                     <!-- Tracks list -->
                     <div class="tracks-list">
+                        <div
+                            v-if="searching"
+                            class="loading-state"
+                        >
+                            {{ t('adm_components.related_tracks.searching') }}
+                        </div>
+
                         <TrackRelationRow
-                            v-for="track in filteredTracks"
+                            v-for="track in displayedTracks"
                             :key="track.id"
                             :track="track"
                         />
-                        <div v-if="filteredTracks.length === 0" class="empty-state">
+
+                        <div v-if="!searching && displayedTracks.length === 0" class="empty-state">
                             {{ t('adm_components.related_tracks.no_results') }}
                         </div>
                     </div>
@@ -166,6 +232,13 @@ const close = () => {
     border-radius: 0.5rem;
     overflow-y: auto;
     max-height: 400px;
+}
+
+.loading-state {
+    padding: 1rem;
+    text-align: center;
+    color: #64748b;
+    font-size: 0.9rem;
 }
 
 .empty-state {

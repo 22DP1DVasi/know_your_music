@@ -52,9 +52,22 @@ class GenreController extends Controller
             ->with('success', __('messages.genre_deleted'));
     }
 
+    /***
+     * Method for Edit.vue.
+     *
+     * @param $id
+     * @return \Inertia\Response
+     */
     public function edit($id): \Inertia\Response
     {
-        $genre = Genre::findOrFail($id);
+        $genre = Genre::query()
+            ->with([
+                'tracks' => fn ($query) => $query
+                    ->with('artists:id,name,slug')
+                    ->latest()
+                    ->limit(25)
+            ])
+            ->findOrFail($id);
 
         return Inertia::render('Admin/Genres/Edit', [
             'genre' => [
@@ -70,10 +83,31 @@ class GenreController extends Controller
                 'updated_at' => $genre->updated_at,
                 'banner_url' => $genre->banner_url,
                 'profile_url' => $genre->profile_url,
+
+                'initial_tracks' => $genre->tracks->map(fn ($track) => [
+                    'id' => $track->id,
+                    'title' => $track->title,
+                    'slug' => $track->slug,
+                    'duration' => $track->duration,
+                    'cover_url' => $track->cover_url,
+
+                    'artists' => $track->artists->map(fn ($artist) => [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'slug' => $artist->slug,
+                    ]),
+                ]),
             ]
         ]);
     }
 
+    /***
+     * Updates the track's record.
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id): \Illuminate\Http\RedirectResponse
     {
         $genre = Genre::findOrFail($id);
@@ -116,7 +150,6 @@ class GenreController extends Controller
         Storage::disk('public')->put($path, file_get_contents($file));
         return response()->json([
             'success' => true,
-//            'message' => ucfirst($type) . __('messages.artist_image_updated'),
             'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
         ]);
     }
@@ -144,5 +177,44 @@ class GenreController extends Controller
         $entity = $model::findOrFail($data['entity_id']);
         $entity->genres()->sync($data['genre_ids']);
         return response()->json(['success' => true]);
+    }
+
+    /***
+     * Searches for tracks related to the genre.
+     *
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function searchTracks(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $genre = Genre::findOrFail($id);
+        $query = trim($request->get('q', ''));
+        if (mb_strlen($query) < 2) {
+            return response()->json([]);
+        }
+        $tracks = $genre->tracks()
+            ->with([
+                'artists:id,name,slug'
+            ])
+            ->where('title', 'like', "%{$query}%")
+            ->orderBy('title')
+            ->limit(50)
+            ->get();
+
+        return response()->json(
+            $tracks->map(fn ($track) => [
+                'id' => $track->id,
+                'title' => $track->title,
+                'slug' => $track->slug,
+                'duration' => $track->duration,
+                'cover_url' => $track->cover_url,
+                'artists' => $track->artists->map(fn ($artist) => [
+                    'id' => $artist->id,
+                    'name' => $artist->name,
+                    'slug' => $artist->slug,
+                ])
+            ])
+        );
     }
 }
