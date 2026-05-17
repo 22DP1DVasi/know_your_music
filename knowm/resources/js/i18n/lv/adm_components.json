@@ -11,7 +11,8 @@
         "no_results": "Žanri nav atrasti",
         "cancel": "Atcelt",
         "save_changes": "Saglabāt izmaiņas",
-        "saving": "Saglabā..."
+        "saving": "Saglabā...",
+        "success_message": "Žanri veiksmīgi atjaunināti."
     },
     "related_releases": {
         "title": "Saistītie albumi",

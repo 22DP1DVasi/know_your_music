@@ -1,11 +1,15 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import { route } from 'ziggy-js';
 import { useI18n } from 'vue-i18n';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import ArtistRelationManager from "@/Components/Admin/ArtistRelationManager.vue";
+import TracklistManager from "@/Components/Admin/TracklistManager.vue";
+import GenreManagerModal from "@/Components/Admin/GenreManagerModal.vue";
+import axios from "axios";
 
 const props = defineProps({
     track: {
@@ -118,6 +122,45 @@ const resetForm = () => {
     initDurationFields();
     form.description = props.track.description || '';
     form.description_lv = props.track.description_lv || '';
+};
+
+const showGenresModal = ref(false);
+const genresList = ref([...props.track.genres]);
+const allGenresList = ref([]);
+const isLoadingGenres = ref(false);
+
+const fetchAllGenres = async () => {
+    isLoadingGenres.value = true;
+    try {
+        const response = await axios.get(route('genres.all'));
+        allGenresList.value = response.data;
+    } catch (error) {
+        console.error('Failed to fetch genres:', error);
+    } finally {
+        isLoadingGenres.value = false;
+    }
+};
+
+// fetch all genres when component mounts
+onMounted(() => {
+    fetchAllGenres();
+});
+
+const handleGenresSaved = async (payload) => {
+    try {
+        await axios.post(route('admin.genres.sync'), payload);
+        // atjaunināt dziesmas žanrus lokāli ar jaunajiem atlasītajiem žanriem
+        genresList.value = payload.genre_ids
+            .map(id =>
+                allGenresList.value.find(genre => genre.id === id)
+            )
+            .filter(Boolean);
+        showGenresModal.value = false;
+        alert(t('adm_components.genre_manager.success_message'))
+    } catch (error) {
+        console.error('Failed to sync genres:', error);
+        alert(t('adm_releases.edit.failed_update_genres'));
+    }
 };
 
 </script>
@@ -258,6 +301,23 @@ const resetForm = () => {
                             </div>
                         </div>
                     </form>
+
+                    <div class="edit-form">
+                        <div class="form-section">
+                            <h2 class="section-title">{{ t('adm_tracks.edit.associated_content') }}</h2>
+                            <button
+                                type="button"
+                                class="content-button"
+                                @click="showGenresModal = true"
+                            >
+                                <span class="button-icon">🎵</span>
+                                <span class="button-text">{{ t('adm_tracks.edit.view_genres') }}</span>
+                                <span class="button-count">{{ genresList.length }}</span>
+                            </button>
+
+
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right column: read-only info & cover image -->
@@ -308,6 +368,16 @@ const resetForm = () => {
                 </div>
             </div>
         </div>
+
+        <GenreManagerModal
+            :visible="showGenresModal"
+            entity-type="track"
+            :entity-id="track.id"
+            :current-genres="genresList"
+            :all-genres="allGenresList"
+            @close="showGenresModal = false"
+            @saved="handleGenresSaved"
+        />
     </AdminLayout>
 </template>
 
@@ -554,6 +624,61 @@ input[type="date"] {
     font-size: 0.75rem;
     margin-top: 0.25rem;
     font-style: italic;
+}
+
+.content-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1.5rem 1rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.2s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.content-button:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    background: #fdfdfd;
+}
+
+.button-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.button-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.button-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.75rem;
+    border-radius: 9999px;
+    background: #334155;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .info-card,

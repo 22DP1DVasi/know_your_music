@@ -54,7 +54,11 @@ class TrackController extends Controller
      */
     public function edit($id): \Inertia\Response
     {
-        $track = Track::findOrFail($id);
+        $track = Track::query()
+            ->with([
+                'genres:id,name'
+            ])
+            ->findOrFail($id);
 
         return Inertia::render('Admin/Tracks/Edit', [
             'track' => [
@@ -69,6 +73,11 @@ class TrackController extends Controller
                 'created_at' => $track->created_at,
                 'updated_at' => $track->updated_at,
                 'cover_url' => $track->cover_url,
+
+                'genres' => $track->genres->map(fn ($genre) => [
+                    'id' => $genre->id,
+                    'name' => $genre->name
+                ]),
             ]
         ]);
     }

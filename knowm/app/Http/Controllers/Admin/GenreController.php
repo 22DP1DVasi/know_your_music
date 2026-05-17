@@ -33,6 +33,6 @@ class GenreController extends Controller
         };
         $entity = $model::findOrFail($data['entity_id']);
         $entity->genres()->sync($data['genre_ids']);
-        return response()->json(['message' => 'Genres updated successfully']);
+        return response()->json(['success' => true]);
     }
 }

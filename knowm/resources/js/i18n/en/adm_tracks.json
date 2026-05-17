@@ -26,7 +26,7 @@
         "title": "Edit Track",
         "reset_btn": "Reset",
         "back_to_tracks": "Back to Tracks",
-        "basic_info": "Basic Information",
+        "basic_info": "Main Information",
         "save_changes": "Save Changes",
         "saving": "Saving...",
         "title_label": "Title",
@@ -37,7 +37,7 @@
         "duration_help": "Format: HH:MM:SS (hours, minutes, seconds)",
         "description_label": "Description (English)",
         "description_lv_label": "Description (Latvian)",
-        "meta_info": "Track Information",
+        "meta_info": "Metadata",
         "id_label": "ID",
         "slug_label": "URL Slug",
         "popularity_label": "Popularity Score",
@@ -45,6 +45,8 @@
         "updated_at_label": "Updated At",
         "cover_image": "Cover Image",
         "cover_readonly": "Cover image is read-only.",
-        "unknown": "Unknown"
+        "unknown": "Unknown",
+        "associated_content": "Associated Content",
+        "view_genres": "View Genres"
     }
 }

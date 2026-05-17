@@ -35,7 +35,6 @@
         "description_label": "Apraksts (angļu valodā)",
         "description_lv_label": "Apraksts (latviešu valodā)",
         "associated_content": "Saistītais saturs",
-        "associated_content_placeholder": "Šeit parādīsies saistītais saturs (mākslinieki, dziesmas u.c.)",
         "meta_info": "Metadati",
         "id_label": "ID",
         "slug_label": "URL adreses daļa",

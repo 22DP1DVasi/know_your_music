@@ -138,6 +138,7 @@ const handleGenresSaved = async (payload) => {
             )
             .filter(Boolean);
         showGenresModal.value = false;
+        alert(t('adm_components.genre_manager.success_message'))
     } catch (error) {
         console.error('Failed to sync genres:', error);
         alert(t('adm_artists.edit.failed_update_genres'));

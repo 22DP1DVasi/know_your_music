@@ -35,7 +35,6 @@
         "description_label": "Description (English)",
         "description_lv_label": "Description (Latvian)",
         "associated_content": "Associated Content",
-        "associated_content_placeholder": "Associated content will appear here (artists, tracks, etc.)",
         "meta_info": "Metadata",
         "id_label": "ID",
         "slug_label": "URL Slug",

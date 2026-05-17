@@ -25,7 +25,7 @@
     "edit": {
         "title": "Rediģēt dziesmu",
         "reset_btn": "Atiestatīt",
-        "back_to_tracks": "Atpakaļ uz dziesmām",
+        "back_to_tracks": "Atpakaļ pie dziesmām",
         "basic_info": "Pamatinformācija",
         "save_changes": "Saglabāt izmaiņas",
         "saving": "Saglabā...",
@@ -37,7 +37,7 @@
         "duration_help": "Formāts: HH:MM:SS (stundas, minūtes, sekundes)",
         "description_label": "Apraksts (angļu)",
         "description_lv_label": "Apraksts (latviešu)",
-        "meta_info": "Dziesmas informācija",
+        "meta_info": "Metadati",
         "id_label": "ID",
         "slug_label": "URL adreses daļa",
         "popularity_label": "Popularitātes rādītājs",
@@ -45,6 +45,8 @@
         "updated_at_label": "Atjaunināts",
         "cover_image": "Vāka attēls",
         "cover_readonly": "Vāka attēls ir tikai lasāms.",
-        "unknown": "Nav zināms"
+        "unknown": "Nav zināms",
+        "associated_content": "Saistītais saturs",
+        "view_genres": "Skatīt žanrus"
     }
 }

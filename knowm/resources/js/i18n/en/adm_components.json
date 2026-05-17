@@ -11,7 +11,8 @@
         "no_results": "No genres found",
         "cancel": "Cancel",
         "save_changes": "Save Changes",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "success_message": "Genres updated successfully."
     },
     "related_releases": {
         "title": "Related Releases",
