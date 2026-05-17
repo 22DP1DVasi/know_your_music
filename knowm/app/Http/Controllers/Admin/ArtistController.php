@@ -64,12 +64,13 @@ class ArtistController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $nextYear = date('Y', strtotime('+1 year'));
+        $currentYear = (int) date('Y');
+        $maxYear = $currentYear + 10;
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'biography' => 'nullable|string',
             'biography_lv' => 'nullable|string',
-            'formed_year' => "nullable|integer|min:1900|max:{$nextYear}",
+            'formed_year' => "nullable|integer|min:1900|max:{$maxYear}",
             'disbanded_year' => "nullable|integer|min:1900|gte:formed_year",
             'is_active' => 'required|boolean',
             'solo_or_band' => 'nullable|in:solo,band',

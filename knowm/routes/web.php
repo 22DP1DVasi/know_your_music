@@ -342,6 +342,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin-genres-index', [App\Http\Controllers\Admin\GenreController::class, 'index'])
         ->name('admin-genres-index');
+    Route::get('/admin-genres-create', [App\Http\Controllers\Admin\GenreController::class, 'create'])
+        ->name('admin-genres-create');
+    Route::post('/admin-genres-store', [App\Http\Controllers\Admin\GenreController::class, 'store'])
+        ->name('admin-genres-store');
     Route::get('/admin-genres-edit/{id}', [App\Http\Controllers\Admin\GenreController::class, 'edit'])
         ->name('admin-genres-edit');
     Route::put('/admin-genres-update/{id}', [App\Http\Controllers\Admin\GenreController::class, 'update'])

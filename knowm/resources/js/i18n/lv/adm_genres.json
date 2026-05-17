@@ -25,7 +25,7 @@
     },
     "edit": {
         "title": "Rediģēt žanru",
-        "back_to_genres": "Atpakaļ uz žanriem",
+        "back_to_genres": "Atpakaļ pie žanriem",
         "main_info": "Pamatinformācija",
         "reset_btn": "Atiestatīt",
         "save_changes": "Saglabāt izmaiņas",
@@ -66,5 +66,21 @@
         "view_artists": "Skatīt izpildītājus",
         "view_releases": "Skatīt albumus",
         "view_tracks": "Skatīt dziesmas"
+    },
+    "create": {
+        "title": "Izveidot jaunu žanru",
+        "back_to_genres": "Atpakaļ pie žanriem",
+        "name_label": "Nosaukums",
+        "name_placeholder": "piem., Rock, Jazz, Metal",
+        "characters": "rakstzīmes",
+        "origin_year_label": "Izcelsmes gads",
+        "select_year": "Izvēlieties gadu",
+        "origin_country_label": "Izcelsmes valsts",
+        "origin_country_placeholder": "piem., ASV, Lielbritānija",
+        "description_en": "Apraksts (angļu)",
+        "description_lv": "Apraksts (latviešu)",
+        "description_placeholder": "Rakstiet aprakstu šim žanram...",
+        "reset_btn": "Atiestatīt",
+        "create_genre_btn": "Izveidot žanru"
     }
 }

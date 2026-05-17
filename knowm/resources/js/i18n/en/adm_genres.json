@@ -66,5 +66,21 @@
         "view_artists": "View Artists",
         "view_releases": "View Releases",
         "view_tracks": "View Tracks"
+    },
+    "create": {
+        "title": "Create New Genre",
+        "back_to_genres": "Back to Genres",
+        "name_label": "Name",
+        "name_placeholder": "e.g., Rock, Jazz, Metal",
+        "characters": "characters",
+        "origin_year_label": "Origin Year",
+        "select_year": "Select year",
+        "origin_country_label": "Origin Country",
+        "origin_country_placeholder": "e.g., United States, United Kingdom",
+        "description_en": "Description (English)",
+        "description_lv": "Description (Latvian)",
+        "description_placeholder": "Write a description for this genre...",
+        "reset_btn": "Reset",
+        "create_genre_btn": "Create Genre"
     }
 }

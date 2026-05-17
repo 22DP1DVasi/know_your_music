@@ -84,8 +84,7 @@ const deleteGenre = (id) => {
                 <Link :href="route('home')" class="btn-secondary">
                     {{ t('adm_genres.index.back_to_website') }}
                 </Link>
-<!--                <Link :href="route('admin-genres-create')" class="btn-primary">-->
-                <Link href="#" class="btn-primary">
+                <Link :href="route('admin-genres-create')" class="btn-primary">
                     {{ t('adm_genres.index.add_new_genre') }}
                 </Link>
             </div>

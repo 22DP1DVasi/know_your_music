@@ -34,6 +34,7 @@ return [
     'track_created' => 'Track created successfully.',
     'track_updated' => 'Track updated successfully.',
     'track_deleted' => 'Track deleted successfully.',
+    'genre_created' => 'Genre created successfully.',
     'genre_updated' => 'Genre updated successfully.',
     'genre_deleted' => 'Genre deleted successfully.',
     'signup' => [

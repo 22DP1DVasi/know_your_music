@@ -34,6 +34,7 @@ return [
     'track_created' => 'Dziesma veiksmīgi izveidots.',
     'track_updated' => 'Dziesma veiksmīgi atjaunināta.',
     'track_deleted' => 'Dziesma veiksmīgi izdzēsta.',
+    'genre_created' => 'Žanrs veiksmīgi izveidots.',
     'genre_updated' => 'Žanrs veiksmīgi atjaunināts.',
     'genre_deleted' => 'Žanrs veiksmīgi izdzēsts.',
     'signup' => [

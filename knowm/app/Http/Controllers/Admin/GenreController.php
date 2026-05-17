@@ -38,6 +38,29 @@ class GenreController extends Controller
         ]);
     }
 
+    public function create(): \Inertia\Response
+    {
+        return Inertia::render('Admin/Genres/Create');
+    }
+
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $currentYear = (int) date('Y');
+        $maxYear = $currentYear + 10;
+        $validated = $request->validate([
+            'name' => 'required|string|max:100|unique:genres,name',
+            'origin_year' => "nullable|integer|min:1900|max:{$maxYear}",
+            'origin_country' => 'nullable|string|max:100',
+            'description' => 'nullable|string',
+            'description_lv' => 'nullable|string',
+        ]);
+
+        Genre::create($validated);
+
+        return redirect()->route('admin-genres-index')
+            ->with('success', __('messages.genre_created'));
+    }
+
     /***
      * Deletes the given genre.
      *
