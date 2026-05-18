@@ -2,12 +2,25 @@
 import Footer from '@/Components/Footer.vue';
 import Navbar from '@/Components/Navbar.vue';
 // import HomeRecomCards from '@/Components/HomeRecomCards.vue';
-import { Head, Link, usePage } from "@inertiajs/vue3";
+import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
+import {Head, Link, router, usePage} from "@inertiajs/vue3";
 import { useI18n } from 'vue-i18n';
 import { route } from "ziggy-js";
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 
 const { t } = useI18n();
+
+const props = defineProps({
+    artists: {
+        type: Array,
+        required: true,
+        default: () => []
+    }
+});
+
+const redirectToArtist = (slug) => {
+    router.get(`/artists/${slug}`);
+};
 
 const page = usePage();
 
@@ -144,14 +157,16 @@ const barCount = computed(() => {
             <div class="container">
                 <h2 class="section-title animate-on-scroll">{{ t('home.trending_now') }}</h2>
                 <p class="section-subtitle animate-on-scroll">{{ t('home.trending_subtitle') }}</p>
-                <div class="placeholder-grid">
-                    <div v-for="n in 4" :key="n" class="placeholder-card animate-on-scroll" :style="{ transitionDelay: `${n * 0.05}s` }">
-                        <div class="placeholder-image"></div>
-                        <div class="placeholder-text">
-                            <div class="placeholder-title"></div>
-                            <div class="placeholder-subtitle"></div>
-                        </div>
-                    </div>
+                <div class="artist-grid">
+                    <ArtistCardMain
+                        v-for="artist in artists"
+                        :key="artist.id"
+                        :artist="artist"
+                        :redirect-to="redirectToArtist"
+                        :show-track-count="false"
+                        :track-count-text="(count) => `${count} ${count === 1 ? 'track' : 'tracks'}`"
+                        class="animate-on-scroll"
+                    />
                 </div>
             </div>
         </section>
@@ -583,6 +598,27 @@ const barCount = computed(() => {
 .animate-on-scroll.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+.artist-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+@media (min-width: 640px) {
+    .artist-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .artist-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
 }
 
 /* Responsivitāte */

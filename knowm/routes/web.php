@@ -361,9 +361,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin-genres-search-tracks');
     Route::get('/admin/genres/{id}/search-releases', [App\Http\Controllers\Admin\GenreController::class, 'searchReleases'])
         ->name('admin-genres-search-releases');
-
     Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])
         ->name('admin.genres.sync');
+
+    Route::get('/admin-comments', [App\Http\Controllers\Admin\CommentController::class, 'index'])
+        ->name('admin-comments');
+    Route::patch('/admin-comments/{type}/{id}/status', [App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])
+        ->name('admin-comments.update-status');
 });
 
 //    Route::resource('/admin-users-index', UserController::class)->except(['show']);

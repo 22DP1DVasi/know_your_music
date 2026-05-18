@@ -65,7 +65,7 @@ watchEffect(() => {
                     <li><Link :href="route('admin-releases-index')">{{ t('adm_layout.releases') }}</Link></li>
                     <li><Link :href="route('admin-tracks-index')">{{ t('adm_layout.tracks') }}</Link></li>
                     <li><Link :href="route('admin-genres-index')">{{ t('adm_layout.genres') }}</Link></li>
-                    <li><Link :href="route('admin-artists-index')">{{ t('adm_layout.comments') }}</Link></li>
+                    <li><Link :href="route('admin-comments')">{{ t('adm_layout.comments') }}</Link></li>
                 </ul>
             </nav>
         </aside>
