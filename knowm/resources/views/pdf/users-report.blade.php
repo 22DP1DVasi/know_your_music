@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="lv">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
 
@@ -142,7 +142,7 @@
                 >
 
                 <div class="generated-at">
-                    Izveidots:
+                    {{ __('reports.generated_at') }}:
                     {{ $generatedAt->format('Y-m-d H:i:s') }} UTC
                 </div>
             </td>
@@ -152,14 +152,14 @@
 
 <!-- Title -->
 <div class="title">
-    Lietotāju pārskats
+    {{ __('reports.users.title') }}
 </div>
 
 <!-- Summary -->
 <table class="summary-table">
     <tr>
         <td class="summary-label">
-            Kopējais lietotāju skaits:
+            {{ __('reports.users.total_users') }}:
         </td>
 
         <td class="summary-value">
@@ -169,7 +169,7 @@
 
     <tr>
         <td class="summary-label">
-            Aktīvo lietotāju skaits:
+            {{ __('reports.users.active_users') }}:
         </td>
 
         <td class="summary-value">
@@ -179,7 +179,7 @@
 
     <tr>
         <td class="summary-label">
-            Aizliegto lietotāju skaits:
+            {{ __('reports.users.banned_users') }}:
         </td>
 
         <td class="summary-value">
@@ -189,7 +189,7 @@
 
     <tr>
         <td class="summary-label">
-            Izdzēsto lietotāju skaits:
+            {{ __('reports.users.deleted_users') }}:
         </td>
 
         <td class="summary-value">
@@ -202,11 +202,11 @@
 <table class="main-table">
     <thead>
     <tr>
-        <th class="col-name">Lietotājvārds</th>
-        <th class="col-email">E-pasts</th>
-        <th class="col-roles">Lomas</th>
-        <th class="col-date">Reģistrācijas datums</th>
-        <th class="col-status">Konta statuss</th>
+        <th class="col-name">{{ __('reports.users.table.name') }}</th>
+        <th class="col-email">{{ __('reports.users.table.email') }}</th>
+        <th class="col-roles">{{ __('reports.users.table.roles') }}</th>
+        <th class="col-date">{{ __('reports.users.table.registered_at') }}</th>
+        <th class="col-status">{{ __('reports.users.table.status') }}</th>
     </tr>
     </thead>
 
@@ -227,26 +227,26 @@
             @endphp
 
             <td class="{{ $hasRoles ? 'text-left' : 'text-center' }}">
-                {{ $roles ?: '—' }}
+                {{ $roles ?: __('reports.common.na') }}
             </td>
 
             <td>
-                {{ $user->created_at?->format('Y-m-d') ?? 'N/A' }}
+                {{ $user->created_at?->format('Y-m-d') ?? __('reports.common.na') }}
             </td>
 
             <td>
                 @if($user->deleted_at)
                     <span class="status-deleted">
-                                izdzēsts
-                            </span>
+                        {{ __('reports.users.status.deleted') }}
+                    </span>
                 @elseif($user->status === 'banned')
                     <span class="status-banned">
-                                aizliegts
-                            </span>
+                        {{ __('reports.users.status.banned') }}
+                    </span>
                 @else
                     <span class="status-active">
-                                aktīvs
-                            </span>
+                        {{ __('reports.users.status.active') }}
+                    </span>
                 @endif
             </td>
         </tr>
