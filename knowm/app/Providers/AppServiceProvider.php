@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
             Request::HEADER_X_FORWARDED_PREFIX
         );
 
-//        URL::forceScheme('https');
+        URL::forceScheme('https');
 
         Vite::prefetch(concurrency: 3);
     }
