@@ -22,6 +22,7 @@ import enAdmTracks from './i18n/en/adm_tracks.json'
 import enAdmGenres from './i18n/en/adm_genres.json'
 import enAdmComments from './i18n/en/adm_comments.json'
 import enAdmComponents from './i18n/en/adm_components.json'
+import enAdmReports from './i18n/en/adm_reports.json'
 
 import enUserPages from './i18n/en/user_pages.json'
 import enArtists from './i18n/en/artists.json'
@@ -52,6 +53,7 @@ import lvAdmTracks from './i18n/lv/adm_tracks.json'
 import lvAdmGenres from './i18n/lv/adm_genres.json'
 import lvAdmComments from './i18n/lv/adm_comments.json'
 import lvAdmComponents from './i18n/lv/adm_components.json'
+import lvAdmReports from './i18n/lv/adm_reports.json'
 
 import lvUserPages from './i18n/lv/user_pages.json'
 import lvArtists from './i18n/lv/artists.json'
@@ -96,6 +98,7 @@ const i18n = createI18n({
             adm_genres: enAdmGenres,
             adm_comments: enAdmComments,
             adm_components: enAdmComponents,
+            adm_reports: enAdmReports,
 
             components: enComponents,
             comments: enComments
@@ -126,6 +129,7 @@ const i18n = createI18n({
             adm_genres: lvAdmGenres,
             adm_comments: lvAdmComments,
             adm_components: lvAdmComponents,
+            adm_reports: lvAdmReports,
 
             components: lvComponents,
             comments: lvComments

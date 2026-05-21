@@ -66,6 +66,11 @@ watchEffect(() => {
                     <li><Link :href="route('admin-tracks-index')">{{ t('adm_layout.tracks') }}</Link></li>
                     <li><Link :href="route('admin-genres-index')">{{ t('adm_layout.genres') }}</Link></li>
                     <li><Link :href="route('admin-comments')">{{ t('adm_layout.comments') }}</Link></li>
+
+                    <div class="divider"></div>
+
+                    <li><Link :href="route('admin-reports-index')">{{ t('adm_layout.reports') }}</Link></li>
+
                 </ul>
             </nav>
         </aside>
@@ -179,6 +184,17 @@ watchEffect(() => {
     border-radius: 0.25rem;
     cursor: pointer;
     font-size: 1.25rem;
+}
+
+.divider {
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255,255,255,0.15),
+        transparent
+    );
+    margin: 12px 0;
 }
 
 .mobile-overlay {

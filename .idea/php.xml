@@ -138,6 +138,13 @@
       <path value="$PROJECT_DIR$/knowm/vendor/jwilsson/spotify-web-api-php" />
       <path value="$PROJECT_DIR$/knowm/vendor/fig/http-message-util" />
       <path value="$PROJECT_DIR$/knowm/vendor/barryvanveen/lastfm" />
+      <path value="$PROJECT_DIR$/knowm/vendor/thecodingmachine/safe" />
+      <path value="$PROJECT_DIR$/knowm/vendor/barryvdh/laravel-dompdf" />
+      <path value="$PROJECT_DIR$/knowm/vendor/dompdf/dompdf" />
+      <path value="$PROJECT_DIR$/knowm/vendor/dompdf/php-font-lib" />
+      <path value="$PROJECT_DIR$/knowm/vendor/dompdf/php-svg-lib" />
+      <path value="$PROJECT_DIR$/knowm/vendor/masterminds/html5" />
+      <path value="$PROJECT_DIR$/knowm/vendor/sabberworm/php-css-parser" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">

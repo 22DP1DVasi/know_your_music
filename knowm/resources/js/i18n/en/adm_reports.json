@@ -1,0 +1,19 @@
+{
+    "title": "PDF Reports",
+    "back_to_website": "Back to Website",
+    "users_title": "Users Report",
+    "users_description": "PDF export of registered users",
+    "comments_title": "Comments Report",
+    "comments_description": "PDF export of user comments",
+    "popular_artists_title": "Popular Artists Report",
+    "popular_artists_description": "PDF export of most popular artists based on activity",
+    "record_limit": "Record limit",
+    "artist_limit": "Artist limit",
+    "date_from": "Date from",
+    "date_to": "Date to",
+    "comment_status": "Comment status",
+    "status_all": "All",
+    "status_visible": "Visible",
+    "status_hidden": "Hidden",
+    "generate_pdf": "Generate PDF"
+}

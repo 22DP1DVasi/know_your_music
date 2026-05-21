@@ -1,0 +1,19 @@
+{
+    "title": "PDF atskaites",
+    "back_to_website": "Atpakaļ uz vietni",
+    "users_title": "Lietotāju atskaite",
+    "users_description": "Reģistrēto lietotāju PDF izdruka",
+    "comments_title": "Komentāru atskaite",
+    "comments_description": "Lietotāju komentāru PDF izdruka",
+    "popular_artists_title": "Populārāko mākslinieku atskaite",
+    "popular_artists_description": "Populārāko mākslinieku PDF izdruka pēc aktivitātes",
+    "record_limit": "Ierakstu skaits",
+    "artist_limit": "Mākslinieku skaits",
+    "date_from": "No datuma",
+    "date_to": "Līdz datumam",
+    "comment_status": "Komentāru statuss",
+    "status_all": "Visi",
+    "status_visible": "Redzami",
+    "status_hidden": "Slēpti",
+    "generate_pdf": "Ģenerēt PDF"
+}
