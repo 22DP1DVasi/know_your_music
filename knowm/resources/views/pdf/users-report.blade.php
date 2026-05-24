@@ -33,6 +33,12 @@
             margin-top: 10px;
             font-size: 11px;
             color: #374151;
+            line-height: 1.4;
+        }
+
+        .generated-date,
+        .generated-time {
+            display: block;
         }
 
         .title {
@@ -144,7 +150,12 @@
 
                 <div class="generated-at">
                     {{ __('reports.generated_at') }}:
-                    {{ $generatedAt->format('Y-m-d H:i:s') }} UTC
+                    <span class="generated-date">
+                        {{ $generatedAt->format('Y-m-d') }}
+                    </span>
+                    <span class="generated-time">
+                        {{ $generatedAt->format('H:i:s') }} UTC
+                    </span>
                 </div>
             </td>
         </tr>

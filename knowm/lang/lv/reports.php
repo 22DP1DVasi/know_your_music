@@ -67,4 +67,21 @@ return [
             'genre' => 'Žanrs',
         ],
     ],
+
+    'popular_artists' => [
+        'title' => 'Populārāko mūzikas izpildītāju pārskats',
+
+        'table' => [
+            'name' => 'Nosaukums',
+            'top_genres' => 'Pirmie 3 žanri',
+            'popularity_score' => 'Popularitātes indekss',
+            'favorites_count' => 'Saglabājumu skaits',
+            'activity_status' => 'Aktivitātes statuss',
+        ],
+
+        'status' => [
+            'active' => 'aktīvs',
+            'inactive' => 'neaktīvs',
+        ],
+    ],
 ];

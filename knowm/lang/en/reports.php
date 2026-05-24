@@ -67,4 +67,21 @@ return [
             'genre' => 'Genre',
         ],
     ],
+
+    'popular_artists' => [
+        'title' => 'Popular Artists Report',
+
+        'table' => [
+            'name' => 'Artist Name',
+            'top_genres' => 'Top 3 Genres',
+            'popularity_score' => 'Popularity Score',
+            'favorites_count' => 'Favorites Count',
+            'activity_status' => 'Activity Status',
+        ],
+
+        'status' => [
+            'active' => 'active',
+            'inactive' => 'inactive',
+        ],
+    ],
 ];

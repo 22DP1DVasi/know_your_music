@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="lv">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
 
@@ -33,6 +33,12 @@
             margin-top: 10px;
             font-size: 11px;
             color: #374151;
+            line-height: 1.4;
+        }
+
+        .generated-date,
+        .generated-time {
+            display: block;
         }
 
         .title {
@@ -65,6 +71,38 @@
         .center {
             text-align: center;
         }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .popularity-high {
+            color: #059669;
+            font-weight: bold;
+        }
+
+        .popularity-medium {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .popularity-low {
+            color: #dc2626;
+        }
+
+        .status-active {
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .status-inactive {
+            color: #6b7280;
+        }
+
+        .favorites-high {
+            color: #0c4baa;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -84,8 +122,13 @@
                 >
 
                 <div class="generated-at">
-                    Izveidots:
-                    {{ $generatedAt->format('Y-m-d H:i:s') }} UTC
+                    {{ __('reports.generated_at') }}:
+                    <span class="generated-date">
+                        {{ $generatedAt->format('Y-m-d') }}
+                    </span>
+                    <span class="generated-time">
+                        {{ $generatedAt->format('H:i:s') }} UTC
+                    </span>
                 </div>
             </td>
         </tr>
@@ -94,7 +137,7 @@
 
 <!-- Title -->
 <div class="title">
-    Populārāko mūzikas izpildītāju pārskats
+    {{ __('reports.popular_artists.title') }}
 </div>
 
 <!-- Table -->
@@ -102,23 +145,23 @@
     <thead>
     <tr>
         <th style="width: 24%;">
-            Nosaukums
+            {{ __('reports.popular_artists.table.name') }}
         </th>
 
         <th style="width: 26%;">
-            Pirmie 3 žanri
+            {{ __('reports.popular_artists.table.top_genres') }}
         </th>
 
         <th style="width: 14%;" class="center">
-            Popularitātes indekss
+            {{ __('reports.popular_artists.table.popularity_score') }}
         </th>
 
         <th style="width: 14%;" class="center">
-            Saglabājumu skaits
+            {{ __('reports.popular_artists.table.favorites_count') }}
         </th>
 
         <th style="width: 12%;" class="center">
-            Aktivitātes statuss
+            {{ __('reports.popular_artists.table.activity_status') }}
         </th>
     </tr>
     </thead>
@@ -132,33 +175,63 @@
             </td>
 
             <!-- Genres -->
-            <td>
+            <td class="text-left">
                 {{
                     $artist->genres
                         ->pluck('name')
                         ->take(3)
                         ->join(', ')
-                        ?: '—'
+                        ?: __('reports.common.na')
                 }}
             </td>
 
             <!-- Popularity -->
             <td class="center">
-                {{ number_format($artist->popularity, 2) }}
+                @php
+                    $popularity = $artist->popularity ?? 0;
+                @endphp
+
+                @if($popularity >= 70)
+                    <span class="popularity-high">
+                        {{ number_format($popularity, 2) }}
+                    </span>
+                @elseif($popularity >= 40)
+                    <span class="popularity-medium">
+                        {{ number_format($popularity, 2) }}
+                    </span>
+                @else
+                    <span class="popularity-low">
+                        {{ number_format($popularity, 2) }}
+                    </span>
+                @endif
             </td>
 
             <!-- Favorites -->
             <td class="center">
-                {{ $artist->favorited_by_users_count }}
+                @php
+                    $favoritesCount = $artist->favorited_by_users_count ?? 0;
+                @endphp
+
+                @if($favoritesCount > 0)
+                    <span class="favorites-high">
+                        {{ number_format($favoritesCount) }}
+                    </span>
+                @else
+                    {{ number_format($favoritesCount) }}
+                @endif
             </td>
 
             <!-- Status -->
             <td class="center">
-                {{
-                    $artist->is_active
-                        ? 'aktīvs'
-                        : 'neaktīvs'
-                }}
+                @if($artist->is_active)
+                    <span class="status-active">
+                        {{ __('reports.popular_artists.status.active') }}
+                    </span>
+                @else
+                    <span class="status-inactive">
+                        {{ __('reports.popular_artists.status.inactive') }}
+                    </span>
+                @endif
             </td>
         </tr>
     @endforeach
