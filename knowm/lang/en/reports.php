@@ -40,4 +40,31 @@ return [
             'deleted' => 'deleted',
         ],
     ],
+
+    'comments' => [
+        'title' => 'Comments Report',
+
+        'table' => [
+            'id' => 'ID',
+            'author' => 'Author username',
+            'text' => 'Text',
+            'status' => 'Status',
+            'published_at' => 'Published at',
+            'object' => 'Object',
+            'reply_to' => 'Reply to',
+        ],
+
+        'status' => [
+            'visible' => 'visible',
+            'hidden' => 'hidden',
+            'deleted' => 'deleted',
+        ],
+
+        'entity' => [
+            'artist' => 'Artist',
+            'release' => 'Release',
+            'track' => 'Track',
+            'genre' => 'Genre',
+        ],
+    ],
 ];

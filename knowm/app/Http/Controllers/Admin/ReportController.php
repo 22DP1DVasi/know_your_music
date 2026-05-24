@@ -143,9 +143,12 @@ class ReportController extends Controller
                     'text' => str($comment->text)->limit(340),
                     'status' => $this->getCommentStatus($comment),
                     'created_at' => $comment->created_at,
-                    'object' =>
-                        $comment->artist?->name .
-                        ' (#' . $comment->artist?->id . ', Artist)',
+                    'object' => sprintf(
+                        '%s (#%d, %s)',
+                        $comment->artist?->name,
+                        $comment->artist?->id,
+                        __('reports.comments.entity.artist')
+                    ),
                     'parent_id' => $comment->parent_id,
                 ];
             });
@@ -173,9 +176,12 @@ class ReportController extends Controller
                     'text' => str($comment->text)->limit(340),
                     'status' => $this->getCommentStatus($comment),
                     'created_at' => $comment->created_at,
-                    'object' =>
-                        $comment->release?->title .
-                        ' (#' . $comment->release?->id . ', Release)',
+                    'object' => sprintf(
+                        '%s (#%d, %s)',
+                        $comment->release?->title,
+                        $comment->release?->id,
+                        __('reports.comments.entity.release')
+                    ),
                     'parent_id' => $comment->parent_id,
                 ];
             });
@@ -203,9 +209,12 @@ class ReportController extends Controller
                     'text' => str($comment->text)->limit(340),
                     'status' => $this->getCommentStatus($comment),
                     'created_at' => $comment->created_at,
-                    'object' =>
-                        $comment->track?->title .
-                        ' (#' . $comment->track?->id . ', Track)',
+                    'object' => sprintf(
+                        '%s (#%d, %s)',
+                        $comment->track?->title,
+                        $comment->track?->id,
+                        __('reports.comments.entity.track')
+                    ),
                     'parent_id' => $comment->parent_id,
                 ];
             });
@@ -233,9 +242,12 @@ class ReportController extends Controller
                     'text' => str($comment->text)->limit(340),
                     'status' => $this->getCommentStatus($comment),
                     'created_at' => $comment->created_at,
-                    'object' =>
-                        $comment->genre?->name .
-                        ' (#' . $comment->genre?->id . ', Genre)',
+                    'object' => sprintf(
+                        '%s (#%d, %s)',
+                        $comment->genre?->name,
+                        $comment->genre?->id,
+                        __('reports.comments.entity.genre')
+                    ),
                     'parent_id' => $comment->parent_id,
                 ];
             });

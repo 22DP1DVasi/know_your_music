@@ -40,4 +40,31 @@ return [
             'deleted' => 'izdzēsts',
         ],
     ],
+
+    'comments' => [
+        'title' => 'Komentāru pārskats',
+
+        'table' => [
+            'id' => 'ID',
+            'author' => 'Autora lietotājvārds',
+            'text' => 'Teksts',
+            'status' => 'Statuss',
+            'published_at' => 'Publicēšanas laiks',
+            'object' => 'Objekts',
+            'reply_to' => 'Atbilde uz',
+        ],
+
+        'status' => [
+            'visible' => 'redzams',
+            'hidden' => 'slēpts',
+            'deleted' => 'izdzēsts',
+        ],
+
+        'entity' => [
+            'artist' => 'Izpildītājs',
+            'release' => 'Albums',
+            'track' => 'Dziesma',
+            'genre' => 'Žanrs',
+        ],
+    ],
 ];
