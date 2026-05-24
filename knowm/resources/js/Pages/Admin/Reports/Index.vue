@@ -40,13 +40,12 @@ const generateUsersReport = () => {
 
 // WIP
 const generateCommentsReport = () => {
-    // const params = new URLSearchParams({
-    //     limit: commentsReport.limit,
-    //     date_from: commentsReport.date_from,
-    //     date_to: commentsReport.date_to,
-    //     status: commentsReport.status
-    // });
-    // window.open(route('admin-reports-comments') + '?' + params.toString(), '_blank');
+    const params = new URLSearchParams({
+        limit: commentsReport.limit,
+        date_from: commentsReport.date_from,
+        date_to: commentsReport.date_to
+    });
+    window.open(route('admin-reports-comments') + '?' + params.toString(), '_blank');
 };
 
 // WIP
@@ -139,15 +138,6 @@ const generatePopularArtistsReport = () => {
                     <div class="form-group">
                         <label>{{ t('adm_reports.date_to') }}</label>
                         <input type="date" v-model="commentsReport.date_to" class="input-field" />
-                    </div>
-
-                    <div class="form-group">
-                        <label>{{ t('adm_reports.comment_status') }}</label>
-                        <select v-model="commentsReport.status" class="input-field">
-                            <option value="all">{{ t('adm_reports.status_all') }}</option>
-                            <option value="visible">{{ t('adm_reports.status_visible') }}</option>
-                            <option value="hidden">{{ t('adm_reports.status_hidden') }}</option>
-                        </select>
                     </div>
                 </div>
 
@@ -301,6 +291,26 @@ const generatePopularArtistsReport = () => {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* make entire date input field clickable */
+input[type="date"] {
+    position: relative;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    color: transparent;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
 }
 
 .report-actions {
