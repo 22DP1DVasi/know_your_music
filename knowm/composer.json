@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "barryvanveen/lastfm": "^2.0",
+        "barryvdh/laravel-dompdf": "^3.1",
         "guzzlehttp/guzzle": "^7.9",
         "inertiajs/inertia-laravel": "^2.0",
         "jwilsson/spotify-web-api-php": "^6.2",

@@ -110,6 +110,21 @@ class Artist extends Model
     }
 
     /**
+     * // Users who have marked this artist as a favorite.
+     *
+     * @return BelongsToMany
+     */
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'user_favorite_artists',
+            'artist_id',
+            'user_id'
+        );
+    }
+
+    /**
      * Get all comments for the artist
      */
     public function allComments()

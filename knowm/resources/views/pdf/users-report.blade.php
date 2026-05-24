@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <meta charset="utf-8">
+
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+            color: #111827;
+        }
+
+        .header {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .header-table {
+            width: 100%;
+        }
+
+        .logo-cell {
+            text-align: right;
+            vertical-align: top;
+            width: 140px;
+        }
+
+        .logo {
+            width: 90px;
+        }
+
+        .generated-at {
+            margin-top: 10px;
+            font-size: 11px;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .generated-date,
+        .generated-time {
+            display: block;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .summary-table {
+            width: 320px;
+            margin: 0 auto 50px auto;
+            border-collapse: collapse;
+        }
+
+        .summary-table td {
+            border: 1px solid #111827;
+            padding: 8px 12px;
+        }
+
+        .summary-label {
+            font-weight: bold;
+            background: #f3f4f6;
+        }
+
+        .summary-value {
+            text-align: center;
+        }
+
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .main-table th,
+        .main-table td {
+            border: 1px solid #374151;
+            padding: 8px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            vertical-align: top;
+        }
+
+        .main-table th {
+            background: #e5e7eb;
+            font-weight: bold;
+        }
+
+        .col-name {
+            width: 18%;
+        }
+
+        .col-email {
+            width: 28%;
+        }
+
+        .col-roles {
+            width: 22%;
+        }
+
+        .col-date {
+            width: 18%;
+        }
+
+        .col-status {
+            width: 14%;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .status-active {
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .status-banned {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .status-deleted {
+            color: #6b7280;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="header">
+    <table class="header-table">
+        <tr>
+            <td></td>
+
+            <td class="logo-cell">
+                <img
+                    src="{{ public_path('images/mini-logo.png') }}"
+                    class="logo"
+                    alt="Logo"
+                >
+
+                <div class="generated-at">
+                    {{ __('reports.generated_at') }}:
+                    <span class="generated-date">
+                        {{ $generatedAt->format('Y-m-d') }}
+                    </span>
+                    <span class="generated-time">
+                        {{ $generatedAt->format('H:i:s') }} UTC
+                    </span>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Title -->
+<div class="title">
+    {{ __('reports.users.title') }}
+</div>
+
+<!-- Summary -->
+<table class="summary-table">
+    <tr>
+        <td class="summary-label">
+            {{ __('reports.users.total_users') }}:
+        </td>
+
+        <td class="summary-value">
+            {{ $totalUsers }}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="summary-label">
+            {{ __('reports.users.active_users') }}:
+        </td>
+
+        <td class="summary-value">
+            {{ $activeUsers }}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="summary-label">
+            {{ __('reports.users.banned_users') }}:
+        </td>
+
+        <td class="summary-value">
+            {{ $bannedUsers }}
+        </td>
+    </tr>
+
+    <tr>
+        <td class="summary-label">
+            {{ __('reports.users.deleted_users') }}:
+        </td>
+
+        <td class="summary-value">
+            {{ $deletedUsers }}
+        </td>
+    </tr>
+</table>
+
+<!-- Main table -->
+<table class="main-table">
+    <thead>
+    <tr>
+        <th class="col-name">{{ __('reports.users.table.name') }}</th>
+        <th class="col-email">{{ __('reports.users.table.email') }}</th>
+        <th class="col-roles">{{ __('reports.users.table.roles') }}</th>
+        <th class="col-date">{{ __('reports.users.table.registered_at') }}</th>
+        <th class="col-status">{{ __('reports.users.table.status') }}</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    @foreach($users as $user)
+        <tr>
+            <td>
+                {{ $user->name }}
+            </td>
+
+            <td>
+                {{ $user->email }}
+            </td>
+
+            @php
+                $roles = $user->roles->pluck('name')->join(', ');
+                $hasRoles = !empty($roles);
+            @endphp
+
+            <td class="{{ $hasRoles ? 'text-left' : 'text-center' }}">
+                {{ $roles ?: __('reports.common.na') }}
+            </td>
+
+            <td>
+                {{ $user->created_at?->format('Y-m-d') ?? __('reports.common.na') }}
+            </td>
+
+            <td>
+                @if($user->deleted_at)
+                    <span class="status-deleted">
+                        {{ __('reports.users.status.deleted') }}
+                    </span>
+                @elseif($user->status === 'banned')
+                    <span class="status-banned">
+                        {{ __('reports.users.status.banned') }}
+                    </span>
+                @else
+                    <span class="status-active">
+                        {{ __('reports.users.status.active') }}
+                    </span>
+                @endif
+            </td>
+        </tr>
+    @endforeach
+    </tbody>
+</table>
+
+</body>
+</html>

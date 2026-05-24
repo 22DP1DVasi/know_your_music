@@ -439,25 +439,6 @@ onBeforeUnmount(() => {
                                 </ul>
                             </li>
 
-                            <li class="nav-item has-submenu">
-                                <button
-                                    @click="toggleMenu('recommendations')"
-                                    class="nav-link primary submenu-toggle"
-                                    :class="{ 'expanded': isMenuExpanded('recommendations') }"
-                                >
-                                    <i class="fa-solid fa-lightbulb nav-icon"></i>
-                                    <span>{{ t('user_pages.layout.recommendations') }}</span>
-                                    <i class="fa-solid fa-chevron-right toggle-icon"></i>
-                                </button>
-                                <ul class="submenu" v-show="isMenuExpanded('recommendations')">
-                                    <li>
-                                        <Link href="#" class="submenu-link" @click="closeMobileSidebar">
-                                            <i class="fa-regular fa-clock submenu-icon"></i>
-                                            {{ t('user_pages.layout.history_recom') }}
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </li>
                         </ul>
                     </nav>
 
@@ -1255,7 +1236,7 @@ onBeforeUnmount(() => {
 .page-header {
     background: white;
     border-bottom: 1px solid rgba(12, 75, 170, 0.1);
-    padding: 1.5rem 2rem;
+    padding: 2.5rem 2rem 1.5rem;
 }
 
 .header-container {
@@ -1292,6 +1273,10 @@ onBeforeUnmount(() => {
         margin-left: 280px;
         padding-top: 0;
     }
+
+    /*.page-header {
+        padding: 1.5rem 2rem;
+    }*/
 }
 
 /* Animācijas */
