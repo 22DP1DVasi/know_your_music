@@ -375,6 +375,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         ->name('admin-reports-users');
     Route::get('/admin/reports/comments', [App\Http\Controllers\Admin\ReportController::class, 'commentsReport'])
         ->name('admin-reports-comments');
+    Route::get('/admin/reports/popular-artists', [App\Http\Controllers\Admin\ReportController::class, 'popularArtistsReport'])
+        ->name('admin-reports-popular-artists');
 });
 
 //    Route::resource('/admin-users-index', UserController::class)->except(['show']);

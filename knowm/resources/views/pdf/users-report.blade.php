@@ -139,6 +139,7 @@
                 <img
                     src="{{ public_path('images/mini-logo.png') }}"
                     class="logo"
+                    alt="Logo"
                 >
 
                 <div class="generated-at">

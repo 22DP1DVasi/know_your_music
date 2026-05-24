@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="lv">
 <head>
     <meta charset="UTF-8">
 
@@ -65,23 +65,9 @@
         .center {
             text-align: center;
         }
-
-        .status-visible {
-            color: #166534;
-            font-weight: bold;
-        }
-
-        .status-hidden {
-            color: #991b1b;
-            font-weight: bold;
-        }
-
-        .status-deleted {
-            color: #6b7280;
-            font-weight: bold;
-        }
     </style>
 </head>
+
 <body>
 
 <!-- Header -->
@@ -98,7 +84,7 @@
                 >
 
                 <div class="generated-at">
-                    {{ __('reports.generated_at') }}:
+                    Izveidots:
                     {{ $generatedAt->format('Y-m-d H:i:s') }} UTC
                 </div>
             </td>
@@ -108,63 +94,71 @@
 
 <!-- Title -->
 <div class="title">
-    {{ __('reports.comments.title') }}
+    Populārāko mūzikas izpildītāju pārskats
 </div>
 
-<!-- Main table -->
+<!-- Table -->
 <table class="main-table">
     <thead>
     <tr>
-        <th style="width: 5%">{{ __('reports.comments.table.id') }}</th>
-        <th style="width: 13%">{{ __('reports.comments.table.author') }}</th>
-        <th style="width: 28%">{{ __('reports.comments.table.text') }}</th>
-        <th style="width: 10%">{{ __('reports.comments.table.status') }}</th>
-        <th style="width: 14%">{{ __('reports.comments.table.published_at') }}</th>
-        <th style="width: 20%">{{ __('reports.comments.table.object') }}</th>
-        <th style="width: 10%">{{ __('reports.comments.table.reply_to') }}</th>
+        <th style="width: 24%;">
+            Nosaukums
+        </th>
+
+        <th style="width: 26%;">
+            Pirmie 3 žanri
+        </th>
+
+        <th style="width: 14%;" class="center">
+            Popularitātes indekss
+        </th>
+
+        <th style="width: 14%;" class="center">
+            Saglabājumu skaits
+        </th>
+
+        <th style="width: 12%;" class="center">
+            Aktivitātes statuss
+        </th>
     </tr>
     </thead>
 
     <tbody>
-    @foreach($comments as $comment)
+    @foreach ($artists as $artist)
         <tr>
-            <td class="center">
-                {{ $comment['id'] }}
-            </td>
-
+            <!-- Name -->
             <td>
-                {{ $comment['author'] }}
+                {{ $artist->name }}
             </td>
 
+            <!-- Genres -->
             <td>
-                {{ $comment['text'] }}
+                {{
+                    $artist->genres
+                        ->pluck('name')
+                        ->take(3)
+                        ->join(', ')
+                        ?: '—'
+                }}
             </td>
 
+            <!-- Popularity -->
             <td class="center">
-                @php
-                    $status = $comment['status'];
-                    $allowed = ['visible', 'hidden', 'deleted'];
-                @endphp
-
-                @if(in_array($status, $allowed))
-                    <span class="status-{{ $status }}">
-                        {{ __("reports.comments.status.$status") }}
-                    </span>
-                @else
-                    {{ $status }}
-                @endif
+                {{ number_format($artist->popularity, 2) }}
             </td>
 
+            <!-- Favorites -->
             <td class="center">
-                {{ $comment['created_at']->format('Y-m-d H:i:s') }}
+                {{ $artist->favorited_by_users_count }}
             </td>
 
-            <td>
-                {{ $comment['object'] }}
-            </td>
-
+            <!-- Status -->
             <td class="center">
-                {{ $comment['parent_id'] ?? __('reports.common.na') }}
+                {{
+                    $artist->is_active
+                        ? 'aktīvs'
+                        : 'neaktīvs'
+                }}
             </td>
         </tr>
     @endforeach

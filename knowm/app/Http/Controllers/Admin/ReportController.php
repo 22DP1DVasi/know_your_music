@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Artist;
 use App\Models\ArtistComment;
 use App\Models\ReleaseComment;
 use App\Models\TrackComment;
@@ -96,6 +97,7 @@ class ReportController extends Controller
 
         $font = $domPdf->getFontMetrics()->get_font('DejaVu Sans', 'normal');
         $x = $canvas->get_width() / 2;
+
         $canvas->page_text(
             $x,
             $canvas->get_height() - 30,
@@ -112,6 +114,12 @@ class ReportController extends Controller
         return $pdf->stream($fileName);
     }
 
+    /***
+     * Generates comments report.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function commentsReport(Request $request): \Illuminate\Http\Response
     {
         $validated = $request->validate([
@@ -309,5 +317,68 @@ class ReportController extends Controller
             return 'deleted';
         }
         return $comment->status;
+    }
+
+    public function popularArtistsReport(Request $request): \Illuminate\Http\Response
+    {
+        $validated = $request->validate([
+            'limit' => ['required', 'integer', 'min:1', 'max:1000'],
+            'min_popularity' => ['nullable', 'numeric', 'min:0'],
+            'activity_status' => ['nullable', 'in:all,active,inactive'],
+        ]);
+
+        $artists = Artist::with('genres')
+            ->withCount('favoritedByUsers')
+            ->when(
+                $validated['min_popularity'] ?? null,
+                fn ($query, $value) =>
+                $query->where('popularity', '>=', $value)
+            )
+            ->when(
+                ($validated['activity_status'] ?? 'all') !== 'all',
+                fn ($query) =>
+                $query->where(
+                    'is_active',
+                    $validated['activity_status'] === 'active'
+                )
+            )
+            ->orderByDesc('popularity')
+            ->orderByDesc('favorited_by_users_count')
+            ->limit($validated['limit'])
+            ->get();
+
+        $pdf = Pdf::loadView(
+            'pdf.popular-artists-report',
+            [
+                'artists' => $artists,
+                'generatedAt' => now(),
+            ]
+        )->setPaper('a4', 'landscape');
+
+        $domPdf = $pdf->getDomPDF();
+        $domPdf->render();
+
+        $canvas = $domPdf->getCanvas();
+
+        $font = $domPdf
+            ->getFontMetrics()
+            ->get_font('DejaVu Sans', 'normal');
+
+        $x = $canvas->get_width() / 2;
+
+        $canvas->page_text(
+            $x,
+            $canvas->get_height() - 30,
+            "{PAGE_NUM} / {PAGE_COUNT}",
+            $font,
+            10,
+            [0, 0, 0],
+            0.0,
+            0.0,
+            'center'
+        );
+
+        $fileName = 'popular-artists-report-' . now()->format('Y-m-d_H-i-s') . '.pdf';
+        return $pdf->stream($fileName);
     }
 }

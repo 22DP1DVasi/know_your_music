@@ -9,11 +9,13 @@
     "popular_artists_description": "PDF export of most popular artists based on activity",
     "record_limit": "Record limit",
     "artist_limit": "Artist limit",
+    "min_popularity": "Minimum popularity",
+    "min_popularity_placeholder": "e.g., 50.0",
+    "activity_status": "Activity status",
+    "status_active": "Active",
+    "status_inactive": "Inactive",
     "date_from": "Date from",
     "date_to": "Date to",
-    "comment_status": "Comment status",
     "status_all": "All",
-    "status_visible": "Visible",
-    "status_hidden": "Hidden",
     "generate_pdf": "Generate PDF"
 }

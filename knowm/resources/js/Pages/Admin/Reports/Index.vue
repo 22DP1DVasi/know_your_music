@@ -14,7 +14,7 @@ const usersReport = reactive({
     date_to: ''
 });
 
-// comments Report filters WIP
+// comments Report filters
 const commentsReport = reactive({
     limit: 100,
     date_from: '',
@@ -22,11 +22,11 @@ const commentsReport = reactive({
     status: 'all' // 'all', 'visible', 'hidden'
 });
 
-// popular Artists Report filters WIP
+// popular Artists Report filters
 const popularArtistsReport = reactive({
     limit: 50,
-    date_from: '',
-    date_to: ''
+    min_popularity: '',
+    activity_status: 'all'
 });
 
 const generateUsersReport = () => {
@@ -38,7 +38,6 @@ const generateUsersReport = () => {
     window.open(route('admin-reports-users') + '?' + params.toString(), '_blank');
 };
 
-// WIP
 const generateCommentsReport = () => {
     const params = new URLSearchParams({
         limit: commentsReport.limit,
@@ -48,14 +47,13 @@ const generateCommentsReport = () => {
     window.open(route('admin-reports-comments') + '?' + params.toString(), '_blank');
 };
 
-// WIP
 const generatePopularArtistsReport = () => {
-//     const params = new URLSearchParams({
-//         limit: popularArtistsReport.limit,
-//         date_from: popularArtistsReport.date_from,
-//         date_to: popularArtistsReport.date_to
-//     });
-//     window.open(route('admin-reports-popular-artists') + '?' + params.toString(), '_blank');
+    const params = new URLSearchParams({
+        limit: popularArtistsReport.limit,
+        min_popularity: popularArtistsReport.min_popularity,
+        activity_status: popularArtistsReport.activity_status
+    });
+    window.open(route('admin-reports-popular-artists') + '?' + params.toString(), '_blank');
 };
 
 </script>
@@ -169,13 +167,24 @@ const generatePopularArtistsReport = () => {
                     </div>
 
                     <div class="form-group">
-                        <label>{{ t('adm_reports.date_from') }}</label>
-                        <input type="date" v-model="popularArtistsReport.date_from" class="input-field" />
+                        <label>{{ t('adm_reports.min_popularity') }}</label>
+                        <input
+                            type="number"
+                            v-model="popularArtistsReport.min_popularity"
+                            class="input-field"
+                            step="0.1"
+                            min="0"
+                            :placeholder="t('adm_reports.min_popularity_placeholder')"
+                        />
                     </div>
 
                     <div class="form-group">
-                        <label>{{ t('adm_reports.date_to') }}</label>
-                        <input type="date" v-model="popularArtistsReport.date_to" class="input-field" />
+                        <label>{{ t('adm_reports.activity_status') }}</label>
+                        <select v-model="popularArtistsReport.activity_status" class="input-field">
+                            <option value="all">{{ t('adm_reports.status_all') }}</option>
+                            <option value="active">{{ t('adm_reports.status_active') }}</option>
+                            <option value="inactive">{{ t('adm_reports.status_inactive') }}</option>
+                        </select>
                     </div>
                 </div>
 
