@@ -35,10 +35,13 @@ class AppServiceProvider extends ServiceProvider
             Request::HEADER_X_FORWARDED_HOST |
             Request::HEADER_X_FORWARDED_PORT |
             Request::HEADER_X_FORWARDED_PROTO |
-            Request::HEADER_X_FORWARDED_PREFIX
+            Request::HEADER_X_FORWARDED_AWS_ELB
         );
 
-        URL::forceScheme('https');
+        if (env('FORCE_HTTPS', false)) {
+            URL::forceScheme('https');
+        }
+        URL::forceRootUrl(config('app.url'));
 
         Vite::prefetch(concurrency: 3);
     }
