@@ -20,7 +20,7 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        window.axios.defaults.baseURL = 'https://know_your_music.rvtdev.tech';
+        // window.axios.defaults.baseURL = 'https://know_your_music.rvtdev.tech';
         const vueApp = createApp({
             setup() {
                 const {

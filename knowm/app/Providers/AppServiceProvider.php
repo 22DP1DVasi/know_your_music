@@ -38,9 +38,10 @@ class AppServiceProvider extends ServiceProvider
             Request::HEADER_X_FORWARDED_AWS_ELB
         );
 
-        if (env('FORCE_HTTPS', false)) {
-            URL::forceScheme('https');
-        }
+//        if (env('FORCE_HTTPS', false)) {
+//            URL::forceScheme('https');
+//        }
+        URL::forceScheme('https');
         URL::forceRootUrl(config('app.url'));
 
         Vite::prefetch(concurrency: 3);
