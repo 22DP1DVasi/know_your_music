@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -514,7 +515,7 @@
       <workItem from="1779562261710" duration="2369000" />
       <workItem from="1779604317581" duration="3051000" />
       <workItem from="1779644415308" duration="3992000" />
-      <workItem from="1779825080008" duration="1546000" />
+      <workItem from="1779825080008" duration="2647000" />
     </task>
     <servers />
   </component>
