@@ -42,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
 //            URL::forceScheme('https');
 //        }
         URL::forceScheme('https');
+        $this->app['request']->server->set('HTTPS', true);
         URL::forceRootUrl(config('app.url'));
 
         Vite::prefetch(concurrency: 3);
