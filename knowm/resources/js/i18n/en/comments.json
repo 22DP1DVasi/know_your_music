@@ -48,5 +48,12 @@
         "delete_as_admin": "Delete as Admin",
         "delete_permanently": "Delete Permanently",
         "delete": "Delete"
-    }
+    },
+    "hide_btn": "Hide",
+    "unhide_btn": "Unhide",
+    "hide_confirm": "Are you sure you want to hide this comment?",
+    "unhide_confirm": "Are you sure you want to unhide this comment?",
+    "hidden_by_moderation_your": "Your comment has been hidden by moderation.",
+    "hidden_by_moderation_other": "This comment has been hidden by moderation.",
+    "error_update_status": "Failed to update comment status."
 }

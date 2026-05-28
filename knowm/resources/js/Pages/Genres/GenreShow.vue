@@ -417,7 +417,7 @@ const closeModal = () => {
 
                 <!-- Komentāru sekcija -->
                 <Comments
-                    :entity-type="'genre'"
+                    :entity-type="'genres'"
                     :entity-slug="genre.slug"
                     :entity-id="Number(genre.id)"
                     :parent-key="'genre_id'"

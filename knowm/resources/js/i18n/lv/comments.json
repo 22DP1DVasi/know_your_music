@@ -48,5 +48,12 @@
         "delete_as_admin": "Dzēst kā administrators",
         "delete_permanently": "Dzēst neatgriezeniski",
         "delete": "Dzēst"
-    }
+    },
+    "hide_btn": "Paslēpt",
+    "unhide_btn": "Atklāt",
+    "hide_confirm": "Vai tiešām vēlaties paslēpt šo komentāru?",
+    "unhide_confirm": "Vai tiešām vēlaties atklāt šo komentāru?",
+    "hidden_by_moderation_your": "Jūsu komentārs ir paslēpts moderācijas dēļ.",
+    "hidden_by_moderation_other": "Šis komentārs ir paslēpts moderācijas dēļ.",
+    "error_update_status": "Neizdevās atjaunināt komentāra statusu."
 }
