@@ -30,6 +30,10 @@ class RegisteredUserController extends Controller
     // Request automatically validates data before the method is executed
     public function store(RegisterUserRequest $request): RedirectResponse
     {
+//        dd(
+//            app()->getLocale(),
+//            session('locale')
+//        );
         $user = User::create([
             'name' => $request->validated('name'),
             'email' => $request->validated('email'),
