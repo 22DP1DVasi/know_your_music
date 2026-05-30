@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\PasswordRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 use App\Models\User;
@@ -19,7 +20,7 @@ class RegisterUserRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'max:255',
+                'max:32',
                 'unique:users,name',
                 'regex:/^[a-zA-Z0-9_]+$/', // restrict to alphanumeric + underscore
                 ],
@@ -28,16 +29,10 @@ class RegisterUserRequest extends FormRequest
                 'string',
                 'lowercase',
                 'email',
-                'max:100',
+                'max:255',
                 'unique:users,email'
             ],
-            'password' => ['required', 'confirmed',
-                Password::defaults()
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-                    ->uncompromised()],
+            'password' => PasswordRules::defaults(),
             'website' => ['bail', 'nullable', 'string', 'max:0'],   // honeypot
         ];
     }

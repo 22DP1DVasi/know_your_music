@@ -18,8 +18,8 @@ const props = defineProps({
 const form = useForm({
     name: props.user.name,
     email: props.user.email,
-    password: '',
-    password_confirmation: '',
+    // password: '',
+    // password_confirmation: '',
     status: props.user.status,
     roles: props.user.roles.map(r => r.id)
 });
@@ -187,29 +187,29 @@ const closeAddRolesModal = () => {
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="password">{{ t('adm_users.edit.new_password') }}</label>
-                        <input
-                            v-model="form.password"
-                            id="password"
-                            type="password"
-                            class="input-field"
-                            :class="{ 'input-error': form.errors.password }"
-                        >
-                        <div v-if="form.errors.password" class="error-message">
-                            {{ form.errors.password }}
-                        </div>
-                    </div>
+<!--                    <div class="form-group">-->
+<!--                        <label for="password">{{ t('adm_users.edit.new_password') }}</label>-->
+<!--                        <input-->
+<!--                            v-model="form.password"-->
+<!--                            id="password"-->
+<!--                            type="password"-->
+<!--                            class="input-field"-->
+<!--                            :class="{ 'input-error': form.errors.password }"-->
+<!--                        >-->
+<!--                        <div v-if="form.errors.password" class="error-message">-->
+<!--                            {{ form.errors.password }}-->
+<!--                        </div>-->
+<!--                    </div>-->
 
-                    <div class="form-group">
-                        <label for="password_confirmation">{{ t('adm_users.edit.confirm_password') }}</label>
-                        <input
-                            v-model="form.password_confirmation"
-                            id="password_confirmation"
-                            type="password"
-                            class="input-field"
-                        >
-                    </div>
+<!--                    <div class="form-group">-->
+<!--                        <label for="password_confirmation">{{ t('adm_users.edit.confirm_password') }}</label>-->
+<!--                        <input-->
+<!--                            v-model="form.password_confirmation"-->
+<!--                            id="password_confirmation"-->
+<!--                            type="password"-->
+<!--                            class="input-field"-->
+<!--                        >-->
+<!--                    </div>-->
 
                     <div class="form-group">
                         <label for="status">{{ t('adm_users.edit.status') }}</label>
