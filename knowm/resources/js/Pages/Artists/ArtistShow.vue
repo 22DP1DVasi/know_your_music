@@ -500,7 +500,7 @@ const capitalize = (value) => {
 
                 <!-- Komentāru sekcija -->
                 <Comments
-                    :entity-type="'artist'"
+                    :entity-type="'artists'"
                     :entity-slug="artist.slug"
                     :entity-id="artist.id"
                     :parent-key="'artist_id'"

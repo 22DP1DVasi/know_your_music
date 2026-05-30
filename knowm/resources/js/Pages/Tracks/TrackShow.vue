@@ -279,7 +279,7 @@ const redirectToFullDescription = (slug) => {
 
                     <section class="track-comments">
                         <Comments
-                            :entity-type="'track'"
+                            :entity-type="'tracks'"
                             :entity-slug="track.slug"
                             :entity-id="track.id"
                             :parent-key="'track_id'"

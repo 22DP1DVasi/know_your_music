@@ -359,7 +359,7 @@ const closeModal = () => {
 
                     <!-- Komentāru sekcija -->
                     <Comments
-                        :entity-type="'release'"
+                        :entity-type="'releases'"
                         :entity-slug="release.slug"
                         :entity-id="release.id"
                         :parent-key="'release_id'"

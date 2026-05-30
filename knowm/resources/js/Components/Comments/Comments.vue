@@ -136,6 +136,47 @@ const isCommentEdited = (comment) => {
     return comment.edited_at !== null && comment.edited_at !== undefined
 }
 
+const canModerateComment = (comment) => {
+    if (!isAuthenticated.value) return false
+    if (isCommentDeleted(comment)) return false   // can't moderate deleted comments
+    return isCommentsModerator.value && !isUserComment(comment)  // can't moderate own comments
+}
+
+const toggleCommentStatus = async (comment) => {
+    if (!canModerateComment(comment)) return
+
+    const newStatus = comment.status === 'visible' ? 'hidden' : 'visible'
+    const action = newStatus === 'visible' ? 'unhide' : 'hide'
+    if (!confirm(t(`comments.${action}_confirm`))) return
+
+    try {
+        const response = await axios.patch(
+            route('admin-comments.update-status', {
+                type: props.entityType,
+                id: comment.id
+            }),
+            { status: newStatus }
+        )
+        if (response.data.success) {
+            // update local comment status
+            comment.status = newStatus
+        }
+    } catch (error) {
+        console.error('Error updating comment status:', error)
+        alert(t('comments.error_update_status'))
+    }
+}
+
+const getHiddenNoticeText = (comment) => {
+    if (!isCommentDeleted(comment) && comment.status === 'hidden') {
+        if (isUserComment(comment)) {
+            return t('comments.hidden_by_moderation_your')
+        }
+        return t('comments.hidden_by_moderation_other')
+    }
+    return null
+}
+
 const canDeleteComment = (comment) => {
     if (!isAuthenticated.value) return false
     return isUserComment(comment) || isCommentsModerator.value
@@ -224,9 +265,20 @@ const isCommentDeleted = (comment) => {
     return comment.deleted_at !== null && comment.deleted_at !== undefined
 }
 
-const getDisplayTextConsideringDeletion = (comment) => {
+// const getDisplayTextConsideringDeletion = (comment) => {
+//     if (isCommentDeleted(comment)) {
+//         return `<em class="deleted-comment-text">${t('comments.deleted_comment_text')}</em>`
+//     }
+//     return getDisplayText(comment)
+// }
+
+const getDisplayTextConsideringDeletionAndHidden = (comment) => {
     if (isCommentDeleted(comment)) {
         return `<em class="deleted-comment-text">${t('comments.deleted_comment_text')}</em>`
+    }
+    if (comment.status === 'hidden') {
+        const notice = getHiddenNoticeText(comment)
+        return `<em class="hidden-comment-text">${notice}</em>`
     }
     return getDisplayText(comment)
 }
@@ -722,13 +774,23 @@ const confirmDeleteComment = async () => {
                                 :class="{ 'admin-dropdown': isCommentsModerator && !isUserComment(commentData.comment) }"
                             >
                                 <button
-                                    v-if="canEditComment(commentData.comment)"
+                                    v-if="canEditComment(commentData.comment) && commentData.comment.status === 'visible'"
                                     class="dropdown-item edit-item"
                                     @click="handleEditComment(commentData.comment)"
                                 >
                                     <i class="fa-regular fa-pen-to-square"></i>
                                     <span>{{ t('comments.edit') }}</span>
                                 </button>
+
+                                <button
+                                    v-if="canModerateComment(commentData.comment)"
+                                    class="dropdown-item moderate-item"
+                                    @click="toggleCommentStatus(commentData.comment)"
+                                >
+                                    <i :class="commentData.comment.status === 'visible' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                                    <span>{{ commentData.comment.status === 'visible' ? t('comments.hide_btn') : t('comments.unhide_btn') }}</span>
+                                </button>
+
                                 <button
                                     v-if="canDeleteComment(commentData.comment)"
                                     class="dropdown-item delete-item"
@@ -785,10 +847,11 @@ const confirmDeleteComment = async () => {
                 <div v-else>
                     <div
                         :class="['comment-text', {
-                            'truncated': !isCommentExpanded(commentData.comment.id) && needsTruncationWithDeletion(commentData.comment),
-                            'deleted-comment': isCommentDeleted(commentData.comment)
+                            'truncated': !isCommentExpanded(commentData.comment.id) && needsTruncationWithDeletion(commentData.comment) && commentData.comment.status !== 'hidden',
+                            'deleted-comment': isCommentDeleted(commentData.comment),
+                            'hidden-comment': !isCommentDeleted(commentData.comment) && commentData.comment.status === 'hidden'
                         }]"
-                        v-html="getDisplayTextConsideringDeletion(commentData.comment)"
+                        v-html="getDisplayTextConsideringDeletionAndHidden(commentData.comment)"
                     ></div>
 
                     <button
@@ -800,7 +863,7 @@ const confirmDeleteComment = async () => {
                     </button>
 
                     <button
-                        v-if="!isCommentDeleted(commentData.comment)"
+                        v-if="!isCommentDeleted(commentData.comment) && commentData.comment.status === 'visible'"
                         @click="startAddingReply(commentData.comment.id)"
                         class="reply-button"
                     >
@@ -1547,6 +1610,13 @@ const confirmDeleteComment = async () => {
     text-align: center;
 }
 
+.dropdown-item.moderate-item {
+    color: #f59e0b;
+}
+.dropdown-item.moderate-item:hover {
+    background-color: #fffbeb;
+}
+
 /* komentāru laika atstarpju pielāgošana, ja ir pieejama izvēlne */
 .comment-header-right .comment-time {
     margin-right: 0;
@@ -1819,6 +1889,23 @@ const confirmDeleteComment = async () => {
 
 .submit-reply-button.loading i {
     margin-right: 0.375rem;
+}
+
+/* noslēpto komentāru stili */
+.hidden-comment {
+    background-color: #f5fcfd;
+    border-left: 3px solid #93c5fd;
+    padding: 0.75rem;
+    border-radius: 6px;
+}
+
+.hidden-comment-text {
+    color: #475569;
+    font-size: 0.95rem;
+    background: #fffbeb;
+    display: block;
+    padding: 0.5rem;
+    border-radius: 4px;
 }
 
 /* izdzēsto komentāru stili */
