@@ -1,5 +1,5 @@
-import { createI18n } from 'vue-i18n'
-import dayjs from '@/utils/dayjs'
+import { createI18n } from 'vue-i18n';
+import dayjs from '@/utils/dayjs';
 import { watch } from 'vue';
 
 // -----------------------------
@@ -65,7 +65,7 @@ import lvComponents from './i18n/lv/components.json';
 import lvComments from './i18n/lv/comments.json';
 
 const savedLocale = localStorage.getItem('locale') || 'lv'
-dayjs.locale(savedLocale)
+dayjs.locale(savedLocale);
 
 const i18n = createI18n({
     legacy: false,

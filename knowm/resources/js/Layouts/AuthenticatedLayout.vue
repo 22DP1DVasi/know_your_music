@@ -1,9 +1,10 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import {Link, router, usePage} from '@inertiajs/vue3';
 import { route } from "ziggy-js";
 import { useI18n } from 'vue-i18n';
 import CreatePlaylistModal from "@/Components/Playlists/CreatePlaylistModal.vue";
+import axios from "axios";
 
 const showingMobileSidebar = ref(false);
 const expandedMenus = ref([]); // izseko izvērstās sadaļas
@@ -36,10 +37,14 @@ const isMenuExpanded = (menu) => {
     return expandedMenus.value.includes(menu);
 };
 
-const changeLanguage = (lang) => {
+const changeLanguage = async (lang) => {
     locale.value = lang;
     localStorage.setItem('locale', lang);
-    activeLanguageDropdown.value = false;
+    await axios.post('/locale', { locale: lang });
+    router.reload({
+        preserveScroll: true,
+        preserveState: true,
+    });
 };
 
 const toggleLanguageDropdown = () => {
