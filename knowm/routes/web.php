@@ -210,7 +210,7 @@ Route::get('/explore/genres', [GenreController::class, 'explore'])
 // lokalizācija / locale
 Route::post('/locale', function (Request $request) {
     $locale = (string) $request->input('locale');
-//    abort_unless(in_array($locale, ['en', 'lv'], true), 400);
+    abort_unless(in_array($locale, ['en', 'lv'], true), 400);
     session(['locale' => $locale]);
 
     return response()->noContent();

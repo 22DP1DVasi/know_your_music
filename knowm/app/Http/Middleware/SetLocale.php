@@ -21,7 +21,7 @@ class SetLocale
             $locale = $locale->toString();
         }
 
-        app()->setLocale($locale);
+        app()->setLocale(session('locale', 'lv'));
 
         return $next($request);
     }
