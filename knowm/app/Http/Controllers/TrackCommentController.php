@@ -35,7 +35,7 @@ class TrackCommentController extends BaseCommentController
      */
     public function store(Track $track, Request $request): \Illuminate\Http\JsonResponse
     {
-        return $this->handleStore($track, $request);
+        return $this->handleStore($track, $request, 'track');
     }
 
     /**

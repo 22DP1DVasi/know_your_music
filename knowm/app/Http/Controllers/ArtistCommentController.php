@@ -34,7 +34,7 @@ class ArtistCommentController extends BaseCommentController
      */
     public function store(Artist $artist, Request $request): \Illuminate\Http\JsonResponse
     {
-        return $this->handleStore($artist, $request);
+        return $this->handleStore($artist, $request, 'artist');
     }
 
     /**

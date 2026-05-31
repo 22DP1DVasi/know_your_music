@@ -34,7 +34,7 @@ class GenreCommentController extends BaseCommentController
      */
     public function store(Genre $genre, Request $request): \Illuminate\Http\JsonResponse
     {
-        return $this->handleStore($genre, $request);
+        return $this->handleStore($genre, $request, 'genre');
     }
 
     /**

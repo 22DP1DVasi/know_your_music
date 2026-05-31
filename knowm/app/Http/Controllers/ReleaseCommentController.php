@@ -34,7 +34,7 @@ class ReleaseCommentController extends BaseCommentController
      */
     public function store(Release $release, Request $request): \Illuminate\Http\JsonResponse
     {
-        return $this->handleStore($release, $request);
+        return $this->handleStore($release, $request, 'release');
     }
 
     /**
