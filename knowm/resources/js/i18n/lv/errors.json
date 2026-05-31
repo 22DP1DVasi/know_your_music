@@ -1,0 +1,8 @@
+{
+    "account_suspended": {
+        "title": "Konts bloķēts",
+        "heading": "Konts bloķēts",
+        "message": "Jūsu konts ir bloķēts un to vairs nevar izmantot.",
+        "guest_button": "Turpināt kā viesis"
+    }
+}

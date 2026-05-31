@@ -32,6 +32,7 @@ import enGenres from './i18n/en/genres.json'
 
 import enComponents from './i18n/en/components.json';
 import enComments from './i18n/en/comments.json';
+import enErrors from './i18n/en/errors.json';
 
 // -----------------------------
 
@@ -63,6 +64,7 @@ import lvGenres from './i18n/lv/genres.json'
 
 import lvComponents from './i18n/lv/components.json';
 import lvComments from './i18n/lv/comments.json';
+import lvErrors from './i18n/lv/errors.json';
 
 const savedLocale = localStorage.getItem('locale') || 'lv'
 dayjs.locale(savedLocale);
@@ -101,7 +103,9 @@ const i18n = createI18n({
             adm_reports: enAdmReports,
 
             components: enComponents,
-            comments: enComments
+            comments: enComments,
+
+            errors: enErrors
         },
         lv: {
             navbar: lvNavbar,
@@ -132,7 +136,9 @@ const i18n = createI18n({
             adm_reports: lvAdmReports,
 
             components: lvComponents,
-            comments: lvComments
+            comments: lvComments,
+
+            errors: lvErrors
         }
     }
 })
