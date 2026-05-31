@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\PopularityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -173,7 +174,7 @@ class UserCollectionController extends Controller
     /**
      * Iegūst lietotāja kolekcijas priekš AddToPlaylistModal.vue mod. logam.
      */
-    public function getUserPlaylists(Request $request)
+    public function getUserPlaylists(Request $request): JsonResponse
     {
         $trackId = $request->input('track_id');
         $playlists = Auth::user()->collections()
@@ -205,7 +206,7 @@ class UserCollectionController extends Controller
     /**
      * Pievieno dziesmu esošai kolekcijai.
      */
-    public function addTrackToPlaylist(Request $request, UserCollection $playlist)
+    public function addTrackToPlaylist(Request $request, UserCollection $playlist): JsonResponse
     {
         if ($playlist->user_id !== Auth::id()) {
             return response()->json([
@@ -216,8 +217,8 @@ class UserCollectionController extends Controller
         $request->validate([
             'track_id' => 'required|exists:tracks,id'
         ]);
+
         // pārbaudīt, vai dziesma jau pastāv kolekcijā
-        // nestrādā?
         if ($playlist->tracks()->where('track_id', $request->track_id)->exists()) {
             return response()->json([
                 'success' => false,
@@ -232,6 +233,15 @@ class UserCollectionController extends Controller
         $playlist->tracks()->attach($request->track_id, [
             'track_position' => $nextPosition
         ]);
+
+        app(PopularityService::class)
+            ->add(
+                'track',
+                $request->track_id,
+                0.3,
+                'collection_added',
+                auth()->id()
+            );
 
         return response()->json([
             'success' => true,

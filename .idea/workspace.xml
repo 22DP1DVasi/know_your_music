@@ -5,16 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cd34f83a-825c-4e88-b8ea-9e13391aefb6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/knowm/app/Services/PopularityService.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportLastFmData.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Console/Commands/ImportSpotifyArtists.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ArtistController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/GenreController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/GenreController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/ReleaseController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Http/Controllers/TrackController.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Http/Controllers/TrackController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/LastFmService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/LastFmService.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowm/app/Services/SpotifyService.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Services/SpotifyService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/knowm/app/Providers/AppServiceProvider.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -68,6 +68,15 @@ class ArtistController extends Controller
     public function addFavorite(Artist $artist): \Illuminate\Http\RedirectResponse
     {
         auth()->user()->favoriteArtists()->syncWithoutDetaching([$artist->id]);
+        app(PopularityService::class)
+            ->add(
+                'artist',
+                $artist->id,
+                0.3,
+                'favorite',
+                auth()->id()
+            );
+
         return back()->with('success', 'Artist added to favorites');
     }
 
@@ -147,7 +156,7 @@ class ArtistController extends Controller
         $sortOrder = $request->input('sort', 'asc');
         $selectedGenres = $request->input('genres', []);
 
-        // Year range filter parameters
+        // year range filter parameters
         $formedFrom = $request->input('formed_from', null);
         $formedTo = $request->input('formed_to', null);
         $disbandedFrom = $request->input('disbanded_from', null);
@@ -170,7 +179,7 @@ class ArtistController extends Controller
                     $q->whereIn('genres.id', $genreIds);
                 });
             })
-            // Formed year filter - FIXED: Using where with nested conditions instead of orWhere
+            // formed year filter - using where with nested conditions instead of orWhere
             ->when($formedFrom !== null && $formedFrom !== '' || $formedTo !== null && $formedTo !== '', function ($query) use ($formedFrom, $formedTo, $includeEmptyFormed) {
                 $query->where(function ($subQuery) use ($formedFrom, $formedTo, $includeEmptyFormed) {
                     // Apply the year range condition
@@ -183,13 +192,13 @@ class ArtistController extends Controller
                         }
                     });
 
-                    // If include empty is checked, also allow NULL values
+                    // if include empty is checked, also allow NULL values
                     if ($includeEmptyFormed) {
                         $subQuery->orWhereNull('formed_year');
                     }
                 });
             })
-            // Disbanded year filter - FIXED: Using where with nested conditions instead of orWhere
+            // disbanded year filter - using where with nested conditions instead of orWhere
             ->when($disbandedFrom !== null && $disbandedFrom !== '' || $disbandedTo !== null && $disbandedTo !== '', function ($query) use ($disbandedFrom, $disbandedTo, $includeEmptyDisbanded) {
                 $query->where(function ($subQuery) use ($disbandedFrom, $disbandedTo, $includeEmptyDisbanded) {
                     // Apply the year range condition
@@ -202,7 +211,7 @@ class ArtistController extends Controller
                         }
                     });
 
-                    // If include empty is checked, also allow NULL values
+                    // if include empty is checked, also allow NULL values
                     if ($includeEmptyDisbanded) {
                         $subQuery->orWhereNull('disbanded_year');
                     }
@@ -226,7 +235,7 @@ class ArtistController extends Controller
             'allGenres' => $genres,
             'selectedGenres' => $genreIds,
             'sortOrder' => $sortOrder,
-            // Year filter values to pass to frontend
+            // year filter values to pass to frontend
             'formedFrom' => $formedFrom,
             'formedTo' => $formedTo,
             'disbandedFrom' => $disbandedFrom,
