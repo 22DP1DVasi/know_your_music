@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PopularityService;
 use App\Services\ReleaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -36,6 +37,16 @@ class ReleaseController extends Controller
         // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
         $commentsPage = request()->input('comments_page', 1);
         $releaseData = $this->releaseService->getReleaseWithDetailsAndComments($release, $commentsPage);
+
+        app(PopularityService::class)
+            ->add(
+                'release',
+                $release->id,
+                0.1,
+                'view',
+                auth()->id()
+            );
+
         return Inertia::render('Releases/ReleaseShow', [
             'release' => $releaseData
         ]);

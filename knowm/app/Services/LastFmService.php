@@ -7,6 +7,11 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * @deprecated
+ * This class was made during initial designing as a test.
+ * It is not used anywhere on the actual website.
+ */
 class LastFmService
 {
     protected $client;

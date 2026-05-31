@@ -10,6 +10,11 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use App\Services\LastFmService;
 
+/**
+ * @deprecated
+ * This class was made during initial designing as a test.
+ * It is not used anywhere on the actual website.
+ */
 class ImportLastFmData extends Command
 {
     protected $signature = 'lastfm:import {artist : The artist name to import} {--limit=10 : Limit of top albums to process}';

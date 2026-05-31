@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\ArtistService;
+use App\Services\PopularityService;
 use App\Services\ReleaseService;
 use App\Services\TrackService;
 use Illuminate\Http\Request;
@@ -43,6 +44,16 @@ class ArtistController extends Controller
         // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
         $commentsPage = request()->input('comments_page', 1);
         $artistData = $this->artistService->getArtistWithDetailsAndComments($artist, $commentsPage);
+
+        app(PopularityService::class)
+            ->add(
+                'artist',
+                $artist->id,
+                0.1,
+                'view',
+                auth()->id()
+            );
+
         return Inertia::render('Artists/ArtistShow', [
             'artist' => $artistData
         ]);
