@@ -21,6 +21,7 @@ use App\Http\Controllers\TrackCommentController;
 use App\Http\Controllers\GenreCommentController;
 use App\Http\Controllers\FavoriteArtistController;
 use App\Http\Controllers\UserCollectionController;
+use App\Http\Controllers\BannedAccountController;
 //use Illuminate\Support\Facades\App;
 
 //Route::get('/', function () {
@@ -42,221 +43,229 @@ use App\Http\Controllers\UserCollectionController;
 //    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 //});
 
-// lapas ceļi
-Route::get('/', [HomeController::class, 'index'])
-    ->name('home');
+// route for "account is banned" page, taken out of not_banned group to avoid problems with recursive redirection
+Route::get('/account-banned',BannedAccountController::class)
+    ->name('account-banned');
 
-Route::get('/login', function () {
-    return Inertia::render('Login');
-})->name('login');
+// not_banned group - ensures that banned users cannot log in into their banned account
+// immediately reacts at any user action once they are banned
+// does not affect guests
+Route::middleware('not_banned')->group(function () {
+    // lapas ceļi
+    Route::get('/', [HomeController::class, 'index'])
+        ->name('home');
 
-Route::get('/signup', function () {
-    return Inertia::render('Auth/Register');
-})->name('signup');
+    Route::get('/login', function () {
+        return Inertia::render('Login');
+    })->name('login');
 
-Route::get('/about', function () {
-    return Inertia::render('AboutUs');
-})->name('about');
+    Route::get('/signup', function () {
+        return Inertia::render('Auth/Register');
+    })->name('signup');
 
-Route::get('/contact', function () {
-    return Inertia::render('ContactUs');
-})->name('contact');
+    Route::get('/about', function () {
+        return Inertia::render('AboutUs');
+    })->name('about');
 
-Route::get('/privacy-policy', function () {
-    return Inertia::render('PrivacyPolicy');
-})->name('privacy-policy');
+    Route::get('/contact', function () {
+        return Inertia::render('ContactUs');
+    })->name('contact');
 
-Route::get('/terms-of-service', function () {
-    return Inertia::render('TermsOfService');
-})->name('terms-of-service');
+    Route::get('/privacy-policy', function () {
+        return Inertia::render('PrivacyPolicy');
+    })->name('privacy-policy');
 
-Route::get('/faq', function () {
-    return Inertia::render('FAQ');
-})->name('faq');
+    Route::get('/terms-of-service', function () {
+        return Inertia::render('TermsOfService');
+    })->name('terms-of-service');
 
-Route::get('/community-guidelines', function () {
-    return Inertia::render('CommunityGuidelines');
-})->name('community-guidelines');
+    Route::get('/faq', function () {
+        return Inertia::render('FAQ');
+    })->name('faq');
+
+    Route::get('/community-guidelines', function () {
+        return Inertia::render('CommunityGuidelines');
+    })->name('community-guidelines');
 
 // meklēšanas ceļi
-Route::get('/search', [SearchController::class, 'index'])
-    ->name('search');
+    Route::get('/search', [SearchController::class, 'index'])
+        ->name('search');
 
-Route::get('/search/artists', [SearchController::class, 'artists'])
-    ->name('search.artists');
+    Route::get('/search/artists', [SearchController::class, 'artists'])
+        ->name('search.artists');
 
-Route::get('/search/releases', [SearchController::class, 'releases'])
-    ->name('search.releases');
+    Route::get('/search/releases', [SearchController::class, 'releases'])
+        ->name('search.releases');
 
-Route::get('/search/tracks', [SearchController::class, 'tracks'])
-    ->name('search.tracks');
+    Route::get('/search/tracks', [SearchController::class, 'tracks'])
+        ->name('search.tracks');
 
-Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
-    ->name('search.lyrics');
+    Route::get('/search/lyrics', [SearchController::class, 'lyrics'])
+        ->name('search.lyrics');
 
 
-Route::get('/genres/all', [GenreController::class, 'getAllGenres'])->name('genres.all');
+    Route::get('/genres/all', [GenreController::class, 'getAllGenres'])->name('genres.all');
 
 // informācijas lapas (izpildītāji, žanri, albumi, dziesmas)
 
 
 // izpildītāja inf. lapa
-Route::get('/artists/{artist}', [ArtistController::class, 'show'])
-    ->name('artists.show');
+    Route::get('/artists/{artist}', [ArtistController::class, 'show'])
+        ->name('artists.show');
 
 // lapa izpildītāja biogrāfijai
-Route::get('/artists/{artist:slug}/bio', [ArtistController::class, 'showBio'])
-    ->name('artist.bio');
+    Route::get('/artists/{artist:slug}/bio', [ArtistController::class, 'showBio'])
+        ->name('artist.bio');
 
 // izpildītāja visu dziesmu lapa
-Route::get('/artists/{artist:slug}/tracks', [ArtistController::class, 'showAllTracks'])
-    ->name('artists.tracks');
+    Route::get('/artists/{artist:slug}/tracks', [ArtistController::class, 'showAllTracks'])
+        ->name('artists.tracks');
 
 // izpildītāja visu albumu lapa
-Route::get('/artists/{artist:slug}/releases', [ArtistController::class, 'showAllReleases'])
-    ->name('artists.releases');
+    Route::get('/artists/{artist:slug}/releases', [ArtistController::class, 'showAllReleases'])
+        ->name('artists.releases');
 
 // komentāri izpildītāja lapai
-Route::prefix('artists/{artist}')->group(function () {
-    Route::get('/comments', [ArtistCommentController::class, 'get']);
-    Route::post('/comments', [ArtistCommentController::class, 'store'])
-        ->middleware('auth');
-    Route::put('/comments/{comment}', [ArtistCommentController::class, 'update'])
-        ->middleware('auth');
-    Route::delete('/comments/{comment}', [ArtistCommentController::class, 'destroy'])
-        ->middleware('auth');
-});
+    Route::prefix('artists/{artist}')->group(function () {
+        Route::get('/comments', [ArtistCommentController::class, 'get']);
+        Route::post('/comments', [ArtistCommentController::class, 'store'])
+            ->middleware('auth');
+        Route::put('/comments/{comment}', [ArtistCommentController::class, 'update'])
+            ->middleware('auth');
+        Route::delete('/comments/{comment}', [ArtistCommentController::class, 'destroy'])
+            ->middleware('auth');
+    });
 
 // izpildtītāja pievienošana/noņemšana no mīļāko izpildītāju saraksta
-Route::post('/artists/{artist}/favorite', [ArtistController::class, 'addFavorite'])
-    ->name('artists.favorite.store')
-    ->middleware('auth');
-Route::delete('/artists/{artist}/favorite', [ArtistController::class, 'removeFavorite'])
-    ->name('artists.favorite.destroy')
-    ->middleware('auth');
+    Route::post('/artists/{artist}/favorite', [ArtistController::class, 'addFavorite'])
+        ->name('artists.favorite.store')
+        ->middleware('auth');
+    Route::delete('/artists/{artist}/favorite', [ArtistController::class, 'removeFavorite'])
+        ->name('artists.favorite.destroy')
+        ->middleware('auth');
 
 
 // albuma inf. lapa
-Route::get('/releases/{release}', [ReleaseController::class, 'show'])
-    ->name('releases.show');
+    Route::get('/releases/{release}', [ReleaseController::class, 'show'])
+        ->name('releases.show');
 
 // albuma apraksta lapa
-Route::get('/releases/{release:slug}/description', [ReleaseController::class, 'showDescription'])
-    ->name('releases.description');
+    Route::get('/releases/{release:slug}/description', [ReleaseController::class, 'showDescription'])
+        ->name('releases.description');
 
 // komentāri albuma lapai
-Route::prefix('releases/{release}')->group(function () {
-    Route::get('/comments', [ReleaseCommentController::class, 'get']);
-    Route::post('/comments', [ReleaseCommentController::class, 'store'])
-        ->middleware('auth');
-    Route::put('/comments/{comment}', [ReleaseCommentController::class, 'update'])
-        ->middleware('auth');
-    Route::delete('/comments/{comment}', [ReleaseCommentController::class, 'destroy'])
-        ->middleware('auth');
-});
+    Route::prefix('releases/{release}')->group(function () {
+        Route::get('/comments', [ReleaseCommentController::class, 'get']);
+        Route::post('/comments', [ReleaseCommentController::class, 'store'])
+            ->middleware('auth');
+        Route::put('/comments/{comment}', [ReleaseCommentController::class, 'update'])
+            ->middleware('auth');
+        Route::delete('/comments/{comment}', [ReleaseCommentController::class, 'destroy'])
+            ->middleware('auth');
+    });
 
 // dziesmas inf. lapa
-Route::get('/tracks/{track}', [TrackController::class, 'show'])
-    ->name('tracks.show');
-Route::get('/tracks/{track:slug}/description', [TrackController::class, 'showDescription'])
-    ->name('tracks.description');
+    Route::get('/tracks/{track}', [TrackController::class, 'show'])
+        ->name('tracks.show');
+    Route::get('/tracks/{track:slug}/description', [TrackController::class, 'showDescription'])
+        ->name('tracks.description');
 
 // komentāri dziesmas lapai
-Route::prefix('tracks/{track}')->group(function () {
-    Route::get('/comments', [TrackCommentController::class, 'get']);
-    Route::post('/comments', [TrackCommentController::class, 'store'])
-        ->middleware('auth');
-    Route::put('/comments/{comment}', [TrackCommentController::class, 'update'])
-        ->middleware('auth');
-    Route::delete('/comments/{comment}', [TrackCommentController::class, 'destroy'])
-        ->middleware('auth');
-});
+    Route::prefix('tracks/{track}')->group(function () {
+        Route::get('/comments', [TrackCommentController::class, 'get']);
+        Route::post('/comments', [TrackCommentController::class, 'store'])
+            ->middleware('auth');
+        Route::put('/comments/{comment}', [TrackCommentController::class, 'update'])
+            ->middleware('auth');
+        Route::delete('/comments/{comment}', [TrackCommentController::class, 'destroy'])
+            ->middleware('auth');
+    });
 
 // žanra inf. lapa
-Route::get('/genres/{genre}', [GenreController::class, 'show'])
-    ->name('genres.show');
+    Route::get('/genres/{genre}', [GenreController::class, 'show'])
+        ->name('genres.show');
 
 // žanra pilna apraksta lapa
-Route::get('/genres/{genre}/description', [GenreController::class, 'showDescription'])
-    ->name('genre.description');
+    Route::get('/genres/{genre}/description', [GenreController::class, 'showDescription'])
+        ->name('genre.description');
 
 // lapa priekš visiem izpildītājiem, kuri ir saistīti ar šo žanru
-Route::get('/genres/{genre}/artists', [GenreController::class, 'showAllArtists'])
-    ->name('genres.artists');
+    Route::get('/genres/{genre}/artists', [GenreController::class, 'showAllArtists'])
+        ->name('genres.artists');
 
 // komentāri žanra lapai
-Route::prefix('genres/{genre}')->group(function () {
-    Route::get('/comments', [GenreCommentController::class, 'get']);
-    Route::post('/comments', [GenreCommentController::class, 'store'])
-        ->middleware('auth');
-    Route::put('/comments/{comment}', [GenreCommentController::class, 'update'])
-        ->middleware('auth');
-    Route::delete('/comments/{comment}', [GenreCommentController::class, 'destroy'])
-        ->middleware('auth');
-});
+    Route::prefix('genres/{genre}')->group(function () {
+        Route::get('/comments', [GenreCommentController::class, 'get']);
+        Route::post('/comments', [GenreCommentController::class, 'store'])
+            ->middleware('auth');
+        Route::put('/comments/{comment}', [GenreCommentController::class, 'update'])
+            ->middleware('auth');
+        Route::delete('/comments/{comment}', [GenreCommentController::class, 'destroy'])
+            ->middleware('auth');
+    });
 
 // lapa izpildītāju izpētīšanai
-Route::get('/explore/artists', [ArtistController::class, 'explore'])
-    ->name('explore.artists');
+    Route::get('/explore/artists', [ArtistController::class, 'explore'])
+        ->name('explore.artists');
 
 // lapa albumu izpētīšanai
-Route::get('/explore/releases', [ReleaseController::class, 'explore'])
-    ->name('explore.releases');
+    Route::get('/explore/releases', [ReleaseController::class, 'explore'])
+        ->name('explore.releases');
 
 // lapa žanru izpētīšanai
-Route::get('/explore/genres', [GenreController::class, 'explore'])
-    ->name('explore.genres');
+    Route::get('/explore/genres', [GenreController::class, 'explore'])
+        ->name('explore.genres');
 
 // lokalizācija / locale
-Route::post('/locale', function (Request $request) {
-    $locale = (string) $request->input('locale');
-    abort_unless(in_array($locale, ['en', 'lv'], true), 400);
-    session(['locale' => $locale]);
+    Route::post('/locale', function (Request $request) {
+        $locale = (string) $request->input('locale');
+        abort_unless(in_array($locale, ['en', 'lv'], true), 400);
+        session(['locale' => $locale]);
 
-    return response()->noContent();
-});
+        return response()->noContent();
+    });
 
 // playlist/collection page - out of auth middleware because it is shareable and guests can see it too
-Route::get('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
-    ->name('playlists.show');
+    Route::get('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'show'])
+        ->name('playlists.show');
 
 // lietotāja konta ceļi
-Route::middleware('auth')->group(function () {
-    // pārskats
-    Route::get('/dashboard', [ProfileController::class, 'index'])->name('dashboard');
+    Route::middleware('auth')->group(function () {
+        // pārskats
+        Route::get('/dashboard', [ProfileController::class, 'index'])->name('dashboard');
 
-    // profila iestatījumi
-    Route::get('/dashboard/settings', [ProfileController::class, 'edit'])->name('settings.edit');
-    Route::patch('/dashboard/settings', [ProfileController::class, 'update'])->name('settings.update');
-    Route::delete('/dashboard/settings', [ProfileController::class, 'destroy'])->name('settings.destroy');
+        // profila iestatījumi
+        Route::get('/dashboard/settings', [ProfileController::class, 'edit'])->name('settings.edit');
+        Route::patch('/dashboard/settings', [ProfileController::class, 'update'])->name('settings.update');
+        Route::delete('/dashboard/settings', [ProfileController::class, 'destroy'])->name('settings.destroy');
 
-    Route::post('/dashboard/settings/avatar', [ProfileController::class, 'updateAvatar'])->name('settings.avatar.update');
-    Route::delete('/dashboard/settings/avatar', [ProfileController::class, 'destroyAvatar'])->name('settings.avatar.destroy');
+        Route::post('/dashboard/settings/avatar', [ProfileController::class, 'updateAvatar'])->name('settings.avatar.update');
+        Route::delete('/dashboard/settings/avatar', [ProfileController::class, 'destroyAvatar'])->name('settings.avatar.destroy');
 
-    // izlases
-    Route::get('/dashboard/favorites/artists', [FavoriteArtistController::class, 'favoriteArtists'])
-        ->name('dashboard.favorites.artists');
+        // izlases
+        Route::get('/dashboard/favorites/artists', [FavoriteArtistController::class, 'favoriteArtists'])
+            ->name('dashboard.favorites.artists');
 
-    // kolekcijas
-    Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
-        ->name('dashboard.playlists');
+        // kolekcijas
+        Route::get('/dashboard/playlists', [UserCollectionController::class, 'playlists'])
+            ->name('dashboard.playlists');
 
-    Route::put('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
-        ->name('playlists.update');
-    Route::delete('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'destroy'])
-        ->name('playlists.destroy');
-    Route::delete('/{user:slug}/playlists/{playlist:slug}/tracks/{track:id}', [UserCollectionController::class, 'removeTrack'])
-        ->name('playlists.tracks.destroy');
+        Route::put('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'update'])
+            ->name('playlists.update');
+        Route::delete('/{user:slug}/playlists/{playlist:slug}', [UserCollectionController::class, 'destroy'])
+            ->name('playlists.destroy');
+        Route::delete('/{user:slug}/playlists/{playlist:slug}/tracks/{track:id}', [UserCollectionController::class, 'removeTrack'])
+            ->name('playlists.tracks.destroy');
 
-    Route::get('/playlists/user/list', [UserCollectionController::class, 'getUserPlaylists'])
-        ->name('playlists.user.list');
-    Route::post('/playlists/{playlist:slug}/add-track', [UserCollectionController::class, 'addTrackToPlaylist'])
-        ->name('playlists.add-track');
-    Route::post('/playlists', [UserCollectionController::class, 'createPlaylist'])
-        ->name('playlists.store');
-    Route::post('/playlists/with-track', [UserCollectionController::class, 'createPlaylistWithTrack'])
-        ->name('playlists.store.with-track');
-});
+        Route::get('/playlists/user/list', [UserCollectionController::class, 'getUserPlaylists'])
+            ->name('playlists.user.list');
+        Route::post('/playlists/{playlist:slug}/add-track', [UserCollectionController::class, 'addTrackToPlaylist'])
+            ->name('playlists.add-track');
+        Route::post('/playlists', [UserCollectionController::class, 'createPlaylist'])
+            ->name('playlists.store');
+        Route::post('/playlists/with-track', [UserCollectionController::class, 'createPlaylistWithTrack'])
+            ->name('playlists.store.with-track');
+    });
 
 // authentication routes
 //Route::middleware('guest')->group(function () {
@@ -273,111 +282,111 @@ Route::middleware('auth')->group(function () {
 //});
 
 // admin routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])
-        ->name('admin-dashboard');
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])
+            ->name('admin-dashboard');
 
-    Route::get('/admin-users-index', [App\Http\Controllers\Admin\UserController::class, 'index'])
-        ->name('admin-users-index');
-    Route::get('/admin-users-create', [App\Http\Controllers\Admin\UserController::class, 'create'])
-        ->name('admin-users-create');
-    Route::post('/admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])
-        ->name('admin-users-store');
-    Route::get('/admin-users-edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])
-        ->name('admin-users-edit');
-    Route::put('/admin-users-update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])
-        ->name('admin-users-update');
-    Route::post('/admin/users/{user:id}/roles', [App\Http\Controllers\Admin\UserController::class, 'storeRoles'])
-        ->name('admin-users-roles-store');
-    Route::delete('/admin/users/{user}/roles/{role}', [App\Http\Controllers\Admin\UserController::class, 'destroyUserRole'])
-        ->name('admin-users-roles-destroy');
-    Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])
-        ->name('admin-users-destroy');
+        Route::get('/admin-users-index', [App\Http\Controllers\Admin\UserController::class, 'index'])
+            ->name('admin-users-index');
+        Route::get('/admin-users-create', [App\Http\Controllers\Admin\UserController::class, 'create'])
+            ->name('admin-users-create');
+        Route::post('/admin-users-store', [App\Http\Controllers\Admin\UserController::class, 'store'])
+            ->name('admin-users-store');
+        Route::get('/admin-users-edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])
+            ->name('admin-users-edit');
+        Route::put('/admin-users-update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])
+            ->name('admin-users-update');
+        Route::post('/admin/users/{user:id}/roles', [App\Http\Controllers\Admin\UserController::class, 'storeRoles'])
+            ->name('admin-users-roles-store');
+        Route::delete('/admin/users/{user}/roles/{role}', [App\Http\Controllers\Admin\UserController::class, 'destroyUserRole'])
+            ->name('admin-users-roles-destroy');
+        Route::delete('/users/{id}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])
+            ->name('admin-users-destroy');
 
-    Route::get('/admin-roles-index', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin-roles-index');
-    Route::get('/admin-roles-create', [App\Http\Controllers\Admin\RoleController::class, 'create'])->name('admin-roles-create');
-    Route::post('/admin-roles-store', [App\Http\Controllers\Admin\RoleController::class, 'store'])->name('admin-roles-store');
-    Route::get('/admin-roles-edit/{id}', [App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('admin-roles-edit');
-    Route::put('/admin-roles-update/{id}', [App\Http\Controllers\Admin\RoleController::class, 'update'])->name('admin-roles-update');
-    Route::delete('/roles/{id}', [App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('admin-roles-destroy');
+        Route::get('/admin-roles-index', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('admin-roles-index');
+        Route::get('/admin-roles-create', [App\Http\Controllers\Admin\RoleController::class, 'create'])->name('admin-roles-create');
+        Route::post('/admin-roles-store', [App\Http\Controllers\Admin\RoleController::class, 'store'])->name('admin-roles-store');
+        Route::get('/admin-roles-edit/{id}', [App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('admin-roles-edit');
+        Route::put('/admin-roles-update/{id}', [App\Http\Controllers\Admin\RoleController::class, 'update'])->name('admin-roles-update');
+        Route::delete('/roles/{id}', [App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('admin-roles-destroy');
 
-    Route::get('/admin-artists-index', [App\Http\Controllers\Admin\ArtistController::class, 'index'])->name('admin-artists-index');
-    Route::get('/admin-artists-create', [App\Http\Controllers\Admin\ArtistController::class, 'create'])->name('admin-artists-create');
-    Route::post('/admin-artists-store', [App\Http\Controllers\Admin\ArtistController::class, 'store'])->name('admin-artists-store');
-    Route::get('/admin-artists-edit/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'edit'])->name('admin-artists-edit');
-    Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
-    Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
-    Route::put('/admin-artists-update-image/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
-    Route::get('/admin/artists/search', [App\Http\Controllers\Admin\ArtistController::class, 'search'])
-        ->name('admin-artists-search');
+        Route::get('/admin-artists-index', [App\Http\Controllers\Admin\ArtistController::class, 'index'])->name('admin-artists-index');
+        Route::get('/admin-artists-create', [App\Http\Controllers\Admin\ArtistController::class, 'create'])->name('admin-artists-create');
+        Route::post('/admin-artists-store', [App\Http\Controllers\Admin\ArtistController::class, 'store'])->name('admin-artists-store');
+        Route::get('/admin-artists-edit/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'edit'])->name('admin-artists-edit');
+        Route::put('/admin-artists-update/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'update'])->name('admin-artists-update');
+        Route::delete('/artists/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'destroy'])->name('admin-artists-destroy');
+        Route::put('/admin-artists-update-image/{id}', [App\Http\Controllers\Admin\ArtistController::class, 'updateImage'])->name('admin-artists-update-image');
+        Route::get('/admin/artists/search', [App\Http\Controllers\Admin\ArtistController::class, 'search'])
+            ->name('admin-artists-search');
 
-    Route::get('/admin-releases-index', [App\Http\Controllers\Admin\ReleaseController::class, 'index'])->name('admin-releases-index');
-    Route::get('/admin-releases-create', [App\Http\Controllers\Admin\ReleaseController::class, 'create'])->name('admin-releases-create');
-    Route::post('/admin-releases-store', [App\Http\Controllers\Admin\ReleaseController::class, 'store'])->name('admin-releases-store');
-    Route::delete('/releases/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'destroy'])->name('admin-releases-destroy');
-    Route::get('/admin-releases-edit/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'edit'])->name('admin-releases-edit');
-    Route::put('/admin-releases-update/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'update'])->name('admin-releases-update');
-    Route::put('/admin-releases-update-cover/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'updateCover'])->name('admin-releases-update-cover');
-    Route::post('/admin/releases/{id}/artists', [App\Http\Controllers\Admin\ReleaseController::class, 'updateArtists'])
-        ->name('admin-releases-artists-update');
-    Route::post('/admin/releases/{id}/tracks', [App\Http\Controllers\Admin\ReleaseController::class, 'updateTracks'])
-        ->name('admin-releases-tracks-update');
+        Route::get('/admin-releases-index', [App\Http\Controllers\Admin\ReleaseController::class, 'index'])->name('admin-releases-index');
+        Route::get('/admin-releases-create', [App\Http\Controllers\Admin\ReleaseController::class, 'create'])->name('admin-releases-create');
+        Route::post('/admin-releases-store', [App\Http\Controllers\Admin\ReleaseController::class, 'store'])->name('admin-releases-store');
+        Route::delete('/releases/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'destroy'])->name('admin-releases-destroy');
+        Route::get('/admin-releases-edit/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'edit'])->name('admin-releases-edit');
+        Route::put('/admin-releases-update/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'update'])->name('admin-releases-update');
+        Route::put('/admin-releases-update-cover/{id}', [App\Http\Controllers\Admin\ReleaseController::class, 'updateCover'])->name('admin-releases-update-cover');
+        Route::post('/admin/releases/{id}/artists', [App\Http\Controllers\Admin\ReleaseController::class, 'updateArtists'])
+            ->name('admin-releases-artists-update');
+        Route::post('/admin/releases/{id}/tracks', [App\Http\Controllers\Admin\ReleaseController::class, 'updateTracks'])
+            ->name('admin-releases-tracks-update');
 
-    Route::get('/admin-tracks-index', [App\Http\Controllers\Admin\TrackController::class, 'index'])
-        ->name('admin-tracks-index');
-    Route::get('/admin-tracks-create', [App\Http\Controllers\Admin\TrackController::class, 'create'])
-        ->name('admin-tracks-create');
-    Route::post('/admin-tracks-store', [App\Http\Controllers\Admin\TrackController::class, 'store'])
-        ->name('admin-tracks-store');
-    Route::delete('/tracks/{id}', [App\Http\Controllers\Admin\TrackController::class, 'destroy'])
-        ->name('admin-tracks-destroy');
-    Route::get('/admin-tracks-edit/{id}', [App\Http\Controllers\Admin\TrackController::class, 'edit'])
-        ->name('admin-tracks-edit');
-    Route::put('/admin-tracks-update/{id}', [App\Http\Controllers\Admin\TrackController::class, 'update'])
-        ->name('admin-tracks-update');
-    Route::post('/admin/tracks/{id}/artists', [App\Http\Controllers\Admin\TrackController::class, 'updateArtists'])
-        ->name('admin-tracks-artists-update');
-    Route::get('/admin/tracks/search', [App\Http\Controllers\Admin\TrackController::class, 'search'])
-        ->name('admin-tracks-search');
+        Route::get('/admin-tracks-index', [App\Http\Controllers\Admin\TrackController::class, 'index'])
+            ->name('admin-tracks-index');
+        Route::get('/admin-tracks-create', [App\Http\Controllers\Admin\TrackController::class, 'create'])
+            ->name('admin-tracks-create');
+        Route::post('/admin-tracks-store', [App\Http\Controllers\Admin\TrackController::class, 'store'])
+            ->name('admin-tracks-store');
+        Route::delete('/tracks/{id}', [App\Http\Controllers\Admin\TrackController::class, 'destroy'])
+            ->name('admin-tracks-destroy');
+        Route::get('/admin-tracks-edit/{id}', [App\Http\Controllers\Admin\TrackController::class, 'edit'])
+            ->name('admin-tracks-edit');
+        Route::put('/admin-tracks-update/{id}', [App\Http\Controllers\Admin\TrackController::class, 'update'])
+            ->name('admin-tracks-update');
+        Route::post('/admin/tracks/{id}/artists', [App\Http\Controllers\Admin\TrackController::class, 'updateArtists'])
+            ->name('admin-tracks-artists-update');
+        Route::get('/admin/tracks/search', [App\Http\Controllers\Admin\TrackController::class, 'search'])
+            ->name('admin-tracks-search');
 
-    Route::get('/admin-genres-index', [App\Http\Controllers\Admin\GenreController::class, 'index'])
-        ->name('admin-genres-index');
-    Route::get('/admin-genres-create', [App\Http\Controllers\Admin\GenreController::class, 'create'])
-        ->name('admin-genres-create');
-    Route::post('/admin-genres-store', [App\Http\Controllers\Admin\GenreController::class, 'store'])
-        ->name('admin-genres-store');
-    Route::get('/admin-genres-edit/{id}', [App\Http\Controllers\Admin\GenreController::class, 'edit'])
-        ->name('admin-genres-edit');
-    Route::put('/admin-genres-update/{id}', [App\Http\Controllers\Admin\GenreController::class, 'update'])
-        ->name('admin-genres-update');
-    Route::put('/admin-genres-update-image/{id}', [App\Http\Controllers\Admin\GenreController::class, 'updateImage'])
-        ->name('admin-genres-update-image');
-    Route::delete('/genres/{id}', [App\Http\Controllers\Admin\GenreController::class, 'destroy'])
-        ->name('admin-genres-destroy');
+        Route::get('/admin-genres-index', [App\Http\Controllers\Admin\GenreController::class, 'index'])
+            ->name('admin-genres-index');
+        Route::get('/admin-genres-create', [App\Http\Controllers\Admin\GenreController::class, 'create'])
+            ->name('admin-genres-create');
+        Route::post('/admin-genres-store', [App\Http\Controllers\Admin\GenreController::class, 'store'])
+            ->name('admin-genres-store');
+        Route::get('/admin-genres-edit/{id}', [App\Http\Controllers\Admin\GenreController::class, 'edit'])
+            ->name('admin-genres-edit');
+        Route::put('/admin-genres-update/{id}', [App\Http\Controllers\Admin\GenreController::class, 'update'])
+            ->name('admin-genres-update');
+        Route::put('/admin-genres-update-image/{id}', [App\Http\Controllers\Admin\GenreController::class, 'updateImage'])
+            ->name('admin-genres-update-image');
+        Route::delete('/genres/{id}', [App\Http\Controllers\Admin\GenreController::class, 'destroy'])
+            ->name('admin-genres-destroy');
 
-    Route::get('/admin/genres/{id}/search-artists', [App\Http\Controllers\Admin\GenreController::class, 'searchArtists'])
-        ->name('admin-genres-search-artists');
-    Route::get('/admin/genres/{id}/search-tracks', [App\Http\Controllers\Admin\GenreController::class, 'searchTracks'])
-        ->name('admin-genres-search-tracks');
-    Route::get('/admin/genres/{id}/search-releases', [App\Http\Controllers\Admin\GenreController::class, 'searchReleases'])
-        ->name('admin-genres-search-releases');
-    Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])
-        ->name('admin.genres.sync');
+        Route::get('/admin/genres/{id}/search-artists', [App\Http\Controllers\Admin\GenreController::class, 'searchArtists'])
+            ->name('admin-genres-search-artists');
+        Route::get('/admin/genres/{id}/search-tracks', [App\Http\Controllers\Admin\GenreController::class, 'searchTracks'])
+            ->name('admin-genres-search-tracks');
+        Route::get('/admin/genres/{id}/search-releases', [App\Http\Controllers\Admin\GenreController::class, 'searchReleases'])
+            ->name('admin-genres-search-releases');
+        Route::post('/admin/genres/sync', [App\Http\Controllers\Admin\GenreController::class, 'sync'])
+            ->name('admin.genres.sync');
 
-    Route::get('/admin-comments', [App\Http\Controllers\Admin\CommentController::class, 'index'])
-        ->name('admin-comments');
-    Route::patch('/admin-comments/{type}/{id}/status', [App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])
-        ->name('admin-comments.update-status');
+        Route::get('/admin-comments', [App\Http\Controllers\Admin\CommentController::class, 'index'])
+            ->name('admin-comments');
+        Route::patch('/admin-comments/{type}/{id}/status', [App\Http\Controllers\Admin\CommentController::class, 'updateStatus'])
+            ->name('admin-comments.update-status');
 
-    Route::get('/admin/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])
-        ->name('admin-reports-index');
-    Route::get('/admin/reports/users', [App\Http\Controllers\Admin\ReportController::class, 'usersReport'])
-        ->name('admin-reports-users');
-    Route::get('/admin/reports/comments', [App\Http\Controllers\Admin\ReportController::class, 'commentsReport'])
-        ->name('admin-reports-comments');
-    Route::get('/admin/reports/popular-artists', [App\Http\Controllers\Admin\ReportController::class, 'popularArtistsReport'])
-        ->name('admin-reports-popular-artists');
-});
+        Route::get('/admin/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])
+            ->name('admin-reports-index');
+        Route::get('/admin/reports/users', [App\Http\Controllers\Admin\ReportController::class, 'usersReport'])
+            ->name('admin-reports-users');
+        Route::get('/admin/reports/comments', [App\Http\Controllers\Admin\ReportController::class, 'commentsReport'])
+            ->name('admin-reports-comments');
+        Route::get('/admin/reports/popular-artists', [App\Http\Controllers\Admin\ReportController::class, 'popularArtistsReport'])
+            ->name('admin-reports-popular-artists');
+    });
 
 //    Route::resource('/admin-users-index', UserController::class)->except(['show']);
 //    Route::resource('roles', RoleController::class)->except(['show']);
@@ -387,6 +396,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 //    Route::resource('genres', GenreController::class)->except(['show']);
 //    Route::resource('lyrics', LyricController::class)->except(['show']);
 //});
+});
+
 
 
 // testing Spotify API
