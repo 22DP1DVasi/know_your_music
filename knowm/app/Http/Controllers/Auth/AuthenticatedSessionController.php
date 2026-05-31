@@ -29,21 +29,11 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Handle an incoming authentication request.
+     * @throws ValidationException
      */
-    public function store(LoginRequest $request)
+    public function store(LoginRequest $request): RedirectResponse
     {
-        // Determine if the input is an email or username
-        $loginType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
-
-        // Attempt authentication
-        if (!auth()->attempt([
-            $loginType => $request->login,
-            'password' => $request->password
-        ], $request->boolean('remember'))) {
-            throw ValidationException::withMessages([
-                'login' => __('auth.failed'),
-            ]);
-        }
+        $request->authenticate();
 
         $request->session()->regenerate();
 
