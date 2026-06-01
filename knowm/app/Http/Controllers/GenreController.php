@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Genre;
 use App\Services\GenreService;
+use App\Services\PopularityService;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Artist;
@@ -27,15 +28,26 @@ class GenreController extends Controller
     }
 
     /**
+     * Metode priekš GenreShow.vue lapas.
+     * Iegūst datus par žanru no datubāzes un daļu no komentāriem un nodod tos lapai.
+     *
      * @param Genre $genre
      * @return Response
      */
-    public function show(Genre $genre)
+    public function show(Genre $genre): Response
     {
         // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
         $commentsPage = request()->input('comments_page', 1);
-        $genreData = $this->genreService
-            ->getGenreWithDetailsAndComments($genre, $commentsPage);
+        $genreData = $this->genreService->getGenreWithDetailsAndComments($genre, $commentsPage);
+
+        app(PopularityService::class)
+            ->add(
+                'genre',
+                $genre->id,
+                0.1,
+                'view',
+                auth()->id()
+            );
 
         return Inertia::render('Genres/GenreShow', [
             'genre' => $genreData

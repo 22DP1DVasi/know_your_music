@@ -107,11 +107,11 @@ const canSubmitReply = (commentId) => {
 
 // API galapunkti
 const getBaseApiPath = () => {
-    return `/${props.entityType}s/${props.entitySlug}/comments`
+    return `/${props.entityType}/${props.entitySlug}/comments`
 }
 
 const getCommentApiPath = (commentId) => {
-    return `/${props.entityType}s/${props.entitySlug}/comments/${commentId}`
+    return `/${props.entityType}/${props.entitySlug}/comments/${commentId}`
 }
 
 // lietotāja tiesību metodes

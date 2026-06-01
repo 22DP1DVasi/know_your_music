@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Track;
+use App\Services\PopularityService;
 use App\Services\TrackService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -32,8 +33,16 @@ class TrackController extends Controller
     {
         // iegūt pašreizējo lapu komentāriem no pieprasījuma, noklusējums ir 1
         $commentsPage = request()->input('comments_page', 1);
-        $trackData = $this->trackService
-            ->getTrackWithDetailsAndComments($track, $commentsPage);
+        $trackData = $this->trackService->getTrackWithDetailsAndComments($track, $commentsPage);
+
+        app(PopularityService::class)
+            ->add(
+                'track',
+                $track->id,
+                0.1,
+                'view',
+                auth()->id()
+            );
 
         return inertia('Tracks/TrackShow', [
             'track' => $trackData

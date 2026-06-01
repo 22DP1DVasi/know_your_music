@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PopularityService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -51,9 +53,10 @@ abstract class BaseCommentController extends Controller
      *
      * @param Model $parent
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param string $entityType
+     * @return JsonResponse
      */
-    protected function handleStore(Model $parent, Request $request): \Illuminate\Http\JsonResponse
+    protected function handleStore(Model $parent, Request $request, string $entityType): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'text' => 'required|string|min:1|max:2000',
@@ -67,6 +70,16 @@ abstract class BaseCommentController extends Controller
             'parent_id' => $request->input('parent_id', null),
         ]);
         $comment->load('user');
+
+        app(PopularityService::class)
+            ->add(
+                $entityType,
+                $parent->id,
+                0.4,
+                'comment',
+                auth()->id()
+            );
+
         return response()->json([
             'success' => true,
             'message' => 'Comment added successfully',

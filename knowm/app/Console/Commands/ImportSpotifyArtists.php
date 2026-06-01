@@ -10,6 +10,11 @@ use App\Models\Track;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @deprecated
+ * This class was made during initial designing as a test.
+ * It is not used anywhere on the actual website.
+ */
 class ImportSpotifyArtists extends Command
 {
     protected $signature = 'spotify:import-artists';

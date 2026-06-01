@@ -6,6 +6,11 @@ use SpotifyWebAPI\Session;
 use SpotifyWebAPI\SpotifyWebAPI;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @deprecated
+ * This class was made during initial designing as a test.
+ * It is not used anywhere on the actual website.
+ */
 class SpotifyService
 {
     private $session;
