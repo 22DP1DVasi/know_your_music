@@ -207,10 +207,11 @@ class TrackController extends Controller
                 'status' => $lyricsStatus,
                 'last_updated_by_user' => auth()->id(),
             ]);
+        } elseif ($existingLyrics && empty($lyricsText)) {
+            // lyrics exists but textarea is empty: delete the lyrics record
+            $existingLyrics->delete();
         }
-        // no lyrics existed and textarea is empty
-        // or lyrics exists but textarea is empty
-        // do nothing
+        // no lyrics existed and textarea is empty: do nothing
 
         return redirect()->route('admin-tracks-edit', $track->id)
             ->with('success', __('messages.track_updated'));
