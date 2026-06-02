@@ -105,8 +105,18 @@ class TrackController extends Controller
                         'artists:id,name,slug'
                     ])->select('releases.id', 'title', 'release_date', 'release_type');
                 },
+                'lyrics'
             ])
             ->findOrFail($id);
+
+        $lyricsData = null;
+        if ($track->lyrics) {
+            $lyricsData = [
+                'lyrics' => $track->lyrics->lyrics,
+                'status' => $track->lyrics->status,
+                'last_updated_by_user' => $track->lyrics->lastUpdatedByUser?->name ?? null,
+            ];
+        }
 
         return Inertia::render('Admin/Tracks/Edit', [
             'track' => [
@@ -147,6 +157,7 @@ class TrackController extends Controller
                         'slug' => $artist->slug,
                     ]),
                 ]),
+                'lyrics' => $lyricsData
             ]
         ]);
     }
@@ -162,7 +173,7 @@ class TrackController extends Controller
     {
         $track = Track::findOrFail($id);
 
-        $validated = $request->validate([
+        $trackData = $request->validate([
             'title' => 'required|string|max:255',
             'release_date' => 'required|date',
             'duration' => 'required|date_format:H:i:s',
@@ -170,7 +181,36 @@ class TrackController extends Controller
             'description_lv' => 'nullable|string',
         ]);
 
-        $track->update($validated);
+        $lyricsData = $request->validate([
+            'lyrics' => 'nullable|string',
+            'lyrics_status' => 'nullable|in:verified,requires verification',
+        ]);
+
+        $track->update($trackData);
+
+        // lyrics handling
+        $lyricsText = $lyricsData['lyrics'] ?? null;
+        $lyricsStatus = $lyricsData['lyrics_status'] ?? 'requires verification';
+        $existingLyrics = $track->lyrics;
+
+        if (!$existingLyrics && !empty($lyricsText)) {
+            // no lyrics existed and textarea contains text: create new lyrics
+            $track->lyrics()->create([
+                'lyrics' => $lyricsText,
+                'status' => $lyricsStatus,
+                'last_updated_by_user' => auth()->id(),
+            ]);
+        } elseif ($existingLyrics && !empty($lyricsText)) {
+            // lyrics already exists and text is updated: update existing
+            $existingLyrics->update([
+                'lyrics' => $lyricsText,
+                'status' => $lyricsStatus,
+                'last_updated_by_user' => auth()->id(),
+            ]);
+        }
+        // no lyrics existed and textarea is empty
+        // or lyrics exists but textarea is empty
+        // do nothing
 
         return redirect()->route('admin-tracks-edit', $track->id)
             ->with('success', __('messages.track_updated'));
