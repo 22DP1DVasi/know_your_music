@@ -46,7 +46,7 @@ class Lyric extends Model
     /**
      * Get the user (admin) who last updated these lyrics.
      */
-    public function lastUpdatedBy(): BelongsTo
+    public function lastUpdatedByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'last_updated_by_user');
     }

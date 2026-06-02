@@ -29,7 +29,8 @@ const props = defineProps({
             cover_url: null,
             genres: [],
             artists: [],
-            releases: []
+            releases: [],
+            lyrics: null
         })
     }
 });
@@ -45,7 +46,9 @@ const form = useForm({
         : '',
     duration: props.track.duration || '',
     description: props.track.description || '',
-    description_lv: props.track.description_lv || ''
+    description_lv: props.track.description_lv || '',
+    lyrics: props.track.lyrics?.lyrics || '',
+    lyrics_status: props.track.lyrics?.status || 'requires verification',
 });
 
 // parse duration for display/editing HH:MM:SS
@@ -124,6 +127,8 @@ const resetForm = () => {
     initDurationFields();
     form.description = props.track.description || '';
     form.description_lv = props.track.description_lv || '';
+    form.lyrics = props.track.lyrics?.lyrics || '';
+    form.lyrics_status = props.track.lyrics?.status || 'requires verification';
 };
 
 const showGenresModal = ref(false);
@@ -189,6 +194,10 @@ const handleArtistsUpdate = async (artists) => {
 
 const showReleasesModal = ref(false);
 const releasesList = ref([...props.track.releases]);
+
+const lyricsText = ref(props.track.lyrics?.lyrics || '');
+const lyricsStatus = ref(props.track.lyrics?.status || 'requires verification');
+const lastUpdatedBy = ref(props.track.lyrics?.last_updated_by_user || null);
 
 </script>
 
@@ -325,6 +334,43 @@ const releasesList = ref([...props.track.releases]);
                                     :class="{ 'error': form.errors.description_lv }"
                                 ></textarea>
                                 <div v-if="form.errors.description_lv" class="error-message">{{ form.errors.description_lv }}</div>
+                            </div>
+
+                            <!-- Lyrics -->
+                            <div class="form-section">
+                                <h2 class="section-title">{{ t('adm_tracks.edit.lyrics_section') }}</h2>
+
+                                <div class="form-group">
+                                    <label for="lyrics">{{ t('adm_tracks.edit.lyrics_label') }}</label>
+                                    <textarea
+                                        id="lyrics"
+                                        v-model="form.lyrics"
+                                        rows="18"
+                                        class="textarea-field"
+                                        :class="{ 'error': form.errors.lyrics }"
+                                        :placeholder="t('adm_tracks.edit.lyrics_placeholder')"
+                                    ></textarea>
+                                    <div v-if="form.errors.lyrics" class="error-message">{{ form.errors.lyrics }}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="lyrics_status">{{ t('adm_tracks.edit.lyrics_status_label') }}</label>
+                                    <select
+                                        id="lyrics_status"
+                                        v-model="form.lyrics_status"
+                                        class="input-field"
+                                        :class="{ 'error': form.errors.lyrics_status }"
+                                    >
+                                        <option value="requires verification">{{ t('adm_tracks.edit.status_requires_verification') }}</option>
+                                        <option value="verified">{{ t('adm_tracks.edit.status_verified') }}</option>
+                                    </select>
+                                    <div v-if="form.errors.lyrics_status" class="error-message">{{ form.errors.lyrics_status }}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>{{ t('adm_tracks.edit.last_updated_by') }}</label>
+                                    <div class="readonly-field">{{ lastUpdatedBy || '—' }}</div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -606,6 +652,15 @@ select.input-field.error {
     color: #ef4444;
     font-size: 0.75rem;
     margin-top: 0.25rem;
+}
+
+.readonly-field {
+    padding: 0.625rem 0.75rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    color: #4b5563;
+    font-size: 0.875rem;
 }
 
 /* make entire date input field clickable */
