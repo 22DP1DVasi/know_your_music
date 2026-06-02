@@ -146,6 +146,8 @@ class ArtistController extends Controller
     }
 
     /**
+     * Metode priekš ArtistsExplore.vue lapas.
+     *
      * @param Request $request
      * @return \Inertia\Response
      */
@@ -244,5 +246,4 @@ class ArtistController extends Controller
             'includeEmptyDisbanded' => $includeEmptyDisbanded,
         ]);
     }
-
 }
