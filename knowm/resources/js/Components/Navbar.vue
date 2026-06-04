@@ -72,10 +72,6 @@ const toggleMobileExplore = () => {
     isMobileExploreOpen.value = !isMobileExploreOpen.value;
 };
 
-const redirectToExplore = (type) => {
-    router.visit(`/explore/${type}`);
-};
-
 const logout = () => {
     router.post('/logout');
 };
@@ -154,9 +150,17 @@ const isActiveRoute = (routePath) => {
                     </div>
                     <transition name="dropdown-fade">
                         <div v-show="activeDropdown === 'explore'" class="dropdown-menu">
-                            <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
-                            <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
-                            <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
+                            <Link :href="route('explore.artists')">
+                                {{ t('navbar.explore_artists') }}
+                            </Link>
+
+                            <Link :href="route('explore.releases')">
+                                {{ t('navbar.explore_releases') }}
+                            </Link>
+
+                            <Link :href="route('explore.genres')">
+                                {{ t('navbar.explore_genres') }}
+                            </Link>
                         </div>
                     </transition>
                 </li>
@@ -280,9 +284,17 @@ const isActiveRoute = (routePath) => {
                     </div>
                     <transition name="dropdown-fade">
                         <div v-show="isMobileExploreOpen" class="mobile-explore-dropdown">
-                            <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
-                            <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
-                            <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
+                            <Link :href="route('explore.artists')">
+                                {{ t('navbar.explore_artists') }}
+                            </Link>
+
+                            <Link :href="route('explore.releases')">
+                                {{ t('navbar.explore_releases') }}
+                            </Link>
+
+                            <Link :href="route('explore.genres')">
+                                {{ t('navbar.explore_genres') }}
+                            </Link>
                         </div>
                     </transition>
                 </div>

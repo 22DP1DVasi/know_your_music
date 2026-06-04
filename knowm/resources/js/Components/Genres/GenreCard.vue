@@ -181,4 +181,20 @@ defineExpose({
     }
 }
 
+/* Animācijas */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.genre-card {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
 </style>

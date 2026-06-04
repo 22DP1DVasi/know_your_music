@@ -1,6 +1,6 @@
 <script setup>
-import { Head, Link, router } from "@inertiajs/vue3";
-import {ref, computed, onBeforeUnmount, onMounted, watch} from 'vue';
+import { Head, router } from "@inertiajs/vue3";
+import {ref, onBeforeUnmount, onMounted, watch} from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -78,14 +78,12 @@ onBeforeUnmount(() => {
     window.removeEventListener('resize', checkScreenSize);
 });
 
-// Update the existing performSearch function to include year filters
-const performSearch = () => {
+const buildQueryParams = () => {
     const params = new URLSearchParams();
 
     if (localSearchQuery.value) {
         params.set('q', localSearchQuery.value);
     }
-
     if (localSelectedGenres.value.length > 0) {
         params.set('genres', localSelectedGenres.value.join(','));
     }
@@ -93,7 +91,6 @@ const performSearch = () => {
     params.set('perPage', localPerPage.value);
     params.set('sort', localSortOrder.value);
 
-    // Add year params
     if (localFormedFrom.value) params.set('formed_from', localFormedFrom.value);
     if (localFormedTo.value) params.set('formed_to', localFormedTo.value);
     if (localDisbandedFrom.value) params.set('disbanded_from', localDisbandedFrom.value);
@@ -101,17 +98,24 @@ const performSearch = () => {
     if (localIncludeEmptyFormed.value) params.set('include_empty_formed', '1');
     if (localIncludeEmptyDisbanded.value) params.set('include_empty_disbanded', '1');
 
-    router.visit(`/explore/artists?${params.toString()}`, {
-        preserveState: true,
-        replace: true
-    });
+    return params;
 };
 
-const selectedGenreNames = computed(() => {
-    return props.allGenres.filter(genre =>
-        localSelectedGenres.value.includes(genre.id)
+const reloadResults = () => {
+    router.visit(`/explore/artists?${buildQueryParams().toString()}`,{
+            preserveState: true,
+            replace: true
+        }
     );
-});
+};
+
+const performSearch = () => {
+    reloadResults();
+};
+
+const applySort = () => {
+    reloadResults();
+};
 
 watch(() => props.selectedGenres, (newVal) => {
     localSelectedGenres.value = [...newVal];
@@ -159,25 +163,25 @@ const clearYearFilters = () => {
     localIncludeEmptyDisbanded.value = false;
 };
 
-const applySort = () => {
-    const params = new URLSearchParams();
-
-    if (localSearchQuery.value) {
-        params.set('q', localSearchQuery.value);
-    }
-
-    if (localSelectedGenres.value.length > 0) {
-        params.set('genres', localSelectedGenres.value.join(','));
-    }
-
-    params.set('perPage', localPerPage.value);
-    params.set('sort', localSortOrder.value);
-
-    router.visit(`/explore/artists?${params.toString()}`, {
-        preserveState: true,
-        replace: true
-    });
-};
+// const applySort = () => {
+//     const params = new URLSearchParams();
+//
+//     if (localSearchQuery.value) {
+//         params.set('q', localSearchQuery.value);
+//     }
+//
+//     if (localSelectedGenres.value.length > 0) {
+//         params.set('genres', localSelectedGenres.value.join(','));
+//     }
+//
+//     params.set('perPage', localPerPage.value);
+//     params.set('sort', localSortOrder.value);
+//
+//     router.visit(`/explore/artists?${params.toString()}`, {
+//         preserveState: true,
+//         replace: true
+//     });
+// };
 
 function lowercaseString(val) {
     return String(val).toLowerCase();

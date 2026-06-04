@@ -58,7 +58,7 @@ onBeforeUnmount(() => {
     window.removeEventListener('resize', checkScreenSize);
 });
 
-const performSearch = () => {
+const buildQueryParams = () => {
     const params = new URLSearchParams();
 
     if (localSearchQuery.value) {
@@ -69,6 +69,7 @@ const performSearch = () => {
     }
     params.set('perPage', localPerPage.value);
     params.set('sort', localSortOrder.value);
+
     if (localDateFrom.value) {
         params.set('date_from', localDateFrom.value);
     }
@@ -76,10 +77,23 @@ const performSearch = () => {
         params.set('date_to', localDateTo.value);
     }
 
-    router.visit(`/explore/releases?${params.toString()}`, {
-        preserveState: true,
-        replace: true
-    });
+    return params;
+};
+
+const reloadResults = () => {
+    router.visit(`/explore/releases?${buildQueryParams().toString()}`,{
+            preserveState: true,
+            replace: true
+        }
+    );
+};
+
+const performSearch = () => {
+    reloadResults();
+};
+
+const applySort = () => {
+    reloadResults();
 };
 
 watch(() => props.selectedGenres, (newVal) => {
@@ -117,30 +131,6 @@ const clearGenres = () => {
 const applyGenreFilters = () => {
     showGenreModal.value = false;
     performSearch();
-};
-
-const applySort = () => {
-    const params = new URLSearchParams();
-
-    if (localSearchQuery.value) {
-        params.set('q', localSearchQuery.value);
-    }
-    if (localSelectedGenres.value.length > 0) {
-        params.set('genres', localSelectedGenres.value.join(','));
-    }
-    params.set('perPage', localPerPage.value);
-    params.set('sort', localSortOrder.value);
-    if (localDateFrom.value) {
-        params.set('date_from', localDateFrom.value);
-    }
-    if (localDateTo.value) {
-        params.set('date_to', localDateTo.value);
-    }
-
-    router.visit(`/explore/releases?${params.toString()}`, {
-        preserveState: true,
-        replace: true
-    });
 };
 
 function lowercaseString(val) {
@@ -676,7 +666,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .release-results {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1.2rem;
     justify-content: flex-start;
     padding: 0 2rem;
 }
