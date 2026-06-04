@@ -166,7 +166,7 @@ function lowercaseString(val) {
                         </div>
                     </div>
 
-                    <div class="filter-row">
+                    <div class="filter-buttons">
                         <button class="filter-button" @click="showGenreModal = true">
                             <i class="fa fa-filter"></i> {{ t('explore_pages.releases.filter_by_genre') }}
                         </button>
@@ -277,6 +277,15 @@ function lowercaseString(val) {
     margin-bottom: 17px;
 }
 
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
 .search-container {
     display: flex;
     width: 100%;
@@ -285,20 +294,10 @@ function lowercaseString(val) {
     position: relative;
 }
 
-.search-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 800px;
-    position: relative;
-    margin: 0 auto;
-    padding: 0;
-}
-
 .searchTerm {
-    height: 46px;
-    width: 340px;
     flex: 1;
+    min-width: 0;
+    height: 46px;
     padding: 12px;
     font-size: 17px;
     border: 3px solid #54b3ebed;
@@ -364,16 +363,16 @@ function lowercaseString(val) {
     margin: 0 auto;
 }
 
-.filter-row {
+.filter-buttons {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
-    margin-top: 1rem;
 }
 
 .filter-button {
+    width: 220px;
     background-color: #0c4baa;
     color: white;
     border: none;
@@ -383,8 +382,8 @@ function lowercaseString(val) {
     font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin: 0 auto;
+    justify-content: center;
+    gap: 1rem;
     transition: background-color 0.2s;
 }
 
@@ -420,16 +419,6 @@ function lowercaseString(val) {
     outline: none;
     border-color: #0c4baa;
     box-shadow: 0 0 0 2px rgba(12, 75, 170, 0.1);
-}
-
-@media (max-width: 768px) {
-    .filter-row {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .date-filters {
-        justify-content: center;
-    }
 }
 
 /* make entire date input field clickable */
@@ -697,6 +686,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         padding: 0.5rem 1rem 1rem;
     }
 
+    .filter-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-button {
+        width: 100%;
+    }
+
     .search-container {
         padding: 0 2rem;
         max-width: 100%;
@@ -716,6 +714,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         min-width: 120px;
     }
 
+    .date-filters {
+        justify-content: center;
+    }
+
     .sort-controls {
         padding: 0 1rem;
     }
@@ -725,29 +727,26 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     .searchTerm {
         font-size: 14px;
         padding: 10px;
-        height: 42px;
+        height: 46px;
         max-width: 500px;
-        width: 250px;
+        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .search-container {
+        width: 100%;
+        max-width: none;
         padding: 0 1rem;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .results-title {
-        font-size: 1.5rem;
     }
 
     .searchTerm {
         font-size: 15px;
         padding: 10px;
-        width: 100%;
-        max-width: 280px;
+    }
+
+    .results-title {
+        font-size: 1.5rem;
     }
 
     .release-results {

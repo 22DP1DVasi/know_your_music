@@ -94,14 +94,14 @@ const applySort = () => {
                             </button>
                         </div>
                     </div>
+                </div>
 
-                    <div class="sort-controls">
-                        <label>{{ t('explore_pages.genres.sort_by') }}:</label>
-                        <select v-model="localSortOrder" @change="applySort">
-                            <option value="asc">{{ t('explore_pages.genres.sort_asc') }}</option>
-                            <option value="desc">{{ t('explore_pages.genres.sort_desc') }}</option>
-                        </select>
-                    </div>
+                <div class="sort-controls">
+                    <label>{{ t('explore_pages.genres.sort_by') }}:</label>
+                    <select v-model="localSortOrder" @change="applySort">
+                        <option value="asc">{{ t('explore_pages.genres.sort_asc') }}</option>
+                        <option value="desc">{{ t('explore_pages.genres.sort_desc') }}</option>
+                    </select>
                 </div>
             </div>
 
@@ -148,36 +148,34 @@ const applySort = () => {
 
 .filters-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    gap: 1rem;
-}
-
-.search-container {
-    display: flex;
-    width: 100%;
-    max-width: 500px;
-    position: relative;
 }
 
 .search-controls {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
     max-width: 800px;
-    position: relative;
     margin: 0 auto;
-    padding: 0;
-    flex: 1;
+}
+
+.search-container {
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
 }
 
 .searchTerm {
-    height: 46px;
-    width: 340px;
     flex: 1;
+    min-width: 0;
+    height: 46px;
     padding: 12px;
     font-size: 17px;
     border: 3px solid #54b3ebed;
@@ -238,12 +236,14 @@ const applySort = () => {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    padding: 0 2rem;
 }
 
 .sort-controls label {
     font-weight: 500;
     color: #0c4baa;
-    white-space: nowrap;
 }
 
 .sort-controls select {
@@ -276,58 +276,6 @@ const applySort = () => {
     gap: 1.2rem;
     justify-content: flex-start;
     padding: 0 2rem;
-}
-
-.genre-card {
-    flex: 0 0 calc(25% - 1.125rem); /* 4 cards per row */
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.genre-card:hover {
-    cursor: pointer;
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.genre-card .image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.genre-card .image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.genre-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-    text-align: center;
-}
-
-.genre-info h3 {
-    margin: 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .no-results {
@@ -366,26 +314,16 @@ const applySort = () => {
         height: 46px;
     }
 
-    .genre-card {
-        flex: 0 0 calc(50% - 0.75rem); /* 2 cards per row */
-    }
-
-    .genre-info {
-        padding: 1.25rem;
-    }
-
     .genre-info h3 {
         font-size: 1.05rem;
     }
 
     .filters-container {
         flex-direction: column;
-        gap: 1rem;
     }
 
     .sort-controls {
-        width: 100%;
-        justify-content: flex-end;
+        padding: 0 1rem;
     }
 }
 
@@ -393,37 +331,30 @@ const applySort = () => {
     .searchTerm {
         font-size: 14px;
         padding: 10px;
-        height: 42px;
+        height: 46px;
         max-width: 500px;
-        width: 250px;
+        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .search-container {
+        width: 100%;
+        max-width: none;
         padding: 0 1rem;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 0.5rem;
+    }
+
+    .searchTerm {
+        font-size: 15px;
+        padding: 10px;
     }
 
     .results-title {
         font-size: 1.5rem;
     }
 
-    .searchTerm {
-        font-size: 15px;
-        padding: 10px;
-        width: 100%;
-        max-width: 280px;
-    }
-
     .genre-results {
         justify-content: center;
-    }
-
-    .genre-card {
-        flex: 0 0 80%;
     }
 }
 

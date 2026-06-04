@@ -163,26 +163,6 @@ const clearYearFilters = () => {
     localIncludeEmptyDisbanded.value = false;
 };
 
-// const applySort = () => {
-//     const params = new URLSearchParams();
-//
-//     if (localSearchQuery.value) {
-//         params.set('q', localSearchQuery.value);
-//     }
-//
-//     if (localSelectedGenres.value.length > 0) {
-//         params.set('genres', localSelectedGenres.value.join(','));
-//     }
-//
-//     params.set('perPage', localPerPage.value);
-//     params.set('sort', localSortOrder.value);
-//
-//     router.visit(`/explore/artists?${params.toString()}`, {
-//         preserveState: true,
-//         replace: true
-//     });
-// };
-
 function lowercaseString(val) {
     return String(val).toLowerCase();
 }
@@ -432,6 +412,24 @@ function lowercaseString(val) {
     margin-bottom: 17px;
 }
 
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
 .search-container {
     display: flex;
     width: 100%;
@@ -440,20 +438,10 @@ function lowercaseString(val) {
     position: relative;
 }
 
-.search-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 800px;
-    position: relative;
-    margin: 0 auto;
-    padding: 0;
-}
-
 .searchTerm {
-    height: 46px;
-    width: 340px;
     flex: 1;
+    min-width: 0;
+    height: 46px;
     padding: 12px;
     font-size: 17px;
     border: 3px solid #54b3ebed;
@@ -510,21 +498,17 @@ function lowercaseString(val) {
     transform: translate(-50%, -50%) scale(0.5);
 }
 
-.filters-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
 .filter-buttons {
     display: flex;
     justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 .filter-button {
+    flex: 1;
     background-color: #0c4baa;
     color: white;
     border: none;
@@ -534,11 +518,9 @@ function lowercaseString(val) {
     font-size: 0.9rem;
     display: flex;
     align-items: center;
-    margin: 0 1rem;
-    transition: background-color 0.2s;
-    gap: 1rem;
     justify-content: center;
-    flex-wrap: wrap;
+    gap: 1rem;
+    transition: background-color 0.2s;
 }
 
 .filter-button:hover {
@@ -941,6 +923,14 @@ function lowercaseString(val) {
         flex-direction: column;
     }
 
+    .filter-buttons {
+        flex-direction: column;
+    }
+
+    .filter-button {
+        width: 100%;
+    }
+
     .genre-item {
         flex: 1 0 calc(33.333% - 0.75rem); /* 3 items per row */
         min-width: 120px;
@@ -960,40 +950,30 @@ function lowercaseString(val) {
     }
 }
 
-@media (max-width: 768px) {
-    .filter-buttons {
-        flex-direction: column;
-        gap: 16px;
-    }
-}
-
 @media (max-width: 540px) {
     .searchTerm {
         font-size: 14px;
         padding: 10px;
-        height: 42px;
+        height: 46px;
         max-width: 500px;
-        width: 250px;
+        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .search-container {
+        width: 100%;
+        max-width: none;
         padding: 0 1rem;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .results-title {
-        font-size: 1.5rem;
     }
 
     .searchTerm {
         font-size: 15px;
         padding: 10px;
-        width: 100%;
-        max-width: 280px;
+    }
+
+    .results-title {
+        font-size: 1.5rem;
     }
 
     .artist-results {
