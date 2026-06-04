@@ -33,6 +33,8 @@
         "page_title": "Atklāt albumus",
         "search_placeholder": "Meklēt albumus...",
         "filter_by_genre": "Filtrēt pēc žanra",
+        "release_date_from": "Izdošanas datums no",
+        "release_date_to": "līdz",
         "sort_by": "Kārtot pēc",
         "sort_asc": "A-Z",
         "sort_desc": "Z-A",

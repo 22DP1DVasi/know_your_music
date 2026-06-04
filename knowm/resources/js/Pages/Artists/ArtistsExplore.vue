@@ -267,7 +267,7 @@ function lowercaseString(val) {
                 </div>
             </div>
 
-            <!-- Genre Filter Modal -->
+            <!-- Genre filter modal -->
             <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -299,7 +299,7 @@ function lowercaseString(val) {
                 </div>
             </div>
 
-            <!-- Year Range Filter Modal -->
+            <!-- Year range filter modal -->
             <div v-if="showYearModal" class="modal-overlay" @click.self="showYearModal = false">
                 <div class="modal-content year-modal">
                     <div class="modal-header">

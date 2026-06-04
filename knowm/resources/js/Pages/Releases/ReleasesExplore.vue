@@ -19,6 +19,14 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
+    dateFrom: {
+        type: [String, null],
+        default: null
+    },
+    dateTo: {
+        type: [String, null],
+        default: null
+    },
     sortOrder: {
         type: String,
         default: 'asc'
@@ -32,6 +40,10 @@ const localPerPage = ref(props.perPage || 24);
 const showGenreModal = ref(false);
 const localSelectedGenres = ref([...props.selectedGenres]);
 const localSortOrder = ref(props.sortOrder);
+
+// date filter refs
+const localDateFrom = ref(props.dateFrom || '');
+const localDateTo = ref(props.dateTo || '');
 
 const checkScreenSize = () => {
     localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
@@ -47,28 +59,41 @@ onBeforeUnmount(() => {
 });
 
 const performSearch = () => {
-    router.visit(`/explore/releases?q=${localSearchQuery.value}&genres=${localSelectedGenres.value.join(',')}&perPage=${localPerPage.value}&sort=${localSortOrder.value}`, {
+    const params = new URLSearchParams();
+
+    if (localSearchQuery.value) {
+        params.set('q', localSearchQuery.value);
+    }
+    if (localSelectedGenres.value.length > 0) {
+        params.set('genres', localSelectedGenres.value.join(','));
+    }
+    params.set('perPage', localPerPage.value);
+    params.set('sort', localSortOrder.value);
+    if (localDateFrom.value) {
+        params.set('date_from', localDateFrom.value);
+    }
+    if (localDateTo.value) {
+        params.set('date_to', localDateTo.value);
+    }
+
+    router.visit(`/explore/releases?${params.toString()}`, {
         preserveState: true,
         replace: true
     });
 };
 
-const selectedGenreNames = computed(() => {
-    return props.allGenres.filter(genre =>
-        localSelectedGenres.value.includes(genre.id)
-    );
-});
-
 watch(() => props.selectedGenres, (newVal) => {
     localSelectedGenres.value = [...newVal];
 });
+watch(() => props.dateFrom, (newVal) => {
+    localDateFrom.value = newVal || '';
+});
+watch(() => props.dateTo, (newVal) => {
+    localDateTo.value = newVal || '';
+});
 
 const redirectToRelease = (slug) => {
-    window.location.href = `/releases/${slug}`;
-};
-
-const formatArtists = (artists) => {
-    return artists.map(a => a.name).join(', ');
+    router.get(route('releases.show'), slug);
 };
 
 const toggleGenre = (genreId) => {
@@ -100,13 +125,17 @@ const applySort = () => {
     if (localSearchQuery.value) {
         params.set('q', localSearchQuery.value);
     }
-
     if (localSelectedGenres.value.length > 0) {
         params.set('genres', localSelectedGenres.value.join(','));
     }
-
     params.set('perPage', localPerPage.value);
     params.set('sort', localSortOrder.value);
+    if (localDateFrom.value) {
+        params.set('date_from', localDateFrom.value);
+    }
+    if (localDateTo.value) {
+        params.set('date_to', localDateTo.value);
+    }
 
     router.visit(`/explore/releases?${params.toString()}`, {
         preserveState: true,
@@ -147,9 +176,18 @@ function lowercaseString(val) {
                         </div>
                     </div>
 
-                    <button class="filter-button" @click="showGenreModal = true">
-                        <i class="fa fa-filter"></i> {{ t('explore_pages.releases.filter_by_genre') }}
-                    </button>
+                    <div class="filter-row">
+                        <button class="filter-button" @click="showGenreModal = true">
+                            <i class="fa fa-filter"></i> {{ t('explore_pages.releases.filter_by_genre') }}
+                        </button>
+
+                        <div class="date-filters">
+                            <label>{{ t('explore_pages.releases.release_date_from') }}</label>
+                            <input type="date" v-model="localDateFrom" @change="performSearch" class="date-input" />
+                            <label>{{ t('explore_pages.releases.release_date_to') }}</label>
+                            <input type="date" v-model="localDateTo" @change="performSearch" class="date-input" />
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sort-controls">
@@ -336,6 +374,15 @@ function lowercaseString(val) {
     margin: 0 auto;
 }
 
+.filter-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
 .filter-button {
     background-color: #0c4baa;
     color: white;
@@ -353,6 +400,66 @@ function lowercaseString(val) {
 
 .filter-button:hover {
     background-color: #14a8df;
+}
+
+.date-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    background: #f8fafc;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.date-filters label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #0c4baa;
+}
+
+.date-input {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+    font-size: 0.85rem;
+    background: white;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 2px rgba(12, 75, 170, 0.1);
+}
+
+@media (max-width: 768px) {
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .date-filters {
+        justify-content: center;
+    }
+}
+
+/* make entire date input field clickable */
+input[type="date"] {
+    position: relative;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    color: transparent;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
 }
 
 .selected-genres {
