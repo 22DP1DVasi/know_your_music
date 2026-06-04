@@ -135,6 +135,7 @@ const imageUrl = computed(() => {
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.4;
+    text-align: center;
 }
 
 .artist-info p {
@@ -169,14 +170,18 @@ const imageUrl = computed(() => {
 }
 
 @media (max-width: 480px) {
-    .artist-card {
-        flex: 0 0 100%; /* 1 kartīte rindā */
-        max-width: 300px;
-        margin: 0 auto;
+    .artist-info {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 390px) {
+    .artist-info h3 {
+        font-size: 0.7rem;
     }
 
-    .artist-info {
-        padding: 0.75rem;
+    .artist-info p {
+        font-size: 0.6rem;
     }
 }
 
