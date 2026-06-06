@@ -233,7 +233,7 @@ defineExpose({
 }
 
 /* Responsivitāte */
-@media (max-width: 1024px) {
+@media (max-width: 750px) {
     .release-card {
         flex: 0 0 calc(33.333% - 1rem); /* 3 kartītes rindā */
     }

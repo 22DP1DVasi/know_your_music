@@ -198,7 +198,11 @@ const hasDescription = computed(() => {
                     loading="eager"
                 >
             </div>
-            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>
+            <div class="genre-title-container">
+                <h1 class="genre-name">
+                    {{ capitalizeFirstLetter(genre.name) }}
+                </h1>
+            </div>
             <div class="back-button" @click="goBackToGenre">
                 ← {{ t('genres.description.back_to_genre') }}
             </div>
@@ -299,16 +303,53 @@ const hasDescription = computed(() => {
     z-index: 1;
 }
 
-.genre-name {
+.genre-title-container {
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 1rem;
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    right: 0;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     z-index: 3;
+}
+
+.genre-title-container::before {
+    content: '';
+    height: 100%;
+    width: 30%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,.6);
+    mask-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.3) 60%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 0 0 0 8px;
+}
+
+.genre-name {
+    position: relative;
+    color: white;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    margin: 0;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.7),
+        0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 2;
 }
 
 .back-button {
@@ -461,6 +502,10 @@ const hasDescription = computed(() => {
         margin-bottom: 0.5rem;
     }
 
+    .genre-name {
+        font-size: 2rem;
+    }
+
     .sidebar-space {
         width: 100%;
         order: -1;
@@ -508,6 +553,10 @@ const hasDescription = computed(() => {
 }
 
 @media (max-width: 480px) {
+    .genre-title-container {
+        padding: 0.75rem;
+    }
+
     .genre-name {
         font-size: 1.5rem;
     }

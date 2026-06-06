@@ -340,13 +340,13 @@ const closeModal = () => {
                 <section class="genre-artists">
                     <div class="genre-artists-header">
                         <h2 class="section-title">{{ t('genres.show.representative_artists') }}</h2>
-                        <button
-                            v-if="genre.total_artists > genre.artists.length"
-                            class="see-all-button"
-                            @click="redirectToAllArtists(genre.slug)"
-                        >
-                            {{ t('genres.show.see_all_artists', { count: genre.total_artists }) }}
-                        </button>
+<!--                        <button-->
+<!--                            v-if="genre.total_artists > genre.artists.length"-->
+<!--                            class="see-all-button"-->
+<!--                            @click="redirectToAllArtists(genre.slug)"-->
+<!--                        >-->
+<!--                            {{ t('genres.show.see_all_artists', { count: genre.total_artists }) }}-->
+<!--                        </button>-->
                     </div>
                     <div class="artist-list">
                         <div v-for="artist in genre.artists" :key="artist.id" class="artist-card" @click="redirectToArtist(artist.slug)">
@@ -361,13 +361,13 @@ const closeModal = () => {
                 <section class="genre-tracks">
                     <div class="genre-tracks-header">
                         <h2 class="section-title">{{ t('genres.show.popular_tracks') }}</h2>
-                        <button
-                            v-if="genre.total_tracks > genre.tracks.length"
-                            class="see-all-button"
-                            @click="redirectToAllTracks(genre.slug)"
-                        >
-                            {{ t('genres.show.see_all_tracks', { count: genre.total_tracks }) }}
-                        </button>
+<!--                        <button-->
+<!--                            v-if="genre.total_tracks > genre.tracks.length"-->
+<!--                            class="see-all-button"-->
+<!--                            @click="redirectToAllTracks(genre.slug)"-->
+<!--                        >-->
+<!--                            {{ t('genres.show.see_all_tracks', { count: genre.total_tracks }) }}-->
+<!--                        </button>-->
                     </div>
                     <div class="track-list">
                         <TrackCard
@@ -394,13 +394,13 @@ const closeModal = () => {
                 <section class="genre-releases">
                     <div class="genre-releases-header">
                         <h2 class="section-title">{{ t('genres.show.notable_releases') }}</h2>
-                        <button
-                            v-if="genre.total_releases > genre.releases.length"
-                            class="see-all-button"
-                            @click="redirectToAllReleases(genre.slug)"
-                        >
-                            {{ t('genres.show.see_all_releases', { count: genre.total_releases }) }}
-                        </button>
+<!--                        <button-->
+<!--                            v-if="genre.total_releases > genre.releases.length"-->
+<!--                            class="see-all-button"-->
+<!--                            @click="redirectToAllReleases(genre.slug)"-->
+<!--                        >-->
+<!--                            {{ t('genres.show.see_all_releases', { count: genre.total_releases }) }}-->
+<!--                        </button>-->
                     </div>
                     <div class="release-results">
                         <ReleaseCard
@@ -775,29 +775,6 @@ const closeModal = () => {
     .genre-name {
         font-size: 2rem;
     }
-
-    .release-results {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 10px;
-        margin: 0 -10px;
-        scrollbar-width: thin;
-        scrollbar-color: #0c4baa #f0f0f0;
-    }
-
-    .release-results::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .release-results::-webkit-scrollbar-track {
-        background: #f0f0f0;
-    }
-
-    .release-results::-webkit-scrollbar-thumb {
-        background-color: #0c4baa;
-        border-radius: 6px;
-    }
 }
 
 @media (max-width: 768px) {
@@ -841,6 +818,10 @@ const closeModal = () => {
 
     .artist-image {
         height: 100px;
+    }
+
+    .release-results {
+        justify-content: center;
     }
 }
 
