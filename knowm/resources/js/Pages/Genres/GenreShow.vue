@@ -508,24 +508,26 @@ const closeModal = () => {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 2rem;
-    z-index: 3;
+    padding: 1.5rem;
     display: flex;
+    align-items: center;
     gap: 1rem;
+    z-index: 3;
 }
 
 .genre-title-container::before {
     content: '';
     height: 100%;
-    width: 70%;
+    width: 30%;
     position: absolute;
     bottom: 0;
     left: 0;
-    background: linear-gradient(
-        to top right,
-        rgba(0, 0, 0, 0.7) 0%,
-        rgba(0, 0, 0, 0.4) 30%,
-        transparent 70%
+    background: rgba(0,0,0,.6);
+    mask-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.3) 60%,
+        transparent 100%
     );
     pointer-events: none;
     z-index: -1;
@@ -534,23 +536,20 @@ const closeModal = () => {
 
 .genre-name {
     position: relative;
-    bottom: 0;
-    left: 0;
-    padding: 1rem;
     color: white;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
     font-weight: 700;
     line-height: 1.15;
-    z-index: 3;
-    font-size: clamp(1.4rem, 4vw, 2.5rem);
-    margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     overflow-wrap: anywhere;
+    margin: 0;
     text-shadow:
         0 2px 4px rgba(0, 0, 0, 0.7),
         0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 2;
 }
 
 .genre-content {
