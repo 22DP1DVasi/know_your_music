@@ -33,9 +33,6 @@ class SearchController extends Controller
         ]);
     }
 
-    /**
-     * TODO: try to use similar method in SearchService instead of making new query
-     */
     public function artists(Request $request, SearchService $searchService)
     {
         $query = $request->input('q', '');
@@ -57,9 +54,6 @@ class SearchController extends Controller
         ]);
     }
 
-    /**
-     * TODO: try to use similar method in SearchService instead of making new query
-     */
     public function releases(Request $request)
     {
         $query = $request->input('q', '');
@@ -91,9 +85,6 @@ class SearchController extends Controller
         ]);
     }
 
-    /**
-     * TODO: try to use similar method in SearchService instead of making new query
-     */
     public function tracks(Request $request)
     {
         $query = $request->input('q', '');
@@ -124,9 +115,6 @@ class SearchController extends Controller
         ]);
     }
 
-    /**
-     * TODO: try to use similar method in SearchService instead of making new query
-     */
     public function lyrics(Request $request, SearchService $searchService)
     {
         $query = $request->input('q', '');

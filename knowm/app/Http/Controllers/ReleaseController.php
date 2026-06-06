@@ -104,6 +104,7 @@ class ReleaseController extends Controller
             ->withCount('tracks')
             ->with(['artists', 'genres'])
             ->orderBy('title', $sortOrder)
+            ->orderBy('popularity', 'desc')
             ->paginate($perPage)
             ->withQueryString();
 

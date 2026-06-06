@@ -222,6 +222,7 @@ class ArtistController extends Controller
             ->withCount('tracks')
             ->with('genres')
             ->orderBy('name', $sortOrder)
+            ->orderBy('popularity', 'desc')
             ->paginate($perPage)
             ->withQueryString();
 

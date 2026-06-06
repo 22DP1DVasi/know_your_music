@@ -148,9 +148,9 @@ const barCount = computed(() => {
             </div>
         </section>
 
-        <div class="polygon-divider"></div>
+<!--        <div class="polygon-divider"></div>-->
 
-        <!-- Viettura sadaļa (WIP, būs kartes vai kaut kas līdzīgs) -->
+        <!-- Trending  -->
         <section class="trending-section">
             <div class="container">
                 <h2 class="section-title animate-on-scroll">{{ t('home.trending_now') }}</h2>

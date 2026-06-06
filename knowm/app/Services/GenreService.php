@@ -95,6 +95,7 @@ class GenreService
         return Artist::whereHas('genres', function($query) use ($genre) {
             $query->where('genres.id', $genre->id);
         })
+            ->orderBy('popularity', 'desc')
             ->with(['genres'])
             ->limit($limit)
             ->get()
@@ -119,6 +120,8 @@ class GenreService
         return Track::whereHas('genres', function($query) use ($genre) {
             $query->where('genres.id', $genre->id);
         })
+            ->orderBy('popularity', 'desc')
+            ->orderBy('release_date', 'desc')
             ->with(['artists', 'releases'])
             ->limit($limit)
             ->get()
@@ -147,9 +150,10 @@ class GenreService
         return Release::whereHas('genres', function($query) use ($genre) {
             $query->where('genres.id', $genre->id);
         })
+            ->orderBy('popularity', 'desc')
+            ->orderBy('release_date', 'desc')
             ->with(['artists'])
             ->withCount('tracks')
-            ->orderBy('release_date', 'desc')
             ->limit($limit)
             ->get()
             ->map(function ($release) {

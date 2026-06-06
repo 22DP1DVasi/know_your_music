@@ -8,7 +8,6 @@ const currentYear = new Date().getFullYear();
 
 <template>
     <footer class="footer">
-        <div class="footer-wave"></div>
         <div class="footer-container">
             <div class="footer-grid">
                 <!-- Zīmola sadaļa -->
@@ -71,19 +70,7 @@ const currentYear = new Date().getFullYear();
     background: linear-gradient(135deg, #0c2a4a 0%, #0c4baa 100%);
     color: #ffffff;
     padding-top: 3rem;
-    margin-top: 4rem;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-.footer-wave {
-    position: absolute;
-    top: -60px;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='1' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
-    background-size: cover;
-    opacity: 0.1;
 }
 
 .footer-container {

@@ -103,6 +103,7 @@ class GenreController extends Controller
                 $query->where('name', 'like', "%{$searchQuery}%");
             })
             ->orderBy('name', $sortOrder)
+            ->orderBy('popularity', 'desc')
             ->paginate($perPage)
             ->withQueryString();
         return Inertia::render('Genres/GenresExplore', [
