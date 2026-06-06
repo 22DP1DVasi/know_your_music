@@ -5,7 +5,8 @@
     },
     "global": {
         "release_date": "Izdošanas datums:",
-        "length": "Ilgums:"
+        "length": "Ilgums:",
+        "artists_more": "+{count} vairāk"
     },
     "show": {
         "about": "Par šo dziesmu",

@@ -4,7 +4,8 @@
         "length": "Length:",
         "track_title": "track",
         "tracks_title": "tracks",
-        "tracklist": "Tracklist"
+        "tracklist": "Tracklist",
+        "artists_more": "+{count} more"
     },
     "show": {
         "about_release": "About This Release",

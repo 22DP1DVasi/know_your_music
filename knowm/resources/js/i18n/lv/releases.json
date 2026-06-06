@@ -4,7 +4,8 @@
         "length": "Ilgums:",
         "track_title": "dziesma",
         "tracks_title": "dziesmas",
-        "tracklist": "Dziesmu saraksts"
+        "tracklist": "Dziesmu saraksts",
+        "artists_more": "+{count} vairāk"
     },
     "show": {
         "about_release": "Par šo albumu",
