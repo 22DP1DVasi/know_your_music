@@ -7,6 +7,7 @@ import Comments from '@/Components/Comments/Comments.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
 import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import ReleaseCard from "@/Components/Releases/ReleaseCard.vue";
+import ArtistCardMini from "@/Components/Artists/ArtistCardMini.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
@@ -349,12 +350,12 @@ const closeModal = () => {
 <!--                        </button>-->
                     </div>
                     <div class="artist-list">
-                        <div v-for="artist in genre.artists" :key="artist.id" class="artist-card" @click="redirectToArtist(artist.slug)">
-                            <img :src="artist.profile_url" class="artist-image" :alt="artist.name">
-                            <div class="artist-info">
-                                <h3>{{ artist.name }}</h3>
-                            </div>
-                        </div>
+                        <ArtistCardMini
+                            v-for="artist in genre.artists"
+                            :key="artist.id"
+                            :artist="artist"
+                            @click="redirectToArtist"
+                        />
                     </div>
                 </section>
 
@@ -662,34 +663,6 @@ const closeModal = () => {
     margin-bottom: 1rem;
 }
 
-.artist-card {
-    width: 150px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.artist-card:hover {
-    transform: translateY(-5px);
-}
-
-.artist-image {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.artist-info h3 {
-    text-align: center;
-    font-size: 1rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .see-all-button {
     background: none;
     border: none;
@@ -786,14 +759,6 @@ const closeModal = () => {
         justify-content: center;
     }
 
-    .artist-card {
-        width: 120px;
-    }
-
-    .artist-image {
-        height: 120px;
-    }
-
     .sidebar-space {
         display: none;
     }
@@ -810,14 +775,6 @@ const closeModal = () => {
 
     .genre-name {
         font-size: 1.5rem;
-    }
-
-    .artist-card {
-        width: 100px;
-    }
-
-    .artist-image {
-        height: 100px;
     }
 
     .release-results {

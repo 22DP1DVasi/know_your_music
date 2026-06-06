@@ -103,7 +103,7 @@ class GenreService
                     'id' => $artist->id,
                     'name' => $artist->name,
                     'slug' => $artist->slug,
-                    'profile_url' => $artist->profile_url ?? '/images/default-artist.webp',
+                    'banner_url' => $artist->banner_url ?? '/images/default-artist-banner.webp',
                 ];
             })
             ->toArray();
