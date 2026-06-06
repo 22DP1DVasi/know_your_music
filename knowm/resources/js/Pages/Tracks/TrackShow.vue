@@ -315,6 +315,7 @@ const redirectToFullDescription = (slug) => {
                                 v-for="artist in track.artists"
                                 :key="artist.id"
                                 :artist="artist"
+                                :show-role="true"
                                 @click="redirectToArtist"
                             />
                         </div>

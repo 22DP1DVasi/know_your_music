@@ -21,7 +21,12 @@ class TrackService
     {
         // informācija par dziesmu
         $track->load([
-            'artists:id,name,slug',
+            'artists' => function ($query) {
+                $query->select('artists.id', 'name', 'slug')
+                    ->orderByRaw("
+                FIELD(artists_tracks.role, 'primary', 'featured', 'producer')
+            ");
+            },
             'genres:id,name,slug',
             'releases' => function ($query) {
                 $query->select('releases.id', 'title', 'slug', 'release_date')

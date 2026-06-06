@@ -1,5 +1,6 @@
 <script setup>
 import { router } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
     artist: {
@@ -14,8 +15,14 @@ const props = defineProps({
     clickable: {
         type: Boolean,
         default: true
+    },
+    showRole: {
+        type: Boolean,
+        default: false
     }
 });
+
+const { t } = useI18n();
 
 const emit = defineEmits(['click']);
 
@@ -46,6 +53,7 @@ const handleClick = () => {
         />
         <div class="artist-info">
             <h3>{{ artist.name }}</h3>
+            <p v-if="showRole && artist.pivot.role" class="artist-role">{{ t(`artists.global.${artist.pivot.role}`) }}</p>
         </div>
     </div>
 </template>
@@ -83,6 +91,15 @@ const handleClick = () => {
     text-overflow: ellipsis;
 }
 
+.artist-role {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #0c4baa;
+    margin: 0.25rem 0 0;
+    text-transform: capitalize;
+    font-weight: 500;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .artist-card {
@@ -91,6 +108,10 @@ const handleClick = () => {
 
     .artist-info h3 {
         font-size: 0.9rem;
+    }
+
+    .artist-role {
+        font-size: 0.7rem;
     }
 }
 
@@ -101,6 +122,10 @@ const handleClick = () => {
 
     .artist-info h3 {
         font-size: 0.8rem;
+    }
+
+    .artist-role {
+        font-size: 0.65rem;
     }
 }
 
