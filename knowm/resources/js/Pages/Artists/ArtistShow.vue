@@ -615,6 +615,7 @@ const capitalize = (value) => {
 }
 
 .artist-name {
+    position: relative;
     color: white;
     font-size: clamp(1.4rem, 4vw, 2.5rem);
     font-weight: 700;
@@ -628,7 +629,6 @@ const capitalize = (value) => {
     text-shadow:
         0 2px 4px rgba(0, 0, 0, 0.7),
         0 4px 12px rgba(0, 0, 0, 0.4);
-    position: relative;
     z-index: 2;
 }
 

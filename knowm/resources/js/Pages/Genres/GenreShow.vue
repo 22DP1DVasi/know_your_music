@@ -284,6 +284,7 @@ const closeModal = () => {
     <main class="genre-page flex-1">
         <div class="genre-hero" :style="heroStyle">
             <div class="hero-gradient" v-if="!isLandscape"></div>
+
             <div class="hero-image-container">
                 <img
                     :src="genre.profile_url"
@@ -295,7 +296,12 @@ const closeModal = () => {
                     loading="eager"
                 >
             </div>
-            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>
+
+            <div class="genre-title-container">
+                <h1 class="genre-name">
+                    {{ capitalizeFirstLetter(genre.name) }}
+                </h1>
+            </div>
         </div>
 
         <div class="genre-content">
@@ -497,16 +503,54 @@ const closeModal = () => {
     z-index: 1;
 }
 
-.genre-name {
+.genre-title-container {
     position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    z-index: 3;
+    display: flex;
+    gap: 1rem;
+}
+
+.genre-title-container::before {
+    content: '';
+    height: 100%;
+    width: 70%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(
+        to top right,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.4) 30%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 0 0 0 8px;
+}
+
+.genre-name {
+    position: relative;
     bottom: 0;
     left: 0;
     padding: 1rem;
     color: white;
-    font-size: 2.5rem;
     font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    line-height: 1.15;
     z-index: 3;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.7),
+        0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .genre-content {
@@ -726,7 +770,6 @@ const closeModal = () => {
     }
 
     .genre-hero {
-        height: 200px;
         margin-bottom: 0.5rem;
     }
 
@@ -759,6 +802,10 @@ const closeModal = () => {
 }
 
 @media (max-width: 768px) {
+    .genre-hero {
+        height: 170px;
+    }
+
     .artist-list {
         justify-content: center;
     }
@@ -778,7 +825,11 @@ const closeModal = () => {
 
 @media (max-width: 480px) {
     .genre-hero {
-        height: 150px;
+        height: 160px;
+    }
+
+    .genre-title-container {
+        padding: 0.75rem;
     }
 
     .genre-name {
