@@ -39,31 +39,36 @@ onBeforeUnmount(() => {
     window.removeEventListener('resize', checkScreenSize);
 });
 
-const performSearch = () => {
-    router.visit(`/explore/genres?q=${localSearchQuery.value}&perPage=${localPerPage.value}&sort=${localSortOrder.value}`, {
-        preserveState: true,
-        replace: true
-    });
-};
-
-const redirectToGenre = (genre) => {
-    router.get(`/genres/${genre.slug}`);
-};
-
-const applySort = () => {
+const buildQueryParams = () => {
     const params = new URLSearchParams();
 
     if (localSearchQuery.value) {
         params.set('q', localSearchQuery.value);
     }
-
     params.set('perPage', localPerPage.value);
     params.set('sort', localSortOrder.value);
 
-    router.visit(`/explore/genres?${params.toString()}`, {
-        preserveState: true,
-        replace: true
-    });
+    return params;
+};
+
+const reloadResults = () => {
+    router.visit(`/explore/genres?${buildQueryParams().toString()}`,{
+            preserveState: true,
+            replace: true
+        }
+    );
+};
+
+const performSearch = () => {
+    reloadResults()
+};
+
+const applySort = () => {
+    reloadResults()
+};
+
+const redirectToGenre = (slug) => {
+    router.get(route('genres.show', slug));
 };
 
 </script>

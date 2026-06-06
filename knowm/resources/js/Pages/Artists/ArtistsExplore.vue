@@ -122,7 +122,7 @@ watch(() => props.selectedGenres, (newVal) => {
 });
 
 const redirectToArtist = (slug) => {
-    window.location.href = `/artists/${slug}`;
+    router.get(route('artists.show', slug));
 };
 
 const toggleGenre = (genreId) => {

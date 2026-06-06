@@ -303,7 +303,7 @@ const hasDescription = computed(() => {
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 1.5rem;
+    padding: 1rem;
     color: white;
     font-size: 2.5rem;
     font-weight: 700;
@@ -479,7 +479,6 @@ const hasDescription = computed(() => {
 
     .genre-name {
         font-size: 2rem;
-        padding: 1rem;
     }
 
     .main-content {
@@ -510,7 +509,7 @@ const hasDescription = computed(() => {
 
 @media (max-width: 480px) {
     .genre-name {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
 
     .back-button {

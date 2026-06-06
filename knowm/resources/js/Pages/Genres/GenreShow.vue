@@ -213,16 +213,8 @@ function capitalizeFirstLetter(val) {
 }
 
 const redirectToFullDescription = (slug) => {
-    window.location.href = `/genres/${slug}/description`;
+    router.get(route('genre.description', slug));
 };
-
-// const playTrack = (source) => {
-//     currentAudioSource.value = source;
-//     showPlayer.value = true;
-//     setTimeout(() => {
-//         document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
-//     }, 100);
-// };
 
 const closePlayer = () => {
     showPlayer.value = false;

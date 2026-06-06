@@ -328,10 +328,6 @@ const handleTrackClick = (slug) => {
     router.get(`/tracks/${slug}`);
 };
 
-// const redirectToTrack = (slug) => {
-//     window.location.href = `/tracks/${slug}`;
-// };
-
 const redirectToRelease = (slug) => {
     router.get(`/releases/${slug}`);
 };

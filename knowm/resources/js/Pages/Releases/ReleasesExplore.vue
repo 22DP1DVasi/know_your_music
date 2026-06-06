@@ -107,7 +107,7 @@ watch(() => props.dateTo, (newVal) => {
 });
 
 const redirectToRelease = (slug) => {
-    router.get(route('releases.show'), slug);
+    router.get(route('releases.show', slug));
 };
 
 const toggleGenre = (genreId) => {
