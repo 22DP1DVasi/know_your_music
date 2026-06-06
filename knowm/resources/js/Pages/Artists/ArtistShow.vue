@@ -616,18 +616,18 @@ const capitalize = (value) => {
 
 .artist-name {
     color: white;
-    font-size: 2.5rem;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
     font-weight: 700;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
     margin: 0;
     text-shadow:
-        -1px -1px 0 rgba(0, 0, 0, 0.9),
-        1px -1px 0 rgba(0, 0, 0, 0.9),
-        -1px  1px 0 rgba(0, 0, 0, 0.9),
-        1px  1px 0 rgba(0, 0, 0, 0.9),
-        -2px  0 0 rgba(0, 0, 0, 0.7),
-        2px  0 0 rgba(0, 0, 0, 0.7),
-        0 -2px 0 rgba(0, 0, 0, 0.7),
-        0  2px 0 rgba(0, 0, 0, 0.7);
+        0 2px 4px rgba(0, 0, 0, 0.7),
+        0 4px 12px rgba(0, 0, 0, 0.4);
     position: relative;
     z-index: 2;
 }
