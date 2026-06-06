@@ -12,7 +12,8 @@
         "genres": "Žanri",
         "no_genres": "Nav žanru, kas saistīti ar šo albumu.",
         "no_description": "Šim albumam nav apraksta.",
-        "read_more": "Lasīt vairāk"
+        "read_more": "Lasīt vairāk",
+        "artists_title": "Izpildītāji"
     },
     "description": {
         "back_to_release": "Atpakaļ pie albuma",

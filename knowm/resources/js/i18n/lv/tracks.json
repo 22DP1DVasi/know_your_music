@@ -17,7 +17,8 @@
         "verified_badge": "Apstiprināts",
         "unverified_badge": "Nepieciešama pārbaude",
         "no_lyrics": "Šai dziesmai vēl nav pieejams teksts.",
-        "read_more": "Lasīt vairāk"
+        "read_more": "Lasīt vairāk",
+        "artists_title": "Izpildītāji"
     },
     "description": {
         "back_to_track": "Atpakaļ pie dziesmas",

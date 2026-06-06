@@ -51,19 +51,8 @@ const displayedArtists = computed(() => {
 });
 
 const hiddenArtistsCount = computed(() =>
-    Math.max(0, props.release.artists.length - 3)
+    Math.max(0, (props.release.artists || []).length - 3)
 );
-
-const artistsText = computed(() => {
-    const names = displayedArtists.value.map(a => a.name);
-    let text = names.join(', ');
-
-    if (hiddenArtistsCount.value) {
-        text += `, ${t('releases.global.artists_more', { count: hiddenArtistsCount.value })}`;
-    }
-
-    return text;
-});
 
 const goBackToRelease = () => {
     router.visit(`/releases/${props.release.slug}`);
@@ -178,7 +167,19 @@ const getReleaseImage = () => {
             <div class="hero-content">
                 <h1 class="release-title">{{ release.title }}</h1>
                 <div class="release-artists">
-                    {{ artistsText }}
+                    <template
+                        v-for="(artist, index) in displayedArtists"
+                        :key="artist.id"
+                    >
+                        <a :href="`/artists/${artist.slug}`">
+                            {{ artist.name }}
+                        </a>
+
+                        <span v-if="index < displayedArtists.length - 1">,&nbsp;</span>
+                    </template>
+
+                    <span v-if="hiddenArtistsCount">, {{ t('releases.global.artists_more', { count: hiddenArtistsCount }) }}
+                    </span>
                 </div>
             </div>
             <div class="back-button" @click="goBackToRelease">

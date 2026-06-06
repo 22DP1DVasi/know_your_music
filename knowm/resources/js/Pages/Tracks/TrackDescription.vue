@@ -52,19 +52,8 @@ const displayedArtists = computed(() => {
 });
 
 const hiddenArtistsCount = computed(() =>
-    Math.max(0, props.track.artists.length - 3)
+    Math.max(0, (props.track.artists || []).length - 3)
 );
-
-const artistsText = computed(() => {
-    const names = displayedArtists.value.map(a => a.name);
-    let text = names.join(', ');
-
-    if (hiddenArtistsCount.value) {
-        text += `, ${t('tracks.global.artists_more', { count: hiddenArtistsCount.value })}`;
-    }
-
-    return text;
-});
 
 const formatDate = (dateString) => {
     if (!dateString) return 'Unknown';
@@ -143,7 +132,19 @@ const hasDescription = computed(() => {
             <div class="hero-content">
                 <h1 class="track-title">{{ track.title }}</h1>
                 <div class="track-artists">
-                    {{ artistsText }}
+                    <template
+                        v-for="(artist, index) in displayedArtists"
+                        :key="artist.id"
+                    >
+                        <a :href="`/artists/${artist.slug}`">
+                            {{ artist.name }}
+                        </a>
+
+                        <span v-if="index < displayedArtists.length - 1">,&nbsp;</span>
+                    </template>
+
+                    <span v-if="hiddenArtistsCount">, {{ t('tracks.global.artists_more', { count: hiddenArtistsCount }) }}
+                    </span>
                 </div>
             </div>
             <div class="back-button" @click="goBackToTrack">

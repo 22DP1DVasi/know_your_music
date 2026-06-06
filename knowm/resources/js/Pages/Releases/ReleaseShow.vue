@@ -5,6 +5,7 @@ import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
 import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
+import ArtistCardMini from '@/Components/Artists/ArtistCardMini.vue';
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
 import dayjs from 'dayjs';
@@ -86,19 +87,12 @@ const displayedArtists = computed(() => {
 });
 
 const hiddenArtistsCount = computed(() =>
-    Math.max(0, props.release.artists.length - 3)
+    Math.max(0, (props.release.artists || []).length - 3)
 );
 
-const artistsText = computed(() => {
-    const names = displayedArtists.value.map(a => a.name);
-    let text = names.join(', ');
-
-    if (hiddenArtistsCount.value) {
-        text += `, ${t('releases.global.artists_more', { count: hiddenArtistsCount.value })}`;
-    }
-
-    return text;
-});
+const redirectToArtist = (slug) => {
+    router.get(route('artists.show', slug));
+};
 
 const sortedTracks = computed(() => {
     return [...props.release.tracks].sort((a, b) => a.pivot.track_position - b.pivot.track_position);
@@ -254,9 +248,24 @@ const closeModal = () => {
                 >
             </div>
             <div class="hero-content">
-                <h1 class="release-title">{{ release.title }}</h1>
+                <h1 class="release-title">
+                    {{ release.title }}
+                </h1>
+
                 <div class="release-artists">
-                    {{ artistsText }}
+                    <template
+                        v-for="(artist, index) in displayedArtists"
+                        :key="artist.id"
+                    >
+                        <a :href="`/artists/${artist.slug}`">
+                            {{ artist.name }}
+                        </a>
+
+                        <span v-if="index < displayedArtists.length - 1">,&nbsp;</span>
+                    </template>
+
+                    <span v-if="hiddenArtistsCount">, {{ t('releases.global.artists_more', { count: hiddenArtistsCount }) }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -368,7 +377,20 @@ const closeModal = () => {
                         </div>
                     </section>
 
-                    <!-- Komentāru sekcija -->
+                    <!-- Artists section -->
+                    <section class="release-artists-section">
+                        <h2 class="section-title">{{ t('releases.show.artists_title') }}</h2>
+                        <div class="artists-grid">
+                            <ArtistCardMini
+                                v-for="artist in release.artists"
+                                :key="artist.id"
+                                :artist="artist"
+                                @click="redirectToArtist"
+                            />
+                        </div>
+                    </section>
+
+                    <!-- Comments -->
                     <Comments
                         :entity-type="'releases'"
                         :entity-slug="release.slug"
@@ -748,6 +770,17 @@ const closeModal = () => {
     margin-bottom: 2rem;
 }
 
+.release-artists-section {
+    margin-bottom: 2rem;
+}
+
+.artists-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: flex-start;
+}
+
 .similar-item a {
     display: flex;
     align-items: center;
@@ -891,6 +924,10 @@ const closeModal = () => {
         display: none;
     }
 
+    .artists-grid {
+        justify-content: center;
+    }
+
     .sidebar-space {
         position: static;
         width: 100%;
@@ -923,6 +960,10 @@ const closeModal = () => {
     .top-info-card-wrapped {
         top: 50%;
         transform: translateY(50%);
+    }
+
+    .artists-grid {
+        gap: 1rem;
     }
 
     .sidebar-space {

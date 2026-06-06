@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
+import ArtistCardMini from "@/Components/Artists/ArtistCardMini.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
 import dayjs from 'dayjs';
@@ -79,19 +80,12 @@ const displayedArtists = computed(() => {
 });
 
 const hiddenArtistsCount = computed(() =>
-    Math.max(0, props.track.artists.length - 3)
+    Math.max(0, (props.track.artists || []).length - 3)
 );
 
-const artistsText = computed(() => {
-    const names = displayedArtists.value.map(a => a.name);
-    let text = names.join(', ');
-
-    if (hiddenArtistsCount.value) {
-        text += `, ${t('tracks.global.artists_more', { count: hiddenArtistsCount.value })}`;
-    }
-
-    return text;
-});
+const redirectToArtist = (slug) => {
+    router.get(route('artists.show', slug));
+};
 
 const formatDate = (dateString) => {
     if (!dateString) return 'Unknown';
@@ -195,7 +189,19 @@ const redirectToFullDescription = (slug) => {
             <div class="hero-content">
                 <h1 class="track-title">{{ track.title }}</h1>
                 <div class="track-artists">
-                    {{ artistsText }}
+                    <template
+                        v-for="(artist, index) in displayedArtists"
+                        :key="artist.id"
+                    >
+                        <a :href="`/artists/${artist.slug}`">
+                            {{ artist.name }}
+                        </a>
+
+                        <span v-if="index < displayedArtists.length - 1">,&nbsp;</span>
+                    </template>
+
+                    <span v-if="hiddenArtistsCount">, {{ t('tracks.global.artists_more', { count: hiddenArtistsCount }) }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -300,6 +306,19 @@ const redirectToFullDescription = (slug) => {
                             </div>
                         </section>
                     </div>
+
+                    <!-- Artists section -->
+                    <section class="track-artists-section">
+                        <h2 class="section-title">{{ t('tracks.show.artists_title') }}</h2>
+                        <div class="artists-grid">
+                            <ArtistCardMini
+                                v-for="artist in track.artists"
+                                :key="artist.id"
+                                :artist="artist"
+                                @click="redirectToArtist"
+                            />
+                        </div>
+                    </section>
 
                     <section class="track-comments">
                         <Comments
@@ -535,7 +554,6 @@ const redirectToFullDescription = (slug) => {
 .track-description {
     background: white;
     border-radius: 8px;
-    margin-bottom: 2rem;
     position: relative;
     white-space: pre-line;
     word-break: break-word;
@@ -630,6 +648,17 @@ const redirectToFullDescription = (slug) => {
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: 500;
+}
+
+.track-artists-section {
+    margin-bottom: 2rem;
+}
+
+.artists-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: flex-start;
 }
 
 .genres-card {
@@ -823,6 +852,10 @@ const redirectToFullDescription = (slug) => {
         display: none;
     }
 
+    .artists-grid {
+        justify-content: center;
+    }
+
     .sidebar-space {
         position: static;
         width: 100%;
@@ -863,6 +896,10 @@ const redirectToFullDescription = (slug) => {
 
     .lyrics-text {
         font-size: 0.95rem;
+    }
+
+    .artists-grid {
+        gap: 1rem;
     }
 }
 
