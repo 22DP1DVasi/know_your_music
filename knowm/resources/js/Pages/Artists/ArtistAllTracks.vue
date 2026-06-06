@@ -222,7 +222,9 @@ const closeModal = () => {
                     loading="eager"
                 >
             </div>
-            <h1 class="artist-name">{{ artist.name }}</h1>
+            <div class="artist-title-container">
+                <h1 class="artist-name">{{ artist.name }}</h1>
+            </div>
             <div class="back-button" @click="goBackToArtist">
                 {{ t('artists.global.back_to_artist') }}
             </div>
@@ -353,16 +355,52 @@ const closeModal = () => {
     z-index: 1;
 }
 
-.artist-name {
+.artist-title-container {
     position: absolute;
     bottom: 0;
     left: 0;
+    right: 0;
     padding: 1.5rem;
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     z-index: 3;
+}
+
+.artist-title-container::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to top right,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.4) 30%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 0 0 0 8px;
+}
+
+.artist-name {
+    position: relative;
+    color: white;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    margin: 0;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.7),
+        0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 2;
 }
 
 .back-button {
@@ -532,9 +570,13 @@ const closeModal = () => {
         height: 220px;
     }
 
+    .artist-title-container {
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+
     .artist-name {
         font-size: 2rem;
-        padding: 1rem;
     }
 
     .search-container {
@@ -567,6 +609,16 @@ const closeModal = () => {
 }
 
 @media (max-width: 480px) {
+    .artist-title-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .artist-name {
+        font-size: 1.8rem;
+    }
+
     .search-container {
         padding: 0 1rem;
         justify-content: center;
