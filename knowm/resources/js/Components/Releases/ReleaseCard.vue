@@ -233,15 +233,15 @@ defineExpose({
 }
 
 /* Responsivitāte */
-@media (max-width: 1024px) {
+@media (max-width: 750px) {
     .release-card {
-        flex: 0 0 calc(33.333% - 1rem);
+        flex: 0 0 calc(33.333% - 1rem); /* 3 kartītes rindā */
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 560px) {
     .release-card {
-        flex: 0 0 calc(50% - 0.75rem);
+        flex: 0 0 calc(50% - 0.75rem);  /* 2 kartītes rindā */
     }
 
     .release-info {
@@ -262,15 +262,39 @@ defineExpose({
 }
 
 @media (max-width: 480px) {
-    .release-card {
-        flex: 0 0 100%;
-        max-width: 280px;
-        margin: 0 auto;
-    }
-
     .release-info {
         padding: 0.75rem;
     }
+}
+
+@media (max-width: 390px) {
+    .release-title {
+        font-size: 0.7rem;
+    }
+
+    .artists-container {
+        font-size: 0.6rem;
+    }
+
+    .release-meta {
+        font-size: 0.55rem;
+    }
+}
+
+/* Animācijas */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.release-card {
+    animation: fadeInUp 0.5s ease forwards;
 }
 
 </style>

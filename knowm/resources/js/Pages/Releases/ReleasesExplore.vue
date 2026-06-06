@@ -19,6 +19,14 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
+    dateFrom: {
+        type: [String, null],
+        default: null
+    },
+    dateTo: {
+        type: [String, null],
+        default: null
+    },
     sortOrder: {
         type: String,
         default: 'asc'
@@ -33,6 +41,10 @@ const showGenreModal = ref(false);
 const localSelectedGenres = ref([...props.selectedGenres]);
 const localSortOrder = ref(props.sortOrder);
 
+// date filter refs
+const localDateFrom = ref(props.dateFrom || '');
+const localDateTo = ref(props.dateTo || '');
+
 const checkScreenSize = () => {
     localPerPage.value = window.innerWidth <= 768 ? 12 : 24;
 };
@@ -46,29 +58,56 @@ onBeforeUnmount(() => {
     window.removeEventListener('resize', checkScreenSize);
 });
 
-const performSearch = () => {
-    router.visit(`/explore/releases?q=${localSearchQuery.value}&genres=${localSelectedGenres.value.join(',')}&perPage=${localPerPage.value}&sort=${localSortOrder.value}`, {
-        preserveState: true,
-        replace: true
-    });
+const buildQueryParams = () => {
+    const params = new URLSearchParams();
+
+    if (localSearchQuery.value) {
+        params.set('q', localSearchQuery.value);
+    }
+    if (localSelectedGenres.value.length > 0) {
+        params.set('genres', localSelectedGenres.value.join(','));
+    }
+    params.set('perPage', localPerPage.value);
+    params.set('sort', localSortOrder.value);
+
+    if (localDateFrom.value) {
+        params.set('date_from', localDateFrom.value);
+    }
+    if (localDateTo.value) {
+        params.set('date_to', localDateTo.value);
+    }
+
+    return params;
 };
 
-const selectedGenreNames = computed(() => {
-    return props.allGenres.filter(genre =>
-        localSelectedGenres.value.includes(genre.id)
+const reloadResults = () => {
+    router.visit(`/explore/releases?${buildQueryParams().toString()}`,{
+            preserveState: true,
+            replace: true
+        }
     );
-});
+};
+
+const performSearch = () => {
+    reloadResults();
+};
+
+const applySort = () => {
+    reloadResults();
+};
 
 watch(() => props.selectedGenres, (newVal) => {
     localSelectedGenres.value = [...newVal];
 });
+watch(() => props.dateFrom, (newVal) => {
+    localDateFrom.value = newVal || '';
+});
+watch(() => props.dateTo, (newVal) => {
+    localDateTo.value = newVal || '';
+});
 
 const redirectToRelease = (slug) => {
-    window.location.href = `/releases/${slug}`;
-};
-
-const formatArtists = (artists) => {
-    return artists.map(a => a.name).join(', ');
+    router.get(route('releases.show', slug));
 };
 
 const toggleGenre = (genreId) => {
@@ -92,26 +131,6 @@ const clearGenres = () => {
 const applyGenreFilters = () => {
     showGenreModal.value = false;
     performSearch();
-};
-
-const applySort = () => {
-    const params = new URLSearchParams();
-
-    if (localSearchQuery.value) {
-        params.set('q', localSearchQuery.value);
-    }
-
-    if (localSelectedGenres.value.length > 0) {
-        params.set('genres', localSelectedGenres.value.join(','));
-    }
-
-    params.set('perPage', localPerPage.value);
-    params.set('sort', localSortOrder.value);
-
-    router.visit(`/explore/releases?${params.toString()}`, {
-        preserveState: true,
-        replace: true
-    });
 };
 
 function lowercaseString(val) {
@@ -147,9 +166,18 @@ function lowercaseString(val) {
                         </div>
                     </div>
 
-                    <button class="filter-button" @click="showGenreModal = true">
-                        <i class="fa fa-filter"></i> {{ t('explore_pages.releases.filter_by_genre') }}
-                    </button>
+                    <div class="filter-buttons">
+                        <button class="filter-button" @click="showGenreModal = true">
+                            <i class="fa fa-filter"></i> {{ t('explore_pages.releases.filter_by_genre') }}
+                        </button>
+
+                        <div class="date-filters">
+                            <label>{{ t('explore_pages.releases.release_date_from') }}</label>
+                            <input type="date" v-model="localDateFrom" @change="performSearch" class="date-input" />
+                            <label>{{ t('explore_pages.releases.release_date_to') }}</label>
+                            <input type="date" v-model="localDateTo" @change="performSearch" class="date-input" />
+                        </div>
+                    </div>
                 </div>
 
                 <div class="sort-controls">
@@ -249,6 +277,15 @@ function lowercaseString(val) {
     margin-bottom: 17px;
 }
 
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
 .search-container {
     display: flex;
     width: 100%;
@@ -257,20 +294,10 @@ function lowercaseString(val) {
     position: relative;
 }
 
-.search-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 800px;
-    position: relative;
-    margin: 0 auto;
-    padding: 0;
-}
-
 .searchTerm {
-    height: 46px;
-    width: 340px;
     flex: 1;
+    min-width: 0;
+    height: 46px;
     padding: 12px;
     font-size: 17px;
     border: 3px solid #54b3ebed;
@@ -336,7 +363,16 @@ function lowercaseString(val) {
     margin: 0 auto;
 }
 
+.filter-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .filter-button {
+    width: 220px;
     background-color: #0c4baa;
     color: white;
     border: none;
@@ -346,13 +382,63 @@ function lowercaseString(val) {
     font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin: 0 auto;
+    justify-content: center;
+    gap: 1rem;
     transition: background-color 0.2s;
 }
 
 .filter-button:hover {
     background-color: #14a8df;
+}
+
+.date-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    background: #f8fafc;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.date-filters label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #0c4baa;
+}
+
+.date-input {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+    font-size: 0.85rem;
+    background: white;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #0c4baa;
+    box-shadow: 0 0 0 2px rgba(12, 75, 170, 0.1);
+}
+
+/* make entire date input field clickable */
+input[type="date"] {
+    position: relative;
+    cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    color: transparent;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
 }
 
 .selected-genres {
@@ -569,7 +655,7 @@ function lowercaseString(val) {
 .release-results {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1.2rem;
     justify-content: flex-start;
     padding: 0 2rem;
 }
@@ -600,6 +686,15 @@ function lowercaseString(val) {
         padding: 0.5rem 1rem 1rem;
     }
 
+    .filter-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-button {
+        width: 100%;
+    }
+
     .search-container {
         padding: 0 2rem;
         max-width: 100%;
@@ -619,6 +714,10 @@ function lowercaseString(val) {
         min-width: 120px;
     }
 
+    .date-filters {
+        justify-content: center;
+    }
+
     .sort-controls {
         padding: 0 1rem;
     }
@@ -628,29 +727,26 @@ function lowercaseString(val) {
     .searchTerm {
         font-size: 14px;
         padding: 10px;
-        height: 42px;
+        height: 46px;
         max-width: 500px;
-        width: 250px;
+        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .search-container {
+        width: 100%;
+        max-width: none;
         padding: 0 1rem;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .results-title {
-        font-size: 1.5rem;
     }
 
     .searchTerm {
         font-size: 15px;
         padding: 10px;
-        width: 100%;
-        max-width: 280px;
+    }
+
+    .results-title {
+        font-size: 1.5rem;
     }
 
     .release-results {

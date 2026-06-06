@@ -1,11 +1,9 @@
 <script setup>
 import Footer from '@/Components/Footer.vue';
 import Navbar from '@/Components/Navbar.vue';
-// import HomeRecomCards from '@/Components/HomeRecomCards.vue';
 import ArtistCardMain from '@/Components/Artists/ArtistCardMain.vue';
-import {Head, Link, router, usePage} from "@inertiajs/vue3";
+import {Head, router, usePage} from "@inertiajs/vue3";
 import { useI18n } from 'vue-i18n';
-import { route } from "ziggy-js";
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 
 const { t } = useI18n();
@@ -19,7 +17,7 @@ const props = defineProps({
 });
 
 const redirectToArtist = (slug) => {
-    router.get(`/artists/${slug}`);
+    router.get(route('artists.show', slug));
 };
 
 const page = usePage();
@@ -150,9 +148,9 @@ const barCount = computed(() => {
             </div>
         </section>
 
-        <div class="polygon-divider"></div>
+<!--        <div class="polygon-divider"></div>-->
 
-        <!-- Viettura sadaļa (WIP, būs kartes vai kaut kas līdzīgs) -->
+        <!-- Trending  -->
         <section class="trending-section">
             <div class="container">
                 <h2 class="section-title animate-on-scroll">{{ t('home.trending_now') }}</h2>

@@ -7,6 +7,7 @@ import Comments from '@/Components/Comments/Comments.vue';
 import TrackCard from '@/Components/Tracks/TrackCard.vue';
 import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
 import ReleaseCard from "@/Components/Releases/ReleaseCard.vue";
+import ArtistCardMini from "@/Components/Artists/ArtistCardMini.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
 import { route } from "ziggy-js";
@@ -213,16 +214,8 @@ function capitalizeFirstLetter(val) {
 }
 
 const redirectToFullDescription = (slug) => {
-    window.location.href = `/genres/${slug}/description`;
+    router.get(route('genre.description', slug));
 };
-
-// const playTrack = (source) => {
-//     currentAudioSource.value = source;
-//     showPlayer.value = true;
-//     setTimeout(() => {
-//         document.querySelector('.audio-player')?.scrollIntoView({ behavior: 'smooth' });
-//     }, 100);
-// };
 
 const closePlayer = () => {
     showPlayer.value = false;
@@ -292,6 +285,7 @@ const closeModal = () => {
     <main class="genre-page flex-1">
         <div class="genre-hero" :style="heroStyle">
             <div class="hero-gradient" v-if="!isLandscape"></div>
+
             <div class="hero-image-container">
                 <img
                     :src="genre.profile_url"
@@ -303,7 +297,12 @@ const closeModal = () => {
                     loading="eager"
                 >
             </div>
-            <h1 class="genre-name">{{ capitalizeFirstLetter(genre.name) }}</h1>
+
+            <div class="genre-title-container">
+                <h1 class="genre-name">
+                    {{ capitalizeFirstLetter(genre.name) }}
+                </h1>
+            </div>
         </div>
 
         <div class="genre-content">
@@ -342,34 +341,34 @@ const closeModal = () => {
                 <section class="genre-artists">
                     <div class="genre-artists-header">
                         <h2 class="section-title">{{ t('genres.show.representative_artists') }}</h2>
-                        <button
-                            v-if="genre.total_artists > genre.artists.length"
-                            class="see-all-button"
-                            @click="redirectToAllArtists(genre.slug)"
-                        >
-                            {{ t('genres.show.see_all_artists', { count: genre.total_artists }) }}
-                        </button>
+<!--                        <button-->
+<!--                            v-if="genre.total_artists > genre.artists.length"-->
+<!--                            class="see-all-button"-->
+<!--                            @click="redirectToAllArtists(genre.slug)"-->
+<!--                        >-->
+<!--                            {{ t('genres.show.see_all_artists', { count: genre.total_artists }) }}-->
+<!--                        </button>-->
                     </div>
                     <div class="artist-list">
-                        <div v-for="artist in genre.artists" :key="artist.id" class="artist-card" @click="redirectToArtist(artist.slug)">
-                            <img :src="artist.profile_url" class="artist-image" :alt="artist.name">
-                            <div class="artist-info">
-                                <h3>{{ artist.name }}</h3>
-                            </div>
-                        </div>
+                        <ArtistCardMini
+                            v-for="artist in genre.artists"
+                            :key="artist.id"
+                            :artist="artist"
+                            @click="redirectToArtist"
+                        />
                     </div>
                 </section>
 
                 <section class="genre-tracks">
                     <div class="genre-tracks-header">
                         <h2 class="section-title">{{ t('genres.show.popular_tracks') }}</h2>
-                        <button
-                            v-if="genre.total_tracks > genre.tracks.length"
-                            class="see-all-button"
-                            @click="redirectToAllTracks(genre.slug)"
-                        >
-                            {{ t('genres.show.see_all_tracks', { count: genre.total_tracks }) }}
-                        </button>
+<!--                        <button-->
+<!--                            v-if="genre.total_tracks > genre.tracks.length"-->
+<!--                            class="see-all-button"-->
+<!--                            @click="redirectToAllTracks(genre.slug)"-->
+<!--                        >-->
+<!--                            {{ t('genres.show.see_all_tracks', { count: genre.total_tracks }) }}-->
+<!--                        </button>-->
                     </div>
                     <div class="track-list">
                         <TrackCard
@@ -396,13 +395,13 @@ const closeModal = () => {
                 <section class="genre-releases">
                     <div class="genre-releases-header">
                         <h2 class="section-title">{{ t('genres.show.notable_releases') }}</h2>
-                        <button
-                            v-if="genre.total_releases > genre.releases.length"
-                            class="see-all-button"
-                            @click="redirectToAllReleases(genre.slug)"
-                        >
-                            {{ t('genres.show.see_all_releases', { count: genre.total_releases }) }}
-                        </button>
+<!--                        <button-->
+<!--                            v-if="genre.total_releases > genre.releases.length"-->
+<!--                            class="see-all-button"-->
+<!--                            @click="redirectToAllReleases(genre.slug)"-->
+<!--                        >-->
+<!--                            {{ t('genres.show.see_all_releases', { count: genre.total_releases }) }}-->
+<!--                        </button>-->
                     </div>
                     <div class="release-results">
                         <ReleaseCard
@@ -505,16 +504,53 @@ const closeModal = () => {
     z-index: 1;
 }
 
-.genre-name {
+.genre-title-container {
     position: absolute;
     bottom: 0;
     left: 0;
-    padding: 1rem;
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    right: 0;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     z-index: 3;
+}
+
+.genre-title-container::before {
+    content: '';
+    height: 100%;
+    width: 30%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,.6);
+    mask-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.3) 60%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 0 0 0 8px;
+}
+
+.genre-name {
+    position: relative;
+    color: white;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    margin: 0;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.7),
+        0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 2;
 }
 
 .genre-content {
@@ -627,34 +663,6 @@ const closeModal = () => {
     margin-bottom: 1rem;
 }
 
-.artist-card {
-    width: 150px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.artist-card:hover {
-    transform: translateY(-5px);
-}
-
-.artist-image {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-bottom: 0.5rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.artist-info h3 {
-    text-align: center;
-    font-size: 1rem;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .see-all-button {
     background: none;
     border: none;
@@ -734,49 +742,21 @@ const closeModal = () => {
     }
 
     .genre-hero {
-        height: 200px;
         margin-bottom: 0.5rem;
     }
 
     .genre-name {
         font-size: 2rem;
     }
-
-    .release-results {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 10px;
-        margin: 0 -10px;
-        scrollbar-width: thin;
-        scrollbar-color: #0c4baa #f0f0f0;
-    }
-
-    .release-results::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .release-results::-webkit-scrollbar-track {
-        background: #f0f0f0;
-    }
-
-    .release-results::-webkit-scrollbar-thumb {
-        background-color: #0c4baa;
-        border-radius: 6px;
-    }
 }
 
 @media (max-width: 768px) {
+    .genre-hero {
+        height: 170px;
+    }
+
     .artist-list {
         justify-content: center;
-    }
-
-    .artist-card {
-        width: 120px;
-    }
-
-    .artist-image {
-        height: 120px;
     }
 
     .sidebar-space {
@@ -786,19 +766,19 @@ const closeModal = () => {
 
 @media (max-width: 480px) {
     .genre-hero {
-        height: 150px;
+        height: 160px;
+    }
+
+    .genre-title-container {
+        padding: 0.75rem;
     }
 
     .genre-name {
         font-size: 1.5rem;
     }
 
-    .artist-card {
-        width: 100px;
-    }
-
-    .artist-image {
-        height: 100px;
+    .release-results {
+        justify-content: center;
     }
 }
 

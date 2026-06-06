@@ -41,6 +41,19 @@ const handleImageLoad = () => {
     imageStyle.value.objectPosition = 'center';
 };
 
+const displayedArtists = computed(() => {
+    const artists = props.release.artists || [];
+    if (artists.length <= 3) {
+        return artists;
+    }
+
+    return artists.slice(0, 3);
+});
+
+const hiddenArtistsCount = computed(() =>
+    Math.max(0, (props.release.artists || []).length - 3)
+);
+
 const goBackToRelease = () => {
     router.visit(`/releases/${props.release.slug}`);
 };
@@ -151,12 +164,23 @@ const getReleaseImage = () => {
                     loading="eager"
                 >
             </div>
-            <h1 class="release-title">{{ release.title }}</h1>
-            <div class="release-artists">
-                <span v-for="(artist, index) in release.artists" :key="artist.id">
-                    <a :href="`/artists/${artist.slug}`">{{ artist.name }}</a>
-                    <span v-if="index < release.artists.length - 1">, </span>
-                </span>
+            <div class="hero-content">
+                <h1 class="release-title">{{ release.title }}</h1>
+                <div class="release-artists">
+                    <template
+                        v-for="(artist, index) in displayedArtists"
+                        :key="artist.id"
+                    >
+                        <a :href="`/artists/${artist.slug}`">
+                            {{ artist.name }}
+                        </a>
+
+                        <span v-if="index < displayedArtists.length - 1">,&nbsp;</span>
+                    </template>
+
+                    <span v-if="hiddenArtistsCount">, {{ t('releases.global.artists_more', { count: hiddenArtistsCount }) }}
+                    </span>
+                </div>
             </div>
             <div class="back-button" @click="goBackToRelease">
                 ← {{ t('releases.description.back_to_release') }}
@@ -259,35 +283,45 @@ const getReleaseImage = () => {
     transition: filter 0.3s ease;
 }
 
-.release-title {
+.hero-content {
     position: absolute;
-    bottom: 60px;
     left: 0;
+    bottom: 20px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: min(700px, 80%);
+}
+
+.release-title {
+    left: 0;
+    margin: 0;
     padding: 0 1.5rem;
     color: white;
-    font-size: 2.5rem;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
-    max-width: 70%;
     white-space: normal;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .release-artists {
-    position: absolute;
-    bottom: 30px;
     left: 0;
     padding: 0 1.5rem;
     color: white;
-    font-size: 1.2rem;
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
-    max-width: 70%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .release-artists a {
@@ -428,16 +462,6 @@ const getReleaseImage = () => {
         height: 280px !important;
     }
 
-    .release-title {
-        font-size: 2.2rem;
-        bottom: 55px;
-    }
-
-    .release-artists {
-        font-size: 1.1rem;
-        bottom: 28px;
-    }
-
     .release-content {
         padding-right: 370px;
     }
@@ -469,16 +493,6 @@ const getReleaseImage = () => {
         height: 260px !important;
     }
 
-    .release-title {
-        font-size: 2rem;
-        bottom: 50px;
-    }
-
-    .release-artists {
-        font-size: 1rem;
-        bottom: 26px;
-    }
-
     .info-card.wrapped {
         font-size: 0.8rem;
     }
@@ -487,14 +501,6 @@ const getReleaseImage = () => {
 @media (max-width: 900px) {
     .release-hero {
         height: 240px !important;
-    }
-    .release-title {
-        font-size: 1.8rem;
-        bottom: 45px;
-    }
-    .release-artists {
-        font-size: 0.95rem;
-        bottom: 24px;
     }
 
     .release-content {
@@ -552,32 +558,6 @@ const getReleaseImage = () => {
     .release-hero {
         height: 200px !important;
     }
-
-    .release-title {
-        font-size: 1.4rem;
-        bottom: 35px;
-    }
-
-    .release-artists {
-        font-size: 0.85rem;
-        bottom: 20px;
-    }
-}
-
-@media (max-width: 580px) {
-    .release-title {
-        font-size: 1.5rem;
-        bottom: 40px;
-        padding: 0 1rem;
-        max-width: 50%;
-    }
-
-    .release-artists {
-        font-size: 0.9rem;
-        bottom: 20px;
-        padding: 0 1rem;
-        max-width: 50%;
-    }
 }
 
 @media (max-width: 480px) {
@@ -624,30 +604,6 @@ const getReleaseImage = () => {
 @media (max-width: 360px) {
     .release-hero {
         height: 160px !important;
-    }
-
-    .release-title {
-        font-size: 1.1rem;
-        bottom: 25px;
-        margin-bottom: 7px;
-    }
-
-    .release-artists {
-        font-size: 0.75rem;
-        bottom: 15px;
-    }
-}
-
-@media (max-width: 320px) {
-    .release-title {
-        font-size: 1rem !important;
-        margin-bottom: 10px;
-    }
-}
-
-@media (max-width: 317px) {
-    .release-title {
-        margin-bottom: 23px;
     }
 }
 

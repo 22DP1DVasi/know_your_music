@@ -12,8 +12,8 @@ class HomeController
     public function index()
     {
         $artists = Artist::query()
-            ->whereIn('id', [1, 2, 3, 74])
-            ->orderBy('name')
+            ->orderBy('popularity', 'desc')
+            ->limit(4)
             ->get();
 
         return Inertia::render('HomeView', [

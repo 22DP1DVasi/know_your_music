@@ -1,8 +1,9 @@
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
-import Navbar from '@/Components/Navbar.vue'
-import Footer from '@/Components/Footer.vue'
-import Pagination from '@/Components/Pagination.vue'
+import Navbar from '@/Components/Navbar.vue';
+import Footer from '@/Components/Footer.vue';
+import ReleaseCard from '@/Components/Releases/ReleaseCard.vue';
+import Pagination from '@/Components/Pagination.vue';
 import { ref } from 'vue';
 import ColorThief from 'colorthief';
 import { debounce } from 'lodash-es';
@@ -165,11 +166,6 @@ const performSearch = debounce(() => {
     });
 }, 300);
 
-const getCoArtists = (release) => {
-    if (!release.artists || release.artists.length <= 1) return [];
-    return release.artists.filter(artist => artist.id !== props.artist.id);
-};
-
 </script>
 
 <template>
@@ -189,7 +185,9 @@ const getCoArtists = (release) => {
                     loading="eager"
                 >
             </div>
-            <h1 class="artist-name">{{ artist.name }}</h1>
+            <div class="artist-title-container">
+                <h1 class="artist-name">{{ artist.name }}</h1>
+            </div>
             <div class="back-button" @click="goBackToArtist">
                 {{ t('artists.global.back_to_artist') }}
             </div>
@@ -218,28 +216,13 @@ const getCoArtists = (release) => {
                 <section v-if="releases.length > 0" class="results-section">
                     <div class="release-results-wrapper">
                         <div class="release-results">
-                            <div
+                            <ReleaseCard
                                 v-for="release in releases"
                                 :key="release.id"
-                                class="release-card"
-                                @click="redirectToRelease(release.slug)"
-                            >
-                                <div class="image-wrapper">
-                                    <img :src="release.cover_url" :alt="release.title" />
-                                </div>
-                                <div class="release-info">
-                                    <h3>{{ release.title }}</h3>
-                                    <div v-if="getCoArtists(release).length > 0" class="artists-names-container">
-                                        <span class="with-text">with</span>
-                                        <span class="artists-names">
-                                            {{ getCoArtists(release).map(a => a.name).join(', ') }}
-                                        </span>
-                                    </div>
-                                    <p class="release-meta">
-                                        {{ release.tracks_count }} {{ release.tracks_count === 1 ? 'track' : 'tracks' }} • {{ release.release_type }}
-                                    </p>
-                                </div>
-                            </div>
+                                :release="release"
+                                :max-artists="3"
+                                @release-click="(release) => redirectToRelease(release.slug)"
+                            />
                         </div>
                     </div>
                     <Pagination
@@ -320,16 +303,52 @@ const getCoArtists = (release) => {
     z-index: 1;
 }
 
-.artist-name {
+.artist-title-container {
     position: absolute;
     bottom: 0;
     left: 0;
+    right: 0;
     padding: 1.5rem;
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     z-index: 3;
+}
+
+.artist-title-container::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to top right,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.4) 30%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 0 0 0 8px;
+}
+
+.artist-name {
+    position: relative;
+    color: white;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    margin: 0;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.7),
+        0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 2;
 }
 
 .back-button {
@@ -445,6 +464,7 @@ const getCoArtists = (release) => {
     margin-bottom: 2.5rem;
     max-width: 1000px;
 }
+
 .release-results-wrapper {
     padding: 0 2rem;
     margin: 0 auto;
@@ -456,98 +476,6 @@ const getCoArtists = (release) => {
     flex-wrap: wrap;
     gap: 1.5rem;
     justify-content: flex-start;
-}
-
-.release-card {
-    flex: 0 0 calc(25% - 1.125rem);
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15),
-    0 3px 6px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.image-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #f8f8f8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.release-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2),
-    0 8px 12px rgba(0, 0, 0, 0.15);
-}
-
-.release-info {
-    padding: 1rem;
-    overflow: hidden;
-    width: 100%;
-}
-
-.release-info h3 {
-    margin: 0 0 0.1rem 0;
-    font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.release-info p {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.artists-names-container {
-    display: flex;
-    gap: 4px;
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    line-height: 1.3;
-}
-
-.with-text {
-    font-style: italic;
-    flex-shrink: 0;
-}
-
-.artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-}
-
-.release-meta {
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .pagination {
@@ -602,10 +530,6 @@ const getCoArtists = (release) => {
     .sidebar-space {
         display: none;
     }
-
-    .release-card {
-        flex: 0 0 calc(33.333% - 1rem);
-    }
 }
 
 @media (max-width: 768px) {
@@ -613,9 +537,13 @@ const getCoArtists = (release) => {
         height: 220px;
     }
 
+    .artist-title-container {
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+
     .artist-name {
         font-size: 2rem;
-        padding: 1rem;
     }
 
     .search-container {
@@ -630,10 +558,6 @@ const getCoArtists = (release) => {
 
     .release-results-wrapper {
         padding: 0 1rem;
-    }
-
-    .release-card {
-        flex: 0 0 calc(50% - 0.75rem);
     }
 }
 
@@ -652,6 +576,16 @@ const getCoArtists = (release) => {
 }
 
 @media (max-width: 480px) {
+    .artist-title-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .artist-name {
+        font-size: 1.8rem;
+    }
+
     .search-container {
         padding: 0 1rem;
         justify-content: center;
@@ -666,12 +600,8 @@ const getCoArtists = (release) => {
         max-width: 280px;
     }
 
-    .release-card {
-        flex: 0 0 100%;
-    }
-
     .release-results {
-        gap: 1rem;
+        justify-content: center;
     }
 }
 </style>

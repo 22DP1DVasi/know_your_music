@@ -1,6 +1,6 @@
 <script setup>
-import { Head, Link, router } from "@inertiajs/vue3";
-import {ref, computed, onBeforeUnmount, onMounted, watch} from 'vue';
+import { Head, router } from "@inertiajs/vue3";
+import {ref, onBeforeUnmount, onMounted, watch} from 'vue';
 import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -78,14 +78,12 @@ onBeforeUnmount(() => {
     window.removeEventListener('resize', checkScreenSize);
 });
 
-// Update the existing performSearch function to include year filters
-const performSearch = () => {
+const buildQueryParams = () => {
     const params = new URLSearchParams();
 
     if (localSearchQuery.value) {
         params.set('q', localSearchQuery.value);
     }
-
     if (localSelectedGenres.value.length > 0) {
         params.set('genres', localSelectedGenres.value.join(','));
     }
@@ -93,7 +91,6 @@ const performSearch = () => {
     params.set('perPage', localPerPage.value);
     params.set('sort', localSortOrder.value);
 
-    // Add year params
     if (localFormedFrom.value) params.set('formed_from', localFormedFrom.value);
     if (localFormedTo.value) params.set('formed_to', localFormedTo.value);
     if (localDisbandedFrom.value) params.set('disbanded_from', localDisbandedFrom.value);
@@ -101,24 +98,31 @@ const performSearch = () => {
     if (localIncludeEmptyFormed.value) params.set('include_empty_formed', '1');
     if (localIncludeEmptyDisbanded.value) params.set('include_empty_disbanded', '1');
 
-    router.visit(`/explore/artists?${params.toString()}`, {
-        preserveState: true,
-        replace: true
-    });
+    return params;
 };
 
-const selectedGenreNames = computed(() => {
-    return props.allGenres.filter(genre =>
-        localSelectedGenres.value.includes(genre.id)
+const reloadResults = () => {
+    router.visit(`/explore/artists?${buildQueryParams().toString()}`,{
+            preserveState: true,
+            replace: true
+        }
     );
-});
+};
+
+const performSearch = () => {
+    reloadResults();
+};
+
+const applySort = () => {
+    reloadResults();
+};
 
 watch(() => props.selectedGenres, (newVal) => {
     localSelectedGenres.value = [...newVal];
 });
 
 const redirectToArtist = (slug) => {
-    window.location.href = `/artists/${slug}`;
+    router.get(route('artists.show', slug));
 };
 
 const toggleGenre = (genreId) => {
@@ -157,26 +161,6 @@ const clearYearFilters = () => {
     localDisbandedTo.value = '';
     localIncludeEmptyFormed.value = false;
     localIncludeEmptyDisbanded.value = false;
-};
-
-const applySort = () => {
-    const params = new URLSearchParams();
-
-    if (localSearchQuery.value) {
-        params.set('q', localSearchQuery.value);
-    }
-
-    if (localSelectedGenres.value.length > 0) {
-        params.set('genres', localSelectedGenres.value.join(','));
-    }
-
-    params.set('perPage', localPerPage.value);
-    params.set('sort', localSortOrder.value);
-
-    router.visit(`/explore/artists?${params.toString()}`, {
-        preserveState: true,
-        replace: true
-    });
 };
 
 function lowercaseString(val) {
@@ -267,7 +251,7 @@ function lowercaseString(val) {
                 </div>
             </div>
 
-            <!-- Genre Filter Modal -->
+            <!-- Genre filter modal -->
             <div v-if="showGenreModal" class="modal-overlay" @click.self="showGenreModal = false">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -299,7 +283,7 @@ function lowercaseString(val) {
                 </div>
             </div>
 
-            <!-- Year Range Filter Modal -->
+            <!-- Year range filter modal -->
             <div v-if="showYearModal" class="modal-overlay" @click.self="showYearModal = false">
                 <div class="modal-content year-modal">
                     <div class="modal-header">
@@ -428,6 +412,24 @@ function lowercaseString(val) {
     margin-bottom: 17px;
 }
 
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
 .search-container {
     display: flex;
     width: 100%;
@@ -436,20 +438,10 @@ function lowercaseString(val) {
     position: relative;
 }
 
-.search-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 800px;
-    position: relative;
-    margin: 0 auto;
-    padding: 0;
-}
-
 .searchTerm {
-    height: 46px;
-    width: 340px;
     flex: 1;
+    min-width: 0;
+    height: 46px;
     padding: 12px;
     font-size: 17px;
     border: 3px solid #54b3ebed;
@@ -506,21 +498,17 @@ function lowercaseString(val) {
     transform: translate(-50%, -50%) scale(0.5);
 }
 
-.filters-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
 .filter-buttons {
     display: flex;
     justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 .filter-button {
+    flex: 1;
     background-color: #0c4baa;
     color: white;
     border: none;
@@ -530,11 +518,9 @@ function lowercaseString(val) {
     font-size: 0.9rem;
     display: flex;
     align-items: center;
-    margin: 0 1rem;
-    transition: background-color 0.2s;
-    gap: 1rem;
     justify-content: center;
-    flex-wrap: wrap;
+    gap: 1rem;
+    transition: background-color 0.2s;
 }
 
 .filter-button:hover {
@@ -937,6 +923,14 @@ function lowercaseString(val) {
         flex-direction: column;
     }
 
+    .filter-buttons {
+        flex-direction: column;
+    }
+
+    .filter-button {
+        width: 100%;
+    }
+
     .genre-item {
         flex: 1 0 calc(33.333% - 0.75rem); /* 3 items per row */
         min-width: 120px;
@@ -956,40 +950,30 @@ function lowercaseString(val) {
     }
 }
 
-@media (max-width: 768px) {
-    .filter-buttons {
-        flex-direction: column;
-        gap: 16px;
-    }
-}
-
 @media (max-width: 540px) {
     .searchTerm {
         font-size: 14px;
         padding: 10px;
-        height: 42px;
+        height: 46px;
         max-width: 500px;
-        width: 250px;
+        width: 100%;
     }
 }
 
 @media (max-width: 480px) {
     .search-container {
+        width: 100%;
+        max-width: none;
         padding: 0 1rem;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 0.5rem;
-    }
-
-    .results-title {
-        font-size: 1.5rem;
     }
 
     .searchTerm {
         font-size: 15px;
         padding: 10px;
-        width: 100%;
-        max-width: 280px;
+    }
+
+    .results-title {
+        font-size: 1.5rem;
     }
 
     .artist-results {

@@ -33,6 +33,8 @@
         "page_title": "Explore Releases",
         "search_placeholder": "Search releases...",
         "filter_by_genre": "Filter by Genre",
+        "release_date_from": "Release date from",
+        "release_date_to": "to",
         "sort_by": "Sort by",
         "sort_asc": "A-Z",
         "sort_desc": "Z-A",

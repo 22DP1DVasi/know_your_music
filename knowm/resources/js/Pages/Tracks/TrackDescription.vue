@@ -42,6 +42,19 @@ const handleImageLoad = () => {
     imageStyle.value.objectPosition = 'center';
 };
 
+const displayedArtists = computed(() => {
+    const artists = props.track.artists || [];
+    if (artists.length <= 3) {
+        return artists;
+    }
+
+    return artists.slice(0, 3);
+});
+
+const hiddenArtistsCount = computed(() =>
+    Math.max(0, (props.track.artists || []).length - 3)
+);
+
 const formatDate = (dateString) => {
     if (!dateString) return 'Unknown';
     return dayjs(dateString).format('MMMM D, YYYY');
@@ -116,12 +129,23 @@ const hasDescription = computed(() => {
                     loading="eager"
                 >
             </div>
-            <h1 class="track-title">{{ track.title }}</h1>
-            <div class="track-artists">
-                <span v-for="(artist, index) in track.artists" :key="artist.id">
-                    <a :href="`/artists/${artist.slug}`">{{ artist.name }}</a>
-                    <span v-if="index < track.artists.length - 1">, </span>
-                </span>
+            <div class="hero-content">
+                <h1 class="track-title">{{ track.title }}</h1>
+                <div class="track-artists">
+                    <template
+                        v-for="(artist, index) in displayedArtists"
+                        :key="artist.id"
+                    >
+                        <a :href="`/artists/${artist.slug}`">
+                            {{ artist.name }}
+                        </a>
+
+                        <span v-if="index < displayedArtists.length - 1">,&nbsp;</span>
+                    </template>
+
+                    <span v-if="hiddenArtistsCount">, {{ t('tracks.global.artists_more', { count: hiddenArtistsCount }) }}
+                    </span>
+                </div>
             </div>
             <div class="back-button" @click="goBackToTrack">
                 ← {{ t('tracks.description.back_to_track') }}
@@ -212,34 +236,45 @@ const hasDescription = computed(() => {
     transition: filter 0.3s ease;
 }
 
-.track-title {
+.hero-content {
     position: absolute;
-    bottom: 60px;
     left: 0;
+    bottom: 20px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: min(700px, 80%);
+}
+
+.track-title {
+    left: 0;
+    margin: 0;
     padding: 0 1.5rem;
     color: white;
-    font-size: 2.5rem;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
-    max-width: 70%;
     white-space: normal;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .track-artists {
-    position: absolute;
-    bottom: 30px;
     left: 0;
     padding: 0 1.5rem;
     color: white;
-    font-size: 1.2rem;
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .track-artists a {
@@ -373,11 +408,42 @@ const hasDescription = computed(() => {
     border-left-color: #aa0c4b;
 }
 
+
 @media (max-width: 1455px) {
     .track-page {
         width: 90%;
     }
+
+    .main-content {
+        max-width: calc(100% - 40px);
+    }
 }
+
+@media (max-width: 1200px) {
+    .track-hero {
+        height: 280px !important;
+    }
+
+    .track-content {
+        padding-right: 370px;
+    }
+
+    .sidebar-space {
+        top: 390px;
+    }
+}
+
+@media (max-width: 1150px) {
+    .track-content {
+        padding-right: 320px;
+    }
+
+    .sidebar-space {
+        top: 340px;
+        width: 280px;
+    }
+}
+
 
 @media (max-width: 1024px) {
     .track-page {
@@ -392,7 +458,7 @@ const hasDescription = computed(() => {
     }
 
     .track-hero {
-        margin-bottom: 0.5rem;
+        height: 260px !important;
     }
 
     .sidebar-space {
@@ -406,20 +472,44 @@ const hasDescription = computed(() => {
     }
 }
 
+@media (max-width: 900px) {
+    .track-hero {
+        height: 240px !important;
+    }
+
+    .track-content {
+        padding-right: 0;
+    }
+
+    .main-content {
+        max-width: 100%;
+        padding-right: 0;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .sidebar-space {
+        position: static;
+        width: 100%;
+        height: auto;
+        margin-top: 2rem;
+    }
+}
+
+
 @media (max-width: 768px) {
     .track-hero {
-        height: 220px;
+        height: 220px !important;
     }
 
     .track-title {
-        font-size: 1.5rem;
-        padding: 1rem;
+        font-size: 1.6rem;
+        bottom: 40px;
     }
 
     .track-artists {
-        font-size: 0.8rem;
-        padding: 1rem;
-        display: none;
+        font-size: 0.9rem;
+        bottom: 22px;
     }
 
     .main-content {
@@ -448,14 +538,61 @@ const hasDescription = computed(() => {
     }
 }
 
+@media (max-width: 640px) {
+    .track-hero {
+        height: 200px !important;
+    }
+}
+
 @media (max-width: 480px) {
+    .track-hero {
+        height: 180px !important;
+    }
+
     .track-title {
         font-size: 1.2rem;
+        bottom: 30px;
+        padding: 0 1rem;
+    }
+
+    .track-artists {
+        font-size: 0.8rem;
+        bottom: 18px;
+        padding: 0 1rem;
     }
 
     .back-button {
         font-size: 0.8rem;
         padding: 0.3rem 0.6rem;
+    }
+}
+
+@media (max-width: 410px) {
+    .info-flex {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .meta-value b {
+        font-size: 0.75rem;
+        margin-right: 0.2rem;
+    }
+
+    .description-text {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .track-hero {
+        height: 160px !important;
     }
 }
 

@@ -3,11 +3,13 @@ import { Head, router } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 import Footer from '@/Components/Footer.vue';
 import Comments from '@/Components/Comments/Comments.vue';
+import ArtistCardMini from "@/Components/Artists/ArtistCardMini.vue";
 import { ref, computed } from 'vue';
 import ColorThief from 'colorthief';
 import dayjs from 'dayjs';
 import { useDate } from '@/composables/useDate';
 import { useI18n } from 'vue-i18n';
+import {route} from "ziggy-js";
 
 // plakana struktūra - skaidrāks skats uz atribūtiem
 const props = defineProps({
@@ -68,13 +70,30 @@ const handleImageLoad = () => {
     imageStyle.value.objectPosition = 'center';
 };
 
+const displayedArtists = computed(() => {
+    const artists = props.track.artists || [];
+    if (artists.length <= 3) {
+        return artists;
+    }
+
+    return artists.slice(0, 3);
+});
+
+const hiddenArtistsCount = computed(() =>
+    Math.max(0, (props.track.artists || []).length - 3)
+);
+
+const redirectToArtist = (slug) => {
+    router.get(route('artists.show', slug));
+};
+
 const formatDate = (dateString) => {
     if (!dateString) return 'Unknown';
     return dayjs(dateString).format('DD/MM/YYYY');
 };
 
 const redirectToGenre = (slug) => {
-    window.location.href = `/genres/${slug}`;
+    router.get(route('genres.show', slug));
 };
 
 const descriptionMaxLength = 500;
@@ -167,12 +186,23 @@ const redirectToFullDescription = (slug) => {
                     loading="eager"
                 >
             </div>
-            <h1 class="track-title">{{ track.title }}</h1>
-            <div class="track-artists">
-                <span v-for="(artist, index) in track.artists" :key="artist.id">
-                    <a :href="`/artists/${artist.slug}`">{{ artist.name }}</a>
-                    <span v-if="index < track.artists.length - 1">, </span>
-                </span>
+            <div class="hero-content">
+                <h1 class="track-title">{{ track.title }}</h1>
+                <div class="track-artists">
+                    <template
+                        v-for="(artist, index) in displayedArtists"
+                        :key="artist.id"
+                    >
+                        <a :href="`/artists/${artist.slug}`">
+                            {{ artist.name }}
+                        </a>
+
+                        <span v-if="index < displayedArtists.length - 1">,&nbsp;</span>
+                    </template>
+
+                    <span v-if="hiddenArtistsCount">, {{ t('tracks.global.artists_more', { count: hiddenArtistsCount }) }}
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -277,6 +307,20 @@ const redirectToFullDescription = (slug) => {
                         </section>
                     </div>
 
+                    <!-- Artists section -->
+                    <section class="track-artists-section">
+                        <h2 class="section-title">{{ t('tracks.show.artists_title') }}</h2>
+                        <div class="artists-grid">
+                            <ArtistCardMini
+                                v-for="artist in track.artists"
+                                :key="artist.id"
+                                :artist="artist"
+                                :show-role="true"
+                                @click="redirectToArtist"
+                            />
+                        </div>
+                    </section>
+
                     <section class="track-comments">
                         <Comments
                             :entity-type="'tracks'"
@@ -345,35 +389,45 @@ const redirectToFullDescription = (slug) => {
     transition: filter 0.3s ease;
 }
 
-.track-title {
+.hero-content {
     position: absolute;
-    bottom: 60px;
     left: 0;
+    bottom: 20px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: min(700px, 80%);
+}
+
+.track-title {
+    left: 0;
+    margin: 0;
     padding: 0 1.5rem;
     color: white;
-    font-size: 2.5rem;
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
-    max-width: 70%;
     white-space: normal;
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .track-artists {
-    position: absolute;
-    bottom: 30px;
     left: 0;
     padding: 0 1.5rem;
     color: white;
-    font-size: 1.2rem;
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
     text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     z-index: 3;
-    max-width: 70%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .track-artists a {
@@ -501,7 +555,6 @@ const redirectToFullDescription = (slug) => {
 .track-description {
     background: white;
     border-radius: 8px;
-    margin-bottom: 2rem;
     position: relative;
     white-space: pre-line;
     word-break: break-word;
@@ -596,6 +649,17 @@ const redirectToFullDescription = (slug) => {
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: 500;
+}
+
+.track-artists-section {
+    margin-bottom: 2rem;
+}
+
+.artists-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: flex-start;
 }
 
 .genres-card {
@@ -697,16 +761,6 @@ const redirectToFullDescription = (slug) => {
         height: 280px !important;
     }
 
-    .track-title {
-        font-size: 2.2rem;
-        bottom: 55px;
-    }
-
-    .track-artists {
-        font-size: 1.1rem;
-        bottom: 28px;
-    }
-
     .info-card-wrapped {
         margin-right: 2rem;
     }
@@ -747,30 +801,15 @@ const redirectToFullDescription = (slug) => {
         width: 100%;
         padding: 0 10px;
     }
+
     .track-hero {
         height: 260px !important;
-    }
-    .track-title {
-        font-size: 2rem;
-        bottom: 50px;
-    }
-    .track-artists {
-        font-size: 1rem;
-        bottom: 26px;
     }
 }
 
 @media (max-width: 900px) {
     .track-hero {
         height: 240px !important;
-    }
-    .track-title {
-        font-size: 1.8rem;
-        bottom: 45px;
-    }
-    .track-artists {
-        font-size: 0.95rem;
-        bottom: 24px;
     }
 
     .track-content-container {
@@ -814,6 +853,10 @@ const redirectToFullDescription = (slug) => {
         display: none;
     }
 
+    .artists-grid {
+        justify-content: center;
+    }
+
     .sidebar-space {
         position: static;
         width: 100%;
@@ -826,10 +869,12 @@ const redirectToFullDescription = (slug) => {
     .track-hero {
         height: 220px !important;
     }
+
     .track-title {
         font-size: 1.6rem;
         bottom: 40px;
     }
+
     .track-artists {
         font-size: 0.9rem;
         bottom: 22px;
@@ -853,37 +898,19 @@ const redirectToFullDescription = (slug) => {
     .lyrics-text {
         font-size: 0.95rem;
     }
+
+    .artists-grid {
+        gap: 1rem;
+    }
 }
 
 @media (max-width: 640px) {
     .track-hero {
         height: 200px !important;
     }
-    .track-title {
-        font-size: 1.4rem;
-        bottom: 35px;
-    }
-    .track-artists {
-        font-size: 0.85rem;
-        bottom: 20px;
-    }
 }
 
 @media (max-width: 580px) {
-    .track-title {
-        font-size: 1.5rem;
-        bottom: 40px;
-        padding: 0 1rem;
-        max-width: 50%;
-    }
-
-    .track-artists {
-        font-size: 0.9rem;
-        bottom: 20px;
-        padding: 0 1rem;
-        max-width: 50%;
-    }
-
     .top-info-card-wrapped {
         height: 160px;
         width: 300px;
@@ -892,10 +919,6 @@ const redirectToFullDescription = (slug) => {
     }
 
     .meta-value {
-        font-size: 0.9rem;
-    }
-
-    .track-title {
         font-size: 0.9rem;
     }
 }
@@ -932,11 +955,13 @@ const redirectToFullDescription = (slug) => {
     .track-hero {
         height: 180px !important;
     }
+
     .track-title {
         font-size: 1.2rem;
         bottom: 30px;
         padding: 0 1rem;
     }
+
     .track-artists {
         font-size: 0.8rem;
         bottom: 18px;
@@ -955,7 +980,7 @@ const redirectToFullDescription = (slug) => {
 }
 
 @media (max-width: 410px) {
-    .trackcover {
+    .track-cover {
         min-width: 150px;
         width: 150px;
         height: 150px;
@@ -1006,27 +1031,6 @@ const redirectToFullDescription = (slug) => {
 @media (max-width: 360px) {
     .track-hero {
         height: 160px !important;
-    }
-    .track-title {
-        font-size: 1.1rem;
-        bottom: 25px;
-    }
-    .track-artists {
-        font-size: 0.75rem;
-        bottom: 15px;
-    }
-}
-
-@media (max-width: 320px) {
-    .track-title {
-        font-size: 1rem !important;
-        margin-bottom: 10px;
-    }
-}
-
-@media (max-width: 317px) {
-    .track-title {
-        margin-bottom: 23px;
     }
 }
 

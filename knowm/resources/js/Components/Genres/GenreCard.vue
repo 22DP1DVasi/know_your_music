@@ -148,16 +148,16 @@ defineExpose({
     line-height: 1.4;
 }
 
-/* Responsive breakpoints */
-@media (max-width: 1024px) {
+/* Responsive design */
+@media (max-width: 750px) {
     .genre-card {
-        flex: 0 0 calc(33.333% - 1rem);
+        flex: 0 0 calc(33.333% - 1rem);  /* 3 cards per row */
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 560px) {
     .genre-card {
-        flex: 0 0 calc(50% - 0.75rem);
+        flex: 0 0 calc(50% - 0.75rem);  /* 2 cards per row */
     }
 
     .genre-info {
@@ -170,15 +170,31 @@ defineExpose({
 }
 
 @media (max-width: 480px) {
-    .genre-card {
-        flex: 0 0 100%;
-        max-width: 280px;
-        margin: 0 auto;
-    }
-
     .genre-info {
         padding: 0.75rem;
     }
+}
+
+@media (max-width: 390px) {
+    .genre-info h3 {
+        font-size: 0.7rem;
+    }
+}
+
+/* Animācijas */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.genre-card {
+    animation: fadeInUp 0.5s ease forwards;
 }
 
 </style>

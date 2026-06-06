@@ -46,6 +46,7 @@ class SearchService
     protected function searchArtists(string $query, int $limit)
     {
         return Artist::where('name', 'like', "%{$query}%")
+            ->orderBy('popularity', 'desc')
             ->withCount('tracks')
             ->limit($limit)
             ->get()
@@ -68,6 +69,7 @@ class SearchService
                     $q->where('name', 'like', "%{$query}%");
                 });
         })
+            ->orderBy('popularity', 'desc')
             ->with(['artists'])
             ->withCount('tracks')
             ->limit($limit)
@@ -82,6 +84,7 @@ class SearchService
                     $q->where('name', 'like', "%{$query}%");
                 });
         })
+            ->orderBy('popularity', 'desc')
             ->with(['artists', 'releases'])
             ->limit($limit)
             ->get();
@@ -92,6 +95,7 @@ class SearchService
         return Track::whereHas('lyrics', function(Builder $q) use ($query) {
             $q->where('lyrics', 'like', "%{$query}%");
         })
+            ->orderBy('popularity', 'desc')
             ->with(['artists', 'lyrics'])
             ->limit($limit)
             ->get()

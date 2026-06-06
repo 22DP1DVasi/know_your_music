@@ -72,10 +72,6 @@ const toggleMobileExplore = () => {
     isMobileExploreOpen.value = !isMobileExploreOpen.value;
 };
 
-const redirectToExplore = (type) => {
-    router.visit(`/explore/${type}`);
-};
-
 const logout = () => {
     router.post('/logout');
 };
@@ -154,9 +150,17 @@ const isActiveRoute = (routePath) => {
                     </div>
                     <transition name="dropdown-fade">
                         <div v-show="activeDropdown === 'explore'" class="dropdown-menu">
-                            <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
-                            <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
-                            <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
+                            <Link :href="route('explore.artists')">
+                                {{ t('navbar.explore_artists') }}
+                            </Link>
+
+                            <Link :href="route('explore.releases')">
+                                {{ t('navbar.explore_releases') }}
+                            </Link>
+
+                            <Link :href="route('explore.genres')">
+                                {{ t('navbar.explore_genres') }}
+                            </Link>
                         </div>
                     </transition>
                 </li>
@@ -280,9 +284,17 @@ const isActiveRoute = (routePath) => {
                     </div>
                     <transition name="dropdown-fade">
                         <div v-show="isMobileExploreOpen" class="mobile-explore-dropdown">
-                            <a href="#" @click.prevent="redirectToExplore('artists')">{{ t('navbar.explore_artists') }}</a>
-                            <a href="#" @click.prevent="redirectToExplore('releases')">{{ t('navbar.explore_releases') }}</a>
-                            <a href="#" @click.prevent="redirectToExplore('genres')">{{ t('navbar.explore_genres') }}</a>
+                            <Link :href="route('explore.artists')">
+                                {{ t('navbar.explore_artists') }}
+                            </Link>
+
+                            <Link :href="route('explore.releases')">
+                                {{ t('navbar.explore_releases') }}
+                            </Link>
+
+                            <Link :href="route('explore.genres')">
+                                {{ t('navbar.explore_genres') }}
+                            </Link>
                         </div>
                     </transition>
                 </div>
@@ -723,20 +735,36 @@ const isActiveRoute = (routePath) => {
     color: white;
 }
 
+.mobile-explore-section {
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
 .mobile-explore-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0;
+    padding: 0.75rem 0;
     font-size: 1rem;
     font-weight: 500;
-    color: #1e293b;
+    color: #0c4baa;
     cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f8fafc;
+    margin: 0 -0.5rem;
+    padding: 0.75rem 0.5rem;
+    border-radius: 8px;
 }
+
+.mobile-explore-header:hover {
+    background: rgba(12, 75, 170, 0.08);
+}
+
 
 .mobile-explore-header i {
     transition: transform 0.2s ease;
-    color: #64748b;
+    color: #0c4baa;
+    font-size: 0.9rem;
 }
 
 .mobile-explore-header i.rotated {
@@ -747,20 +775,27 @@ const isActiveRoute = (routePath) => {
     display: flex;
     flex-direction: column;
     margin-top: 0.5rem;
-    padding-left: 0.5rem;
-    border-left: 2px solid #0c4baa;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    border-left: 3px solid #0c4baa;
+    background: #fafcff;
+    border-radius: 0 8px 8px 0;
 }
 
 .mobile-explore-dropdown a {
     padding: 0.6rem 0;
+    padding-left: 0.5rem;
     font-size: 0.95rem;
-    color: #475569;
+    color: #1e293b;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: all 0.2s;
+    border-radius: 6px;
 }
 
 .mobile-explore-dropdown a:hover {
     color: #0c4baa;
+    background: rgba(12, 75, 170, 0.05);
+    padding-left: 0.75rem;
 }
 
 .mobile-nav {

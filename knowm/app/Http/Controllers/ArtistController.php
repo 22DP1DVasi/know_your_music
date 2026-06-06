@@ -146,6 +146,8 @@ class ArtistController extends Controller
     }
 
     /**
+     * Metode priekš ArtistsExplore.vue lapas.
+     *
      * @param Request $request
      * @return \Inertia\Response
      */
@@ -220,6 +222,7 @@ class ArtistController extends Controller
             ->withCount('tracks')
             ->with('genres')
             ->orderBy('name', $sortOrder)
+            ->orderBy('popularity', 'desc')
             ->paginate($perPage)
             ->withQueryString();
 
@@ -244,5 +247,4 @@ class ArtistController extends Controller
             'includeEmptyDisbanded' => $includeEmptyDisbanded,
         ]);
     }
-
 }

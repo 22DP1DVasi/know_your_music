@@ -91,10 +91,12 @@ class ArtistService
     public function getArtistGenres(Artist $artist): array
     {
         return $artist->genres
+            ->sortByDesc('popularity')
             ->map(fn ($genre) => [
                 'name' => $genre->name,
                 'slug' => $genre->slug,
             ])
+            ->values()
             ->toArray();
     }
 
@@ -138,7 +140,7 @@ class ArtistService
     {
         return $artist->releases()
             ->with(['artists'])
-            ->orderBy('release_date', 'desc')
+            ->orderBy('popularity', 'desc')
             ->limit($limit)
             ->get()
             ->map(function ($release) {
@@ -169,6 +171,7 @@ class ArtistService
         return Track::whereHas('artists', function($query) use ($artist) {
             $query->where('artists.id', $artist->id);
         })
+            ->orderBy('popularity', 'desc')
             ->with(['artists', 'releases'])
             ->limit($limit)
             ->get();

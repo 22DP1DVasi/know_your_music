@@ -66,6 +66,8 @@ class ReleaseController extends Controller
     }
 
     /**
+     * Metode priekš ReleasesExplore.vue lapas.
+     *
      * @param Request $request
      * @return \Inertia\Response
      */
@@ -75,12 +77,15 @@ class ReleaseController extends Controller
         $perPage = $request->input('perPage', 24);
         $sortOrder = $request->input('sort', 'asc');
         $selectedGenres = $request->input('genres', []);
+        $dateFrom = $request->input('date_from', null);
+        $dateTo = $request->input('date_to', null);
+
         if (is_string($selectedGenres)) {
             $selectedGenres = $selectedGenres === '' ? [] : explode(',', $selectedGenres);
         }
-        //$genreIds = array_map('intval', $selectedGenres);
         $selectedGenres = is_array($selectedGenres) ? $selectedGenres : [];
         $genreIds = array_filter(array_map('intval', $selectedGenres));
+
         $releases = Release::query()
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where('title', 'like', "%{$searchQuery}%");
@@ -90,12 +95,21 @@ class ReleaseController extends Controller
                     $q->whereIn('genres.id', $genreIds);
                 });
             })
+            ->when($dateFrom, function ($query) use ($dateFrom) {
+                $query->whereDate('release_date', '>=', $dateFrom);
+            })
+            ->when($dateTo, function ($query) use ($dateTo) {
+                $query->whereDate('release_date', '<=', $dateTo);
+            })
             ->withCount('tracks')
             ->with(['artists', 'genres'])
             ->orderBy('title', $sortOrder)
+            ->orderBy('popularity', 'desc')
             ->paginate($perPage)
             ->withQueryString();
+
         $genres = Genre::orderBy('name')->get();
+
         return Inertia::render('Releases/ReleasesExplore', [
             'releases' => $releases->items(),
             'searchQuery' => $searchQuery,
@@ -106,6 +120,8 @@ class ReleaseController extends Controller
             'allGenres' => $genres,
             'selectedGenres' => $genreIds,
             'sortOrder' => $sortOrder,
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
         ]);
     }
 }

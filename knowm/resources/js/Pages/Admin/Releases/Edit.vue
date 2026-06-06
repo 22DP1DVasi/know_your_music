@@ -703,10 +703,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 0;
 }
 
-input[type="date"] {
-    cursor: pointer;
-}
-
 .character-count {
     color: #6b7280;
     font-size: 0.75rem;

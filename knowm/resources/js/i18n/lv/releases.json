@@ -4,14 +4,16 @@
         "length": "Ilgums:",
         "track_title": "dziesma",
         "tracks_title": "dziesmas",
-        "tracklist": "Dziesmu saraksts"
+        "tracklist": "Dziesmu saraksts",
+        "artists_more": "+{count} vairāk"
     },
     "show": {
         "about_release": "Par šo albumu",
         "genres": "Žanri",
         "no_genres": "Nav žanru, kas saistīti ar šo albumu.",
         "no_description": "Šim albumam nav apraksta.",
-        "read_more": "Lasīt vairāk"
+        "read_more": "Lasīt vairāk",
+        "artists_title": "Izpildītāji"
     },
     "description": {
         "back_to_release": "Atpakaļ pie albuma",
