@@ -311,69 +311,6 @@ const closeModal = () => {
     margin: 0 auto;
 }
 
-.track-item {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-    gap: 1rem;
-    transition: background-color 0.2s;
-}
-
-.track-item:hover {
-    background-color: #f9f9f9;
-}
-
-.track-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 4px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.track-info {
-    flex: 1;
-    min-width: 0;
-    padding: 0 1rem;
-    overflow: hidden;
-}
-
-.track-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 0.95rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    display: block;
-}
-
-.track-title-link {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.track-title-link:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    width: 100%;
-}
-
 .lyric-snippet {
     margin: 0.5rem 0 0 0;
     color: #555;
@@ -381,7 +318,6 @@ const closeModal = () => {
     line-height: 1.4;
     font-style: italic;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -392,12 +328,6 @@ const closeModal = () => {
     color: inherit;
     padding: 0 2px;
     border-radius: 3px;
-}
-
-.track-duration {
-    text-align: right;
-    color: #666;
-    flex: 0 0 80px;
 }
 
 .no-results {
@@ -444,7 +374,7 @@ const closeModal = () => {
     }
 
     .lyric-snippet {
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 6;  /* Increased from 3 to 6 */
     }
 }
 
@@ -484,33 +414,15 @@ const closeModal = () => {
         max-width: 280px;
     }
 
-    .track-item {
-        padding: 0.75rem;
-        gap: 0.75rem;
-    }
-
-    .track-image {
-        width: 40px;
-        height: 40px;
-    }
-
-    .track-info {
-        padding: 0 0.5rem;
-    }
-
     .track-info h3 {
         font-size: 0.9rem;
         max-width: 150px;
     }
 
-    .track-duration {
-        flex: 0 0 60px;
-        font-size: 0.85rem;
-    }
-
     .lyric-snippet {
         font-size: 0.8rem;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 4;  /* Increased from 2 to 4 */
     }
 }
+
 </style>

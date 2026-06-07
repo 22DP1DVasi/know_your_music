@@ -326,12 +326,10 @@ const closeModal = () => {
     font-size: 0.85rem;
     line-height: 1.4;
     font-style: italic;
-}
-
-@media (max-width: 645px) {
-    .lyric-snippet {
-        display: none;
-    }
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .lyric-snippet mark {
@@ -353,6 +351,10 @@ const closeModal = () => {
         font-size: 1.8rem;
         padding-top: 0.5rem;
     }
+
+    .lyric-snippet {
+        -webkit-line-clamp: 6;  /* Increased from 3 to 6 */
+    }
 }
 
 @media (max-width: 480px) {
@@ -367,6 +369,11 @@ const closeModal = () => {
 
     .release-results {
         justify-content: center;
+    }
+
+    .lyric-snippet {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 4;  /* Increased from 2 to 4 */
     }
 }
 
