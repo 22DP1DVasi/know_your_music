@@ -374,7 +374,7 @@ const closeModal = () => {
     }
 
     .lyric-snippet {
-        -webkit-line-clamp: 6;  /* Increased from 3 to 6 */
+        -webkit-line-clamp: 6;
     }
 }
 
@@ -421,7 +421,7 @@ const closeModal = () => {
 
     .lyric-snippet {
         font-size: 0.8rem;
-        -webkit-line-clamp: 4;  /* Increased from 2 to 4 */
+        -webkit-line-clamp: 4;
     }
 }
 

@@ -108,7 +108,6 @@ const closeModal = () => {
                 <div class="section-header">
                     <h2>{{ t('search_pages.main_results.artists') }}</h2>
                     <a v-if="hasMoreArtists" :href="`/search/artists?q=${searchQuery}`" class="see-all">
-                        <!--See all {{ artistsCount }} artists →-->
                         {{ t('search_pages.main_results.see_all_artists', {count: artistsCount}) }}
                     </a>
                 </div>
@@ -256,17 +255,22 @@ const closeModal = () => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .section-header h2 {
     font-size: 1.4rem;
-    margin-bottom: 0.5rem;
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .see-all {
     color: #4a90e2;
     text-decoration: none;
     font-weight: 500;
+    white-space: nowrap;
+    font-size: 0.9rem;
 }
 
 .see-all:hover {
@@ -353,7 +357,24 @@ const closeModal = () => {
     }
 
     .lyric-snippet {
-        -webkit-line-clamp: 6;  /* Increased from 3 to 6 */
+        -webkit-line-clamp: 6;
+    }
+}
+
+@media (max-width: 500px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .see-all {
+        white-space: normal;
+        font-size: 0.85rem;
     }
 }
 
@@ -361,6 +382,18 @@ const closeModal = () => {
     .results-title {
         font-size: 1.5rem;
         margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+        margin-bottom: 1rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .see-all {
+        font-size: 0.8rem;
     }
 
     .artist-results {
@@ -373,7 +406,7 @@ const closeModal = () => {
 
     .lyric-snippet {
         font-size: 0.8rem;
-        -webkit-line-clamp: 4;  /* Increased from 2 to 4 */
+        -webkit-line-clamp: 4;
     }
 }
 
