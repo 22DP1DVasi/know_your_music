@@ -200,7 +200,7 @@ class ReleaseController extends Controller
 
         return response()->json([
             'success' => true,
-            'cover_url' => Storage::url($path) . '?t=' . time(),
+            'cover_url' => Storage::url($path),
         ]);
     }
 

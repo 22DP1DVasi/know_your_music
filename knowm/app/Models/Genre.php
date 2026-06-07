@@ -147,7 +147,9 @@ class Genre extends Model
     {
         $path = "genres/{$this->id}/banner/banner.webp";
         if (Storage::disk('public')->exists($path)) {
-            return Storage::url($path);
+            $timestamp = Storage::disk('public')
+                ->lastModified($path);
+            return Storage::url($path) . '?v=' . $timestamp;
         }
         return asset('images/default-genre-banner.webp');
     }
@@ -159,7 +161,9 @@ class Genre extends Model
     {
         $path = "genres/{$this->id}/profile/profile.webp";
         if (Storage::disk('public')->exists($path)) {
-            return Storage::url($path);
+            $timestamp = Storage::disk('public')
+                ->lastModified($path);
+            return Storage::url($path) . '?v=' . $timestamp;
         }
         return asset('images/default-genre-banner.webp');
     }
