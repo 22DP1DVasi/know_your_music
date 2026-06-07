@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 07, 2026 at 05:02 PM
+-- Generation Time: Jun 07, 2026 at 05:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -1938,7 +1938,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('70SyXfApEv77TAk2rCf8Ag3oi0Z8Od42O1RRu3lH', 35, '127.0.0.1', 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Mobile Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiZXdTN0J0b2p4b1pCN09xY0J4aHgyWEQwTHdGM1YxRldPa2RVYTR1cCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjM4OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvc2VhcmNoP3E9aXN0YXNoYSI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjM1O3M6NjoibG9jYWxlIjtzOjI6ImVuIjt9', 1780844163);
+('WmPG555Awm7u9r9M7IfdjFSKbXoQn8MbBM1cpaX3', 38, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiTzhGMFpWeE9WaUdaQkN2aWxxNXUyc2R5Nkptc0tOQUFwcG1tc2g1VCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjM4O30=', 1780845292);
 
 -- --------------------------------------------------------
 
@@ -3253,7 +3253,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `slug`, `email`, `email_verified_at`, `password`, `status`, `avatar`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'xnopyty', 'xnopyty', 'kombusted12@gmail.com', NULL, '$2y$12$FqCIemww4i39ZxHDx6zcTOa3lca3e7zdSTwM.KR6frG5G6D74BXdW', 'active', 'avatars/vAJzxSKtEf3PWDcDWne9ji0Nrc9XM4Tg2gV1LHpR.jpg', NULL, '2025-05-07 13:48:22', '2026-06-07 08:54:45', NULL),
+(1, 'xnopyty', 'xnopyty', 'kombusted12@gmail.com', NULL, '$2y$12$AwvbF6qZ.s5lXuBO9qg1q.h2Htz8NtgIyft4WFnTjkMmjPZbIOKqO', 'active', 'avatars/vAJzxSKtEf3PWDcDWne9ji0Nrc9XM4Tg2gV1LHpR.jpg', NULL, '2025-05-07 13:48:22', '2026-06-07 08:54:45', NULL),
 (5, 'neark', 'neark', 'krepost123@gmail.com', NULL, '$2y$12$MkC.QnO9dn1ituYk3BZA2ed17Ka8CTaBCRNslM3KzZsCC2id09KCK', 'active', 'avatars/PNkZ5vs0Xzif0luexo9UbPLSxPBJQoxmHTtkxNXB.jpg', NULL, '2025-05-12 15:23:03', '2026-05-01 05:56:16', NULL),
 (6, 'baxhy', 'baxhy', 'danila.vasiljevs00710@gmail.com', NULL, '$2y$12$tbCrlvt.PqwxdVwHHSJJpuPz8ok1PAFbz9rxhY9UqjfTT0kwyHjym', 'active', 'avatars/0vflqb0NGmrj3Fi4Hdacm20t2iksA7bpqldl5CWC.jpg', NULL, '2025-05-12 15:47:07', '2026-05-30 10:37:48', NULL),
 (7, 'toha_tatir', 'toha-tatir', 'sda@gmail.com', NULL, '$2y$12$qL9zRdD9rkw72aA2MkJjBu6u5d9nsdh7mVmGRKaDqWi641NwtptOa', 'active', NULL, NULL, '2025-05-14 07:42:32', '2025-05-14 07:42:32', NULL),
@@ -3278,9 +3278,9 @@ INSERT INTO `users` (`id`, `name`, `slug`, `email`, `email_verified_at`, `passwo
 (30, 'tsestaffdfsd', 'tsestaffdfsd', 'test_cmfsfd@test.com', NULL, '$2y$12$iZk6ZC0hGP9e4HP.EGnFB.ULKlGhDTGaqxbcpZnBPlnxJEXtYRBT.', 'active', NULL, NULL, '2026-05-04 14:34:13', '2026-05-04 14:34:13', NULL),
 (32, 'statusCheck', 'statuscheck', 'kombusted5453@gmail.com', NULL, '$2y$12$ezkgR/UeGaJD/j/yQWxCGOTFJdX5XQ/Pa5QXQ4b20ibCP.OQJBs2q', 'active', NULL, NULL, '2026-05-30 10:24:37', '2026-05-30 10:24:37', NULL),
 (33, 'passCheck', 'passcheck', 'testdfsf@test.com', NULL, '$2y$12$n/4yI7v0XiObXIME8ZzeWuHd7hhSpDvhzTOVzfq6Qwt2bQ/X74Kga', 'banned', NULL, NULL, '2026-05-31 10:11:46', '2026-05-31 10:22:09', NULL),
-(34, 'musicfan', 'musicfan', 'musicfankym@gmail.com', NULL, '$2y$12$UMbqQvpw30m3KeC6msxbJuRTVa0Mv.31GKMLwdH7nVTm5R/jrym92', 'active', NULL, NULL, '2026-06-06 10:56:04', '2026-06-06 10:56:04', NULL),
-(35, 'kymadmin', 'kymadmin', 'adminkym@gmail.com', NULL, '$2y$12$6onWIiIjWiz8UBnCpVmloum2xpxZZ5SdkYqKOmyIWjew0xTYfU30G', 'active', NULL, NULL, '2026-06-06 10:57:09', '2026-06-06 10:57:09', NULL),
-(36, 'kymsuperadmin', 'kymsuperadmin', 'superadminkym@gmail.com', NULL, '$2y$12$mPS0eh.m5tU0I4rZrZ3rEucSZQDmS6lVuj/bAZJyN8JFQ1e30FtbO', 'active', NULL, NULL, '2026-06-06 10:57:51', '2026-06-06 10:57:51', NULL);
+(36, 'kymsuperadmin', 'kymsuperadmin', 'superadminkym@gmail.com', NULL, '$2y$12$mPS0eh.m5tU0I4rZrZ3rEucSZQDmS6lVuj/bAZJyN8JFQ1e30FtbO', 'active', NULL, NULL, '2026-06-06 10:57:51', '2026-06-06 10:57:51', NULL),
+(37, 'musicfan', 'musicfan', 'musicfankym@gmail.com', NULL, '$2y$12$gNP5DR4/D6X7uLJOekPZEOKVZeSg99fT1CdnGA6.n9jsJGXFeiJcm', 'active', NULL, NULL, '2026-06-07 12:08:52', '2026-06-07 12:08:52', NULL),
+(38, 'kymadmin', 'kymadmin', 'adminkym@gmail.com', NULL, '$2y$12$7.ewEnnpMvvmNklJt36dw.qDJIPEpQdH3jOXJ8qusvk2qpNKVvMaC', 'active', NULL, NULL, '2026-06-07 12:09:18', '2026-06-07 12:09:18', NULL);
 
 -- --------------------------------------------------------
 
@@ -3305,8 +3305,8 @@ INSERT INTO `users_roles` (`id`, `user_id`, `role_id`, `created_at`, `updated_at
 (16, 8, 1, '2025-12-24 07:57:35', '2025-12-24 07:57:35'),
 (23, 25, 1, '2026-01-25 19:26:49', '2026-01-25 19:26:49'),
 (24, 5, 1, '2026-02-26 19:48:57', '2026-02-26 19:48:57'),
-(28, 35, 25, '2026-06-07 11:27:20', '2026-06-07 11:27:20'),
-(29, 35, 1, '2026-06-07 11:30:24', '2026-06-07 11:30:24');
+(32, 38, 1, '2026-06-07 12:14:00', '2026-06-07 12:14:00'),
+(33, 38, 25, '2026-06-07 12:14:00', '2026-06-07 12:14:00');
 
 -- --------------------------------------------------------
 
@@ -3861,13 +3861,13 @@ ALTER TABLE `tracks_releases`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `users_roles`
 --
 ALTER TABLE `users_roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `user_collections`
