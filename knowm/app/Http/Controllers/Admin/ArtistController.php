@@ -235,7 +235,7 @@ class ArtistController extends Controller
         return response()->json([
             'success' => true,
 //            'message' => ucfirst($type) . __('messages.artist_image_updated'),
-            'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
+            'image_url' => Storage::url($path)
         ]);
     }
 

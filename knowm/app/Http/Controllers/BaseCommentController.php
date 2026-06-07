@@ -136,7 +136,7 @@ abstract class BaseCommentController extends Controller
         }
         if (
             $comment->user_id !== Auth::id()
-            && !Auth::user()->hasAnyRole(['comments_moderator', 'super_admin'])
+            && !Auth::user()->hasAnyRole(['comments_moderator', 'admin', 'super_admin'])
         ) {
             abort(403, 'You are not authorized to delete this comment.');
         }

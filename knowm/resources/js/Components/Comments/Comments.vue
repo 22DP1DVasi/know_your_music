@@ -48,7 +48,7 @@ const { t } = useI18n();
 // iegūt pašreizējo lietotāju un lomas
 const currentUser = page.props.auth?.user
 const roles = computed(() => currentUser?.roles ?? [])
-const isCommentsModerator = computed(() => ['comments_moderator', 'super_admin']
+const isCommentsModerator = computed(() => ['comments_moderator', 'admin', 'super_admin']
     .some(role => roles.value.includes(role)))
 
 const { formatDateLL, fromNow, diffInMinutes } = useDate()
