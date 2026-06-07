@@ -148,9 +148,22 @@ const applyGenreFilters = () => {
     performSearch();
 };
 
-// Add year filter functions
 const applyYearFilters = () => {
     showYearModal.value = false;
+    performSearch();
+};
+
+const removeFormedFilter = () => {
+    localFormedFrom.value = '';
+    localFormedTo.value = '';
+    localIncludeEmptyFormed.value = false;
+    performSearch();
+};
+
+const removeDisbandedFilter = () => {
+    localDisbandedFrom.value = '';
+    localDisbandedTo.value = '';
+    localIncludeEmptyDisbanded.value = false;
     performSearch();
 };
 
@@ -161,6 +174,7 @@ const clearYearFilters = () => {
     localDisbandedTo.value = '';
     localIncludeEmptyFormed.value = false;
     localIncludeEmptyDisbanded.value = false;
+    performSearch();
 };
 
 function lowercaseString(val) {
@@ -229,6 +243,7 @@ function lowercaseString(val) {
 
                 <!-- Kaut kur šeit es uzzināju no skolotāja, ka nav obligāts rasktīt komentārus latviešu valodā -->
                 <!-- taču kaut kur kursa sākumā bija teikts otrādi :|. Tagad visi komentāri, protams, angļu valodā. -->
+
                 <!-- Selected year filters display -->
                 <div v-if="formedFrom || formedTo || disbandedFrom || disbandedTo || includeEmptyFormed || includeEmptyDisbanded" class="selected-filters">
                     <div class="selected-filters-label">{{ t('explore_pages.artists.year_filters') }}:</div>
@@ -238,14 +253,14 @@ function lowercaseString(val) {
                                 {{ t('explore_pages.artists.formed') }}: {{ formedFrom || t('explore_pages.artists.any') }} - {{ formedTo || t('explore_pages.artists.any') }}
                                 <span v-if="includeEmptyFormed" class="tag-note">({{ t('explore_pages.artists.incl_unknown') }})</span>
                             </span>
-                            <span class="remove-filter" @click="clearYearFilters">×</span>
+                            <span class="remove-filter" @click="removeFormedFilter">×</span>
                         </div>
                         <div v-if="disbandedFrom || disbandedTo" class="filter-tag">
                             <span class="filter-tag-content">
                                 {{ t('explore_pages.artists.disbanded') }}: {{ disbandedFrom || t('explore_pages.artists.any') }} - {{ disbandedTo || t('explore_pages.artists.any') }}
                                 <span v-if="includeEmptyDisbanded" class="tag-note">({{ t('explore_pages.artists.incl_unknown') }})</span>
                             </span>
-                            <span class="remove-filter" @click="clearYearFilters">×</span>
+                            <span class="remove-filter" @click="removeDisbandedFilter">×</span>
                         </div>
                     </div>
                 </div>
