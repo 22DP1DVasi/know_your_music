@@ -201,8 +201,11 @@ class Artist extends Model
     {
         $path = "artists/{$this->id}/profile/profile.webp";
         if (Storage::disk('public')->exists($path)) {
-            return Storage::url($path);
+            $timestamp = Storage::disk('public')
+                ->lastModified($path);
+            return Storage::url($path) . '?v=' . $timestamp;
         }
+
         return asset('images/default-artist-profile.webp');
     }
 

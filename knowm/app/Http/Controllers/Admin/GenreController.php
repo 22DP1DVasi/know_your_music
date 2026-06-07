@@ -202,7 +202,7 @@ class GenreController extends Controller
         Storage::disk('public')->put($path, file_get_contents($file));
         return response()->json([
             'success' => true,
-            'image_url' => Storage::url($path) . '?t=' . time(), // pievienot timestamp'u, lai novērstu kešdarbi
+            'image_url' => Storage::url($path)
         ]);
     }
 

@@ -124,19 +124,18 @@ class User extends Authenticatable
     }
 
     /**
-     * @return string|null
+     * Get user avatar URL.
      */
-    public function getAvatarUrlAttribute(): ?string
+    public function getAvatarUrlAttribute()
     {
-//        if (!$this->avatar) {
-//            return asset('images/default-user-avatar.png');
-//        }
-//
-//        return Storage::url($this->avatar);
-        if ($this->avatar) {
-            return asset('storage/' . $this->avatar);
+        if (!$this->avatar) {
+            return null;
         }
-        return null;
+        if (!Storage::disk('public')->exists($this->avatar)) {
+            return null;
+        }
+
+        return Storage::url($this->avatar);
     }
 
     /***
