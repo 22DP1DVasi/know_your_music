@@ -1,7 +1,8 @@
 {
     "card": {
         "add_to_playlist": "Pievienot kolekcijai",
-        "remove": "Noņemt"
+        "remove": "Noņemt",
+        "artists_more": "+{count} vairāk"
     },
     "global": {
         "release_date": "Izdošanas datums:",

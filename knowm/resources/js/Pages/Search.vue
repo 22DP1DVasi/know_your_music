@@ -188,6 +188,7 @@ const closeModal = () => {
                         :track="track"
                         :show-number="false"
                         :show-artists="true"
+                        :show-duration="false"
                         :menu-open="openMenuId === track.id"
                         duration-format="HH:mm:ss"
                         :can-add="true"

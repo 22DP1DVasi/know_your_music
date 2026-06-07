@@ -1,7 +1,8 @@
 {
     "card": {
         "add_to_playlist": "Add to playlist",
-        "remove": "Remove"
+        "remove": "Remove",
+        "artists_more": "+{count} more"
     },
     "global": {
         "release_date": "Release Date:",
