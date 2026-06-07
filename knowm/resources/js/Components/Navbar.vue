@@ -12,7 +12,11 @@ const { locale, t } = useI18n();
 const user = computed(() => page.props.auth?.user ?? null);
 const isLoggedIn = computed(() => !!user.value);
 const roles = computed(() => user.value?.roles ?? []);
-const isAdmin = computed(() => roles.value.includes('super_admin'));
+const isAdmin = computed(() =>
+    ['super_admin', 'admin'].some(role =>
+        roles.value.includes(role)
+    )
+);
 
 const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
 const isMenuActive = ref(false);

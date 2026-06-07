@@ -248,7 +248,7 @@ class User extends Authenticatable
     public function canAccessAdminPanel(): bool
     {
         return $this->roles()
-            ->whereIn('name',['super_admin'])
+            ->whereIn('name',['super_admin', 'admin'])
             ->exists();
     }
 
