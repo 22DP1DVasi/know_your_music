@@ -357,7 +357,8 @@ const closeModal = () => {
                             <h2 class="section-title">{{ t('releases.global.tracklist') }}</h2>
                             <span class="tracks-count">{{ release.tracks.length }} {{ release.tracks.length === 1 ? t('releases.global.track_title') : t('releases.global.tracks_title') }}</span>
                         </div>
-                        <div class="track-list">
+                        <div v-if="!release.tracks.length" class="empty-state">{{ t('releases.show.no_tracks') }}</div>
+                        <div v-else class="track-list">
                             <TrackCard
                                 v-for="track in sortedTracks"
                                 :key="track.id"
@@ -380,6 +381,7 @@ const closeModal = () => {
                     <!-- Artists section -->
                     <section class="release-artists-section">
                         <h2 class="section-title">{{ t('releases.show.artists_title') }}</h2>
+                        <div v-if="!release.artists.length" class="empty-state">{{ t('releases.show.no_artists') }}</div>
                         <div class="artists-grid">
                             <ArtistCardMini
                                 v-for="artist in release.artists"
@@ -580,6 +582,16 @@ const closeModal = () => {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #0c4baa;
+}
+
+.empty-state {
+    text-align: left;
+    padding: 2rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    color: #6b7280;
+    font-style: italic;
+    margin: 1rem 0;
 }
 
 .meta-value {

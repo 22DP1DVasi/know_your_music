@@ -447,7 +447,7 @@ const capitalize = (value) => {
                             {{ t('artists.show.see_all_tracks', {count: artist.total_tracks}) }}
                         </button>
                     </div>
-                    <div v-if="!artist.tracks.length" style="margin-bottom: 2rem;">{{ t('artists.show.no_tracks') }}</div>
+                    <div v-if="!artist.tracks.length" class="empty-state">{{ t('artists.show.no_tracks') }}</div>
                     <div v-else class="track-list">
                         <TrackCard
                             v-for="(track, index) in artist.tracks"
@@ -481,7 +481,7 @@ const capitalize = (value) => {
                             {{ t('artists.show.see_all_releases', {count: artist.total_releases}) }}
                         </button>
                     </div>
-                    <div v-if="!artist.releases.length">{{ t('artists.show.no_releases') }}</div>
+                    <div v-if="!artist.releases.length" class="empty-state">{{ t('artists.show.no_releases') }}</div>
                     <div v-else class="release-results">
                         <ReleaseCard
                             v-for="release in artist.releases"
@@ -744,6 +744,16 @@ const capitalize = (value) => {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #0c4baa;
+}
+
+.empty-state {
+    text-align: left;
+    padding: 2rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    color: #6b7280;
+    font-style: italic;
+    margin: 1rem 0;
 }
 
 .artist-description {

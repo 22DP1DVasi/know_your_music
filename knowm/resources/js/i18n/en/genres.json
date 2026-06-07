@@ -8,7 +8,10 @@
         "popular_tracks": "Popular Tracks",
         "see_all_tracks": "See all {count} tracks",
         "notable_releases": "Notable Releases",
-        "see_all_releases": "See all {count} releases"
+        "see_all_releases": "See all {count} releases",
+        "no_artists": "No artists associated with this genre.",
+        "no_tracks": "No tracks associated with this genre.",
+        "no_releases": "No releases associated with this genre."
     },
     "description": {
         "page_title": "Description",

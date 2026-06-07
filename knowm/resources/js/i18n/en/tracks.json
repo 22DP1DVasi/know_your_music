@@ -18,7 +18,8 @@
         "unverified_badge": "Requires Verification",
         "no_lyrics": "No lyrics available for this track yet.",
         "read_more": "Read more",
-        "artists_title": "Artists"
+        "artists_title": "Artists",
+        "no_artists": "No artists related to this track."
     },
     "description": {
         "back_to_track": "Back to track",

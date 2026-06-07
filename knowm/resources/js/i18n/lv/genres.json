@@ -8,7 +8,10 @@
         "popular_tracks": "Populārākās dziesmas",
         "see_all_tracks": "Skatīt visas {count} dziesmas",
         "notable_releases": "Nozīmīgi albumi",
-        "see_all_releases": "Skatīt visus {count} albumus"
+        "see_all_releases": "Skatīt visus {count} albumus",
+        "no_artists": "Nav mākslinieku, kas saistīti ar šo žanru.",
+        "no_tracks": "Nav dziesmu, kas saistītas ar šo žanru.",
+        "no_releases": "Nav albumu, kas saistīti ar šo žanru."
     },
     "description": {
         "page_title": "Apraksts",
