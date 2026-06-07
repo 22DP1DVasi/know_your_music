@@ -198,12 +198,6 @@ const getDeleteButtonInfo = (comment) => {
     }
 }
 
-const canBeHardDeleted = (comment) => {
-    const hasReplies = comment.replies && comment.replies.length > 0
-    const isReply = comment.parent_id !== null
-    return !hasReplies && !isReply
-}
-
 // komentāra teksta metodes
 const needsTruncation = (comment) => {
     if (!comment?.text) return false
@@ -264,13 +258,6 @@ const getDisplayText = (comment) => {
 const isCommentDeleted = (comment) => {
     return comment.deleted_at !== null && comment.deleted_at !== undefined
 }
-
-// const getDisplayTextConsideringDeletion = (comment) => {
-//     if (isCommentDeleted(comment)) {
-//         return `<em class="deleted-comment-text">${t('comments.deleted_comment_text')}</em>`
-//     }
-//     return getDisplayText(comment)
-// }
 
 const getDisplayTextConsideringDeletionAndHidden = (comment) => {
     if (isCommentDeleted(comment)) {
@@ -601,6 +588,44 @@ const getDeleteConfirmationMessage = () => {
         return t('comments.user_delete_confirmation')
     }
 }
+
+const canBeHardDeleted = (comment) => {
+    const hasReplies = comment.replies && comment.replies.length > 0
+    const isReply = comment.parent_id !== null
+    return !hasReplies && !isReply
+}
+
+const markCommentAsDeleted = (commentList, commentId, deletedAt) => {
+    for (let comment of commentList) {
+        if (comment.id === commentId) {
+            comment.deleted_at = deletedAt;
+            comment.text = null;
+            return true;
+        }
+        if (comment.replies?.length) {
+            if (markCommentAsDeleted(comment.replies, commentId, deletedAt)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+const removeCommentFromTree = (commentList, commentId) => {
+    const index = commentList.findIndex(c => c.id === commentId);
+    if (index !== -1) {
+        commentList.splice(index, 1);
+        return true;
+    }
+    for (let comment of commentList) {
+        if (comment.replies?.length) {
+            if (removeCommentFromTree(comment.replies, commentId)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
 
 const confirmDeleteComment = async () => {
     if (!commentToDelete.value || isDeletingComment.value) return
