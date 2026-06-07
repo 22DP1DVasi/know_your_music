@@ -436,7 +436,7 @@ onBeforeUnmount(() => {
                                         </Link>
                                     </li>
                                     <li>
-                                        <button @click="openCreateForm; closeMobileSidebar()" class="submenu-link">
+                                        <button @click="openCreateForm" class="submenu-link">
                                             <i class="fa-regular fa-plus submenu-icon"></i>
                                             {{ t('user_pages.layout.create_new_pl') }}
                                         </button>
