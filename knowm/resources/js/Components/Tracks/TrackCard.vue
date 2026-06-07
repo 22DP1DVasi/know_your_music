@@ -111,11 +111,6 @@ const formattedDuration = computed(() => {
     return formatDuration(props.track.duration, props.durationFormat);
 });
 
-const formattedArtists = computed(() => {
-    if (!props.track.artists || !Array.isArray(props.track.artists)) return '';
-    return props.track.artists.map(artist => artist.name).join(', ');
-});
-
 const handleTrackClick = () => {
     if (!props.clickable) return;
     emit('track-click', props.track);
@@ -133,6 +128,17 @@ const handleTrackClick = () => {
 const handleImageError = (event) => {
     event.target.src = props.fallbackImage;
 };
+
+const displayedArtists = computed(() => {
+    const artists = props.track.artists || [];
+    if (artists.length <= 3) return artists;
+    return artists.slice(0, 3);
+});
+
+const hiddenArtistsCount = computed(() => {
+    const artists = props.track.artists || [];
+    return Math.max(0, artists.length - 3);
+});
 
 const redirectToArtist = (slug, event) => {
     event.stopPropagation(); // novērst dziesmas kartes klikšķa palaidi
@@ -224,18 +230,16 @@ defineExpose({
             <!-- Izpildītāju slots vairāku izpildītāju izcelšanai -->
             <slot name="artists">
                 <div v-if="showArtists && track.artists && track.artists.length" class="track-artists">
-                    <span
-                        v-for="(artist, artistIndex) in track.artists"
-                        :key="artist.id"
-                        class="artist-link-wrapper"
-                    >
+                    <template v-for="(artist, artistIndex) in displayedArtists" :key="artist.id">
                         <a
                             @click="redirectToArtist(artist.slug, $event)"
                             class="artist-link"
                         >
                             {{ artist.name }}
                         </a>
-                        <span v-if="artistIndex < track.artists.length - 1" class="artist-separator">, </span>
+                        <span v-if="artistIndex < displayedArtists.length - 1">,&nbsp;</span>
+                    </template>
+                    <span v-if="hiddenArtistsCount" class="artists-more">, {{ t('tracks.card.artists_more', { count: hiddenArtistsCount }) }}
                     </span>
                 </div>
             </slot>
@@ -380,7 +384,7 @@ defineExpose({
 }
 
 .track-title {
-    font-size: clamp(9px, 3vw, 1rem);
+    font-size: clamp(12px, 3vw, 1rem);
     cursor: pointer;
     color: inherit;
     text-decoration: none;
@@ -401,10 +405,6 @@ defineExpose({
     word-break: break-word;
 }
 
-.artist-link-wrapper {
-    display: inline;
-}
-
 .artist-link {
     color: #666;
     text-decoration: none;
@@ -419,14 +419,17 @@ defineExpose({
     text-decoration: underline;
 }
 
-.artist-separator {
+.artists-more {
     color: #666;
-    white-space: pre;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    display: inline;
+    font-size: clamp(9px, 3vw, 0.9rem);
 }
 
 .track-duration {
     color: #666;
-    font-size: 0.9rem;
+    font-size: clamp(9px, 3vw, 0.9rem);
     flex: 0 0 50px;
     text-align: right;
     white-space: nowrap;
@@ -441,7 +444,6 @@ defineExpose({
 
 @media (max-width: 480px) {
     .track-duration {
-        font-size: 0.85rem;
         flex: 0 0 45px;
     }
 }

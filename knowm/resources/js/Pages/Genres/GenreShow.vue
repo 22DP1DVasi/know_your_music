@@ -349,7 +349,14 @@ const closeModal = () => {
 <!--                            {{ t('genres.show.see_all_artists', { count: genre.total_artists }) }}-->
 <!--                        </button>-->
                     </div>
-                    <div class="artist-list">
+
+                    <!-- Empty state -->
+                    <div v-if="genre.artists.length === 0" class="empty-state">
+                        <p>{{ t('genres.show.no_artists') }}</p>
+                    </div>
+
+                    <!-- Artist list -->
+                    <div v-else class="artist-list">
                         <ArtistCardMini
                             v-for="artist in genre.artists"
                             :key="artist.id"
@@ -370,7 +377,14 @@ const closeModal = () => {
 <!--                            {{ t('genres.show.see_all_tracks', { count: genre.total_tracks }) }}-->
 <!--                        </button>-->
                     </div>
-                    <div class="track-list">
+
+                    <!-- Empty state -->
+                    <div v-if="genre.tracks.length === 0" class="empty-state">
+                        <p>{{ t('genres.show.no_tracks') }}</p>
+                    </div>
+
+                    <!-- Track list -->
+                    <div v-else class="track-list">
                         <TrackCard
                             v-for="(track, index) in genre.tracks"
                             :key="track.id"
@@ -403,7 +417,14 @@ const closeModal = () => {
 <!--                            {{ t('genres.show.see_all_releases', { count: genre.total_releases }) }}-->
 <!--                        </button>-->
                     </div>
-                    <div class="release-results">
+
+                    <!-- Empty state -->
+                    <div v-if="genre.releases.length === 0" class="empty-state">
+                        <p>{{ t('genres.show.no_releases') }}</p>
+                    </div>
+
+                    <!-- Releases grid -->
+                    <div v-else class="release-results">
                         <ReleaseCard
                             v-for="release in genre.releases"
                             :key="release.id"
@@ -572,6 +593,16 @@ const closeModal = () => {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #0c4baa;
+}
+
+.empty-state {
+    text-align: left;
+    padding: 2rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    color: #6b7280;
+    font-style: italic;
+    margin: 1rem 0;
 }
 
 .language-notice {

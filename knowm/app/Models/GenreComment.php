@@ -11,6 +11,8 @@ use App\Traits\HasThreadedComments;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\CommentDeletedBy;
+use App\Enums\CommentDeleteReason;
 
 class GenreComment extends Model
 {
@@ -26,9 +28,12 @@ class GenreComment extends Model
         'text',
         'status',
 //        'deleted_username',
+        'deleted_by',
+        'delete_reason',
         'user_id',
         'genre_id',
-        'parent_id'
+        'parent_id',
+        'edited_at'
     ];
 
     /**
@@ -37,6 +42,8 @@ class GenreComment extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'deleted_by' => CommentDeletedBy::class,
+        'delete_reason' => CommentDeleteReason::class,
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
         'deleted_at' => 'datetime:Y-m-d H:i:s',

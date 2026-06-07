@@ -5,6 +5,9 @@ import Navbar from "@/Components/Navbar.vue";
 import Footer from "@/Components/Footer.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { useI18n } from 'vue-i18n';
+import TrackCard from "@/Components/Tracks/TrackCard.vue";
+import AddToPlaylistModal from "@/Components/Playlists/AddToPlaylistModal.vue";
+import {route} from "ziggy-js";
 
 const { t } = useI18n();
 
@@ -63,8 +66,33 @@ const goBack = () => {
     router.visit(`/search?q=${props.searchQuery}`);
 };
 
-const redirectToTrack = (slug) => {
-    router.get(`/tracks/${slug}`);
+// izvēlnes stāvoklis dziesmu kartēm
+const openMenuId = ref(null);
+
+// refs priekš modālajam logam priekš dziesmas pievienošanas kolekcijām
+const showPlaylistModal = ref(false);
+const selectedTrack = ref(null);
+
+const toggleTrackMenu = (trackId) => {
+    openMenuId.value = openMenuId.value === trackId ? null : trackId;
+};
+
+const handleTrackClick = (track) => {
+    router.get(`/tracks/${track.slug}`);
+};
+
+const openAddToPlaylistModal = (track) => {
+    if (!user) {
+        router.get(route('login'));
+        return;
+    }
+    selectedTrack.value = track;
+    showPlaylistModal.value = true;
+};
+
+const closeModal = () => {
+    showPlaylistModal.value = false
+    selectedTrack.value = null
 };
 
 </script>
@@ -75,7 +103,7 @@ const redirectToTrack = (slug) => {
     <main class="flex-1">
         <div class="search-results">
             <div class="results-header">
-                <h1 class="results-title">{{ t('search_pages.all_lyricstitle', {query: searchQuery}) }}</h1>
+                <h1 class="results-title">{{ t('search_pages.all_lyrics_title', {query: searchQuery}) }}</h1>
                 <div class="go-back-arrow-wrapper">
                     <div class="go-back-arrow" @click="goBack">
                         <span class="arrow-icon">←</span>
@@ -102,23 +130,25 @@ const redirectToTrack = (slug) => {
             </div>
 
             <div class="track-list lyric-matches">
-                <div v-for="track in tracks" :key="track.id" class="track-item">
-                    <img class="track-image" :src="getTrackImage(track)" :alt="track.title">
-                    <div class="track-info">
-                        <h3>
-                            <a @click="redirectToTrack(track.slug)" class="track-title-link">
-                                {{ track.title }}
-                            </a>
-                        </h3>
-                        <p class="artists-names">
-                            <span v-for="(artist, index) in track.artists" :key="artist.id">
-                                {{ artist.name }}<span v-if="index < track.artists.length - 1">, </span>
-                            </span>
-                        </p>
-                        <p class="lyric-snippet" v-html="track.lyric_snippet || 'No lyrics snippet available'"></p>
-                    </div>
-                    <div class="track-duration">{{ formatDuration(track.duration) }}</div>
-                </div>
+                <TrackCard
+                    v-for="track in tracks"
+                    :key="track.id"
+                    :track="track"
+                    :show-number="false"
+                    :show-artists="true"
+                    :show-duration="false"
+                    :menu-open="openMenuId === track.id"
+                    duration-format="HH:mm:ss"
+                    :can-add="true"
+                    :can-remove="false"
+                    @track-click="handleTrackClick"
+                    @add-to-playlist="openAddToPlaylistModal"
+                    @toggle-menu="toggleTrackMenu"
+                >
+                    <template #extra-info>
+                        <p class="lyric-snippet" v-html="track.lyric_snippet"></p>
+                    </template>
+                </TrackCard>
             </div>
 
             <div v-if="tracks.length === 0" class="no-results">
@@ -135,6 +165,12 @@ const redirectToTrack = (slug) => {
         </div>
     </main>
     <Footer />
+
+    <AddToPlaylistModal
+        :show="showPlaylistModal"
+        :track="selectedTrack"
+        @close="closeModal"
+    />
 </template>
 
 <style scoped>
@@ -275,69 +311,6 @@ const redirectToTrack = (slug) => {
     margin: 0 auto;
 }
 
-.track-item {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-    gap: 1rem;
-    transition: background-color 0.2s;
-}
-
-.track-item:hover {
-    background-color: #f9f9f9;
-}
-
-.track-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 4px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.track-info {
-    flex: 1;
-    min-width: 0;
-    padding: 0 1rem;
-    overflow: hidden;
-}
-
-.track-info h3 {
-    margin: 0 0 0.25rem 0;
-    font-size: 0.95rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    display: block;
-}
-
-.track-title-link {
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.track-title-link:hover {
-    color: #0c4baa;
-    text-decoration: underline;
-}
-
-.artists-names {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin: 0 0 0.25rem 0;
-    color: #666;
-    font-size: 0.9rem;
-    width: 100%;
-}
-
 .lyric-snippet {
     margin: 0.5rem 0 0 0;
     color: #555;
@@ -345,7 +318,6 @@ const redirectToTrack = (slug) => {
     line-height: 1.4;
     font-style: italic;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -356,12 +328,6 @@ const redirectToTrack = (slug) => {
     color: inherit;
     padding: 0 2px;
     border-radius: 3px;
-}
-
-.track-duration {
-    text-align: right;
-    color: #666;
-    flex: 0 0 80px;
 }
 
 .no-results {
@@ -408,7 +374,7 @@ const redirectToTrack = (slug) => {
     }
 
     .lyric-snippet {
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 6;
     }
 }
 
@@ -448,33 +414,15 @@ const redirectToTrack = (slug) => {
         max-width: 280px;
     }
 
-    .track-item {
-        padding: 0.75rem;
-        gap: 0.75rem;
-    }
-
-    .track-image {
-        width: 40px;
-        height: 40px;
-    }
-
-    .track-info {
-        padding: 0 0.5rem;
-    }
-
     .track-info h3 {
         font-size: 0.9rem;
         max-width: 150px;
     }
 
-    .track-duration {
-        flex: 0 0 60px;
-        font-size: 0.85rem;
-    }
-
     .lyric-snippet {
         font-size: 0.8rem;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 4;
     }
 }
+
 </style>

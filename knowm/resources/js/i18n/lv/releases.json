@@ -10,7 +10,9 @@
     "show": {
         "about_release": "Par šo albumu",
         "genres": "Žanri",
+        "no_artists": "Nav izpildītāju, kas saistīti ar šo albumu.",
         "no_genres": "Nav žanru, kas saistīti ar šo albumu.",
+        "no_tracks": "Šim albumam nav dziesmu.",
         "no_description": "Šim albumam nav apraksta.",
         "read_more": "Lasīt vairāk",
         "artists_title": "Izpildītāji"

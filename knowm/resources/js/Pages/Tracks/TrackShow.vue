@@ -310,7 +310,8 @@ const redirectToFullDescription = (slug) => {
                     <!-- Artists section -->
                     <section class="track-artists-section">
                         <h2 class="section-title">{{ t('tracks.show.artists_title') }}</h2>
-                        <div class="artists-grid">
+                        <div v-if="!track.artists.length" class="empty-state">{{ t('tracks.show.no_artists') }}</div>
+                        <div v-else class="artists-grid">
                             <ArtistCardMini
                                 v-for="artist in track.artists"
                                 :key="artist.id"
@@ -506,6 +507,16 @@ const redirectToFullDescription = (slug) => {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #0c4baa;
+}
+
+.empty-state {
+    text-align: left;
+    padding: 2rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    color: #6b7280;
+    font-style: italic;
+    margin: 1rem 0;
 }
 
 .language-notice {

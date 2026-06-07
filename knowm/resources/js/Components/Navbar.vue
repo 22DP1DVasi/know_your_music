@@ -12,7 +12,11 @@ const { locale, t } = useI18n();
 const user = computed(() => page.props.auth?.user ?? null);
 const isLoggedIn = computed(() => !!user.value);
 const roles = computed(() => user.value?.roles ?? []);
-const isAdmin = computed(() => roles.value.includes('super_admin'));
+const isAdmin = computed(() =>
+    ['super_admin', 'admin'].some(role =>
+        roles.value.includes(role)
+    )
+);
 
 const isDarkMode = ref(localStorage.getItem("darkMode") === "true");
 const isMenuActive = ref(false);
@@ -76,11 +80,24 @@ const logout = () => {
     router.post('/logout');
 };
 
+// function to update search query from URL on search page
+const updateSearchQuery = () => {
+    if (page.url.startsWith('/search')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const q = urlParams.get('q') || '';
+        searchQuery.value = q;
+    } else {
+        searchQuery.value = '';
+    }
+};
+
+// initialize and watch for page changes
+onMounted(updateSearchQuery);
+watch(() => page.url, updateSearchQuery);
+
 const performSearch = () => {
     if (searchQuery.value.trim()) {
-        router.get('/search', {
-            q: searchQuery.value.trim()
-        });
+        router.get('/search', { q: searchQuery.value.trim() });
     }
 };
 

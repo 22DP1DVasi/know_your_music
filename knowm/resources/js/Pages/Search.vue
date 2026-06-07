@@ -108,7 +108,6 @@ const closeModal = () => {
                 <div class="section-header">
                     <h2>{{ t('search_pages.main_results.artists') }}</h2>
                     <a v-if="hasMoreArtists" :href="`/search/artists?q=${searchQuery}`" class="see-all">
-                        <!--See all {{ artistsCount }} artists →-->
                         {{ t('search_pages.main_results.see_all_artists', {count: artistsCount}) }}
                     </a>
                 </div>
@@ -188,6 +187,7 @@ const closeModal = () => {
                         :track="track"
                         :show-number="false"
                         :show-artists="true"
+                        :show-duration="false"
                         :menu-open="openMenuId === track.id"
                         duration-format="HH:mm:ss"
                         :can-add="true"
@@ -255,17 +255,22 @@ const closeModal = () => {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
 .section-header h2 {
     font-size: 1.4rem;
-    margin-bottom: 0.5rem;
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .see-all {
     color: #4a90e2;
     text-decoration: none;
     font-weight: 500;
+    white-space: nowrap;
+    font-size: 0.9rem;
 }
 
 .see-all:hover {
@@ -325,12 +330,10 @@ const closeModal = () => {
     font-size: 0.85rem;
     line-height: 1.4;
     font-style: italic;
-}
-
-@media (max-width: 645px) {
-    .lyric-snippet {
-        display: none;
-    }
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .lyric-snippet mark {
@@ -352,6 +355,27 @@ const closeModal = () => {
         font-size: 1.8rem;
         padding-top: 0.5rem;
     }
+
+    .lyric-snippet {
+        -webkit-line-clamp: 6;
+    }
+}
+
+@media (max-width: 500px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .see-all {
+        white-space: normal;
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -360,12 +384,29 @@ const closeModal = () => {
         margin-bottom: 1.5rem;
     }
 
+    .section-header {
+        margin-bottom: 1rem;
+    }
+
+    .section-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .see-all {
+        font-size: 0.8rem;
+    }
+
     .artist-results {
         justify-content: center;
     }
 
     .release-results {
         justify-content: center;
+    }
+
+    .lyric-snippet {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 4;
     }
 }
 

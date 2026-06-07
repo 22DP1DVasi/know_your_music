@@ -1,7 +1,8 @@
 {
     "card": {
         "add_to_playlist": "Pievienot kolekcijai",
-        "remove": "Noņemt"
+        "remove": "Noņemt",
+        "artists_more": "+{count} vairāk"
     },
     "global": {
         "release_date": "Izdošanas datums:",
@@ -18,7 +19,8 @@
         "unverified_badge": "Nepieciešama pārbaude",
         "no_lyrics": "Šai dziesmai vēl nav pieejams teksts.",
         "read_more": "Lasīt vairāk",
-        "artists_title": "Izpildītāji"
+        "artists_title": "Izpildītāji",
+        "no_artists": "Nav izpildītāju, kas saistīti ar šo dziesmu."
     },
     "description": {
         "back_to_track": "Atpakaļ pie dziesmas",
