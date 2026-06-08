@@ -289,12 +289,6 @@ const submit = async () => {
     max-width: 480px;
 }
 
-@media (prefers-color-scheme: dark) {
-    .modal-container {
-        background: #1f2937;
-    }
-}
-
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -316,12 +310,6 @@ const submit = async () => {
 
 .modal-title i {
     color: #0c4baa;
-}
-
-@media (prefers-color-scheme: dark) {
-    .modal-title {
-        color: #f3f4f6;
-    }
 }
 
 .modal-close-button {
@@ -374,12 +362,6 @@ const submit = async () => {
     font-weight: 500;
     color: #333;
     margin-bottom: 0.5rem;
-}
-
-@media (prefers-color-scheme: dark) {
-    .form-label {
-        color: #e5e7eb;
-    }
 }
 
 .required {
