@@ -209,17 +209,6 @@ const updatePassword = () => {
     animation: fadeIn 0.2s ease-out;
 }
 
-/* Tumšais režīms */
-@media (prefers-color-scheme: dark) {
-    .update-description, .success-message {
-        color: #9ca3af;
-    }
-
-    .update-title {
-        color: #f3f4f6;
-    }
-}
-
 /* Animācijas */
 @keyframes fadeIn {
     from {

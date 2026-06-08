@@ -158,12 +158,6 @@ const handleImageError = (event) => {
     box-shadow: 0 8px 24px rgba(12, 75, 170, 0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-    .playlist-card {
-        background: #1f2937;
-    }
-}
-
 .playlist-image-wrapper {
     position: relative;
     width: 100%;
@@ -251,12 +245,6 @@ const handleImageError = (event) => {
     -webkit-line-clamp: 2; /* max 2 lines */
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-@media (prefers-color-scheme: dark) {
-    .playlist-name {
-        color: #f3f4f6;
-    }
 }
 
 .playlist-meta {

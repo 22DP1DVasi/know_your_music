@@ -171,12 +171,6 @@ const closeCreateForm = () => {
     margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    .playlists-count {
-        color: #9ca3af;
-    }
-}
-
 .header-actions {
     display: flex;
     gap: 1rem;
@@ -242,12 +236,6 @@ const closeCreateForm = () => {
     margin: 2rem 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    .empty-state {
-        background: #1f2937;
-    }
-}
-
 .empty-icon {
     font-size: 4rem;
     color: rgba(12, 75, 170, 0.3);
@@ -261,24 +249,12 @@ const closeCreateForm = () => {
     margin: 0 0 0.5rem 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    .empty-title {
-        color: #f3f4f6;
-    }
-}
-
 .empty-description {
     font-size: 1rem;
     color: #666;
     max-width: 400px;
     margin: 0 auto 1.5rem;
     line-height: 1.5;
-}
-
-@media (prefers-color-scheme: dark) {
-    .empty-description {
-        color: #9ca3af;
-    }
 }
 
 .create-playlist-button {

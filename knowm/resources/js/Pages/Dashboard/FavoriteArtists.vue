@@ -222,12 +222,6 @@ iepriekšējās lapas paliek kā ir vai tiks atjauninātas,
 ja būs nepieciešams. :|
  */
 
-@media (prefers-color-scheme: dark) {
-    .favorites-count {
-        color: #9ca3af;
-    }
-}
-
 /* Filters Section */
 .filters-section {
     display: flex;
@@ -291,24 +285,6 @@ ja būs nepieciešams. :|
     font-weight: 500;
 }
 
-@media (prefers-color-scheme: dark) {
-    .sort-button {
-        background: #1f2937;
-        border-color: #374151;
-        color: #9ca3af;
-    }
-
-    .sort-button:hover {
-        background: #374151;
-        border-color: #0c4baa;
-    }
-
-    .sort-button.active {
-        background: rgba(12, 75, 170, 0.2);
-        color: #f3f4f6;
-    }
-}
-
 .artists-list {
     display: flex;
     flex-wrap: wrap;
@@ -326,12 +302,6 @@ ja būs nepieciešams. :|
     margin: 2rem 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    .empty-state {
-        background: #1f2937;
-    }
-}
-
 .empty-icon {
     font-size: 4rem;
     color: rgba(12, 75, 170, 0.3);
@@ -345,24 +315,12 @@ ja būs nepieciešams. :|
     margin: 0 0 0.5rem 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    .empty-title {
-        color: #f3f4f6;
-    }
-}
-
 .empty-description {
     font-size: 1rem;
     color: #666;
     max-width: 400px;
     margin: 0 auto 1.5rem;
     line-height: 1.5;
-}
-
-@media (prefers-color-scheme: dark) {
-    .empty-description {
-        color: #9ca3af;
-    }
 }
 
 .explore-button {

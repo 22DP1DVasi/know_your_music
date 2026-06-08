@@ -203,18 +203,6 @@ const closeModal = () => {
     animation: fadeIn 0.2s ease-out;
 }
 
-/* Tumšais režīms */
-@media (prefers-color-scheme: dark) {
-    .delete-title, .modal-title,
-    .modal-title {
-        color: #f3f4f6;
-    }
-
-    .delete-description, .modal-description {
-        color: #9ca3af;
-    }
-}
-
 /* Animācijas */
 @keyframes fadeIn {
     from {
